@@ -18,7 +18,7 @@ public class CalendarModule extends ReactContextBaseJavaModule {
     @NotNull
     @Override
     public String getName() {
-        return "CalenderModule";
+        return "CalendarModule";
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
