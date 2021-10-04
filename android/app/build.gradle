@@ -189,7 +189,18 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    def kalturaPlaykitVersion = '4.17.0'
+    def kalturaImaPlaykitVersion = '4.17.0'
+    def kalturaYouboraPlaykitVersion = '4.17.0'
+
+    api "com.kaltura.playkit:broadpeakplugin:$kalturaPlaykitVersion"
+    implementation "com.kaltura.playkit:imaplugin:$kalturaImaPlaykitVersion"
+    implementation "com.kaltura.playkit:youboraplugin:$kalturaYouboraPlaykitVersion"
+
+
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
