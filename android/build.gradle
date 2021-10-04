@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.kotlin_version = '1.4.32'
+
     ext {
         buildToolsVersion = "30.0.2"
         minSdkVersion = 21
@@ -14,6 +16,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -34,5 +37,13 @@ allprojects {
 
         google()
         maven { url 'https://www.jitpack.io' }
+
+        maven {
+            credentials {
+                username System.getenv("BROADPEAK_USERNAME")
+                password System.getenv("BROADPEAK_PASSWORD")
+            }
+            url "https://delivery-platform.broadpeak.tv/android/repository/smartlib"
+        }
     }
 }
