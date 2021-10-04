@@ -25,7 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
               @SuppressWarnings("UnnecessaryLocalVariable")
               List<ReactPackage> packages = new PackageList(this).getPackages();
               // below MyAppPackage is added to the list of packages returned
-              packages.add(new CalenderPackage());
+              packages.add(new CalendarPackage());
               return packages;
           }
 
