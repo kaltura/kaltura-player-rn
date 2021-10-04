@@ -1,18 +1,18 @@
 import React from "react";
 import { View, Text, NativeModules, Button } from "react-native";
 
-const { CalendarModule } = NativeModules;
+const { KalturaPlayerModule } = NativeModules;
 
 const KalturaPlayer = () => {
-  console.log(CalendarModule);
+  console.log(KalturaPlayerModule);
   const onPress = () => {
-    CalendarModule.createCalendarEvent("testName", "testLocation");
+    KalturaPlayerModule.createKalturaPlayerEvent("testName", "testLocation");
   };
 
   return (
     <View>
       <Text>Player</Text>
-      <Button onPress={onPress} title="calendar event" />
+      <Button onPress={onPress} title="Kaltura Player event" />
     </View>
   );
 };

@@ -10,20 +10,20 @@ import org.jetbrains.annotations.NotNull;
 
 
 
-public class CalendarModule extends ReactContextBaseJavaModule {
-    CalendarModule(ReactApplicationContext context) {
+public class KalturaPlayerModule extends ReactContextBaseJavaModule {
+    KalturaPlayerModule(ReactApplicationContext context) {
         super(context);
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "CalendarModule";
+        return "KalturaPlayerModule";
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
-    public void createCalendarEvent(String name, String location) {
-        Log.d("CalendarModule", "Create event called with name: " + name
+    public void createKalturaPlayerEvent(String name, String location) {
+        Log.d("KalturaPlayerModule", "Create event called with name: " + name
                 + " and location: " + location);
     }
 

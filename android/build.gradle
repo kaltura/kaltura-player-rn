@@ -37,7 +37,7 @@ allprojects {
 
         google()
         maven { url 'https://www.jitpack.io' }
-
+        maven { url  "https://npaw.jfrog.io/artifactory/youbora/" }
         maven {
             credentials {
                 username System.getenv("BROADPEAK_USERNAME")
