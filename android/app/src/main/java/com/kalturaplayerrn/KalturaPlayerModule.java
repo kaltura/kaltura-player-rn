@@ -7,7 +7,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
@@ -25,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 
 
 public class KalturaPlayerModule extends ReactContextBaseJavaModule {
@@ -47,23 +54,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
                 + " and location: " + location);
         Toast.makeText(getReactApplicationContext(), url + " " + location, Toast.LENGTH_LONG).show();
 
-        Button button = new Button(context);
-        button.setText("MyButton");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("KalturaPlayerModule", "Button Clicked");
-            }
-        });
-
         getCurrentActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                //getCurrentActivity().addContentView(button, layoutParams);
-                loadBasicPlayer(url);            }
+                loadBasicPlayer(url);
+            }
         });
-
     }
 
     public void loadBasicPlayer(String url) {
@@ -78,6 +74,10 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         player.addListener(this, PlayerEvent.tracksAvailable, event -> {
             Log.d("KalturaPlayerModule", "Event tracksAvailable tracksInfo.getVideoTracks().size() " + (event.tracksInfo.getVideoTracks().size()));
+            WritableMap params = Arguments.createMap();
+            params.putString("eventProperty1", "someValue1");
+            params.putString("eventProperty2", "someValue2");
+            sendEvent("EventReminder", params);
         });
 
         player.setMedia(mediaEntry);
@@ -91,19 +91,8 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         mediaEntry.setId("testEntry");
         mediaEntry.setName("testEntryName");
         mediaEntry.setDuration(881000);
-        //Set media entry type. It could be Live,Vod or Unknown.
-        //In this sample we use Vod.
         mediaEntry.setMediaType(PKMediaEntry.MediaEntryType.Vod);
-
-        //Create list that contains at least 1 media source.
-        //Each media entry can contain a couple of different media sources.
-        //All of them represent the same content, the difference is in it format.
-        //For example same entry can contain PKMediaSource with dash and another
-        // PKMediaSource can be with hls. The player will decide by itself which source is
-        // preferred for playback.
         List<PKMediaSource> mediaSources = createMediaSources(url);
-
-        //Set media sources to the entry.
         mediaEntry.setSources(mediaSources);
 
         return mediaEntry;
@@ -129,5 +118,15 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         mediaSource.setMediaFormat(PKMediaFormat.hls);
 
         return Collections.singletonList(mediaSource);
+    }
+
+
+
+    private DeviceEventManagerModule.RCTDeviceEventEmitter emitter() {
+        return context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+    }
+
+    private void sendEvent(String event, @Nullable WritableMap payload) {
+        emitter().emit(event, payload);
     }
 }
