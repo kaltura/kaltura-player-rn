@@ -26,6 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
+
 
 public class KalturaPlayerModule extends ReactContextBaseJavaModule {
     ReactApplicationContext context;
@@ -53,6 +57,9 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
             @Override
             public void onClick(View v) {
                 Log.d("KalturaPlayerModule", "Button Clicked");
+                WritableMap params = Arguments.createMap();
+params.putString("eventProperty", "someValue");
+                sendEvent(getReactApplicationContext(), "EventReminder", params);
             }
         });
 
@@ -63,7 +70,6 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
                 //getCurrentActivity().addContentView(button, layoutParams);
                 loadBasicPlayer(url);            }
         });
-
     }
 
     public void loadBasicPlayer(String url) {
@@ -129,5 +135,13 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         mediaSource.setMediaFormat(PKMediaFormat.hls);
 
         return Collections.singletonList(mediaSource);
+    }
+
+    private void sendEvent(ReactContext reactContext,
+                      String eventName,
+                      @Nullable WritableMap params) {
+        reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, params);
     }
 }
