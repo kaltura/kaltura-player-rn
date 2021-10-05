@@ -22,7 +22,7 @@ const KalturaPlayer = () => {
     const eventListener = playerEventEmitter.addListener(
       "EventReminder",
       (event) => {
-        console.log(event.eventProperty);
+        console.log("EventReminder " + event.eventProperty1 + " " +  event.eventProperty2);
       }
     );
     return () => {
