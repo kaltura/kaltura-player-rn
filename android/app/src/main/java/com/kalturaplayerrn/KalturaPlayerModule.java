@@ -7,7 +7,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
@@ -58,8 +61,8 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
             public void onClick(View v) {
                 Log.d("KalturaPlayerModule", "Button Clicked");
                 WritableMap params = Arguments.createMap();
-params.putString("eventProperty", "someValue");
-                sendEvent(getReactApplicationContext(), "EventReminder", params);
+                params.putString("eventProperty", "someValue");
+                sendEvent(context, "EventReminder", params);
             }
         });
 
@@ -138,8 +141,8 @@ params.putString("eventProperty", "someValue");
     }
 
     private void sendEvent(ReactContext reactContext,
-                      String eventName,
-                      @Nullable WritableMap params) {
+                           String eventName,
+                           @Nullable WritableMap params) {
         reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit(eventName, params);
