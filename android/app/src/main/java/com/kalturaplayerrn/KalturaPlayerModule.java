@@ -50,8 +50,6 @@ import com.kaltura.tvplayer.KalturaPlayer;
 import com.kaltura.tvplayer.PlayerInitOptions;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -267,9 +265,17 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
 
         if (context != null) {
-            player = KalturaOttPlayer.create(context, initOptions);
-            player.setPlayerView(MATCH_PARENT, MATCH_PARENT);
-            addKalturaPlayerListeners();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player = KalturaOttPlayer.create(context, initOptions);
+                    player.setPlayerView(MATCH_PARENT, MATCH_PARENT);
+                    getCurrentActivity().addContentView(player.getPlayerView(), new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+                    addKalturaPlayerListeners();
+                    sendPlayerEvent("playerInitialized");
+                }
+            });
+
             initialized = true;
         } else {
             initialized = false;
@@ -307,17 +313,23 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 //            if (localPlaybackEntry != null) {
 //                player.setMedia(localPlaybackEntry);
 //            }
-        player.loadMedia(mediaAsset.buildOttMediaOptions(assetId, player.getKS()), (mediaOptions, entry, error) -> {
-            if (error != null) {
-                log.e("ott media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
-                sendPlayerEvent("loadMediaFailed", gson.toJson(error));
-            } else {
-                log.d("ott media load success name = " + entry.getName() + " initialVolume = " + mediaAsset.getInitialVolume());
-                sendPlayerEvent("loadMediaSuccess", gson.toJson(entry));
 
-                if (mediaAsset.getInitialVolume() >= 0 && mediaAsset.getInitialVolume() < 1.0) {
-                    player.setVolume(mediaAsset.getInitialVolume());
-                }
+        getCurrentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                player.loadMedia(mediaAsset.buildOttMediaOptions(assetId, player.getKS()), (mediaOptions, entry, error) -> {
+                    if (error != null) {
+                        log.e("ott media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
+                        sendPlayerEvent("loadMediaFailed", gson.toJson(error));
+                    } else {
+                        log.d("ott media load success name = " + entry.getName() + " initialVolume = " + mediaAsset.getInitialVolume());
+                        sendPlayerEvent("loadMediaSuccess", gson.toJson(entry));
+
+                        if (mediaAsset.getInitialVolume() >= 0 && mediaAsset.getInitialVolume() < 1.0) {
+                            player.setVolume(mediaAsset.getInitialVolume());
+                        }
+                    }
+                });
             }
         });
     }
@@ -328,7 +340,13 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         log.d("prepare");
         reportedDuration = Consts.TIME_UNSET;
         if (player != null) {
-            player.prepare();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.prepare();
+                }
+            });
+
         }
     }
 
@@ -337,7 +355,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("play");
         if (player != null) {
-            player.play();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.play();
+                }
+            });
         }
     }
 
@@ -346,7 +369,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("pause");
         if (player != null) {
-            player.pause();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.pause();
+                }
+            });
         }
     }
 
@@ -355,7 +383,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("replay");
         if (player != null) {
-            player.replay();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.replay();
+                }
+            });
         }
     }
 
@@ -365,7 +398,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         long posMS = (long)(position * Consts.MILLISECONDS_MULTIPLIER);
         log.d("seekTo:" + posMS);
         if (player != null) {
-            player.seekTo(posMS);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.seekTo(posMS);
+                }
+            });
         }
     }
 
@@ -374,7 +412,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("changeTrack:" + uniqueId);
         if (player != null) {
-            player.changeTrack(uniqueId);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.changeTrack(uniqueId);
+                }
+            });
         }
     }
 
@@ -383,7 +426,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("changePlaybackRate:" + playbackRate);
         if (player != null) {
-            player.setPlaybackRate(playbackRate);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.setPlaybackRate(playbackRate);
+                }
+            });
         }
     }
 
@@ -392,7 +440,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("stop");
         if (player != null) {
-            player.stop();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.stop();
+                }
+            });
         }
     }
 
@@ -426,7 +479,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("setAutoplay: " + autoplay);
         if (player != null) {
-            player.setAutoPlay(autoplay);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.setAutoPlay(autoplay);
+                }
+            });
         }
     }
 
@@ -435,16 +493,26 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("setKS: " + ks);
         if (player != null) {
-            player.setKS(ks);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.setKS(ks);
+                }
+            });
         }
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
-    public  void setZIndex(float index) {
+    public void setZIndex(float index) {
 
         log.d("setZIndex: " + index);
         if (player != null && player.getPlayerView() != null) {
-            player.getPlayerView().setZ(index);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.getPlayerView().setZ(index);
+                }
+            });
         }
     }
 
@@ -454,25 +522,30 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
         log.d("setFrame " + playerViewWidth + "/" + playerViewHeight + " " + playerViewPosX + "/" + playerViewPosY);
 
         if (player != null && player.getPlayerView() != null) {
-            ViewGroup.LayoutParams layoutParams = player.getPlayerView().getLayoutParams();
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ViewGroup.LayoutParams layoutParams = player.getPlayerView().getLayoutParams();
 
-            if (layoutParams != null) {
-                layoutParams.width = playerViewWidth >= 0 ? playerViewWidth : MATCH_PARENT;
-                layoutParams.height = playerViewHeight >= 0 ? playerViewHeight : MATCH_PARENT;
-                player.getPlayerView().setLayoutParams(layoutParams);
-            }
+                    if (layoutParams != null) {
+                        layoutParams.width = playerViewWidth >= 0 ? playerViewWidth : MATCH_PARENT;
+                        layoutParams.height = playerViewHeight >= 0 ? playerViewHeight : MATCH_PARENT;
+                        player.getPlayerView().setLayoutParams(layoutParams);
+                    }
 
-            if (playerViewPosX > 0) {
-                player.getPlayerView().setTranslationX(playerViewPosX);
-            } else {
-                player.getPlayerView().setTranslationX(0);
-            }
+                    if (playerViewPosX > 0) {
+                        player.getPlayerView().setTranslationX(playerViewPosX);
+                    } else {
+                        player.getPlayerView().setTranslationX(0);
+                    }
 
-            if (playerViewPosY > 0) {
-                player.getPlayerView().setTranslationY(playerViewPosY);
-            } else {
-                player.getPlayerView().setTranslationY(0);
-            }
+                    if (playerViewPosY > 0) {
+                        player.getPlayerView().setTranslationY(playerViewPosY);
+                    } else {
+                        player.getPlayerView().setTranslationY(0);
+                    }
+                }
+            });
         }
     }
 
@@ -488,7 +561,12 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         if (player != null) {
             float finalPlayerVolume = volume;
-            player.setVolume(finalPlayerVolume);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.setVolume(finalPlayerVolume);
+                }
+            });
         }
     }
 
@@ -497,15 +575,19 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
         log.d("setPlayerVisibility: " + isVisible + " volume = " + volume);
         if (player != null && player.getPlayerView() != null) {
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (isVisible) {
+                        player.getPlayerView().setVisibility(View.VISIBLE);
+                        player.setVolume(volume);
+                    } else {
 
-            if (isVisible) {
-                player.getPlayerView().setVisibility(View.VISIBLE);
-                player.setVolume(volume);
-            } else {
-
-                player.getPlayerView().setVisibility(View.INVISIBLE);
-                player.setVolume(volume);
-            }
+                        player.getPlayerView().setVisibility(View.INVISIBLE);
+                        player.setVolume(volume);
+                    }
+                }
+            });
         }
     }
 
@@ -513,15 +595,19 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
     public void requestThumbnailInfo(float positionMs) {
 
         log.d("requestThumbnailInfo:" + positionMs);
-
         if (player != null) {
-            ThumbnailInfo thumbnailInfo = player.getThumbnailInfo((long) positionMs);
-            if (thumbnailInfo != null && positionMs >= 0) {
-                String thumbnailInfoJson = "{ \"position\": " + positionMs + ", \"thumbnailInfo\": " + new Gson().toJson(thumbnailInfo) + " }";
-                //sendPlayerEvent("thumbnailInfoResponse", thumbnailInfoJson);
-            } else {
-                log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid");
-            }
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ThumbnailInfo thumbnailInfo = player.getThumbnailInfo((long) positionMs);
+                    if (thumbnailInfo != null && positionMs >= 0) {
+                        String thumbnailInfoJson = "{ \"position\": " + positionMs + ", \"thumbnailInfo\": " + new Gson().toJson(thumbnailInfo) + " }";
+                        //sendPlayerEvent("thumbnailInfoResponse", thumbnailInfoJson);
+                    } else {
+                        log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid");
+                    }
+                }
+            });
         }
     }
 
@@ -567,11 +653,6 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
                 YouboraLog.setDebugLevel(YouboraLog.Level.SILENT);
         }
     }
-
-
-
-
-
 
     //////////////////////////////////////////////////////////////////////
 
@@ -834,19 +915,33 @@ public class KalturaPlayerModule extends ReactContextBaseJavaModule {
 
     private void updateIMAPlugin(WrapperIMAConfig wrapperIMAConfig) {
         if (player != null) {
-            player.updatePluginConfig(IMAPlugin.factory.getName(), getIMAConfig(wrapperIMAConfig));
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.updatePluginConfig(IMAPlugin.factory.getName(), getIMAConfig(wrapperIMAConfig));                }
+            });
+
         }
     }
 
     private void updateYouboraPlugin(YouboraConfig youboraConfig) {
         if (player != null) {
-            player.updatePluginConfig(YouboraPlugin.factory.getName(), youboraConfig);
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.updatePluginConfig(YouboraPlugin.factory.getName(), youboraConfig);
+                }
+            });
         }
     }
 
     private void updatePhoenixAnalyticsPlugin(WrapperPhoenixAnalyticsConfig wrapperPhoenixAnalyticsConfig) {
         if (player != null && wrapperPhoenixAnalyticsConfig != null) {
-            player.updatePluginConfig(PhoenixAnalyticsPlugin.factory.getName(), wrapperPhoenixAnalyticsConfig.toJson());
+            getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    player.updatePluginConfig(PhoenixAnalyticsPlugin.factory.getName(), wrapperPhoenixAnalyticsConfig.toJson());                }
+            });
         }
     }
 
