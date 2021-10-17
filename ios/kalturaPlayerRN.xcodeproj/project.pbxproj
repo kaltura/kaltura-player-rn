@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		31CCCF08271C275A005A71C8 /* KalturaPlayerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CCCF07271C275A005A71C8 /* KalturaPlayerModule.m */; };
 		530B6F8D7D1B058C2B2324AC /* libPods-kalturaPlayerRN-kalturaPlayerRNTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A987AD95D04FAE3E78A673A /* libPods-kalturaPlayerRN-kalturaPlayerRNTests.a */; };
 		6986A4D63C544A40BFD97FBE /* libPods-kalturaPlayerRN.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 825D464183B266468CC66F61 /* libPods-kalturaPlayerRN.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -37,6 +38,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = kalturaPlayerRN/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = kalturaPlayerRN/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = kalturaPlayerRN/main.m; sourceTree = "<group>"; };
+		31CCCF07271C275A005A71C8 /* KalturaPlayerModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KalturaPlayerModule.m; sourceTree = "<group>"; };
+		31CCCF0B271C27CC005A71C8 /* KalturaPlayerModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KalturaPlayerModule.h; sourceTree = "<group>"; };
 		57C753E4B4897E5C9E3CA5B5 /* Pods-kalturaPlayerRN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kalturaPlayerRN.debug.xcconfig"; path = "Target Support Files/Pods-kalturaPlayerRN/Pods-kalturaPlayerRN.debug.xcconfig"; sourceTree = "<group>"; };
 		6A987AD95D04FAE3E78A673A /* libPods-kalturaPlayerRN-kalturaPlayerRNTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kalturaPlayerRN-kalturaPlayerRNTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = kalturaPlayerRN/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -91,7 +94,6 @@
 				F3094ADB5889F73A6F1D6B59 /* Pods-kalturaPlayerRN-kalturaPlayerRNTests.debug.xcconfig */,
 				D0CB017443C932086C953400 /* Pods-kalturaPlayerRN-kalturaPlayerRNTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -104,6 +106,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				31CCCF07271C275A005A71C8 /* KalturaPlayerModule.m */,
+				31CCCF0B271C27CC005A71C8 /* KalturaPlayerModule.h */,
 			);
 			name = kalturaPlayerRN;
 			sourceTree = "<group>";
@@ -411,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31CCCF08271C275A005A71C8 /* KalturaPlayerModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
