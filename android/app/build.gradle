@@ -192,7 +192,7 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    def kalturaPlaykitVersion = '4.19.2'
+    def kalturaPlaykitVersion = '4.19.0'
     def kalturaImaPlaykitVersion = '4.19.0'
     def kalturaYouboraPlaykitVersion = '4.19.0'
 
