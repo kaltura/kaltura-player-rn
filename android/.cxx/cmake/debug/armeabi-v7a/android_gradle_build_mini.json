@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+      "-C",
+      "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+    "-C",
+    "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "kplayer-Debug-armeabi-v7a": {
+      "artifactName": "kplayer",
+      "buildCommandComponents": [
+        "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/armeabi-v7a",
+        "kplayer"
+      ],
+      "abi": "armeabi-v7a",
+      "output": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/build/intermediates/cmake/debug/obj/armeabi-v7a/libkplayer.so",
+      "runtimeFiles": []
+    }
+  }
+}

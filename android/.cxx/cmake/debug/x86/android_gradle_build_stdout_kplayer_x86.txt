@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/x86'
+[1/1] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so

@@ -1,0 +1,12 @@
+# ninja log v5
+1	1097	1642013224	CMakeFiles/kplayer.dir/src/main/cpp/cpp-adapter.cpp.o	8cc57a2fd0cec4f5
+1	3272	1642013226	CMakeFiles/kplayer.dir/src/main/cpp/PlayerJSIHostObject.cpp.o	7614d5aa566c1e82
+3272	3439	1642013227	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+21	474	1642016421	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+15	885	1642059440	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+15	481	1642059643	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+4	526	1642069309	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+9	510	1642418323	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+5	449	1642419366	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+9	1060	1643294159	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85
+5	701	1643295825	../../../../build/intermediates/cmake/release/obj/armeabi-v7a/libkplayer.so	889f2379decc85

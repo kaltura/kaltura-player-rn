@@ -1,0 +1,5 @@
+# ninja log v5
+0	1418	1642010195	CMakeFiles/kplayer.dir/src/main/cpp/cpp-adapter.cpp.o	5ed5e3d0a911a398
+1	3362	1642010196	CMakeFiles/kplayer.dir/src/main/cpp/PlayerJSIHostObject.cpp.o	51df3cf6b94277d5
+3362	3616	1642010197	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libkplayer.so	78a06fe68759acf2
+28	2578	1642333617	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libkplayer.so	78a06fe68759acf2

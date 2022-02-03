@@ -20,12 +20,26 @@ def safeExtGet(prop, fallback) {
 android {
     compileSdkVersion safeExtGet('KalturaPlayerRn_compileSdkVersion', 29)
     buildToolsVersion safeExtGet('KalturaPlayerRn_buildToolsVersion', '29.0.2')
+    ndkVersion getExtOrDefault('ndkVersion')
+
     defaultConfig {
         minSdkVersion safeExtGet('KalturaPlayerRn_minSdkVersion', 16)
         targetSdkVersion safeExtGet('KalturaPlayerRn_targetSdkVersion', 29)
         versionCode 1
         versionName "1.0"
+        externalNativeBuild {
+          cmake {
+            cppFlags "-std=c++17"
+            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            arguments "-DNODE_MODULES_DIR=${reactNativeDir.parentFile.parentFile.toString()}"
+          }
+        }
+    }
 
+    externalNativeBuild {
+      cmake {
+        path "CMakeLists.txt"
+      }
     }
 
     buildTypes {
@@ -33,12 +47,18 @@ android {
             minifyEnabled false
         }
     }
+
     lintOptions {
         disable 'GradleCompatible'
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    configurations {
+        extractJNI
     }
 }
 
@@ -55,4 +75,35 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+
+    def rnAAR = fileTree(reactNativeDir.toString()).matching({ it.include "**/**/*.aar" }).singleFile
+    extractJNI(files(rnAAR))
+
+    def kalturaPlaykitVersion = '4.15.0'
+    def kalturaImaPlaykitVersion = '4.15.0'
+    def kalturaYouboraPlaykitVersion = '4.15.0'
+
+    api "com.kaltura.playkit:broadpeakplugin:$kalturaPlaykitVersion"
+    implementation "com.kaltura.playkit:imaplugin:$kalturaImaPlaykitVersion"
+    implementation "com.kaltura.playkit:youboraplugin:$kalturaYouboraPlaykitVersion"
+}
+
+task extractJNIFiles {
+  doLast {
+    configurations.extractJNI.files.each {
+      def file = it.absoluteFile
+
+      copy {
+        from zipTree(file)
+        into "$buildDir/$file.name"
+        include "jni/**/*"
+      }
+    }
+  }
+}
+
+tasks.whenTaskAdded { task ->
+  if (task.name.contains('externalNativeBuild')) {
+    task.dependsOn(extractJNIFiles)
+  }
 }

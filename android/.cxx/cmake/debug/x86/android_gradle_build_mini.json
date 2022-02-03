@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+      "-C",
+      "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+    "-C",
+    "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "kplayer-Debug-x86": {
+      "artifactName": "kplayer",
+      "buildCommandComponents": [
+        "/Users/david/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja",
+        "-C",
+        "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/debug/x86",
+        "kplayer"
+      ],
+      "abi": "x86",
+      "output": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/build/intermediates/cmake/debug/obj/x86/libkplayer.so",
+      "runtimeFiles": []
+    }
+  }
+}

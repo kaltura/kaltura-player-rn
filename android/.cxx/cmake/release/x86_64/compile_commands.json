@@ -1,0 +1,13 @@
+[
+{
+  "directory": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/release/x86_64",
+  "command": "/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=x86_64-none-linux-android21 --gcc-toolchain=/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dkplayer_EXPORTS -I../../../../../../node_modules/react-native/React -I../../../../../../node_modules/react-native/React/Base -I../../../../../../node_modules/react-native/ReactCommon/jsi  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O2 -DNDEBUG  -fPIC   -o CMakeFiles/kplayer.dir/src/main/cpp/cpp-adapter.cpp.o -c /Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/src/main/cpp/cpp-adapter.cpp",
+  "file": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/src/main/cpp/cpp-adapter.cpp"
+},
+
+{
+  "directory": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/.cxx/cmake/release/x86_64",
+  "command": "/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=x86_64-none-linux-android21 --gcc-toolchain=/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/david/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dkplayer_EXPORTS -I../../../../../../node_modules/react-native/React -I../../../../../../node_modules/react-native/React/Base -I../../../../../../node_modules/react-native/ReactCommon/jsi  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O2 -DNDEBUG  -fPIC   -o CMakeFiles/kplayer.dir/src/main/cpp/PlayerJSIHostObject.cpp.o -c /Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/src/main/cpp/PlayerJSIHostObject.cpp",
+  "file": "/Users/david/Documents/jinelix/projects/kaltura/kux-rn/android/react-native-kplayer/src/main/cpp/PlayerJSIHostObject.cpp"
+}
+]

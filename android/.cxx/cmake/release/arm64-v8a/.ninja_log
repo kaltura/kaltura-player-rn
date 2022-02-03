@@ -1,0 +1,12 @@
+# ninja log v5
+0	700	1642013227	CMakeFiles/kplayer.dir/src/main/cpp/cpp-adapter.cpp.o	ba5aba8749aadbc
+0	3106	1642013230	CMakeFiles/kplayer.dir/src/main/cpp/PlayerJSIHostObject.cpp.o	a45d6bdc424d7b0f
+3106	3426	1642013230	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+1	494	1642016422	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+2	326	1642059440	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+2	453	1642059643	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+5	458	1642069310	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+3	435	1642418324	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+6	480	1642419367	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+7	1839	1643294161	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699
+5	597	1643295826	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libkplayer.so	5fdc94a483a3e699

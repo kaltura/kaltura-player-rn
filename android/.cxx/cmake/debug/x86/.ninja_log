@@ -1,0 +1,22 @@
+# ninja log v5
+10	341	1643548065	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+30	5297	1641986406	CMakeFiles/kplayer.dir/src/main/cpp/cpp-adapter.cpp.o	803abecff2fae3b4
+31	10075	1641986410	CMakeFiles/kplayer.dir/src/main/cpp/PlayerJSIHostObject.cpp.o	a9623413202f32cc
+5	2105	1643626713	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	403	1643626795	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+6	644	1643626971	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+3	1270	1643699249	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	647	1643699763	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	366	1643700204	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	344	1643700516	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+3	390	1643701423	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	153	1643701491	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	422	1643701746	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+2	538	1643702143	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+0	343	1643702405	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+2	675	1643703448	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	329	1643703594	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+20	348	1643704461	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	287	1643704966	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+1	375	1643705071	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
+2	383	1643705411	../../../../build/intermediates/cmake/debug/obj/x86/libkplayer.so	78110a9560668703
