@@ -11,11 +11,11 @@ npm install react-native-kaltura-player
 ## Usage
 
 ```js
-import { KalturaPlayerView } from "react-native-kaltura-player";
+import { KalturaPlayer } from "react-native-kaltura-player";
 
 // ...
 
-<KalturaPlayerView color="tomato" />
+<KalturaPlayer />
 ```
 
 ## Contributing
