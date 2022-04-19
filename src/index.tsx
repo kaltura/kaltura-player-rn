@@ -5,7 +5,7 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { Requireable } from 'prop-types';
 
 export const KalturaPlayerModule = NativeModules.KalturaPlayerViewManager;
 const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
@@ -15,7 +15,11 @@ const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
 console.log(KalturaPlayerEvents)
 interface KalturaPlayerProps {
-  style: ViewStyle
+  style: ViewStyle,
+  assetId: string,
+  partnerId: number,
+  baseUrl: String,
+  prepare: boolean
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
@@ -23,17 +27,21 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   eventListener: any;
 
   componentDidMount() {
-    this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
-      console.log(event)
-    });
+    // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
+    //   console.log(event)
+    // });
   }
 
   componentWillUnmount() {
-    this.eventListener.remove(); //Removes the listener
+    //this.eventListener.remove(); //Removes the listener
   }
 
   static propTypes: {
-    style: object;
+    style: object,
+    assetId: Requireable<string>,
+    partnerId: Requireable<number>,
+    baseUrl: Requireable<string>,
+    prepare: Requireable<boolean>;
   };
 
   render() {
@@ -42,57 +50,11 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 }
 
 KalturaPlayer.propTypes = {
-  style: PropTypes.object
+  style: PropTypes.object,
+  assetId: PropTypes.string,
+  partnerId: PropTypes.number,
+  baseUrl: PropTypes.string,
+  prepare: PropTypes.bool
 };
 
-export class KalturaPlayerAPI {
-  static setup = (partnerId: number, options: {
-    preload: boolean
-    autoplay: boolean
-    serverUrl: string
-    ks?: string
-  }) => {
-    return KalturaPlayerModule.setup(partnerId, options)
-  }
-  static loadMedia = (assetId: string, options: {
-    autoplay: boolean
-    assetType: "media" | "recording" | "epg"
-    protocol: "http" | "https"
-    playbackContextType?: "playback" | "catchup" | "trailer" | "startOver"
-    assetReferenceType?: "media" | "epgInternal" | "epgExternal" | "npvr"
-    urlType?: string
-    format?: string[]
-    fileId?: string[]
-    streamerType?: string
-    startPosition?: number
-  }) => {
-    return KalturaPlayerModule.load(assetId, options);
-  }
-  static destroy = () => {
-    return KalturaPlayerModule.destroy();
-  }
-  static setVolume = (volume: number) => {
-    return KalturaPlayerModule.setVolume(volume);
-  }
-  static seekTo = (position: number) => {
-    return KalturaPlayerModule.seekTo(position);
-  }
-  static setPlayerVisibility = (isVisible: boolean) => {
-    return KalturaPlayerModule.setPlayerVisibility(isVisible);
-  }
-  static play = () => {
-    return KalturaPlayerModule.play();
-  }
-  static replay = () => {
-    return KalturaPlayerModule.replay();
-  }
-  static pause = () => {
-    return KalturaPlayerModule.pause();
-  }
-  static stop = () => {
-    return KalturaPlayerModule.stop();
-  }
-  static setAutoplay = (value: boolean) => {
-    return KalturaPlayerModule.setAutoplay(value);
-  }
-}
+
