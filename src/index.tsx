@@ -19,7 +19,6 @@ interface KalturaPlayerProps {
   assetId: string,
   partnerId: number,
   baseUrl: String,
-  prepare: boolean
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
@@ -30,10 +29,13 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
     //   console.log(event)
     // });
+    console.log("componentDidMount");
+    this.prepare()
   }
 
   componentWillUnmount() {
     //this.eventListener.remove(); //Removes the listener
+    console.log("componentWillUnmount");
   }
 
   static propTypes: {
@@ -42,6 +44,16 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     partnerId: Requireable<number>,
     baseUrl: Requireable<string>,
     prepare: Requireable<boolean>;
+  };
+
+  prepare = () => {
+    console.log("Calling Native Prop prepare()")
+    this.nativeComponentRef.setNativeProps({ prepare: true });
+  };
+
+  playOrPause = (isPlay: boolean) => {
+    console.log("Calling Native Prop playOrPause()")
+    this.nativeComponentRef.setNativeProps({ playPause: isPlay });
   };
 
   render() {

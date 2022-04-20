@@ -245,6 +245,14 @@ public class KalturaPlayerRNView extends FrameLayout {
       player = null;
    }
 
+   protected void pauseOrPlayPlayer(boolean isPlay) {
+      if (isPlay && !player.isPlaying()) {
+         player.play();
+      } else if (!isPlay && player.isPlaying()){
+         player.pause();
+      }
+   }
+
    private void addActivityLifeCycleListeners(ThemedReactContext context) {
       log.d("addActivityLifeCycleListeners");
       if (context == null) {

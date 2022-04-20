@@ -22,6 +22,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_ASSET_ID = "assetId";
    private static final String PROP_FORMAT = "format";
    private static final String PROP_PREPARE = "prepare";
+   private static final String PROP_PLAY_PAUSE = "playPause";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -64,7 +65,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    public void setBaseUrl(KalturaPlayerRNView kalturaPlayerRNView, String baseUrl) {
       log.d("setBaseUrl baseUrl " + baseUrl);
       kalturaPlayerRNView.setBaseUrl(baseUrl);
-      kalturaPlayerRNView.prepare(true);
    }
 
    @ReactProp(name = PROP_ASSET_ID)
@@ -82,7 +82,13 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_PREPARE)
    public void preparePlayer(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("preparePlayer autoPlay " + autoPlay);
+      kalturaPlayerRNView.prepare(true);
+   }
 
+   @ReactProp(name = PROP_PLAY_PAUSE)
+   public void pauseOrPlay(KalturaPlayerRNView kalturaPlayerRNView, boolean isPlay) {
+      log.d("pauseOrPlay isPlay " + isPlay);
+      kalturaPlayerRNView.pauseOrPlayPlayer(isPlay);
    }
 }
 

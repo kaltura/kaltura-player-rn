@@ -1,45 +1,44 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, Button } from 'react-native';
-import { KalturaPlayer, KalturaPlayerAPI } from 'react-native-kaltura-player';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { KalturaPlayer } from 'react-native-kaltura-player';
 
-export default function App() {
-  // setup(3009, {
-  //   preload: true,
-  //   autoplay: true,
-  //   serverUrl: "https://rest-us.ott.kaltura.com/v4_5/api_v3/"
-  // })
-  //console.log(KalturaPlayerView);
-  // KalturaPlayerAPI.setup(3009, {
-  //   preload: true,
-  //   autoplay: true,
-  //   serverUrl: "https://rest-us.ott.kaltura.com/v4_5/api_v3/"
-  // })
-  // KalturaPlayerAPI.loadMedia("548576", {
-  //   autoplay: true,
-  //   assetType: "media",
-  //   playbackContextType: "playback",
-  //   protocol: "http"
-  // })
-  // setTimeout(() => {
-  //   KalturaPlayerAPI.pause()
-  // }, 5000)
+export default class App extends React.Component {
+
+  player: KalturaPlayer;
+
+  doPlayerPause = () => {
+    this.player.playOrPause(false)
+  };
+
+  doPlayerPlay = () => {
+    this.player.playOrPause(true)
+  };
+  
+  render() {
+    
   return (
     <View>
-      <Text style={styles.red}>just red</Text>
-      <Text style={styles.bigBlue}>just bigBlue</Text>
-      
-      <KalturaPlayer style = {styles.center}
+      <Text style={styles.red}>Welcome to Kaltura Player RN</Text>
+
+      <KalturaPlayer
+      ref={(ref: KalturaPlayer) => { this.player = ref }}
+      style = {styles.center}
       assetId = {"548576"}
       partnerId = {3009}
-      baseUrl = {'https://rest-us.ott.kaltura.com/v4_5/api_v3/'}
-      prepare = {true} >
+      baseUrl = {'https://rest-us.ott.kaltura.com/v4_5/api_v3/'}>
       </KalturaPlayer>
 
-      <Text style={[styles.bigBlue, styles.red]}>bigBlue, then red</Text>
-      <Text style={[styles.red, styles.bigBlue]}>red, then bigBlue</Text>
+      <TouchableOpacity onPress={() => { this.doPlayerPlay() }}>
+      <Text style={[styles.bigBlue, styles.red]}>Play Media</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => { this.doPlayerPause() }}>
+        <Text style={[styles.red, styles.bigBlue]}>Pause Media</Text>
+      </TouchableOpacity>
     </View>
   );
+  }
 }
 
 const styles = StyleSheet.create({
