@@ -22,7 +22,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
 
     override func supportedEvents() -> [String]! {
         return [
-            "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
+            "KPlayerEvent", "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
             "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
             "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate"
         ]
@@ -91,6 +91,14 @@ class KalturaPlayerViewManager: RCTViewManager {
     @objc func setPlayerVisibility(_ isVisible: Bool) {
         DispatchQueue.main.async {
             self.kalturaPlayer!.view?.isHidden = !isVisible;
+        }
+    }
+
+    @objc func setAutoplay(_ value: Bool) {
+        DispatchQueue.main.async {
+            let options = PlayerOptions()
+            options.autoPlay = value
+            self.kalturaPlayer.updatePlayerOptions(options)
         }
     }
     

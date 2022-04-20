@@ -15,7 +15,8 @@ RCT_EXTERN_METHOD(replay)
 RCT_EXTERN_METHOD(stop)
 RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
 RCT_EXTERN_METHOD(seekTo:(nonnull float)position)
-RCT_EXTERN_METHOD(setPlayerVisibility:(nonnull Bool)isVisible)
+RCT_EXTERN_METHOD(setPlayerVisibility:(nonnull BOOL)isVisible)
+RCT_EXTERN_METHOD(setAutoplay:(nonnull BOOL)value)
 RCT_EXTERN_METHOD(destroy)
 
 @end
