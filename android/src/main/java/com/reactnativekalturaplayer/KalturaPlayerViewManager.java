@@ -1,6 +1,7 @@
 package com.reactnativekalturaplayer;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -17,12 +18,21 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private PKLog log = PKLog.get(KalturaPlayerRNView.class.getSimpleName());
 
    private static final String PROP_PARTNER_ID = "partnerId";
-   private static final String PROP_BASE_URL = "baseUrl";
-   private static final String PROP_KS = "ks";
+   private static final String PROP_PLAYER_INIT_OPTIONS = "playerInitOptions";
+   private static final String PROP_LOAD_MEDIA_ASSET = "mediaAsset";
    private static final String PROP_ASSET_ID = "assetId";
-   private static final String PROP_FORMAT = "format";
    private static final String PROP_PREPARE = "prepare";
-   private static final String PROP_PLAY_PAUSE = "playPause";
+   private static final String PROP_PLAY = "play";
+   private static final String PROP_PAUSE = "pause";
+   private static final String PROP_REPLAY = "replay";
+   private static final String PROP_SEEK = "seek";
+   private static final String PROP_CHANGE_TRACK = "changeTrack";
+   private static final String PROP_PLAYBACK_RATE = "playbackRate";
+   private static final String PROP_STOP = "stop";
+   private static final String PROP_SET_AUTO_PLAY = "autoPlay";
+   private static final String PROP_SET_KS = "ks";
+   private static final String PROP_SET_Z_INDEX = "zIndex";
+   private static final String PROP_SET_VOLUME = "volume";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -39,11 +49,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @Override
    protected KalturaPlayerRNView createViewInstance(@NonNull ThemedReactContext reactContext) {
       return new KalturaPlayerRNView(reactContext);
-      // DUMMY Frame layout for testing
-//      FrameLayout frameLayout = new FrameLayout(context);
-//      frameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//      frameLayout.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray));
-//      frameLayout.setId(240689);
    }
 
    @Override
@@ -58,25 +63,41 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_PARTNER_ID)
    public void setPartnerId(KalturaPlayerRNView kalturaPlayerRNView, int partnerId) {
       log.d("setPartnerId partnerId " + partnerId);
-      kalturaPlayerRNView.setPartnerId(partnerId);
+      if (partnerId > 0) {
+         kalturaPlayerRNView.setPartnerId(partnerId);
+      } else {
+         log.d("Invalid partner id which is " + partnerId);
+      }
    }
 
-   @ReactProp(name = PROP_BASE_URL)
-   public void setBaseUrl(KalturaPlayerRNView kalturaPlayerRNView, String baseUrl) {
-      log.d("setBaseUrl baseUrl " + baseUrl);
-      kalturaPlayerRNView.setBaseUrl(baseUrl);
+   @ReactProp(name = PROP_PLAYER_INIT_OPTIONS)
+   public void setPlayerInitOptions(KalturaPlayerRNView kalturaPlayerRNView, String playerInitOptions) {
+      log.d("setPlayerInitOptions playerInitOptions Json is " + playerInitOptions);
+      if (!TextUtils.isEmpty(playerInitOptions)) {
+         kalturaPlayerRNView.setPlayerInitOptions(playerInitOptions);
+      } else {
+         log.d("playerInitOptions is invalid which is " + playerInitOptions);
+      }
+   }
+
+   @ReactProp(name = PROP_LOAD_MEDIA_ASSET)
+   public void loadMedia(KalturaPlayerRNView kalturaPlayerRNView, String mediaAsset) {
+      log.d("loadMedia mediaAsset Json is " + mediaAsset);
+      if (!TextUtils.isEmpty(mediaAsset)) {
+         kalturaPlayerRNView.setMediaAsset(mediaAsset);
+      } else {
+         log.d("mediaAsset is invalid which is " + mediaAsset);
+      }
    }
 
    @ReactProp(name = PROP_ASSET_ID)
    public void setAssetId(KalturaPlayerRNView kalturaPlayerRNView, String assetId) {
       log.d("setAssetId assetId " + assetId);
-      kalturaPlayerRNView.setAssetId(assetId);
-   }
-
-   @ReactProp(name = PROP_KS)
-   public void setKs(KalturaPlayerRNView kalturaPlayerRNView, String ks) {
-      log.d("setKS ks " + ks);
-      kalturaPlayerRNView.setKs(ks);
+      if (!TextUtils.isEmpty(assetId)) {
+         kalturaPlayerRNView.setAssetId(assetId);
+      } else {
+         log.d("AssetId is invalid which is " + assetId);
+      }
    }
 
    @ReactProp(name = PROP_PREPARE)
@@ -85,10 +106,104 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       kalturaPlayerRNView.prepare(true);
    }
 
-   @ReactProp(name = PROP_PLAY_PAUSE)
-   public void pauseOrPlay(KalturaPlayerRNView kalturaPlayerRNView, boolean isPlay) {
-      log.d("pauseOrPlay isPlay " + isPlay);
-      kalturaPlayerRNView.pauseOrPlayPlayer(isPlay);
+   @ReactProp(name = PROP_PLAY)
+   public void play(KalturaPlayerRNView kalturaPlayerRNView, boolean isPlay) {
+      log.d("play " + isPlay);
+      if (isPlay) {
+         kalturaPlayerRNView.play();
+      }
+   }
+
+   @ReactProp(name = PROP_PAUSE)
+   public void pause(KalturaPlayerRNView kalturaPlayerRNView, boolean isPause) {
+      log.d("pause " + isPause);
+      if (isPause) {
+         kalturaPlayerRNView.pause();
+      }
+   }
+
+   @ReactProp(name = PROP_STOP)
+   public void stop(KalturaPlayerRNView kalturaPlayerRNView, boolean isStop) {
+      log.d("stop " + isStop);
+      if (isStop) {
+         kalturaPlayerRNView.stop();
+      }
+   }
+
+   @ReactProp(name = PROP_REPLAY)
+   public void replay(KalturaPlayerRNView kalturaPlayerRNView, boolean isReplay) {
+      log.d("replay " + isReplay);
+      if (isReplay) {
+         kalturaPlayerRNView.replay();
+      }
+   }
+
+   @ReactProp(name = PROP_SEEK)
+   public void seekTo(KalturaPlayerRNView kalturaPlayerRNView, float position) {
+      log.d("seekTo " + position);
+      if (position > 0f) {
+         kalturaPlayerRNView.seekTo(position);
+      } else {
+         log.d("Invalid seek position which is " + position);
+      }
+   }
+
+   @ReactProp(name = PROP_CHANGE_TRACK)
+   public void changeTrack(KalturaPlayerRNView kalturaPlayerRNView, String trackId) {
+      log.d("changeTrack " + trackId);
+      if (!TextUtils.isEmpty(trackId)) {
+         kalturaPlayerRNView.changeTrack(trackId);
+      } else {
+         log.d("Invalid trackId for changeTrack which is " + trackId);
+      }
+   }
+
+   @ReactProp(name = PROP_PLAYBACK_RATE)
+   public void setPlaybackRate(KalturaPlayerRNView kalturaPlayerRNView, float rate) {
+      log.d("setPlaybackRate " + rate);
+      if (rate > 0f) {
+         kalturaPlayerRNView.changePlaybackRate(rate);
+      } else {
+         log.d("Invalid playback rate which is " + rate);
+      }
+   }
+
+   @ReactProp(name = PROP_SET_AUTO_PLAY)
+   public void setAutoPlay(KalturaPlayerRNView kalturaPlayerRNView, boolean isAutoPlay) {
+      log.d("setAutoPlay " + isAutoPlay);
+      if (isAutoPlay) {
+         kalturaPlayerRNView.setAutoplay(isAutoPlay);
+      }
+   }
+
+   @ReactProp(name = PROP_SET_KS)
+   public void setKs(KalturaPlayerRNView kalturaPlayerRNView, String ks) {
+      log.d("setKs " + ks);
+      if (!TextUtils.isEmpty(ks)) {
+         kalturaPlayerRNView.setKS(ks);
+      } else {
+         log.d("Invalid KS which is " + ks);
+      }
+   }
+
+   @ReactProp(name = PROP_SET_Z_INDEX)
+   public void setZIndex(KalturaPlayerRNView kalturaPlayerRNView, float index) {
+      log.d("setZIndex " + index);
+      if (index > 0f) {
+         kalturaPlayerRNView.setZIndex(index);
+      } else {
+         log.d("Invalid Z Index which is " + index);
+      }
+   }
+
+   @ReactProp(name = PROP_SET_VOLUME)
+   public void setVolume(KalturaPlayerRNView kalturaPlayerRNView, float volume) {
+      log.d("setVolume " + volume);
+      if (volume > 0f) {
+         kalturaPlayerRNView.setZIndex(volume);
+      } else {
+         log.d("Invalid Volume which is " + volume);
+      }
    }
 }
 
