@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		630C8D512804882700E112B3 /* RNKalturaPlayer_tvOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630C8D502804882700E112B3 /* RNKalturaPlayer_tvOS.swift */; };
 		633E618627F6051600A4B825 /* KalturaPlayerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E618527F6051600A4B825 /* KalturaPlayerViewManager.m */; };
 		633E618827F6051C00A4B825 /* KalturaPlayerViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633E618727F6051C00A4B825 /* KalturaPlayerViewManager.swift */; };
+		638D9C3528156CFD004D4319 /* KalturaPlayerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 633E618527F6051600A4B825 /* KalturaPlayerViewManager.m */; };
+		638D9C3628156D02004D4319 /* KalturaPlayerViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633E618727F6051C00A4B825 /* KalturaPlayerViewManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,7 +38,6 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNKalturaPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNKalturaPlayer.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		630C8D4E2804882700E112B3 /* libRNKalturaPlayer-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libRNKalturaPlayer-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		630C8D502804882700E112B3 /* RNKalturaPlayer_tvOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNKalturaPlayer_tvOS.swift; sourceTree = "<group>"; };
 		633E618527F6051600A4B825 /* KalturaPlayerViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KalturaPlayerViewManager.m; sourceTree = "<group>"; };
 		633E618727F6051C00A4B825 /* KalturaPlayerViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KalturaPlayerViewManager.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* KalturaPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KalturaPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -75,19 +75,10 @@
 				633E618527F6051600A4B825 /* KalturaPlayerViewManager.m */,
 				633E618727F6051C00A4B825 /* KalturaPlayerViewManager.swift */,
 				F4FF95D5245B92E700C19C63 /* KalturaPlayer-Bridging-Header.h */,
-				630C8D4F2804882700E112B3 /* RNKalturaPlayer-tvOS */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				633E616027F5FD9C00A4B825 /* Frameworks */,
 				630C8D4E2804882700E112B3 /* libRNKalturaPlayer-tvOS.a */,
 			);
-			sourceTree = "<group>";
-		};
-		630C8D4F2804882700E112B3 /* RNKalturaPlayer-tvOS */ = {
-			isa = PBXGroup;
-			children = (
-				630C8D502804882700E112B3 /* RNKalturaPlayer_tvOS.swift */,
-			);
-			path = "RNKalturaPlayer-tvOS";
 			sourceTree = "<group>";
 		};
 		633E616027F5FD9C00A4B825 /* Frameworks */ = {
@@ -187,7 +178,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				630C8D512804882700E112B3 /* RNKalturaPlayer_tvOS.swift in Sources */,
+				638D9C3628156D02004D4319 /* KalturaPlayerViewManager.swift in Sources */,
+				638D9C3528156CFD004D4319 /* KalturaPlayerViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
