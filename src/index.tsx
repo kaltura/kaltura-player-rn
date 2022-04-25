@@ -5,7 +5,7 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { Requireable } from 'prop-types';
 
 export const KalturaPlayerModule = NativeModules.KalturaPlayerViewManager;
 const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
@@ -39,8 +39,90 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   }
 
   static propTypes: {
-    style: object;
+    style: object
   };
+
+  setNativeProps = (nativeProps: any) => {
+    this.nativeComponentRef.setNativeProps(nativeProps);
+  }
+
+  addListeners = () => {
+    console.log("Calling Native Prop addListeners()")
+    this.setNativeProps({ addListeners: true });
+  }
+
+  removeListeners = () => {
+    console.log("Calling Native Prop removeListeners()")
+    this.setNativeProps({ removeListeners: true });
+  }
+
+  setup = (id: number, options: string) => {
+    console.log("Setting up the Kaltura Player")
+    this.setNativeProps({ partnerId: id });
+    this.setNativeProps({ playerInitOptions: options });
+  }
+
+  load = (id: string, asset: string) => {
+    console.log("Loading the media.")
+    this.setNativeProps({ assetId: id });
+    this.setNativeProps({ mediaAsset: asset });
+    this.setNativeProps({ load: true });
+  }
+
+  play = () => {
+    console.log("Calling Native Prop play()")
+    this.setNativeProps({ play: true });
+  };
+
+  pause = () => {
+    console.log("Calling Native Prop pause()")
+    this.setNativeProps({ pause: true });
+  };
+
+  stop = () => {
+    console.log("Calling Native Prop stop()")
+    this.setNativeProps({ stop: true });
+  }
+
+  replay = () => {
+    console.log("Calling Native Prop replay()")
+    this.setNativeProps({ replay: true });
+  }
+
+  seekTo = (position: number) => {
+    console.log("Calling Native Prop seekTo()")
+    this.setNativeProps({ seek: position });
+  }
+
+  changeTrack = (trackId: string) => {
+    console.log("Calling Native Prop changeTrack()")
+    this.setNativeProps({ changeTrack: trackId })
+  }
+
+  setPlaybackRate = (rate: number) => {
+    console.log("Calling Native Prop setPlaybackRate()")
+    this.setNativeProps({ playbackRate: rate })
+  }
+
+  setVolume = (vol: number) => {
+    console.log("Calling Native Prop setVolume()")
+    this.setNativeProps({ volume: vol })
+  }
+
+  setAutoPlay = (isAutoPlay: boolean) => {
+    console.log("Calling Native Prop setAutoPlay()")
+    this.setNativeProps({ autoPlay: isAutoPlay})
+  }
+
+  setKS = (KS: string) => {
+    console.log("Calling Native Prop setKS()")
+    this.setNativeProps({ ks: KS })
+  }
+
+  setZIndex = (index: number) => {
+    console.log("Calling Native Prop setZIndex()")
+    this.setNativeProps({ zIndex: index })
+  }
 
   render() {
     return <RNKalturaPlayer {...this.props} ref={(nativeRef) => this.nativeComponentRef = nativeRef} />;
@@ -48,57 +130,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 }
 
 KalturaPlayer.propTypes = {
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
-export class KalturaPlayerAPI {
-  static setup = (partnerId: number, options: {
-    preload: boolean
-    autoplay: boolean
-    serverUrl: string
-    ks?: string
-  }) => {
-    return KalturaPlayerModule.setup(partnerId, options)
-  }
-  static loadMedia = (assetId: string, options: {
-    autoplay: boolean
-    assetType: "media" | "recording" | "epg"
-    protocol: "http" | "https"
-    playbackContextType?: "playback" | "catchup" | "trailer" | "startOver"
-    assetReferenceType?: "media" | "epgInternal" | "epgExternal" | "npvr"
-    urlType?: string
-    format?: string[]
-    fileId?: string[]
-    streamerType?: string
-    startPosition?: number
-  }) => {
-    return KalturaPlayerModule.load(assetId, options);
-  }
-  static destroy = () => {
-    return KalturaPlayerModule.destroy();
-  }
-  static setVolume = (volume: number) => {
-    return KalturaPlayerModule.setVolume(volume);
-  }
-  static seekTo = (position: number) => {
-    return KalturaPlayerModule.seekTo(position);
-  }
-  static setPlayerVisibility = (isVisible: boolean) => {
-    return KalturaPlayerModule.setPlayerVisibility(isVisible);
-  }
-  static play = () => {
-    return KalturaPlayerModule.play();
-  }
-  static replay = () => {
-    return KalturaPlayerModule.replay();
-  }
-  static pause = () => {
-    return KalturaPlayerModule.pause();
-  }
-  static stop = () => {
-    return KalturaPlayerModule.stop();
-  }
-  static setAutoplay = (value: boolean) => {
-    return KalturaPlayerModule.setAutoplay(value);
-  }
-}
+
