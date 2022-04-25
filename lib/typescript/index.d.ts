@@ -5,10 +5,10 @@ export declare const KalturaPlayerModule: any;
 export declare const KalturaPlayerEmitter: NativeEventEmitter;
 interface KalturaPlayerProps {
     style: ViewStyle;
-    assetId: string;
     partnerId: number;
-    baseUrl: String;
-    prepare: boolean;
+    assetId: string;
+    playerInitOptions: string;
+    mediaAsset: string;
 }
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
@@ -17,11 +17,29 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     componentWillUnmount(): void;
     static propTypes: {
         style: object;
-        assetId: Requireable<string>;
         partnerId: Requireable<number>;
-        baseUrl: Requireable<string>;
+        assetId: Requireable<string>;
         prepare: Requireable<boolean>;
+        playerInitOptions: Requireable<string>;
+        mediaAsset: Requireable<string>;
     };
+    setAssetId: (id: string) => void;
+    setPlayerInitOptions: (options: string) => void;
+    setMediaAsset: (asset: string) => void;
+    prepare: () => void;
+    play: () => void;
+    pause: () => void;
+    stop: () => void;
+    replay: () => void;
+    seekTo: (position: number) => void;
+    changeTrack: (trackId: string) => void;
+    setPlaybackRate: (rate: number) => void;
+    setVolume: (vol: number) => void;
+    setAutoPlay: (isAutoPlay: boolean) => void;
+    setKS: (KS: string) => void;
+    setZIndex: (index: number) => void;
+    updateMediaAsset: (updatedMediaAsset: string) => void;
+    updateAssetId: (updatedAssetId: string) => void;
     render(): JSX.Element;
 }
 export {};

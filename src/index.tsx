@@ -30,8 +30,8 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
     //   console.log(event)
     // });
-    console.log("componentDidMount");
-    this.prepare()
+   // console.log("componentDidMount");
+    //this.prepare()
   }
 
   componentWillUnmount() {
@@ -47,6 +47,21 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     playerInitOptions: Requireable<string>,
     mediaAsset: Requireable<string>;
   };
+
+  setAssetId = (id: string) => {
+    console.log("Calling Native Prop assetId()")
+    this.nativeComponentRef.setNativeProps({ assetId: id });
+  }
+
+  setPlayerInitOptions = (options: string) => {
+    console.log("Calling Native Prop setPlayerInitOptions()")
+    this.nativeComponentRef.setNativeProps({ playerInitOptions: options });
+  }
+
+  setMediaAsset = (asset: string) => {
+    console.log("Calling Native Prop setMediaAsset()")
+    this.nativeComponentRef.setNativeProps({ mediaAsset: asset });
+  }
 
   prepare = () => {
     console.log("Calling Native Prop prepare()")

@@ -5,6 +5,14 @@ import { KalturaPlayer } from 'react-native-kaltura-player';
 
 export default class App extends React.Component {
 
+  componentDidMount() {
+    // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
+    //   console.log(event)
+    // });
+    console.log("componentDidMount");
+    this.player.prepare()
+  }
+
   player: KalturaPlayer;
 
   doPause = () => {
@@ -17,6 +25,11 @@ export default class App extends React.Component {
 
   changePlaybackRate = (rate: number) => {
     this.player.setPlaybackRate(rate)
+  }
+
+  changeMedia = (assetId: string) => {
+    this.player.setAssetId(assetId)
+    this.player.prepare()
   }
   
   render() {
@@ -49,6 +62,11 @@ export default class App extends React.Component {
       <TouchableOpacity onPress={() => { this.changePlaybackRate(0.5) }}>
         <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => { this.changeMedia("548575") }}>
+        <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
+      </TouchableOpacity>
+
 
     </View>
   );

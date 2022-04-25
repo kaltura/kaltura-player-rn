@@ -80,6 +80,7 @@ public class KalturaPlayerRNView extends FrameLayout {
    private String mediaAsset;
 
    private long reportedDuration = Consts.TIME_UNSET;
+   private boolean playerViewAdded;
    private static final String YOUBORA_ACCOUNT_CODE = "accountCode";
 
    public KalturaPlayerRNView(@NonNull ThemedReactContext context) {
@@ -278,6 +279,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          player.destroy();
       }
       player = null;
+      playerViewAdded = false;
    }
 
    /*protected void pauseOrPlayPlayer(boolean isPlay) {
@@ -324,23 +326,20 @@ public class KalturaPlayerRNView extends FrameLayout {
       playerInitOptions.setAutoPlay(true);
       playerInitOptions.setPKRequestConfig(new PKRequestConfig(true));
 
-      KalturaPlayer player = KalturaBasicPlayer.create(context, playerInitOptions);
+      if (player == null) {
+         player = KalturaBasicPlayer.create(context, playerInitOptions);
+      }
       addPlayerViewToRNView(player);
-
-      player.addListener(this, PlayerEvent.tracksAvailable, event -> {
-         log.d("Event tracksAvailable tracksInfo.getVideoTracks().size() " + (event.tracksInfo.getVideoTracks().size()));
-         WritableMap params = Arguments.createMap();
-         params.putString("eventProperty1", "someValue1");
-         params.putString("eventProperty2", "someValue2");
-         sendPlayerEvent("EventReminder", params);
-      });
-
       player.setMedia(mediaEntry);
+      addKalturaPlayerListeners();
    }
 
    private void addPlayerViewToRNView(KalturaPlayer kalturaPlayer) {
-      kalturaPlayer.setPlayerView(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-      addView(kalturaPlayer.getPlayerView());
+      if (!playerViewAdded && kalturaPlayer != null) {
+         kalturaPlayer.setPlayerView(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+         addView(kalturaPlayer.getPlayerView());
+         playerViewAdded = true;
+      }
    }
 
    private PKMediaEntry createMediaEntry(String url) {
@@ -465,10 +464,11 @@ public class KalturaPlayerRNView extends FrameLayout {
       //initOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
       initOptions.setPluginConfigs(pluginConfigs);
 
-      player = KalturaOttPlayer.create(context, initOptions);
-      player.setPlayerView(MATCH_PARENT, MATCH_PARENT);
-      addView(player.getPlayerView());
+      if (player == null) {
+         player = KalturaOttPlayer.create(context, initOptions);
+      }
 
+      addPlayerViewToRNView(player);
       addKalturaPlayerListeners();
    }
 
