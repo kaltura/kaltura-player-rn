@@ -36,7 +36,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 
   componentWillUnmount() {
     this.eventListeners.forEach(event => event.remove());
-    this.eventListener.remove(); //Removes the listener
   }
 
   static propTypes: {
