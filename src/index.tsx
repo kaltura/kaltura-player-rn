@@ -13,14 +13,13 @@ export const KalturaPlayerEmitter = new NativeEventEmitter(KalturaPlayerEvents);
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
-console.log(KalturaPlayerEvents)
 interface KalturaPlayerProps {
   style: ViewStyle
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
-  eventListener: any;
+  eventListeners: any[] = [];
 
   componentDidMount() {
     const supportedEvents = [
@@ -29,13 +28,14 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate"
     ];
     supportedEvents.forEach(type => {
-      this.eventListener = KalturaPlayerEmitter.addListener(type, (event: any) => {
+      this.eventListeners.push(KalturaPlayerEmitter.addListener(type, (event: any) => {
         KalturaPlayerEmitter.emit('KPlayerEvent', { type, ...event })
-      });
+      }));
     })
   }
 
   componentWillUnmount() {
+    this.eventListeners.forEach(event => event.remove());
     this.eventListener.remove(); //Removes the listener
   }
 

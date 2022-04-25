@@ -1,6 +1,6 @@
 {
-  "name": "react-native-kaltura-player-example",
-  "description": "Example app for react-native-kaltura-player",
+  "name": "kaltura-player-rn-example",
+  "description": "Example app for kaltura-player-rn",
   "version": "0.0.1",
   "private": true,
   "scripts": {

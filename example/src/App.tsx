@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import { KalturaPlayer, KalturaPlayerAPI } from 'react-native-kaltura-player';
+import { KalturaPlayer, KalturaPlayerAPI } from 'kaltura-player-rn';
 
 export default function App() {
   // setup(3009, {

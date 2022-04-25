@@ -9,7 +9,7 @@ target 'KalturaPlayerExample' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'react-native-kaltura-player', :path => '../..'
+  pod 'kaltura-player-rn', :path => '../..'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 
   # Enables Flipper.

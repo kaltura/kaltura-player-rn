@@ -19,10 +19,16 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - kaltura-player-rn (0.1.0):
+    - KalturaPlayer
+    - KalturaPlayer/OTT
+    - React-Core
   - KalturaNetKit (1.5.1):
     - KalturaNetKit/Core (= 1.5.1)
   - KalturaNetKit/Core (1.5.1):
     - SwiftyJSON (= 5.0.0)
+  - KalturaPlayer (4.6.0):
+    - KalturaPlayer/Core (= 4.6.0)
   - KalturaPlayer/Core (4.6.0):
     - KalturaPlayer/Interceptor
   - KalturaPlayer/Interceptor (4.6.0):
@@ -217,9 +223,6 @@ PODS:
     - React-cxxreact (= 0.63.4)
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
-  - react-native-kaltura-player (0.1.0):
-    - KalturaPlayer/OTT
-    - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
   - React-RCTAnimation (0.63.4):
@@ -294,6 +297,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - kaltura-player-rn (from `../..`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -306,7 +310,6 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-kaltura-player (from `../..`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -344,6 +347,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  kaltura-player-rn:
+    :path: "../.."
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -364,8 +369,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-kaltura-player:
-    :path: "../.."
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -396,6 +399,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  kaltura-player-rn: 19db729f41f1c58e7b70832367501d801ef3d65e
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
   KalturaPlayer: c3aa7843491d137e301ac0f56eb5a82faa580ed9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -413,7 +417,6 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-kaltura-player: 7f8aa4b019edcce4ce11dca05de46bbb891d2398
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -429,6 +432,6 @@ SPEC CHECKSUMS:
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: 4b38a55659de80bb0f64fc12a1173cba86184d3e
+PODFILE CHECKSUM: 2c26bbdc8844066fdde825d18c8bc78ce6851570
 
 COCOAPODS: 1.11.3
