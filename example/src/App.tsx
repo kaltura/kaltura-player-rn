@@ -2,6 +2,11 @@ import * as React from 'react';
 
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { KalturaPlayer } from 'react-native-kaltura-player';
+import { NativeEventEmitter } from 'react-native';
+
+
+const playerEventEmitter = new NativeEventEmitter();
+
 
 export default class App extends React.Component {
 
@@ -11,6 +16,11 @@ export default class App extends React.Component {
     // });
     console.log("componentDidMount");
     this.player.prepare()
+    this.player.addListeners()
+  }
+
+  componentWillUnmount() {
+    this.player.removeListeners()
   }
 
   player: KalturaPlayer;
@@ -93,7 +103,11 @@ const styles = StyleSheet.create({
   }
 });
 
-
+playerEventEmitter.addListener("tracksAvailable", payload => {
+  console.log("*** tracksAvailable PlayerEvent: " + JSON.stringify(payload));
+  console.log("*** tracksAvailable length: " + Object.keys(payload).length);
+  }
+);
 
 // Kaltura OTT Player Test JSON for OTT media PlayerInitOptions
 

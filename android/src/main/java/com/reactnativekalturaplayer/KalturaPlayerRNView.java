@@ -331,7 +331,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
       addPlayerViewToRNView(player);
       player.setMedia(mediaEntry);
-      addKalturaPlayerListeners();
    }
 
    private void addPlayerViewToRNView(KalturaPlayer kalturaPlayer) {
@@ -469,7 +468,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
 
       addPlayerViewToRNView(player);
-      addKalturaPlayerListeners();
    }
 
    ////////////////////////////////////////////////////////////////////
@@ -698,15 +696,22 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   //////////////////////////////////////////////////////////////////////
+   protected void removePlayerListeners() {
+      if (player != null) {
+         player.removeListeners(this);
+         log.d("Player listeners are removed.");
+      }
+   }
 
-   private void addKalturaPlayerListeners() {
+   protected void addKalturaPlayerListeners() {
       log.d("addKalturaPlayerListeners");
 
       if (player == null) {
          log.d("Player is null. Not able to add the Kaltura Player Listeners hence returning.");
          return;
       }
+
+      log.d("Player listeners are added.");
 
       player.addListener(context, PlayerEvent.canPlay, event -> sendPlayerEvent("canPlay"));
       player.addListener(context, PlayerEvent.playing, event -> sendPlayerEvent("playing"));
@@ -1054,6 +1059,5 @@ public class KalturaPlayerRNView extends FrameLayout {
    private void sendPlayerEvent(String event, @NonNull WritableMap params) {
       emitter().emit(event, params);
    }
-
 }
 

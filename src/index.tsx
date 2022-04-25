@@ -48,6 +48,16 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     mediaAsset: Requireable<string>;
   };
 
+  addListeners = () => {
+    console.log("Calling Native Prop addListeners()")
+    this.nativeComponentRef.setNativeProps({ addListeners: true });
+  }
+
+  removeListeners = () => {
+    console.log("Calling Native Prop removeListeners()")
+    this.nativeComponentRef.setNativeProps({ removeListeners: true });
+  }
+
   setAssetId = (id: string) => {
     console.log("Calling Native Prop assetId()")
     this.nativeComponentRef.setNativeProps({ assetId: id });

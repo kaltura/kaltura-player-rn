@@ -22,6 +22,8 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_LOAD_MEDIA_ASSET = "mediaAsset";
    private static final String PROP_ASSET_ID = "assetId";
    private static final String PROP_PREPARE = "prepare";
+   private static final String PROP_ADD_LISTENERS = "addListeners";
+   private static final String PROP_REMOVE_LISTENERS = "removeListeners";
    private static final String PROP_PLAY = "play";
    private static final String PROP_PAUSE = "pause";
    private static final String PROP_REPLAY = "replay";
@@ -104,6 +106,18 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    public void preparePlayer(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("preparePlayer autoPlay " + autoPlay);
       kalturaPlayerRNView.prepare(true);
+   }
+
+   @ReactProp(name = PROP_ADD_LISTENERS)
+   public void addPlayerListeners(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
+      log.d("addPlayerListeners");
+      kalturaPlayerRNView.addKalturaPlayerListeners();
+   }
+
+   @ReactProp(name = PROP_REMOVE_LISTENERS)
+   public void removePlayerListeners(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
+      log.d("removePlayerListeners");
+      kalturaPlayerRNView.removePlayerListeners();
    }
 
    @ReactProp(name = PROP_PLAY)
