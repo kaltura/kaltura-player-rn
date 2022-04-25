@@ -99,136 +99,20 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    protected void setPlayerInitOptions(String initOptions) {
       this.initOptions = initOptions;
+      if (partnerId > 0) {
+         loadKalturaOttPlayer(partnerId, initOptions);
+      } else {
+         log.e("PartnerId is not valid.");
+      }
    }
 
    protected void setMediaAsset(String mediaAsset) {
       this.mediaAsset = mediaAsset;
    }
 
-   protected void prepare(boolean autoPlay) {
-      loadKalturaOttPlayer(partnerId, initOptions);
+   protected void load(boolean autoPlay) {
       load(assetId, mediaAsset);
    }
-
-//   private void setup(int partnerId) {
-//      log.d("setup partnerId: " + partnerId);
-//
-////      Gson gson = new Gson();
-////      InitOptions initOptionsModel = gson.fromJson(options, InitOptions.class);
-////      if (initOptionsModel == null) {
-////         return null;
-////      }
-//
-////      if (initOptionsModel.warmupUrls != null && !initOptionsModel.warmupUrls.isEmpty()) {
-////         PKHttpClientManager.setHttpProvider("okhttp");
-////         PKHttpClientManager.warmUp((initOptionsModel.warmupUrls).toArray((new String[0])));
-////      }
-//
-//      // load the player and put it in the main frame
-//      KalturaOttPlayer.initialize(context, partnerId, baseUrl);
-//      PKPluginConfigs pluginConfigs = new PKPluginConfigs();
-////      if (initOptionsModel.plugins != null) {
-////         if (initOptionsModel.plugins.ima != null) {
-////            createIMAPlugin(pluginConfigs, initOptionsModel.plugins.ima); //DEFAULT
-////         }
-////
-////         if (initOptionsModel.plugins.youbora != null) {
-////            JsonObject youboraConfigJson = initOptionsModel.plugins.youbora;
-////            if (youboraConfigJson.has(YOUBORA_ACCOUNT_CODE) && youboraConfigJson.get(YOUBORA_ACCOUNT_CODE) != null) {
-////               YouboraConfig youboraConfig = gson.fromJson(youboraConfigJson, YouboraConfig.class);
-////               if (youboraConfig != null) {
-////                  createYouboraPlugin(pluginConfigs, youboraConfig);
-////               }
-////            }
-////         }
-////
-////         if (initOptionsModel.plugins.ottAnalytics != null) {
-////            createPhoenixAnalyticsPlugin(pluginConfigs, initOptionsModel.plugins.ottAnalytics); //DEFAULT
-////         }
-////
-////         if (initOptionsModel.plugins.broadpeak != null) {
-////            JsonObject broadpeakJsonObject = initOptionsModel.plugins.broadpeak;
-////
-////            BroadpeakConfig broadpeakConfig = gson.fromJson(broadpeakJsonObject.toString(), BroadpeakConfig.class);
-////            createBroadpeakPlugin(pluginConfigs, broadpeakConfig);
-////         }
-////      }
-//
-//      final PlayerInitOptions initOptions = new PlayerInitOptions(partnerId);
-//      initOptions.setAutoPlay(true);
-//      initOptions.setPreload(true);
-//      initOptions.setAllowCrossProtocolEnabled(true);
-////      if (initOptionsModel.requestConfig != null) {
-////         initOptions.setPKRequestConfig(initOptionsModel.requestConfig);
-////      } else {
-////         initOptions.setAllowCrossProtocolEnabled(initOptionsModel.allowCrossProtocolRedirect);
-////      }
-////      initOptions.setKs(initOptionsModel.ks);
-////      initOptions.setReferrer(initOptionsModel.referrer);
-////      initOptions.setPKLowLatencyConfig(initOptionsModel.lowLatencyConfig);
-////      initOptions.setAbrSettings(initOptionsModel.abrSettings);
-////      initOptions.setPreferredMediaFormat(initOptionsModel.preferredMediaFormat);
-//      initOptions.setSecureSurface(true);
-////      initOptions.setAspectRatioResizeMode(initOptionsModel.aspectRatioResizeMode);
-//      initOptions.setAllowClearLead(true);
-//      initOptions.setEnableDecoderFallback(true);
-////      initOptions.setAdAutoPlayOnResume(initOptionsModel.adAutoPlayOnResume);
-////      initOptions.setIsVideoViewHidden(initOptionsModel.isVideoViewHidden);
-////      initOptions.forceSinglePlayerEngine(initOptionsModel.forceSinglePlayerEngine);
-////      initOptions.setTunneledAudioPlayback(initOptionsModel.isTunneledAudioPlayback);
-////      initOptions.setMaxAudioBitrate(initOptionsModel.maxAudioBitrate);
-////      initOptions.setMaxAudioChannelCount(initOptionsModel.maxAudioChannelCount);
-////      initOptions.setMaxVideoBitrate(initOptionsModel.maxVideoBitrate);
-////      initOptions.setMaxVideoSize(initOptionsModel.maxVideoSize);
-////      initOptions.setHandleAudioBecomingNoisy(initOptionsModel.handleAudioBecomingNoisyEnabled);
-////      initOptions.setHandleAudioFocus(initOptionsModel.handleAudioFocus);
-////      initOptions.setMulticastSettings(initOptionsModel.multicastSettings);
-////      initOptions.setMediaEntryCacheConfig(initOptionsModel.mediaEntryCacheConfig);
-//
-////      NetworkSettings networkSettings = initOptionsModel.networkSettings;
-////      if (initOptionsModel.networkSettings != null && initOptionsModel.networkSettings.preferredForwardBufferDuration > 0) {
-////         initOptions.setLoadControlBuffers(new LoadControlBuffers().setMaxPlayerBufferMs(initOptionsModel.networkSettings.preferredForwardBufferDuration));
-////      }
-////
-////      if (initOptionsModel.trackSelection != null && initOptionsModel.trackSelection.audioLanguage != null && initOptionsModel.trackSelection.audioMode != null) {
-////         initOptions.setAudioLanguage(initOptionsModel.trackSelection.audioLanguage, initOptionsModel.trackSelection.audioMode);
-////      }
-////      if (initOptionsModel.trackSelection != null && initOptionsModel.trackSelection.textLanguage != null && initOptionsModel.trackSelection.textMode != null) {
-////         initOptions.setTextLanguage(initOptionsModel.trackSelection.textLanguage, initOptionsModel.trackSelection.textMode);
-////      }
-//
-//      //initOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
-//      //initOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
-//      initOptions.setPluginConfigs(pluginConfigs);
-//
-//      player = KalturaOttPlayer.create(context, initOptions);
-//   }
-
-//   private void load(String assetId) {
-//      log.d("load assetId: " + assetId);
-//
-////      Gson gson = new Gson();
-////      MediaAsset mediaAsset = gson.fromJson(options, MediaAsset.class);
-////      if (mediaAsset == null) {
-////         log.d("Media Asset is null hence returning");
-////         return;
-////      }
-//
-//      if (player == null) {
-//         log.d("Player is null hence returning");
-//         return;
-//      }
-//
-//      player.setPlayerView(MATCH_PARENT, MATCH_PARENT);
-//      addView(player.getPlayerView());
-//
-//      player.loadMedia(buildOttMediaOptions(assetId), (mediaOptions, entry, error) -> {
-//         if (error != null) {
-//            log.e("ott media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
-//         }
-//      });
-//      addActivityLifeCycleListeners(context);
-//   }
 
    @Override
    public void requestLayout() {
@@ -247,20 +131,6 @@ public class KalturaPlayerRNView extends FrameLayout {
          layout(getLeft(), getTop(), getRight(), getBottom());
       }
    };
-//
-//   public OTTMediaOptions buildOttMediaOptions(String assetId) {
-//
-//      OTTMediaAsset ottMediaAsset = new OTTMediaAsset();
-//      ottMediaAsset.setAssetId(assetId);
-//      ottMediaAsset.setAssetType(APIDefines.KalturaAssetType.Media);
-//      ottMediaAsset.setContextType(APIDefines.PlaybackContextType.Playback);
-//      ottMediaAsset.setAssetReferenceType(APIDefines.AssetReferenceType.Media);
-//      ottMediaAsset.setProtocol(PhoenixMediaProvider.HttpProtocol.Http);
-//      ottMediaAsset.setKs(null);
-//      ottMediaAsset.setFormats(Collections.singletonList("Mobile_Main"));
-//      OTTMediaOptions ottMediaOptions = new OTTMediaOptions(ottMediaAsset);
-//      return ottMediaOptions;
-//   }
 
    protected void onApplicationResumed() {
       if (player != null) {
@@ -281,14 +151,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       player = null;
       playerViewAdded = false;
    }
-
-   /*protected void pauseOrPlayPlayer(boolean isPlay) {
-      if (isPlay && !player.isPlaying()) {
-         player.play();
-      } else if (!isPlay && player.isPlaying()) {
-         player.pause();
-      }
-   }*/
 
    private void addActivityLifeCycleListeners(ThemedReactContext context) {
       log.d("addActivityLifeCycleListeners");

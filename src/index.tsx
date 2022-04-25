@@ -16,10 +16,6 @@ const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 console.log(KalturaPlayerEvents)
 interface KalturaPlayerProps {
   style: ViewStyle,
-  partnerId: number,
-  assetId: string,
-  playerInitOptions: string,
-  mediaAsset: string
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
@@ -32,116 +28,99 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     // });
    // console.log("componentDidMount");
     //this.prepare()
+    console.log("componentDidMount from Library.");
   }
 
   componentWillUnmount() {
     //this.eventListener.remove(); //Removes the listener
-    console.log("componentWillUnmount");
+    console.log("componentWillUnmount from Library");
   }
 
   static propTypes: {
-    style: object,
-    partnerId: Requireable<number>,
-    assetId: Requireable<string>,
-    prepare: Requireable<boolean>,
-    playerInitOptions: Requireable<string>,
-    mediaAsset: Requireable<string>;
+    style: object
   };
+
+  setNativeProps = (nativeProps: any) => {
+    this.nativeComponentRef.setNativeProps(nativeProps);
+  }
 
   addListeners = () => {
     console.log("Calling Native Prop addListeners()")
-    this.nativeComponentRef.setNativeProps({ addListeners: true });
+    this.setNativeProps({ addListeners: true });
   }
 
   removeListeners = () => {
     console.log("Calling Native Prop removeListeners()")
-    this.nativeComponentRef.setNativeProps({ removeListeners: true });
+    this.setNativeProps({ removeListeners: true });
   }
 
-  setAssetId = (id: string) => {
-    console.log("Calling Native Prop assetId()")
-    this.nativeComponentRef.setNativeProps({ assetId: id });
+  setup = (id: number, options: string) => {
+    console.log("Setting up the Kaltura Player")
+    this.setNativeProps({ partnerId: id });
+    this.setNativeProps({ playerInitOptions: options });
   }
 
-  setPlayerInitOptions = (options: string) => {
-    console.log("Calling Native Prop setPlayerInitOptions()")
-    this.nativeComponentRef.setNativeProps({ playerInitOptions: options });
+  load = (id: string, asset: string) => {
+    console.log("Loading the media.")
+    this.setNativeProps({ assetId: id });
+    this.setNativeProps({ mediaAsset: asset });
+    this.setNativeProps({ load: true });
   }
-
-  setMediaAsset = (asset: string) => {
-    console.log("Calling Native Prop setMediaAsset()")
-    this.nativeComponentRef.setNativeProps({ mediaAsset: asset });
-  }
-
-  prepare = () => {
-    console.log("Calling Native Prop prepare()")
-    this.nativeComponentRef.setNativeProps({ prepare: true });
-  };
 
   play = () => {
     console.log("Calling Native Prop play()")
-    this.nativeComponentRef.setNativeProps({ play: true });
+    this.setNativeProps({ play: true });
   };
 
   pause = () => {
     console.log("Calling Native Prop pause()")
-    this.nativeComponentRef.setNativeProps({ pause: true });
+    this.setNativeProps({ pause: true });
   };
 
   stop = () => {
     console.log("Calling Native Prop stop()")
-    this.nativeComponentRef.setNativeProps({ stop: true });
+    this.setNativeProps({ stop: true });
   }
 
   replay = () => {
     console.log("Calling Native Prop replay()")
-    this.nativeComponentRef.setNativeProps({ replay: true });
+    this.setNativeProps({ replay: true });
   }
 
   seekTo = (position: number) => {
     console.log("Calling Native Prop seekTo()")
-    this.nativeComponentRef.setNativeProps({ seek: position });
+    this.setNativeProps({ seek: position });
   }
 
   changeTrack = (trackId: string) => {
     console.log("Calling Native Prop changeTrack()")
-    this.nativeComponentRef.setNativeProps({ changeTrack: trackId })
+    this.setNativeProps({ changeTrack: trackId })
   }
 
   setPlaybackRate = (rate: number) => {
     console.log("Calling Native Prop setPlaybackRate()")
-    this.nativeComponentRef.setNativeProps({ playbackRate: rate })
+    this.setNativeProps({ playbackRate: rate })
   }
 
   setVolume = (vol: number) => {
     console.log("Calling Native Prop setVolume()")
-    this.nativeComponentRef.setNativeProps({ volume: vol })
+    this.setNativeProps({ volume: vol })
   }
 
   setAutoPlay = (isAutoPlay: boolean) => {
     console.log("Calling Native Prop setAutoPlay()")
-    this.nativeComponentRef.setNativeProps({ autoPlay: isAutoPlay})
+    this.setNativeProps({ autoPlay: isAutoPlay})
   }
 
   setKS = (KS: string) => {
     console.log("Calling Native Prop setKS()")
-    this.nativeComponentRef.setNativeProps({ ks: KS })
+    this.setNativeProps({ ks: KS })
   }
 
   setZIndex = (index: number) => {
     console.log("Calling Native Prop setZIndex()")
-    this.nativeComponentRef.setNativeProps({ zIndex: index })
+    this.setNativeProps({ zIndex: index })
   }
-
-  updateMediaAsset = (updatedMediaAsset: string) => {
-    console.log("Calling Native Prop updateMediaAsset()")
-    this.nativeComponentRef.setNativeProps({ mediaAsset: updatedMediaAsset });
-  };
-
-  updateAssetId = (updatedAssetId: string) => {
-    console.log("Calling Native Prop updateMediaAsset()")
-    this.nativeComponentRef.setNativeProps({ assetId: updatedAssetId });
-  };
 
   render() {
     return <RNKalturaPlayer {...this.props} ref={(nativeRef) => this.nativeComponentRef = nativeRef} />;
@@ -150,11 +129,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 
 KalturaPlayer.propTypes = {
   style: PropTypes.object,
-  partnerId: PropTypes.number,
-  assetId: PropTypes.string,
-  prepare: PropTypes.bool,
-  playerInitOptions: PropTypes.string,
-  mediaAsset: PropTypes.string,
 };
 
 

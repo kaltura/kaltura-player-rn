@@ -14,12 +14,14 @@ export default class App extends React.Component {
     // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
     //   console.log(event)
     // });
-    console.log("componentDidMount");
-    this.player.prepare()
+    console.log("componentDidMount from App.");
+    this.player.setup(OttPartnerId, JSON.stringify(initOptions))
     this.player.addListeners()
+    this.player.load(OttMediaId, JSON.stringify(mediaAsset))
   }
 
   componentWillUnmount() {
+    console.log("componentDidMount from App.");
     this.player.removeListeners()
   }
 
@@ -37,9 +39,8 @@ export default class App extends React.Component {
     this.player.setPlaybackRate(rate)
   }
 
-  changeMedia = (assetId: string) => {
-    this.player.setAssetId(assetId)
-    this.player.prepare()
+  changeMedia = (assetId: string, mediaAsset: string) => {
+    this.player.load(assetId, mediaAsset)
   }
   
   render() {
@@ -50,11 +51,7 @@ export default class App extends React.Component {
 
       <KalturaPlayer
       ref={(ref: KalturaPlayer) => { this.player = ref }}
-      style = {styles.center}
-      partnerId = {OttPartnerId}
-      assetId = {OttMediaId}
-      playerInitOptions = {JSON.stringify(initOptions)}
-      mediaAsset = {JSON.stringify(mediaAsset)}>
+      style = {styles.center} >
       </KalturaPlayer>
 
       <TouchableOpacity onPress={() => { this.doPlay() }}>
@@ -73,7 +70,7 @@ export default class App extends React.Component {
         <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => { this.changeMedia("548575") }}>
+      <TouchableOpacity onPress={() => { this.changeMedia("548575", JSON.stringify(mediaAsset)) }}>
         <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
       </TouchableOpacity>
 

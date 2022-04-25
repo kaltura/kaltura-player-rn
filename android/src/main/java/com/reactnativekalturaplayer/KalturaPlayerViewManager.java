@@ -19,9 +19,9 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
 
    private static final String PROP_PARTNER_ID = "partnerId";
    private static final String PROP_PLAYER_INIT_OPTIONS = "playerInitOptions";
-   private static final String PROP_LOAD_MEDIA_ASSET = "mediaAsset";
    private static final String PROP_ASSET_ID = "assetId";
-   private static final String PROP_PREPARE = "prepare";
+   private static final String PROP_MEDIA_ASSET = "mediaAsset";
+   private static final String PROP_LOAD = "load";
    private static final String PROP_ADD_LISTENERS = "addListeners";
    private static final String PROP_REMOVE_LISTENERS = "removeListeners";
    private static final String PROP_PLAY = "play";
@@ -82,16 +82,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       }
    }
 
-   @ReactProp(name = PROP_LOAD_MEDIA_ASSET)
-   public void loadMedia(KalturaPlayerRNView kalturaPlayerRNView, String mediaAsset) {
-      log.d("loadMedia mediaAsset Json is " + mediaAsset);
-      if (!TextUtils.isEmpty(mediaAsset)) {
-         kalturaPlayerRNView.setMediaAsset(mediaAsset);
-      } else {
-         log.d("mediaAsset is invalid which is " + mediaAsset);
-      }
-   }
-
    @ReactProp(name = PROP_ASSET_ID)
    public void setAssetId(KalturaPlayerRNView kalturaPlayerRNView, String assetId) {
       log.d("setAssetId assetId " + assetId);
@@ -102,10 +92,20 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       }
    }
 
-   @ReactProp(name = PROP_PREPARE)
-   public void preparePlayer(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
+   @ReactProp(name = PROP_MEDIA_ASSET)
+   public void setMediaAsset(KalturaPlayerRNView kalturaPlayerRNView, String mediaAsset) {
+      log.d("loadMedia mediaAsset Json is " + mediaAsset);
+      if (!TextUtils.isEmpty(mediaAsset)) {
+         kalturaPlayerRNView.setMediaAsset(mediaAsset);
+      } else {
+         log.d("mediaAsset is invalid which is " + mediaAsset);
+      }
+   }
+
+   @ReactProp(name = PROP_LOAD)
+   public void load(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("preparePlayer autoPlay " + autoPlay);
-      kalturaPlayerRNView.prepare(true);
+      kalturaPlayerRNView.load(true);
    }
 
    @ReactProp(name = PROP_ADD_LISTENERS)
