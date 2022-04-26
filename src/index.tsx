@@ -1,19 +1,12 @@
 import {
   requireNativeComponent,
-  NativeModules,
   ViewStyle,
-  NativeEventEmitter,
 } from 'react-native';
 import React from 'react';
-import PropTypes, { Requireable } from 'prop-types';
-
-export const KalturaPlayerModule = NativeModules.KalturaPlayerViewManager;
-const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
-export const KalturaPlayerEmitter = new NativeEventEmitter(KalturaPlayerEvents);
+import PropTypes from 'prop-types';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
-console.log(KalturaPlayerEvents)
 interface KalturaPlayerProps {
   style: ViewStyle,
 }
@@ -23,16 +16,10 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   eventListener: any;
 
   componentDidMount() {
-    // this.eventListener = KalturaPlayerEmitter.addListener('playing', (event: any) => {
-    //   console.log(event)
-    // });
-   // console.log("componentDidMount");
-    //this.prepare()
     console.log("componentDidMount from Library.");
   }
 
   componentWillUnmount() {
-    //this.eventListener.remove(); //Removes the listener
     console.log("componentWillUnmount from Library");
   }
 
