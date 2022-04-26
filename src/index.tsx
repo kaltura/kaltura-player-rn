@@ -60,7 +60,7 @@ export class KalturaPlayerAPI {
   }) => {
     return KalturaPlayerModule.setup(partnerId, options)
   }
-  static loadMedia = (assetId: string, options: {
+  static load = (assetId: string, options: {
     autoplay: boolean
     assetType: "media" | "recording" | "epg"
     protocol: "http" | "https"

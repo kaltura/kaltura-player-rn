@@ -7,7 +7,7 @@ interface KalturaPlayerProps {
 }
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
-    eventListener: any;
+    eventListeners: any[];
     componentDidMount(): void;
     componentWillUnmount(): void;
     static propTypes: {
@@ -22,7 +22,7 @@ export declare class KalturaPlayerAPI {
         serverUrl: string;
         ks?: string;
     }) => any;
-    static loadMedia: (assetId: string, options: {
+    static load: (assetId: string, options: {
         autoplay: boolean;
         assetType: "media" | "recording" | "epg";
         protocol: "http" | "https";
