@@ -18,6 +18,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private PKLog log = PKLog.get(KalturaPlayerRNView.class.getSimpleName());
 
    private static final String PROP_PARTNER_ID = "partnerId";
+   private static final String PROP_PLAYER_TYPE = "playerType";
    private static final String PROP_PLAYER_INIT_OPTIONS = "playerInitOptions";
    private static final String PROP_ASSET_ID = "assetId";
    private static final String PROP_MEDIA_ASSET = "mediaAsset";
@@ -72,14 +73,18 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       }
    }
 
+   @ReactProp(name = PROP_PLAYER_TYPE)
+   public void setPlayerType(KalturaPlayerRNView kalturaPlayerRNView, String playerType) {
+      log.d("setPlayerType playerType " + playerType);
+      if (!TextUtils.isEmpty(playerType)) {
+         kalturaPlayerRNView.setPlayerType(playerType);
+      }
+   }
+
    @ReactProp(name = PROP_PLAYER_INIT_OPTIONS)
    public void setPlayerInitOptions(KalturaPlayerRNView kalturaPlayerRNView, String playerInitOptions) {
       log.d("setPlayerInitOptions playerInitOptions Json is " + playerInitOptions);
-      if (!TextUtils.isEmpty(playerInitOptions)) {
-         kalturaPlayerRNView.setPlayerInitOptions(playerInitOptions);
-      } else {
-         log.d("playerInitOptions is invalid which is " + playerInitOptions);
-      }
+      kalturaPlayerRNView.createPlayerInstance(playerInitOptions);
    }
 
    @ReactProp(name = PROP_ASSET_ID)

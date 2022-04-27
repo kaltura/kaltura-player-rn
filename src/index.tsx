@@ -9,11 +9,39 @@ const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
 interface KalturaPlayerProps {
   style: ViewStyle,
+  playerType: PLAYER_TYPE
 }
 
+export enum PLAYER_TYPE {
+  OVP = "ovp",
+  OTT = "ott",
+  BASIC = "basic"
+}
+
+export enum MEDIA_FORMAT {
+  DASH = "dash",
+  HLS = "hls",
+  WVM = "wvm",
+  MP4 = "mp4",
+  MP3 = "mp3",
+  UDP = "udp"
+}
+
+export enum MEDIA_ENTRY_TYPE {
+  VOD = "Vod",
+  LIVE = "Live",
+  DVRLIVE = "DvrLive"
+}
+
+// http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
   eventListener: any;
+  playerType: PLAYER_TYPE | undefined;
+
+  static propTypes: {
+    style: object
+  };
 
   componentDidMount() {
     console.log("componentDidMount from Library.");
@@ -22,10 +50,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   componentWillUnmount() {
     console.log("componentWillUnmount from Library");
   }
-
-  static propTypes: {
-    style: object
-  };
 
   setNativeProps = (nativeProps: any) => {
     this.nativeComponentRef.setNativeProps(nativeProps);
@@ -47,7 +71,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ playerInitOptions: options });
   }
 
-  load = (id: string, asset: string) => {
+  loadMedia = (id: string, asset: string) => {
     console.log("Loading the media.")
     this.setNativeProps({ assetId: id });
     this.setNativeProps({ mediaAsset: asset });

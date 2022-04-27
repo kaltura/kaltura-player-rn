@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { KalturaPlayer } from 'react-native-kaltura-player';
+import { KalturaPlayer, MEDIA_ENTRY_TYPE, MEDIA_FORMAT, PLAYER_TYPE } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 
 
@@ -15,9 +15,15 @@ export default class App extends React.Component {
     //   console.log(event)
     // });
     console.log("componentDidMount from App.");
-    this.player.setup(OttPartnerId, JSON.stringify(initOptions))
+    // OTT Configuration
+    // this.player.setup(OttPartnerId, JSON.stringify(initOptions))
+    // this.player.addListeners()
+    // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset))
+
+    // BASIC Player Setup
+    this.player.setup(0, "")
     this.player.addListeners()
-    this.player.load(OttMediaId, JSON.stringify(mediaAsset))
+    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset))
   }
 
   componentWillUnmount() {
@@ -40,7 +46,7 @@ export default class App extends React.Component {
   }
 
   changeMedia = (assetId: string, mediaAsset: string) => {
-    this.player.load(assetId, mediaAsset)
+    this.player.loadMedia(assetId, mediaAsset)
   }
   
   render() {
@@ -51,7 +57,8 @@ export default class App extends React.Component {
 
       <KalturaPlayer
       ref={(ref: KalturaPlayer) => { this.player = ref }}
-      style = {styles.center} >
+      style = {styles.center}
+      playerType = {PLAYER_TYPE.BASIC} >
       </KalturaPlayer>
 
       <TouchableOpacity onPress={() => { this.doPlay() }}>
@@ -70,7 +77,7 @@ export default class App extends React.Component {
         <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => { this.changeMedia("548575", JSON.stringify(mediaAsset)) }}>
+      <TouchableOpacity onPress={() => { this.changeMedia(playbackUrlChangeMedia, JSON.stringify(basicMediaAsset)) }}>
         <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
       </TouchableOpacity>
 
@@ -106,6 +113,24 @@ playerEventEmitter.addListener("tracksAvailable", payload => {
   }
 );
 
+// Kaltura Basic Player Test JSON
+const playbackUrl = "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8";
+const playbackUrlChangeMedia = "http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multi_language_subs.m3u8";
+
+const playbackFormat = MEDIA_FORMAT.HLS
+const entryType = MEDIA_ENTRY_TYPE.VOD
+const id = "basicId";
+const name = "basicName";
+const duration = 120;
+
+var basicMediaAsset = {
+  "id" : id,
+  "name": name,
+  "duration": duration,
+  "mediaEntryType": entryType,
+  "mediaFormat": playbackFormat
+}
+
 // Kaltura OTT Player Test JSON for OTT media PlayerInitOptions
 
 //OTT 3009
@@ -113,6 +138,8 @@ const PhoenixBaseUrl = "https://rest-us.ott.kaltura.com/v4_5/api_v3/";
 const OttPartnerId = 3009;
 const OttMediaId = "548576";
 const OttMediaFormat = "Mobile_Main";
+
+const ottMediaIdChangeMedia = "548575";
 
 const OttMediaProtocol = "http"; // "https"
 const OttAssetType = "media";
