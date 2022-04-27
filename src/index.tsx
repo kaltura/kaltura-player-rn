@@ -33,7 +33,6 @@ export enum MEDIA_ENTRY_TYPE {
   DVRLIVE = "DvrLive"
 }
 
-// http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
   eventListener: any;
