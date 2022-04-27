@@ -45,7 +45,10 @@ import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig;
 import com.kaltura.playkit.utils.Consts;
 import com.kaltura.tvplayer.KalturaBasicPlayer;
 import com.kaltura.tvplayer.KalturaOttPlayer;
+import com.kaltura.tvplayer.KalturaOvpPlayer;
 import com.kaltura.tvplayer.KalturaPlayer;
+import com.kaltura.tvplayer.OTTMediaOptions;
+import com.kaltura.tvplayer.OVPMediaOptions;
 import com.kaltura.tvplayer.PlayerInitOptions;
 import com.npaw.youbora.lib6.YouboraLog;
 import com.reactnativekalturaplayer.model.BasicMediaAsset;
@@ -106,10 +109,9 @@ public class KalturaPlayerRNView extends FrameLayout {
 
          if (playerType == KalturaPlayer.Type.basic) {
             createKalturaBasicPlayer();
-         } else if (!TextUtils.isEmpty(initOptions) && playerType == KalturaPlayer.Type.ovp) {
-
-         } else if (!TextUtils.isEmpty(initOptions) && playerType == KalturaPlayer.Type.ott){
-            createKalturaOttPlayer(partnerId, initOptions);
+         } else if (!TextUtils.isEmpty(initOptions) &&
+                 (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp)){
+            createKalturaOttOvpPlayer(partnerId, initOptions);
          } else {
             //TODO: Fix log message
             log.e("Player can not be created.");
@@ -194,7 +196,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
    }
 
-   protected void createKalturaBasicPlayer() {
+   private void createKalturaBasicPlayer() {
       log.d("Creating Basic Player instance.");
       PlayerInitOptions playerInitOptions = new PlayerInitOptions();
       playerInitOptions.setAutoPlay(true);
@@ -247,12 +249,12 @@ public class KalturaPlayerRNView extends FrameLayout {
       return Collections.singletonList(mediaSource);
    }
 
-   public void createKalturaOttPlayer(int partnerId, String playerInitOptionsJson) {
-      log.d("loadKalturaOttPlayer:" + partnerId + ", \n initOptions: \n " + playerInitOptionsJson);
+   private void createKalturaOttOvpPlayer(int partnerId, String playerInitOptionsJson) {
+      log.d("createKalturaOttOvpPlayer:" + partnerId + ", \n initOptions: \n " + playerInitOptionsJson);
 
       Gson gson = new Gson();
       InitOptions initOptionsModel = gson.fromJson(playerInitOptionsJson, InitOptions.class);
-      if (initOptionsModel == null || TextUtils.isEmpty(initOptionsModel.serverUrl)) {
+      if (initOptionsModel == null || TextUtils.isEmpty(initOptionsModel.serverUrl) || playerType == null || playerType == KalturaPlayer.Type.basic) {
          // TODO : write log message
          return;
       }
@@ -263,7 +265,11 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
 
       // load the player and put it in the main frame
-      KalturaOttPlayer.initialize(context, partnerId, initOptionsModel.serverUrl);
+      if (playerType == KalturaPlayer.Type.ott) {
+         KalturaOttPlayer.initialize(context, partnerId, initOptionsModel.serverUrl);
+      } else {
+         KalturaOvpPlayer.initialize(context, partnerId, initOptionsModel.serverUrl);
+      }
 
       PKPluginConfigs pluginConfigs = new PKPluginConfigs();
       if (initOptionsModel.plugins != null) {
@@ -338,8 +344,12 @@ public class KalturaPlayerRNView extends FrameLayout {
       //initOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
       initOptions.setPluginConfigs(pluginConfigs);
 
-      if (player == null) {
+      if (player == null && playerType == KalturaPlayer.Type.ott) {
          player = KalturaOttPlayer.create(context, initOptions);
+      }
+
+      if (player == null && playerType == KalturaPlayer.Type.ovp) {
+         player = KalturaOvpPlayer.create(context, initOptions);
       }
 
       addPlayerViewToRNView(player);
@@ -365,8 +375,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          }
          PKMediaEntry mediaEntry = createMediaEntry(assetId, basicMediaAsset);
          player.setMedia(mediaEntry);
-      } else if (playerType == KalturaPlayer.Type.ott) {
-
+      } else if (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp) {
          MediaAsset mediaAsset = gson.fromJson(mediaAssetJson, MediaAsset.class);
          if (mediaAsset == null || player == null) {
             return;
@@ -386,19 +395,39 @@ public class KalturaPlayerRNView extends FrameLayout {
             }
          }
 
-         player.loadMedia(mediaAsset.buildOttMediaOptions(assetId, player.getKS()), (mediaOptions, entry, error) -> {
-            if (error != null) {
-               log.e("ott media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
-               sendPlayerEvent("loadMediaFailed", gson.toJson(error));
-            } else {
-               log.d("ott media load success name = " + entry.getName() + " initialVolume = " + mediaAsset.getInitialVolume());
-               sendPlayerEvent("loadMediaSuccess", gson.toJson(entry));
+         if (playerType == KalturaPlayer.Type.ott) {
+            OTTMediaOptions ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player.getKS());
+            player.loadMedia(ottMediaOptions, (mediaOptions, entry, error) -> {
+               if (error != null) {
+                  log.e("ott media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
+                  sendPlayerEvent("loadMediaFailed", gson.toJson(error));
+               } else {
+                  log.d("ott media load success name = " + entry.getName() + " initialVolume = " + mediaAsset.getInitialVolume());
+                  sendPlayerEvent("loadMediaSuccess", gson.toJson(entry));
 
-               if (mediaAsset.getInitialVolume() >= 0 && mediaAsset.getInitialVolume() < 1.0) {
-                  player.setVolume(mediaAsset.getInitialVolume());
+                  if (mediaAsset.getInitialVolume() >= 0 && mediaAsset.getInitialVolume() < 1.0) {
+                     player.setVolume(mediaAsset.getInitialVolume());
+                  }
                }
-            }
-         });
+            });
+         } else {
+            OVPMediaOptions ovpMediaOptions = mediaAsset.buildOvpMediaOptions(assetId, "", player.getKS());
+            player.loadMedia(ovpMediaOptions, (mediaOptions, entry, error) -> {
+               if (error != null) {
+                  log.e("ovp media load error: " + error.getName() + " " + error.getCode() + " " + error.getMessage());
+                  sendPlayerEvent("loadMediaFailed", gson.toJson(error));
+               } else {
+                  log.d("ovp media load success name = " + entry.getName() + " initialVolume = " + mediaAsset.getInitialVolume());
+                  sendPlayerEvent("loadMediaSuccess", gson.toJson(entry));
+
+                  if (mediaAsset.getInitialVolume() >= 0 && mediaAsset.getInitialVolume() < 1.0) {
+                     player.setVolume(mediaAsset.getInitialVolume());
+                  }
+               }
+            });
+         }
+      } else {
+         log.e("No Player type defined hence can not load the media. PlayerType " + playerType);
       }
    }
 
