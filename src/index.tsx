@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
+import PlayerEvents from './events/PlayerEvents'
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
@@ -11,6 +12,8 @@ interface KalturaPlayerProps {
   style: ViewStyle,
   playerType: PLAYER_TYPE
 }
+
+export default PlayerEvents
 
 export enum PLAYER_TYPE {
   OVP = "ovp",

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { KalturaPlayer, MEDIA_ENTRY_TYPE, MEDIA_FORMAT, PLAYER_TYPE } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
-
+import PlayerEvents from "react-native-kaltura-player"
 
 const playerEventEmitter = new NativeEventEmitter();
 
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   }
 });
 
-playerEventEmitter.addListener("tracksAvailable", payload => {
+playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, payload => {
   console.log("*** tracksAvailable PlayerEvent: " + JSON.stringify(payload));
   console.log("*** tracksAvailable length: " + Object.keys(payload).length);
   }

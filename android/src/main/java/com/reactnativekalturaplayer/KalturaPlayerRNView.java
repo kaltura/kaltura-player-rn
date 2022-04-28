@@ -697,6 +697,26 @@ public class KalturaPlayerRNView extends FrameLayout {
          sendPlayerEvent("tracksAvailable", gson.toJson(getTracksInfo(event.tracksInfo)));
       });
 
+      player.addListener(context, PlayerEvent.loadedMetadata, event -> {
+         sendPlayerEvent("loadedMetadata");
+      });
+
+      player.addListener(context, PlayerEvent.replay, event -> {
+         sendPlayerEvent("replay");
+      });
+
+      player.addListener(context, PlayerEvent.volumeChanged, event -> {
+         sendPlayerEvent("volumeChanged" , createJSONForEventPayload("volume", event.volume));
+      });
+
+      player.addListener(context, PlayerEvent.surfaceAspectRationSizeModeChanged, event -> {
+         sendPlayerEvent("surfaceAspectRationSizeModeChanged" , createJSONForEventPayload("surfaceAspectRationSizeModeChanged", event.resizeMode.name()));
+      });
+
+      player.addListener(context, PlayerEvent.subtitlesStyleChanged, event -> {
+         sendPlayerEvent("subtitlesStyleChanged" , createJSONForEventPayload("subtitlesStyleChanged" , event.styleName));
+      });
+
       player.addListener(context, PlayerEvent.videoTrackChanged, event -> {
          final com.kaltura.playkit.player.VideoTrack newTrack = event.newTrack;
          VideoTrack videoTrack = new VideoTrack(newTrack.getUniqueId(), newTrack.getWidth(), newTrack.getHeight(), newTrack.getBitrate(), true, newTrack.isAdaptive());
@@ -909,9 +929,7 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    private void updateYouboraPlugin(YouboraConfig youboraConfig) {
       if (player != null) {
-
          player.updatePluginConfig(YouboraPlugin.factory.getName(), youboraConfig);
-
       }
    }
 
@@ -982,6 +1000,10 @@ public class KalturaPlayerRNView extends FrameLayout {
          return KalturaPlayer.Type.ovp;
       }
       return KalturaPlayer.Type.ott;
+   }
+
+   private String createJSONForEventPayload(String key, Object value) {
+      return "{ \" " + key + "\": " + value + "\" }";
    }
 
    @Nullable
