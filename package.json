@@ -1,7 +1,7 @@
 {
   "name": "kaltura-player-rn",
   "version": "0.1.0",
-  "description": "react native llibrary for Kaltura player",
+  "description": "React Native Library for KalturaPlayer",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -46,7 +46,14 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
+    "react-native": "^0.68.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.1.6",
     "@commitlint/config-conventional": "^11.0.0",
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^2.0.0",
@@ -66,8 +73,6 @@
     "typescript": "^4.1.3"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
   },
   "jest": {
     "preset": "react-native",
@@ -141,8 +146,5 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "prop-types": "^15.8.1"
   }
 }

@@ -1,9 +1,14 @@
 import {
   requireNativeComponent,
   ViewStyle,
+  NativeModules,
+  NativeEventEmitter
 } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
+export const KalturaPlayerEmitter = new NativeEventEmitter(KalturaPlayerEvents);
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
