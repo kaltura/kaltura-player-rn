@@ -54,11 +54,17 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.nativeComponentRef.setNativeProps(nativeProps);
   }
 
+  /**
+   * Add the listners for the Kaltura Player
+   */
   addListeners = () => {
     console.log("Calling Native Prop addListeners()")
     this.setNativeProps({ addListeners: true });
   }
 
+  /**
+   * Add the listners for the Kaltura Player
+   */
   removeListeners = () => {
     console.log("Calling Native Prop removeListeners()")
     this.setNativeProps({ removeListeners: true });
@@ -80,6 +86,13 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ playerInitOptions: options });
   }
 
+  /**
+   * 
+   * @param id Playback URL for Kaltura Basic Player OR
+   * MediaId for Kaltura OTT Player OR
+   * EntryId for Kaltura OVP Player
+   * @param asset Media Asset JSON String
+   */
   loadMedia = (id: string, asset: string) => {
     console.log("Loading the media.")
     this.setNativeProps({ assetId: id });
@@ -87,41 +100,73 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ load: true });
   }
 
+  /**
+   * Play the player if it is not playing
+   */
   play = () => {
     console.log("Calling Native Prop play()")
     this.setNativeProps({ play: true });
   };
 
+  /**
+   * Pause the player if it is playing
+   */
   pause = () => {
     console.log("Calling Native Prop pause()")
     this.setNativeProps({ pause: true });
   };
 
+  /**
+   * Stops the player to the initial state
+   */
   stop = () => {
     console.log("Calling Native Prop stop()")
     this.setNativeProps({ stop: true });
   }
 
+  /**
+   * Replays the media from the beginning
+   */
   replay = () => {
     console.log("Calling Native Prop replay()")
     this.setNativeProps({ replay: true });
   }
 
+  /**
+   * Seek the player to the specified position
+   * @param position in miliseconds (Ms)
+   */
   seekTo = (position: number) => {
     console.log("Calling Native Prop seekTo()")
     this.setNativeProps({ seek: position });
   }
 
+  /**
+   * Change a specific track (Video, Audio or Text track)
+   * @param trackId Unique track ID which was sent in `tracksAvailable` event
+   */
   changeTrack = (trackId: string) => {
     console.log("Calling Native Prop changeTrack()")
     this.setNativeProps({ changeTrack: trackId })
   }
 
+  /**
+   * Change the playback rate (ff or slow motion). Default is 1.0f
+   * @param rate Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)
+   */
   setPlaybackRate = (rate: number) => {
     console.log("Calling Native Prop setPlaybackRate()")
     this.setNativeProps({ playbackRate: rate })
   }
 
+  /**
+    * Change the volume of the current audio track.
+    * Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume.
+    * If the volume parameter is higher then 1.0, it will be converted to 1.0.
+    * If the volume parameter is lower then 0.0, it be converted to 0.0.
+    *
+    * @param vol - volume to set.
+    */
   setVolume = (vol: number) => {
     console.log("Calling Native Prop setVolume()")
     this.setNativeProps({ volume: vol })
