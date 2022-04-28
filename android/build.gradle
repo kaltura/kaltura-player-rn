@@ -30,13 +30,11 @@ dependencies {
 
   implementation fileTree(dir: "libs", include: ["*.jar"])
 
-  def kalturaPlaykitVersion = '4.17.0'
-  def kalturaImaPlaykitVersion = '4.17.0'
-  def kalturaYouboraPlaykitVersion = '4.17.0'
+  def kalturaPlayerVersion = '4.22.0'
 
-  api "com.kaltura.playkit:broadpeakplugin:$kalturaPlaykitVersion"
-  implementation "com.kaltura.playkit:imaplugin:$kalturaImaPlaykitVersion"
-  implementation "com.kaltura.playkit:youboraplugin:$kalturaYouboraPlaykitVersion"
+  api "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"
+  implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
+  implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
 
 //  api project(":tvplayer")
 //  implementation project(":ima")

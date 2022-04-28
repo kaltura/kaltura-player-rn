@@ -64,8 +64,18 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ removeListeners: true });
   }
 
-  setup = (id: number, options: string) => {
-    console.log("Setting up the Kaltura Player")
+  /**
+   * This method creates a Player instance internally (Basic, OVP/OTT Player)
+   * We this, it take the PlayerInitOptions which are having essential Player settings values
+   * helpful for the playback
+   * 
+   * @param options PlayerInitOptions JSON String
+   * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
+   * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
+   * for the mediaId or the entryId)
+   */
+  setup = (options: string, id: number = 0) => {
+    console.log("Setting up the Player")
     this.setNativeProps({ partnerId: id });
     this.setNativeProps({ playerInitOptions: options });
   }

@@ -16,19 +16,19 @@ export default class App extends React.Component {
     // });
     console.log("componentDidMount from App.");
     // OTT Configuration
-    // this.player.setup(OttPartnerId, JSON.stringify(initOptions))
+    // this.player.setup(JSON.stringify(initOptions), OttPartnerId)
     // this.player.addListeners()
     // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset))
 
     // OVP Configuration
-    this.player.setup(OvpPartnerId, JSON.stringify(ovpInitOptions))
-    this.player.addListeners()
-    this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset))
+    // this.player.setup(JSON.stringify(ovpInitOptions), OvpPartnerId)
+    // this.player.addListeners()
+    // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset))
 
     // BASIC Configuration
-    // this.player.setup(0, "")
-    // this.player.addListeners()
-    // this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset))
+    this.player.setup(JSON.stringify(basicInitOptions))
+    this.player.addListeners()
+    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset))
   }
 
   componentWillUnmount() {
@@ -63,7 +63,7 @@ export default class App extends React.Component {
       <KalturaPlayer
       ref={(ref: KalturaPlayer) => { this.player = ref }}
       style = {styles.center}
-      playerType = {PLAYER_TYPE.OVP} >
+      playerType = {PLAYER_TYPE.BASIC} >
       </KalturaPlayer>
 
       <TouchableOpacity onPress={() => { this.doPlay() }}>
@@ -82,7 +82,7 @@ export default class App extends React.Component {
         <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => { this.changeMedia(OvpEntryIdChangeMedia, JSON.stringify(ovpMediaAsset)) }}>
+      <TouchableOpacity onPress={() => { this.changeMedia(playbackUrlChangeMedia, JSON.stringify(basicMediaAsset)) }}>
         <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
       </TouchableOpacity>
 
@@ -136,7 +136,32 @@ var basicMediaAsset = {
   "mediaFormat": playbackFormat
 }
 
-// Kaltura OTT Player Test JSON for OTT media PlayerInitOptions
+var basicInitOptions = {
+  "autoplay": true,
+  "preload": true,
+  "requestConfig": {
+    "crossProtocolRedirectEnabled": true,
+    "readTimeoutMs": 8000,
+    "connectTimeoutMs": 8000
+  },
+  "allowCrossProtocolRedirect": true,
+  "allowFairPlayOnExternalScreens" : true,
+  "shouldPlayImmediately": true,
+  "networkSettings": {
+     "autoBuffer": true,
+     "preferredForwardBufferDuration": 30000,
+     "automaticallyWaitsToMinimizeStalling": true
+  },
+  "trackSelection": {
+    "textMode": "AUTO",
+    "textLanguage": "en",
+    "audioMode": "AUTO",
+    "audioLanguage": "en",
+  },
+  "handleAudioFocus": true
+}
+
+// Kaltura OTT and OVP Player Test JSON for OTT/OVP media PlayerInitOptions
 
 //OTT 3009
 const PhoenixBaseUrl = "https://rest-us.ott.kaltura.com/v4_5/api_v3/";
