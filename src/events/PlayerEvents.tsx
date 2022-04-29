@@ -1,5 +1,6 @@
 export default {
     // TODO: All the "" string needs to be added on Native android layer
+    // TODO: Generate it using some script
 
     STATE_CHANGED : "stateChanged",
     CAN_PLAY : "canPlay",   // Sent when enough data is available that the media can be played, at least for a couple of frames. This corresponds to the HAVE_ENOUGH_DATA readyState.

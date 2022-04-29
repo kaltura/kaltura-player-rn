@@ -1,6 +1,6 @@
 import { ViewStyle } from 'react-native';
 import React from 'react';
-import PlayerEvents from 'src/events/PlayerEvents';
+import PlayerEvents from './events/PlayerEvents';
 interface KalturaPlayerProps {
     style: ViewStyle;
     playerType: PLAYER_TYPE;
