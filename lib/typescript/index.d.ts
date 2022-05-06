@@ -24,6 +24,12 @@ export declare enum MEDIA_ENTRY_TYPE {
     LIVE = "Live",
     DVRLIVE = "DvrLive"
 }
+export declare enum DRM_SCHEME {
+    WIDEVINE_CENC = "WidevineCENC",
+    PLAYREADY_CENC = "PlayReadyCENC",
+    WIDEVINE_CENC_CLASSIC = "WidevineClassic",
+    PLAYREADY_CLASSIC = "PlayReadyClassic"
+}
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
     eventListener: any;

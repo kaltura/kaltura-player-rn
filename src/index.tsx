@@ -36,6 +36,22 @@ export enum MEDIA_ENTRY_TYPE {
   DVRLIVE = "DvrLive"
 }
 
+export enum DRM_SCHEME {
+  WIDEVINE_CENC = "WidevineCENC",
+  PLAYREADY_CENC = "PlayReadyCENC",
+  WIDEVINE_CENC_CLASSIC = "WidevineClassic",
+  PLAYREADY_CLASSIC = "PlayReadyClassic"
+}
+
+export enum PLUGINS {
+  IMA = "ima",
+  IMADAI = "imadai",
+  YOUBORA = "youbora",
+  KAVA = "kava",
+  OTT_ANALYTICS = "ottAnalytics",
+  BROADPEAK = "broadpeak"
+}
+
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
   eventListener: any;
@@ -90,6 +106,23 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   }
 
   /**
+   * Create a Plugin Config 
+   * This should be done before the Player `setup`
+   * 
+   * @param pluginName Plugin Name (Youbora, IMA etc)
+   * @param config Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+   */
+  setPluginConfig = (pluginName: PLUGINS, config: object) => {
+    const pluginJson =  {
+      "pluginName": pluginName,
+      "pluginConfig": config
+    }
+    const stringifiedJson = JSON.stringify(pluginJson);
+    console.log("Plugin is: " + stringifiedJson);
+    this.setNativeProps( { setPluginConfig : stringifiedJson})
+  }
+
+  /**
    * 
    * @param id Playback URL for Kaltura Basic Player OR
    * MediaId for Kaltura OTT Player OR
@@ -97,7 +130,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * @param asset Media Asset JSON String
    */
   loadMedia = (id: string, asset: string) => {
-    console.log("Loading the media.")
+    console.log("Loading the media. assetId: " + id + " and Media asset id: " + asset);
     this.setNativeProps({ assetId: id });
     this.setNativeProps({ mediaAsset: asset });
     this.setNativeProps({ load: true });

@@ -17,7 +17,6 @@ public class InitOptions {
     public boolean preload = true;
     public PKRequestConfig requestConfig;
     public boolean allowCrossProtocolRedirect = true;
-    public RegisteredPlugins plugins;
     public List<String> warmupUrls;
     public String ks;
     public String referrer;

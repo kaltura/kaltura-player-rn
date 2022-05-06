@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.kaltura.netkit.utils.NKLog;
+import com.kaltura.playkit.PKDrmParams;
 import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKEvent;
 import com.kaltura.playkit.PKLog;
@@ -28,6 +29,7 @@ import com.kaltura.playkit.PlayKitManager;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.ads.PKAdErrorType;
 import com.kaltura.playkit.player.LoadControlBuffers;
+import com.kaltura.playkit.player.MediaSupport;
 import com.kaltura.playkit.player.PKHttpClientManager;
 import com.kaltura.playkit.player.PKPlayerErrorType;
 import com.kaltura.playkit.player.PKTracks;
@@ -56,6 +58,8 @@ import com.npaw.youbora.lib6.YouboraLog;
 import com.reactnativekalturaplayer.model.BasicMediaAsset;
 import com.reactnativekalturaplayer.model.InitOptions;
 import com.reactnativekalturaplayer.model.MediaAsset;
+import com.reactnativekalturaplayer.model.PluginConfig;
+import com.reactnativekalturaplayer.model.RegisteredPlugins;
 import com.reactnativekalturaplayer.model.WrapperIMAConfig;
 import com.reactnativekalturaplayer.model.WrapperPhoenixAnalyticsConfig;
 import com.reactnativekalturaplayer.model.tracks.AudioTrack;
@@ -77,6 +81,8 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    private KalturaPlayer player;
    private KalturaPlayer.Type playerType;
+   private @Nullable PlayerInitOptions playerInitOptions;
+   private @Nullable PKPluginConfigs pluginConfigs;
 
    private int partnerId;
    private String assetId;
@@ -198,7 +204,7 @@ public class KalturaPlayerRNView extends FrameLayout {
    private void createKalturaBasicPlayer(String initOptions) {
       log.d("Creating Basic Player instance.");
       InitOptions initOptionsModel = getParsedJson(initOptions, InitOptions.class);
-      PlayerInitOptions playerInitOptions = new PlayerInitOptions();
+      playerInitOptions = new PlayerInitOptions();
       if (initOptionsModel == null) {
          playerInitOptions.setAutoPlay(true);
          playerInitOptions.setPKRequestConfig(new PKRequestConfig(true));
@@ -206,12 +212,12 @@ public class KalturaPlayerRNView extends FrameLayout {
          setCommonPlayerInitOptions(playerInitOptions, initOptionsModel);
       }
 
-      PKPluginConfigs pluginConfigs = getConfiguredPluginConfigs(initOptionsModel);
-      playerInitOptions.setPluginConfigs(pluginConfigs);
+      playerInitOptions.setPluginConfigs(getPluginConfigs());
 
       if (player == null) {
          player = KalturaBasicPlayer.create(context, playerInitOptions);
       }
+      initDrm(context);
       addPlayerViewToRNView(player);
    }
 
@@ -225,6 +231,7 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    private PKMediaEntry createMediaEntry(String url, BasicMediaAsset basicMediaAsset) {
       log.d("createMediaEntry URL is: " + url);
+
       //Create media entry.
       PKMediaEntry mediaEntry = new PKMediaEntry();
       //Set id for the entry.
@@ -232,6 +239,20 @@ public class KalturaPlayerRNView extends FrameLayout {
       mediaEntry.setName(basicMediaAsset.getName());
       mediaEntry.setDuration(basicMediaAsset.getDuration());
       mediaEntry.setMediaType(basicMediaAsset.getMediaEntryType());
+      mediaEntry.setIsVRMediaType(basicMediaAsset.isVRMediaType());
+
+      if (basicMediaAsset.getExternalSubtitleList() != null && !basicMediaAsset.getExternalSubtitleList().isEmpty()) {
+         mediaEntry.setExternalSubtitleList(basicMediaAsset.getExternalSubtitleList());
+      }
+
+      if (basicMediaAsset.getMetadata() != null && !basicMediaAsset.getMetadata().isEmpty()) {
+         mediaEntry.setMetadata(basicMediaAsset.getMetadata());
+      }
+
+      if (!TextUtils.isEmpty(basicMediaAsset.getExternalVttThumbnailUrl())) {
+         mediaEntry.setExternalVttThumbnailUrl(basicMediaAsset.getExternalVttThumbnailUrl());
+      }
+
       List<PKMediaSource> mediaSources = createMediaSources(url, basicMediaAsset);
       mediaEntry.setSources(mediaSources);
 
@@ -248,12 +269,20 @@ public class KalturaPlayerRNView extends FrameLayout {
       PKMediaSource mediaSource = new PKMediaSource();
       //Set the id.
       mediaSource.setId("basicPlayerTestSource");
-      //Set the content url. In our case it will be link to hls source(.m3u8).
+      //Set the content url.
       mediaSource.setUrl(url);
-      //Set the format of the source. In our case it will be hls in case of mpd/wvm formats you have to to call mediaSource.setDrmData method as well
+      //Set the format of the source.
       mediaSource.setMediaFormat(basicMediaAsset.getMediaFormat());
+      // Set the DRM Params if available
+      setDrmParams(basicMediaAsset.getDrmData(), mediaSource);
 
       return Collections.singletonList(mediaSource);
+   }
+
+   private void setDrmParams(List<PKDrmParams> pkDrmParamsList, PKMediaSource mediaSource) {
+      if (mediaSource != null && pkDrmParamsList != null && !pkDrmParamsList.isEmpty()) {
+         mediaSource.setDrmData(pkDrmParamsList);
+      }
    }
 
    private void createKalturaOttOvpPlayer(int partnerId, String playerInitOptionsJson) {
@@ -277,16 +306,16 @@ public class KalturaPlayerRNView extends FrameLayout {
          PKHttpClientManager.warmUp((initOptionsModel.warmupUrls).toArray((new String[0])));
       }
 
-      PKPluginConfigs pluginConfigs = getConfiguredPluginConfigs(initOptionsModel);
-      final PlayerInitOptions playerInitOptions = new PlayerInitOptions(partnerId);
+      playerInitOptions = new PlayerInitOptions(partnerId);
 
       playerInitOptions.setKs(initOptionsModel.ks);
       playerInitOptions.setMediaEntryCacheConfig(initOptionsModel.mediaEntryCacheConfig);
       setCommonPlayerInitOptions(playerInitOptions, initOptionsModel);
 
-      //initOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
-      //initOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
-      playerInitOptions.setPluginConfigs(pluginConfigs);
+      //playerInitOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
+      //playerInitOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
+
+      playerInitOptions.setPluginConfigs(getPluginConfigs());
 
       if (player == null && playerType == KalturaPlayer.Type.ott) {
          player = KalturaOttPlayer.create(context, playerInitOptions);
@@ -295,7 +324,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       if (player == null && playerType == KalturaPlayer.Type.ovp) {
          player = KalturaOvpPlayer.create(context, playerInitOptions);
       }
-
+      initDrm(context);
       addPlayerViewToRNView(player);
    }
 
@@ -346,7 +375,41 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   @NonNull
+   protected void setPluginConfig(String pluginConfigJson) {
+      if (TextUtils.isEmpty(pluginConfigJson)) {
+         log.e("setPluginConfig, pluginConfigJson is empty hence returning from here.");
+         return;
+      }
+
+      PluginConfig pluginConfig = getParsedJson(pluginConfigJson, PluginConfig.class);
+
+      if (pluginConfig != null && !TextUtils.isEmpty(pluginConfig.getPluginName())) {
+         String pluginName = pluginConfig.getPluginName();
+
+         if (TextUtils.equals(pluginName, RegisteredPlugins.ima.name())) {
+
+         } else if (TextUtils.equals(pluginName, RegisteredPlugins.imadai.name())) {
+
+         } else if (TextUtils.equals(pluginName, RegisteredPlugins.youbora.name())) {
+            YouboraConfig youboraConfig = getParsedJson(pluginConfig.getPluginConfig().toString(), YouboraConfig.class);
+            if (youboraConfig != null) {
+               createYouboraPlugin(getPluginConfigs(), youboraConfig);
+            }
+         } else if (TextUtils.equals(pluginName, RegisteredPlugins.kava.name())) {
+
+         } else if (TextUtils.equals(pluginName, RegisteredPlugins.ottAnalytics.name())) {
+
+         } else if (TextUtils.equals(pluginName, RegisteredPlugins.broadpeak.name())) {
+
+         } else {
+            log.w("No Plugin can be registered PluginName is: " + pluginName);
+         }
+      } else {
+         log.e("Plugin config or Plugin Name is not valid.");
+      }
+   }
+
+  /* @NonNull
    private PKPluginConfigs getConfiguredPluginConfigs(@Nullable InitOptions initOptionsModel) {
       PKPluginConfigs pluginConfigs = new PKPluginConfigs();
       if (initOptionsModel != null && initOptionsModel.plugins != null) {
@@ -376,7 +439,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
 
       return pluginConfigs;
-   }
+   }*/
 
    ////////////////////////////////////////////////////////////////////
    public void load(String assetId, String mediaAssetJson) {
@@ -401,8 +464,8 @@ public class KalturaPlayerRNView extends FrameLayout {
          if (mediaAsset == null || player == null) {
             return;
          }
-
-         if (mediaAsset.getPlugins() != null) {
+         //TODO: MOVE THIS UPDATE PLUGIN CODE
+         /*if (mediaAsset.getPlugins() != null) {
             if (mediaAsset.getPlugins().ima != null) {
                updateIMAPlugin(mediaAsset.getPlugins().ima);
             }
@@ -414,7 +477,7 @@ public class KalturaPlayerRNView extends FrameLayout {
             if (mediaAsset.getPlugins().ottAnalytics != null) {
                updatePhoenixAnalyticsPlugin(mediaAsset.getPlugins().ottAnalytics);
             }
-         }
+         }*/
 
          if (playerType == KalturaPlayer.Type.ott) {
             OTTMediaOptions ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player.getKS());
@@ -450,6 +513,22 @@ public class KalturaPlayerRNView extends FrameLayout {
       } else {
          log.e("No Player type defined hence can not load the media. PlayerType " + playerType);
       }
+   }
+
+
+   private void initDrm(ThemedReactContext context) {
+      context.runOnNativeModulesQueueThread(() -> MediaSupport.initializeDrm(context, (pkDeviceSupportInfo, provisionError) -> {
+         if (pkDeviceSupportInfo.isProvisionPerformed()) {
+            if (provisionError != null) {
+               log.e("DRM Provisioning failed" + provisionError);
+            } else {
+               log.d("DRM Provisioning succeeded");
+            }
+         }
+         log.d("DRM initialized; supported: " + pkDeviceSupportInfo.getSupportedDrmSchemes() + " isHardwareDrmSupported = " + pkDeviceSupportInfo.isHardwareDrmSupported());
+         Gson gson = new Gson();
+         sendPlayerEvent("drmInitialized", gson.toJson(pkDeviceSupportInfo));
+      }));
    }
 
    public void play() {
@@ -1002,17 +1081,31 @@ public class KalturaPlayerRNView extends FrameLayout {
       return KalturaPlayer.Type.ott;
    }
 
+   private PKPluginConfigs getPluginConfigs() {
+      if (pluginConfigs == null) {
+         pluginConfigs = new PKPluginConfigs();
+      }
+      return pluginConfigs;
+   }
+
    private String createJSONForEventPayload(String key, Object value) {
       return "{ \" " + key + "\": " + value + "\" }";
    }
 
    @Nullable
    private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
-      try {
-          return gson.fromJson(parsableJson, parsingClass);
-      } catch (JsonSyntaxException exception) {
-         log.d("JsonSyntaxException while parsing " + parsingClass.getSimpleName());
+      if (TextUtils.isEmpty(parsableJson)) {
+         log.e("getParsedJson parsable Json is empty.");
+         return null;
       }
+
+      try {
+         return gson.fromJson(parsableJson, parsingClass);
+      } catch (JsonSyntaxException exception) {
+         log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
+                 exception.getMessage());
+      }
+
       return null;
    }
 
@@ -1032,6 +1125,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       if (!TextUtils.isEmpty(payload)) {
          params.putString("payload", payload);
       }
+      //log.d("sendPlayerEvent Event Name: " + event + "Payload is: " + payload) ;
       emitter().emit(event, params);
    }
 

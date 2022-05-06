@@ -33,5 +33,6 @@ export default {
     SUBTITLE_STYLE_CHANGED : "subtitlesStyleChanged",  // Subtitle style is changed.
     ASPECT_RATIO_RESIZE_MODE_CHANGED : "surfaceAspectRationSizeModeChanged", //Send when updating the Surface Vide Aspect Ratio size mode.
     TIME_UPDATE : "timeUpdate",
-    LOAD_TIME_RANGES : "loadedTimeRanges"
+    LOAD_TIME_RANGES : "loadedTimeRanges",
+    DRM_INITIALIZED: "drmInitialized"
 }
