@@ -10,8 +10,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.kaltura.playkit.PKLog;
-import com.kaltura.playkit.plugins.youbora.YouboraPlugin;
-import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig;
 import com.npaw.youbora.lib6.YouboraLog;
 
 public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNView> {
@@ -121,7 +119,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_UPDATE_PLUGIN_CONFIG)
    public void updatePluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String updatedPluginConfig) {
       log.d("updatePluginConfig " + updatedPluginConfig);
-      kalturaPlayerRNView.configurePluginConfigs(updatedPluginConfig);
+      kalturaPlayerRNView.updatePluginConfigs(updatedPluginConfig);
    }
 
    @ReactProp(name = PROP_ADD_LISTENERS)

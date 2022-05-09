@@ -33,7 +33,6 @@ public class MediaAsset {
 
     private Long startPosition;
     private Float initialVolume = 1.0f;
-    private Plugins plugins;
 
     private String getKs() {
         return ks;
@@ -65,10 +64,6 @@ public class MediaAsset {
 
     public Float getInitialVolume() {
         return initialVolume;
-    }
-
-    public Plugins getPlugins() {
-        return plugins;
     }
 
     private APIDefines.KalturaAssetType getAssetType() {
