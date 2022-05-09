@@ -105,23 +105,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   }
 
   /**
-   * Create a Plugin Config 
-   * This should be done before the Player `setup`
-   * 
-   * @param pluginName Plugin Name (Youbora, IMA etc)
-   * @param config Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
-   */
-  setPluginConfig = (pluginName: PLUGINS, config: object) => {
-    const pluginJson =  {
-      "pluginName": pluginName,
-      "pluginConfig": config
-    }
-    const stringifiedJson = JSON.stringify(pluginJson);
-    console.log("Set Plugin is: " + stringifiedJson);
-    this.setNativeProps( { setPluginConfig : stringifiedJson})
-  }
-
-  /**
    * Update a Plugin Config 
    * 
    * @param pluginName Plugin Name (Youbora, IMA etc)

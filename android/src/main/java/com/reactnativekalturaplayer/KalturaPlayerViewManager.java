@@ -26,7 +26,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_ASSET_ID = "assetId";
    private static final String PROP_MEDIA_ASSET = "mediaAsset";
    private static final String PROP_LOAD = "load";
-   private static final String PROP_SET_PLUGIN_CONFIG = "setPluginConfig";
    private static final String PROP_UPDATE_PLUGIN_CONFIG = "updatePluginConfig";
    private static final String PROP_ADD_LISTENERS = "addListeners";
    private static final String PROP_REMOVE_LISTENERS = "removeListeners";
@@ -119,16 +118,10 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       kalturaPlayerRNView.load(true);
    }
 
-   @ReactProp(name = PROP_SET_PLUGIN_CONFIG)
-   public void setPluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String pluginConfig) {
-      log.d("setPluginConfig " + pluginConfig);
-      kalturaPlayerRNView.configurePluginConfigs(pluginConfig, false);
-   }
-
    @ReactProp(name = PROP_UPDATE_PLUGIN_CONFIG)
    public void updatePluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String updatedPluginConfig) {
       log.d("updatePluginConfig " + updatedPluginConfig);
-      kalturaPlayerRNView.configurePluginConfigs(updatedPluginConfig, true);
+      kalturaPlayerRNView.configurePluginConfigs(updatedPluginConfig);
    }
 
    @ReactProp(name = PROP_ADD_LISTENERS)

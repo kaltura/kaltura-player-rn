@@ -58,8 +58,9 @@ import com.npaw.youbora.lib6.YouboraLog;
 import com.reactnativekalturaplayer.model.BasicMediaAsset;
 import com.reactnativekalturaplayer.model.InitOptions;
 import com.reactnativekalturaplayer.model.MediaAsset;
-import com.reactnativekalturaplayer.model.PluginConfig;
-import com.reactnativekalturaplayer.model.RegisteredPlugins;
+import com.reactnativekalturaplayer.model.PlayerPluginUtilsKt;
+import com.reactnativekalturaplayer.model.PlayerPlugins;
+import com.reactnativekalturaplayer.model.UpdatePluginConfigJson;
 import com.reactnativekalturaplayer.model.WrapperIMAConfig;
 import com.reactnativekalturaplayer.model.WrapperPhoenixAnalyticsConfig;
 import com.reactnativekalturaplayer.model.tracks.AudioTrack;
@@ -81,8 +82,6 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    private KalturaPlayer player;
    private KalturaPlayer.Type playerType;
-   private @Nullable PlayerInitOptions playerInitOptions;
-   private @Nullable PKPluginConfigs pluginConfigs;
 
    private int partnerId;
    private String assetId;
@@ -204,15 +203,15 @@ public class KalturaPlayerRNView extends FrameLayout {
    private void createKalturaBasicPlayer(String initOptions) {
       log.d("Creating Basic Player instance.");
       InitOptions initOptionsModel = getParsedJson(initOptions, InitOptions.class);
-      playerInitOptions = new PlayerInitOptions();
+      PlayerInitOptions playerInitOptions = new PlayerInitOptions();
       if (initOptionsModel == null) {
          playerInitOptions.setAutoPlay(true);
          playerInitOptions.setPKRequestConfig(new PKRequestConfig(true));
       } else {
          setCommonPlayerInitOptions(playerInitOptions, initOptionsModel);
+         PKPluginConfigs pkPluginConfigs = createPluginConfigs(initOptionsModel);
+         playerInitOptions.setPluginConfigs(pkPluginConfigs);
       }
-
-      playerInitOptions.setPluginConfigs(getPluginConfigs());
 
       if (player == null) {
          player = KalturaBasicPlayer.create(context, playerInitOptions);
@@ -306,7 +305,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          PKHttpClientManager.warmUp((initOptionsModel.warmupUrls).toArray((new String[0])));
       }
 
-      playerInitOptions = new PlayerInitOptions(partnerId);
+      PlayerInitOptions playerInitOptions = new PlayerInitOptions(partnerId);
 
       playerInitOptions.setKs(initOptionsModel.ks);
       playerInitOptions.setMediaEntryCacheConfig(initOptionsModel.mediaEntryCacheConfig);
@@ -315,7 +314,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       //playerInitOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
       //playerInitOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
 
-      playerInitOptions.setPluginConfigs(getPluginConfigs());
+      //  playerInitOptions.setPluginConfigs(getPluginConfigs());
 
       if (player == null && playerType == KalturaPlayer.Type.ott) {
          player = KalturaOttPlayer.create(context, playerInitOptions);
@@ -375,36 +374,72 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   protected void configurePluginConfigs(String pluginConfigJson, boolean isUpdatePlugin) {
-      log.e("configurePluginConfigs, isUpdatePlugin: " + isUpdatePlugin);
+   /**
+    * Create `PKPluginConfigs` object for `PlayerInitOptions`
+    *
+    * @param initOptions class which contains all the configuration for PlayerInitOptions
+    * @return `PKPluginConfig` object
+    */
+   @NonNull
+   private PKPluginConfigs createPluginConfigs(InitOptions initOptions) {
+      PKPluginConfigs pkPluginConfigs = new PKPluginConfigs();
+
+      if (initOptions.plugins != null) {
+         if (initOptions.plugins.getIma() != null) {
+            createPlugin(PlayerPlugins.ima, pkPluginConfigs, initOptions.plugins.getIma());
+         }
+
+         if (initOptions.plugins.getYoubora() != null) {
+            JsonObject youboraConfigJson = initOptions.plugins.getYoubora();
+            if (youboraConfigJson.has(YOUBORA_ACCOUNT_CODE) && youboraConfigJson.get(YOUBORA_ACCOUNT_CODE) != null) {
+               createPlugin(PlayerPlugins.youbora, pkPluginConfigs, initOptions.plugins.getYoubora());
+            }
+         }
+
+         if (initOptions.plugins.getOttAnalytics() != null) {
+            createPlugin(PlayerPlugins.ottAnalytics, pkPluginConfigs, initOptions.plugins.getOttAnalytics());
+         }
+
+         if (initOptions.plugins.getBroadpeak() != null) {
+            createPlugin(PlayerPlugins.broadpeak, pkPluginConfigs, initOptions.plugins.getBroadpeak());
+         }
+      }
+
+      return pkPluginConfigs;
+   }
+
+   protected void configurePluginConfigs(String pluginConfigJson) {
+      log.e("configurePluginConfigs");
       if (TextUtils.isEmpty(pluginConfigJson)) {
          log.e("pluginConfigJson is empty hence returning from here.");
          return;
       }
 
-      PluginConfig pluginConfig = getParsedJson(pluginConfigJson, PluginConfig.class);
+      UpdatePluginConfigJson pluginConfig = getParsedJson(pluginConfigJson, UpdatePluginConfigJson.class);
 
-      if (pluginConfig != null && !TextUtils.isEmpty(pluginConfig.getPluginName())) {
+      if (pluginConfig != null &&
+              !TextUtils.isEmpty(pluginConfig.getPluginName()) &&
+              pluginConfig.getPluginConfig() != null) {
+
          String pluginName = pluginConfig.getPluginName();
 
-         if (TextUtils.equals(pluginName, RegisteredPlugins.ima.name())) {
+         if (TextUtils.equals(pluginName, PlayerPlugins.ima.name())) {
+            IMAConfig imaConfig = getParsedJson(pluginConfig.getPluginConfig().toString(), IMAConfig.class);
+            if (imaConfig != null) {
+               updateIMAPlugin(imaConfig);
+            }
+         } else if (TextUtils.equals(pluginName, PlayerPlugins.imadai.name())) {
 
-         } else if (TextUtils.equals(pluginName, RegisteredPlugins.imadai.name())) {
-
-         } else if (TextUtils.equals(pluginName, RegisteredPlugins.youbora.name())) {
+         } else if (TextUtils.equals(pluginName, PlayerPlugins.youbora.name())) {
             YouboraConfig youboraConfig = getParsedJson(pluginConfig.getPluginConfig().toString(), YouboraConfig.class);
             if (youboraConfig != null) {
-               if (isUpdatePlugin) {
-                  updateYouboraPlugin(youboraConfig);
-               } else {
-                  createYouboraPlugin(getPluginConfigs(), youboraConfig);
-               }
+               updateYouboraPlugin(youboraConfig);
             }
-         } else if (TextUtils.equals(pluginName, RegisteredPlugins.kava.name())) {
+         } else if (TextUtils.equals(pluginName, PlayerPlugins.kava.name())) {
 
-         } else if (TextUtils.equals(pluginName, RegisteredPlugins.ottAnalytics.name())) {
+         } else if (TextUtils.equals(pluginName, PlayerPlugins.ottAnalytics.name())) {
 
-         } else if (TextUtils.equals(pluginName, RegisteredPlugins.broadpeak.name())) {
+         } else if (TextUtils.equals(pluginName, PlayerPlugins.broadpeak.name())) {
 
          } else {
             log.w("No Plugin can be registered PluginName is: " + pluginName);
@@ -414,39 +449,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-  /* @NonNull
-   private PKPluginConfigs getConfiguredPluginConfigs(@Nullable InitOptions initOptionsModel) {
-      PKPluginConfigs pluginConfigs = new PKPluginConfigs();
-      if (initOptionsModel != null && initOptionsModel.plugins != null) {
-         if (initOptionsModel.plugins.ima != null) {
-            createIMAPlugin(pluginConfigs, initOptionsModel.plugins.ima); //DEFAULT
-         }
-
-         if (initOptionsModel.plugins.youbora != null) {
-            JsonObject youboraConfigJson = initOptionsModel.plugins.youbora;
-            if (youboraConfigJson.has(YOUBORA_ACCOUNT_CODE) && youboraConfigJson.get(YOUBORA_ACCOUNT_CODE) != null) {
-               YouboraConfig youboraConfig = getParsedJson(youboraConfigJson.toString(), YouboraConfig.class);
-               if (youboraConfig != null) {
-                  createYouboraPlugin(pluginConfigs, youboraConfig);
-               }
-            }
-         }
-
-         if (initOptionsModel.plugins.ottAnalytics != null && playerType != null && playerType == KalturaPlayer.Type.ott) {
-            createPhoenixAnalyticsPlugin(pluginConfigs, initOptionsModel.plugins.ottAnalytics); //DEFAULT
-         }
-
-         if (initOptionsModel.plugins.broadpeak != null && playerType != null && playerType == KalturaPlayer.Type.ott) {
-            JsonObject broadpeakJsonObject = initOptionsModel.plugins.broadpeak;
-            BroadpeakConfig broadpeakConfig = getParsedJson(broadpeakJsonObject.toString(), BroadpeakConfig.class);
-            createBroadpeakPlugin(pluginConfigs, broadpeakConfig);
-         }
-      }
-
-      return pluginConfigs;
-   }*/
-
-   ////////////////////////////////////////////////////////////////////
    public void load(String assetId, String mediaAssetJson) {
       log.d("load assetId: " + assetId +
               "\n player type: " + playerType +
@@ -469,7 +471,6 @@ public class KalturaPlayerRNView extends FrameLayout {
          if (mediaAsset == null || player == null) {
             return;
          }
-         //TODO: MOVE THIS UPDATE PLUGIN CODE
 
          if (playerType == KalturaPlayer.Type.ott) {
             OTTMediaOptions ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player.getKS());
@@ -992,14 +993,14 @@ public class KalturaPlayerRNView extends FrameLayout {
               " }";
    }
 
-   private void updateIMAPlugin(WrapperIMAConfig wrapperIMAConfig) {
-      if (player != null) {
-         player.updatePluginConfig(IMAPlugin.factory.getName(), getIMAConfig(wrapperIMAConfig));
+   private void updateIMAPlugin(IMAConfig imaConfig) {
+      if (player != null && imaConfig != null) {
+         player.updatePluginConfig(IMAPlugin.factory.getName(), imaConfig);
       }
    }
 
    private void updateYouboraPlugin(YouboraConfig youboraConfig) {
-      if (player != null) {
+      if (player != null && youboraConfig != null) {
          player.updatePluginConfig(YouboraPlugin.factory.getName(), youboraConfig);
       }
    }
@@ -1010,14 +1011,36 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   private void createIMAPlugin(PKPluginConfigs pluginConfigs, JsonObject imaConfigJson) {
-      PlayKitManager.registerPlugins(context, IMAPlugin.factory);
-      if (pluginConfigs != null) {
-         if (imaConfigJson == null) {
-            pluginConfigs.setPluginConfig(IMAPlugin.factory.getName(), new IMAConfig());
+   /**
+    * Generic method to register and set the plugin config for the first time.
+    * Method can not be used to update the plugin config
+    *
+    * @param pluginName `PlayerPlugins` enum
+    * @param pluginConfigs `PKPluginConfigs` object for the `PlayerInitOptions`
+    * @param pluginConfigJson plugin configuration json
+    */
+   private void createPlugin(PlayerPlugins pluginName,
+                             PKPluginConfigs pluginConfigs,
+                             JsonObject pluginConfigJson) {
+
+      PlayKitManager.registerPlugins(context, PlayerPluginUtilsKt.getPluginFactory(pluginName));
+
+      if (pluginConfigJson == null || pluginConfigJson.size() == 0) {
+         log.w("Plugins' config Json is not valid hence returning" + PlayerPluginUtilsKt.getPluginClass(pluginName));
+         return;
+      }
+
+      String strPluginJson = pluginConfigJson.toString();
+      if (pluginConfigs != null && !TextUtils.isEmpty(strPluginJson)) {
+         Object pluginConfig = getParsedJson(strPluginJson, PlayerPluginUtilsKt.getPluginClass(pluginName));
+         if (pluginConfig != null) {
+            pluginConfigs.setPluginConfig(PlayerPluginUtilsKt.getPluginFactory(pluginName).getName(), pluginConfig);
          } else {
-            pluginConfigs.setPluginConfig(IMAPlugin.factory.getName(), imaConfigJson);
+            log.e("Invalid configuration for " + PlayerPluginUtilsKt.getPluginClass(pluginName).getSimpleName());
          }
+      } else {
+         log.e("Can not create the plugin " + PlayerPluginUtilsKt.getPluginClass(pluginName).getSimpleName() + " \n " +
+                 "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson);
       }
    }
 
@@ -1071,13 +1094,6 @@ public class KalturaPlayerRNView extends FrameLayout {
          return KalturaPlayer.Type.ovp;
       }
       return KalturaPlayer.Type.ott;
-   }
-
-   private PKPluginConfigs getPluginConfigs() {
-      if (pluginConfigs == null) {
-         pluginConfigs = new PKPluginConfigs();
-      }
-      return pluginConfigs;
    }
 
    private String createJSONForEventPayload(String key, Object value) {

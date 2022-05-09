@@ -15,6 +15,7 @@ public class InitOptions {
     public String  serverUrl;
     public boolean autoplay = false;
     public boolean preload = true;
+    public RegisteredPlugins plugins;
     public PKRequestConfig requestConfig;
     public boolean allowCrossProtocolRedirect = true;
     public List<String> warmupUrls;
