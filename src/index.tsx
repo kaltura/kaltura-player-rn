@@ -43,7 +43,7 @@ export enum DRM_SCHEME {
   PLAYREADY_CLASSIC = "PlayReadyClassic"
 }
 
-export enum PLUGINS {
+export enum PLAYER_PLUGIN {
   IMA = "ima",
   IMADAI = "imadai",
   YOUBORA = "youbora",
@@ -77,7 +77,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Add the listners for the Kaltura Player
    */
   addListeners = () => {
-    console.log("Calling Native Prop addListeners()")
+    console.log("Calling Native Prop addListeners()");
     this.setNativeProps({ addListeners: true });
   }
 
@@ -85,7 +85,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Add the listners for the Kaltura Player
    */
   removeListeners = () => {
-    console.log("Calling Native Prop removeListeners()")
+    console.log("Calling Native Prop removeListeners()");
     this.setNativeProps({ removeListeners: true });
   }
 
@@ -99,7 +99,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * for the mediaId or the entryId)
    */
   setup = (options: string, id: number = 0) => {
-    console.log("Setting up the Player")
+    console.log("Setting up the Player");
     this.setNativeProps({ partnerId: id });
     this.setNativeProps({ playerInitOptions: options });
   }
@@ -110,11 +110,11 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * @param pluginName Plugin Name (Youbora, IMA etc)
    * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
    */
-   updatePluginConfig = (pluginName: PLUGINS, config: object) => {
+   updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
     const pluginJson =  {
       "pluginName": pluginName,
       "pluginConfig": config
-    }
+    };
     const stringifiedJson = JSON.stringify(pluginJson);
     console.log("Updated Plugin is: " + stringifiedJson);
     this.setNativeProps( { updatePluginConfig : stringifiedJson})
@@ -143,7 +143,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Play the player if it is not playing
    */
   play = () => {
-    console.log("Calling Native Prop play()")
+    console.log("Calling Native Prop play()");
     this.setNativeProps({ play: true });
   };
 
@@ -151,7 +151,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Pause the player if it is playing
    */
   pause = () => {
-    console.log("Calling Native Prop pause()")
+    console.log("Calling Native Prop pause()");
     this.setNativeProps({ pause: true });
   };
 
@@ -159,7 +159,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Stops the player to the initial state
    */
   stop = () => {
-    console.log("Calling Native Prop stop()")
+    console.log("Calling Native Prop stop()");
     this.setNativeProps({ stop: true });
   }
 
@@ -167,7 +167,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Replays the media from the beginning
    */
   replay = () => {
-    console.log("Calling Native Prop replay()")
+    console.log("Calling Native Prop replay()");
     this.setNativeProps({ replay: true });
   }
 
@@ -176,7 +176,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * @param position in miliseconds (Ms)
    */
   seekTo = (position: number) => {
-    console.log("Calling Native Prop seekTo()")
+    console.log("Calling Native Prop seekTo()");
     this.setNativeProps({ seek: position });
   }
 
@@ -185,8 +185,8 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * @param trackId Unique track ID which was sent in `tracksAvailable` event
    */
   changeTrack = (trackId: string) => {
-    console.log("Calling Native Prop changeTrack()")
-    this.setNativeProps({ changeTrack: trackId })
+    console.log("Calling Native Prop changeTrack()");
+    this.setNativeProps({ changeTrack: trackId });
   }
 
   /**
@@ -194,8 +194,8 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * @param rate Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)
    */
   setPlaybackRate = (rate: number) => {
-    console.log("Calling Native Prop setPlaybackRate()")
-    this.setNativeProps({ playbackRate: rate })
+    console.log("Calling Native Prop setPlaybackRate()");
+    this.setNativeProps({ playbackRate: rate });
   }
 
   /**
@@ -207,23 +207,23 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     * @param vol - volume to set.
     */
   setVolume = (vol: number) => {
-    console.log("Calling Native Prop setVolume()")
-    this.setNativeProps({ volume: vol })
+    console.log("Calling Native Prop setVolume()");
+    this.setNativeProps({ volume: vol });
   }
 
   setAutoPlay = (isAutoPlay: boolean) => {
-    console.log("Calling Native Prop setAutoPlay()")
-    this.setNativeProps({ autoPlay: isAutoPlay})
+    console.log("Calling Native Prop setAutoPlay()");
+    this.setNativeProps({ autoPlay: isAutoPlay});
   }
 
   setKS = (KS: string) => {
-    console.log("Calling Native Prop setKS()")
-    this.setNativeProps({ ks: KS })
+    console.log("Calling Native Prop setKS()");
+    this.setNativeProps({ ks: KS });
   }
 
   setZIndex = (index: number) => {
-    console.log("Calling Native Prop setZIndex()")
-    this.setNativeProps({ zIndex: index })
+    console.log("Calling Native Prop setZIndex()");
+    this.setNativeProps({ zIndex: index });
   }
 
   render() {

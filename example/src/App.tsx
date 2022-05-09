@@ -7,7 +7,7 @@ import {
   MEDIA_FORMAT,
   PLAYER_TYPE,
   DRM_SCHEME,
-  PLUGINS,
+  PLAYER_PLUGIN,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import PlayerEvents from 'react-native-kaltura-player';
@@ -53,7 +53,7 @@ export default class App extends React.Component {
   };
 
   changeMedia = (assetId: string, mediaAsset: string) => {
-    this.player.updatePluginConfig(PLUGINS.YOUBORA, getUpdatedYouboraConfig);
+    this.player.updatePluginConfig(PLAYER_PLUGIN.YOUBORA, getUpdatedYouboraConfig);
     this.player.loadMedia(assetId, mediaAsset);
   };
 

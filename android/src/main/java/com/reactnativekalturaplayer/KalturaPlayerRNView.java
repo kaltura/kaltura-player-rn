@@ -645,11 +645,10 @@ public class KalturaPlayerRNView extends FrameLayout {
       if (player != null && player.getPlayerView() != null) {
          if (isVisible) {
             player.getPlayerView().setVisibility(View.VISIBLE);
-            player.setVolume(volume);
          } else {
             player.getPlayerView().setVisibility(View.INVISIBLE);
-            player.setVolume(volume);
          }
+         player.setVolume(volume);
 
       }
    }
