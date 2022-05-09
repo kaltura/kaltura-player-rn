@@ -91,8 +91,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 
   /**
    * This method creates a Player instance internally (Basic, OVP/OTT Player)
-   * We this, it take the PlayerInitOptions which are having essential Player settings values
-   * helpful for the playback
+   * With this, it take the PlayerInitOptions which are having essential Player settings values
    * 
    * @param options PlayerInitOptions JSON String
    * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
@@ -118,11 +117,32 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       "pluginConfig": config
     }
     const stringifiedJson = JSON.stringify(pluginJson);
-    console.log("Plugin is: " + stringifiedJson);
+    console.log("Set Plugin is: " + stringifiedJson);
     this.setNativeProps( { setPluginConfig : stringifiedJson})
   }
 
   /**
+   * Update a Plugin Config 
+   * 
+   * @param pluginName Plugin Name (Youbora, IMA etc)
+   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+   */
+   updatePluginConfig = (pluginName: PLUGINS, config: object) => {
+    const pluginJson =  {
+      "pluginName": pluginName,
+      "pluginConfig": config
+    }
+    const stringifiedJson = JSON.stringify(pluginJson);
+    console.log("Updated Plugin is: " + stringifiedJson);
+    this.setNativeProps( { updatePluginConfig : stringifiedJson})
+  }
+
+  /**
+   * Load the media with the given 
+   * 
+   * assetId OR mediaId OR entryID for OVP/OTT Kaltura Player 
+   * 
+   * playbackURL for Basic Kaltura Player
    * 
    * @param id Playback URL for Kaltura Basic Player OR
    * MediaId for Kaltura OTT Player OR

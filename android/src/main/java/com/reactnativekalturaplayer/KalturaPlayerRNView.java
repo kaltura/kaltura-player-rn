@@ -375,9 +375,10 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   protected void setPluginConfig(String pluginConfigJson) {
+   protected void configurePluginConfigs(String pluginConfigJson, boolean isUpdatePlugin) {
+      log.e("configurePluginConfigs, isUpdatePlugin: " + isUpdatePlugin);
       if (TextUtils.isEmpty(pluginConfigJson)) {
-         log.e("setPluginConfig, pluginConfigJson is empty hence returning from here.");
+         log.e("pluginConfigJson is empty hence returning from here.");
          return;
       }
 
@@ -393,7 +394,11 @@ public class KalturaPlayerRNView extends FrameLayout {
          } else if (TextUtils.equals(pluginName, RegisteredPlugins.youbora.name())) {
             YouboraConfig youboraConfig = getParsedJson(pluginConfig.getPluginConfig().toString(), YouboraConfig.class);
             if (youboraConfig != null) {
-               createYouboraPlugin(getPluginConfigs(), youboraConfig);
+               if (isUpdatePlugin) {
+                  updateYouboraPlugin(youboraConfig);
+               } else {
+                  createYouboraPlugin(getPluginConfigs(), youboraConfig);
+               }
             }
          } else if (TextUtils.equals(pluginName, RegisteredPlugins.kava.name())) {
 
@@ -465,19 +470,6 @@ public class KalturaPlayerRNView extends FrameLayout {
             return;
          }
          //TODO: MOVE THIS UPDATE PLUGIN CODE
-         /*if (mediaAsset.getPlugins() != null) {
-            if (mediaAsset.getPlugins().ima != null) {
-               updateIMAPlugin(mediaAsset.getPlugins().ima);
-            }
-
-            if (mediaAsset.getPlugins().youbora != null) {
-               updateYouboraPlugin(mediaAsset.getPlugins().youbora);
-            }
-
-            if (mediaAsset.getPlugins().ottAnalytics != null) {
-               updatePhoenixAnalyticsPlugin(mediaAsset.getPlugins().ottAnalytics);
-            }
-         }*/
 
          if (playerType == KalturaPlayer.Type.ott) {
             OTTMediaOptions ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player.getKS());

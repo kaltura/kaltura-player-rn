@@ -10,6 +10,9 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.kaltura.playkit.PKLog;
+import com.kaltura.playkit.plugins.youbora.YouboraPlugin;
+import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig;
+import com.npaw.youbora.lib6.YouboraLog;
 
 public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNView> {
 
@@ -112,19 +115,20 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_LOAD)
    public void load(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("preparePlayer autoPlay " + autoPlay);
+      YouboraLog.setDebugLevel(YouboraLog.Level.VERBOSE);
       kalturaPlayerRNView.load(true);
    }
 
    @ReactProp(name = PROP_SET_PLUGIN_CONFIG)
    public void setPluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String pluginConfig) {
       log.d("setPluginConfig " + pluginConfig);
-      kalturaPlayerRNView.setPluginConfig(pluginConfig);
+      kalturaPlayerRNView.configurePluginConfigs(pluginConfig, false);
    }
 
    @ReactProp(name = PROP_UPDATE_PLUGIN_CONFIG)
-   public void updatePluginConfig(KalturaPlayerRNView kalturaPlayerRNView, boolean updatePlugin) {
-      log.d("updatePluginConfig " + updatePlugin);
-      //TODO
+   public void updatePluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String updatedPluginConfig) {
+      log.d("updatePluginConfig " + updatedPluginConfig);
+      kalturaPlayerRNView.configurePluginConfigs(updatedPluginConfig, true);
    }
 
    @ReactProp(name = PROP_ADD_LISTENERS)

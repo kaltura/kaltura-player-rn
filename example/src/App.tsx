@@ -4,7 +4,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { KalturaPlayer, MEDIA_ENTRY_TYPE, MEDIA_FORMAT, PLAYER_TYPE, DRM_SCHEME, PLUGINS } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import PlayerEvents from "react-native-kaltura-player"
-import PluginConfig from "react-native-kaltura-player"
 
 const playerEventEmitter = new NativeEventEmitter();
 
@@ -17,43 +16,44 @@ export default class App extends React.Component {
     // });
     console.log("componentDidMount from App.");
     // OTT Configuration
-    // this.player.setup(JSON.stringify(initOptions), OttPartnerId)
-    // this.player.addListeners()
-    // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset))
+    // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
+    // this.player.addListeners();
+    // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset));
 
     // OVP Configuration
-    // this.player.setup(JSON.stringify(ovpInitOptions), OvpPartnerId)
-    // this.player.addListeners()
-    // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset))
+    // this.player.setup(JSON.stringify(ovpInitOptions), OvpPartnerId);
+    // this.player.addListeners();
+    // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset));
 
     // BASIC Configuration
-    this.player.setPluginConfig(PLUGINS.YOUBORA, getYouboraConfig)
-    this.player.setup(JSON.stringify(basicInitOptions))
-    this.player.addListeners()
-    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset))
+    this.player.setPluginConfig(PLUGINS.YOUBORA, getYouboraConfig);
+    this.player.setup(JSON.stringify(basicInitOptions));
+    this.player.addListeners();
+    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
   }
 
   componentWillUnmount() {
     console.log("componentDidMount from App.");
-    this.player.removeListeners()
+    this.player.removeListeners();
   }
 
   player: KalturaPlayer;
 
   doPause = () => {
-    this.player.pause()
+    this.player.pause();
   };
 
   doPlay = () => {
-    this.player.play()
-  };
+    this.player.play();
+  }
 
   changePlaybackRate = (rate: number) => {
-    this.player.setPlaybackRate(rate)
+    this.player.setPlaybackRate(rate);
   }
 
   changeMedia = (assetId: string, mediaAsset: string) => {
-    this.player.loadMedia(assetId, mediaAsset)
+    this.player.updatePluginConfig(PLUGINS.YOUBORA, getUpdatedYouboraConfig);
+    this.player.loadMedia(assetId, mediaAsset);
   }
   
   render() {
@@ -127,11 +127,11 @@ playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, payload => {
 const playbackUrl = "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8";
 const playbackUrlChangeMedia = "http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multi_language_subs.m3u8";
 
-const basicUrlWithDrm = "https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd"
-const basicDRMUrl = "https://proxy.uat.widevine.com/proxy?video_id=2015_tears&provider=widevine_test"
+const basicUrlWithDrm = "https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd";
+const basicDRMUrl = "https://proxy.uat.widevine.com/proxy?video_id=2015_tears&provider=widevine_test";
 
-const playbackFormat = MEDIA_FORMAT.HLS
-const entryType = MEDIA_ENTRY_TYPE.VOD
+const playbackFormat = MEDIA_FORMAT.HLS;
+const entryType = MEDIA_ENTRY_TYPE.VOD;
 const id = "basicId";
 const name = "basicName";
 const duration = 120;
@@ -237,155 +237,7 @@ var ovpInitOptions = {
   },
   "handleAudioFocus": true,
   "plugins": {
-    "ima": {},
-    "youbora": {
-      "accountCode": "yourCode",
-      "username": "your_app_logged_in_user_email_or_userId",
-      "userEmail": "user_email",
-      "userAnonymousId": "user_anonymous_Id",
-      "userType": "user_type",
-      "houseHoldId": "zxzxz",
-      "userObfuscateIp": true,
-      "httpSecure": true,
-      "transportFormat": "transportFormat",
-      "urlToParse": "urlToParse",
-      "linkedViewId": "linkedViewId",
-      "isAutoStart": true,
-      "isAutoDetectBackground": true,
-      "isEnabled": true,
-      "isForceInit": true,
-      "isOffline": false,
-      "haltOnError": false,
-      "enableAnalytics": true,
-      "enableSmartAds": true,
-      "content": {
-        "contentBitrate": 640000,
-        "contentCdn": "a",
-        "contentCdnNode": "b",
-        "contentCdnType": "c",
-        "contentChannel": "d",
-        "contentContractedResolution": "720p",
-        "contentCost": "122",
-        "contentDrm": "e",
-        "contentDuration": 1200000,
-        "contentEncodingAudioCodec": "ec-3",
-        "contentEncodingCodecProfile": "f",
-        "contentEncodingContainerFormat": "g",
-        "contentEncodingVideoCodec": "h",
-        "contentEpisodeTitle": "title2",
-        "contentFps": 60,
-        "contentGenre": "drama",
-        "contentGracenoteId": "i",
-        "contentId": "22222",
-        "contentImdbId": "j",
-        "contentIsLive": false,
-        "contentIsLiveNoSeek": false,
-        "contentLanguage": "en",
-        "contentPackage": "aaa",
-        "contentPlaybackType": "bbb",
-        "contentPrice": 10000,
-        "contentProgram": "program",
-        "contentRendition": "22223",
-        "contentResource": "http:/ssss.m3u8",
-        "contentSaga": "ccc",
-        "contentSeason": "ddd",
-        "contentStreamingProtocol": "applehttp",
-        "contentSubtitles": "en",
-        "contentThroughput": 1230000,
-        "contentTitle": "title",
-        "contentTransactionCode": "dssd",
-        "contentTotalBytes": 123344,
-        "contentSendTotalBytes": false,
-        "contentTvShow": "sadsa",
-        "contentType": "drama"
-      },
-      "app": {
-        "appName": "MyTestApp",
-        "appReleaseVersion": "v1.0"
-      },
-      "parse": {
-        "parseManifest": true,
-        "parseCdnNode": true,
-        "parseCdnSwitchHeader": true,
-        "cdnNodeList": [
-          "Akamai",
-          "Cloudfront",
-          "Level3",
-          "Fastly",
-          "Highwinds"
-        ],
-        "cdnNameHeaders": "x-cdn-forward",
-        "parseCdnTTL": 60
-      },
-      "network": {
-        "networkIP": "1.1.1.1",
-        "networkConnectionType": "cellular",
-        "networkIsp": "orange"
-      },
-      "device": {
-        "deviceBrand": "deviceBrand",
-        "deviceCode": "deviceCode",
-        "deviceId": "deviceId",
-        "deviceModel": "deviceModel",
-        "deviceOsName": "deviceOsName",
-        "deviceOsVersion": "deviceOsVersion",
-        "deviceType": "deviceType",
-        "deviceIsAnonymous": false
-      },
-      "errors": {
-        "errorsIgnore": [
-          "exception1",
-          "exception2"
-        ],
-        "errorsFatal": [
-          "exception3",
-          "exception4"
-        ],
-        "errorsNonFatal": [
-          "exception5",
-          "exception6"
-        ]
-      },
-      "ads": {
-        "adBreaksTime": [
-          0,
-          15,
-          60
-        ],
-        "adCampaign": "AdCmap",
-        "adCreativeId": "adCreativeId",
-        "adExpectedBreaks": 3,
-        "adGivenAds": 5,
-        "adGivenBreaks": 3,
-        "adProvider": "adProvider",
-        "adResource": "adResource",
-        "adTitle": "adTitle",
-        "adCustomDimensions": {
-          "adCustomDimension1": "adCustomDimension1",
-          "adCustomDimension2": "adCustomDimension2",
-          "adCustomDimension3": "adCustomDimension3",
-          "adCustomDimension4": "adCustomDimension4",
-          "adCustomDimension5": "adCustomDimension5"
-        }
-      },
-      "properties": {
-        "year": "your_year",
-        "cast": "your_cast",
-        "director": "your_director",
-        "owner": "your_owner",
-        "parental": "your_parental",
-        "rating": "your_rating",
-        "audioChannels": "your_audio_channels",
-        "device": "your_device"
-      },
-      "contentCustomDimensions": {
-        "contentCustomDimension1": "customDimension1",
-        "contentCustomDimension2": "customDimension2",
-        "contentCustomDimension3": "customDimension3",
-        "contentCustomDimension4": "customDimension4",
-        "contentCustomDimension5": "customDimension5"
-      }
-    }
+    "ima": {}
   }
 }
 
@@ -402,163 +254,7 @@ var ovpMediaAsset = {
   // "streamerType": "Mpegdash",
   // "streamerType": "Multicast",
 
-  "startPosition": 0,
-  "plugins" : {
-    "ima" : {
-      "adTagUrl" : "",
-      //"adTagUrl" : "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=",
-      "alwaysStartWithPreroll" : true,
-      "enableDebugMode" : false
-    },
-    "youbora" : {
-      "accountCode": "yourCode",
-      "username": "your_app_logged_in_user_email_or_userId",
-      "userEmail": "user_email",
-      "userAnonymousId": "user_anonymous_Id",
-      "userType": "user_type",
-      "houseHoldId": "zxzxz",
-      "userObfuscateIp": true,
-      "httpSecure": true,
-      "transportFormat": "transportFormat",
-      "urlToParse": "urlToParse",
-      "linkedViewId": "linkedViewId",
-      "isAutoStart": true,
-      "isAutoDetectBackground": true,
-      "isEnabled": true,
-      "isForceInit": true,
-      "isOffline": false,
-      "haltOnError": false,
-      "enableAnalytics": true,
-      "enableSmartAds": true,
-      "content": {
-        "contentBitrate": 640000,
-        "contentCdn": "a",
-        "contentCdnNode": "b",
-        "contentCdnType": "c",
-        "contentChannel": "d",
-        "contentContractedResolution": "720p",
-        "contentCost": "122",
-        "contentDrm": "e",
-        "contentDuration": 1200000,
-        "contentEncodingAudioCodec": "ec-3",
-        "contentEncodingCodecProfile": "f",
-        "contentEncodingContainerFormat": "g",
-        "contentEncodingVideoCodec": "h",
-        "contentEpisodeTitle": "title2",
-        "contentFps": 60,
-        "contentGenre": "drama",
-        "contentGracenoteId": "i",
-        "contentId": "22222",
-        "contentImdbId": "j",
-        "contentIsLive": false,
-        "contentIsLiveNoSeek": false,
-        "contentLanguage": "en",
-        "contentPackage": "aaa",
-        "contentPlaybackType": "bbb",
-        "contentPrice": 10000,
-        "contentProgram": "program",
-        "contentRendition": "22223",
-        "contentResource": "http:/ssss.m3u8",
-        "contentSaga": "ccc",
-        "contentSeason": "ddd",
-        "contentStreamingProtocol": "applehttp",
-        "contentSubtitles": "en",
-        "contentThroughput": 1230000,
-        "contentTitle": "title",
-        "contentTransactionCode": "dssd",
-        "contentTotalBytes": 123344,
-        "contentSendTotalBytes": false,
-        "contentTvShow": "sadsa",
-        "contentType": "drama"
-      },
-      "app": {
-        "appName": "MyTestApp",
-        "appReleaseVersion": "v1.0"
-      },
-      "parse": {
-        "parseManifest": true,
-        "parseCdnNode": true,
-        "parseCdnSwitchHeader": true,
-        "cdnNodeList": [
-          "Akamai",
-          "Cloudfront",
-          "Level3",
-          "Fastly",
-          "Highwinds"
-        ],
-        "cdnNameHeaders": "x-cdn-forward",
-        "parseCdnTTL": 60
-      },
-      "network": {
-        "networkIP": "1.1.1.1",
-        "networkConnectionType": "cellular",
-        "networkIsp": "orange"
-      },
-      "device": {
-        "deviceBrand": "deviceBrand",
-        "deviceCode": "deviceCode",
-        "deviceId": "deviceId",
-        "deviceModel": "deviceModel",
-        "deviceOsName": "deviceOsName",
-        "deviceOsVersion": "deviceOsVersion",
-        "deviceType": "deviceType",
-        "deviceIsAnonymous": false
-      },
-      "errors": {
-        "errorsIgnore": [
-          "exception1",
-          "exception2"
-        ],
-        "errorsFatal": [
-          "exception3",
-          "exception4"
-        ],
-        "errorsNonFatal": [
-          "exception5",
-          "exception6"
-        ]
-      },
-      "ads": {
-        "adBreaksTime": [
-          0,
-          15,
-          60
-        ],
-        "adCampaign": "AdCmap",
-        "adCreativeId": "adCreativeId",
-        "adExpectedBreaks": 3,
-        "adGivenAds": 5,
-        "adGivenBreaks": 3,
-        "adProvider": "adProvider",
-        "adResource": "adResource",
-        "adTitle": "adTitle",
-        "adCustomDimensions": {
-          "adCustomDimension1": "adCustomDimension1",
-          "adCustomDimension2": "adCustomDimension2",
-          "adCustomDimension3": "adCustomDimension3",
-          "adCustomDimension4": "adCustomDimension4",
-          "adCustomDimension5": "adCustomDimension5"
-        }
-      },
-      "properties": {
-        "year": "your_year",
-        "cast": "your_cast",
-        "director": "your_director",
-        "owner": "your_owner",
-        "parental": "your_parental",
-        "rating": "your_rating",
-        "audioChannels": "your_audio_channels",
-        "device": "your_device"
-      },
-     "contentCustomDimensions": {
-        "contentCustomDimension1": "customDimension1",
-        "contentCustomDimension2": "customDimension2",
-        "contentCustomDimension3": "customDimension3",
-        "contentCustomDimension4": "customDimension4",
-        "contentCustomDimension5": "customDimension5"
-      }
-    }
-  }
+  "startPosition": 0
 }
 
 var initOptions = {
@@ -620,169 +316,13 @@ var mediaAsset = {
   // "streamerType": "Mpegdash",
   // "streamerType": "Multicast",
 
-  "startPosition": 0,
-  "plugins" : {
-    "ima" : {
-      "adTagUrl" : "",
-      //"adTagUrl" : "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=",
-      "alwaysStartWithPreroll" : true,
-      "enableDebugMode" : false
-    },
-    "youbora" : {
-      "accountCode": "yourCode",
-      "username": "your_app_logged_in_user_email_or_userId",
-      "userEmail": "user_email",
-      "userAnonymousId": "user_anonymous_Id",
-      "userType": "user_type",
-      "houseHoldId": "zxzxz",
-      "userObfuscateIp": true,
-      "httpSecure": true,
-      "transportFormat": "transportFormat",
-      "urlToParse": "urlToParse",
-      "linkedViewId": "linkedViewId",
-      "isAutoStart": true,
-      "isAutoDetectBackground": true,
-      "isEnabled": true,
-      "isForceInit": true,
-      "isOffline": false,
-      "haltOnError": false,
-      "enableAnalytics": true,
-      "enableSmartAds": true,
-      "content": {
-        "contentBitrate": 640000,
-        "contentCdn": "a",
-        "contentCdnNode": "b",
-        "contentCdnType": "c",
-        "contentChannel": "d",
-        "contentContractedResolution": "720p",
-        "contentCost": "122",
-        "contentDrm": "e",
-        "contentDuration": 1200000,
-        "contentEncodingAudioCodec": "ec-3",
-        "contentEncodingCodecProfile": "f",
-        "contentEncodingContainerFormat": "g",
-        "contentEncodingVideoCodec": "h",
-        "contentEpisodeTitle": "title2",
-        "contentFps": 60,
-        "contentGenre": "drama",
-        "contentGracenoteId": "i",
-        "contentId": "22222",
-        "contentImdbId": "j",
-        "contentIsLive": false,
-        "contentIsLiveNoSeek": false,
-        "contentLanguage": "en",
-        "contentPackage": "aaa",
-        "contentPlaybackType": "bbb",
-        "contentPrice": 10000,
-        "contentProgram": "program",
-        "contentRendition": "22223",
-        "contentResource": "http:/ssss.m3u8",
-        "contentSaga": "ccc",
-        "contentSeason": "ddd",
-        "contentStreamingProtocol": "applehttp",
-        "contentSubtitles": "en",
-        "contentThroughput": 1230000,
-        "contentTitle": "title",
-        "contentTransactionCode": "dssd",
-        "contentTotalBytes": 123344,
-        "contentSendTotalBytes": false,
-        "contentTvShow": "sadsa",
-        "contentType": "drama"
-      },
-      "app": {
-        "appName": "MyTestApp",
-        "appReleaseVersion": "v1.0"
-      },
-      "parse": {
-        "parseManifest": true,
-        "parseCdnNode": true,
-        "parseCdnSwitchHeader": true,
-        "cdnNodeList": [
-          "Akamai",
-          "Cloudfront",
-          "Level3",
-          "Fastly",
-          "Highwinds"
-        ],
-        "cdnNameHeaders": "x-cdn-forward",
-        "parseCdnTTL": 60
-      },
-      "network": {
-        "networkIP": "1.1.1.1",
-        "networkConnectionType": "cellular",
-        "networkIsp": "orange"
-      },
-      "device": {
-        "deviceBrand": "deviceBrand",
-        "deviceCode": "deviceCode",
-        "deviceId": "deviceId",
-        "deviceModel": "deviceModel",
-        "deviceOsName": "deviceOsName",
-        "deviceOsVersion": "deviceOsVersion",
-        "deviceType": "deviceType",
-        "deviceIsAnonymous": false
-      },
-      "errors": {
-        "errorsIgnore": [
-          "exception1",
-          "exception2"
-        ],
-        "errorsFatal": [
-          "exception3",
-          "exception4"
-        ],
-        "errorsNonFatal": [
-          "exception5",
-          "exception6"
-        ]
-      },
-      "ads": {
-        "adBreaksTime": [
-          0,
-          15,
-          60
-        ],
-        "adCampaign": "AdCmap",
-        "adCreativeId": "adCreativeId",
-        "adExpectedBreaks": 3,
-        "adGivenAds": 5,
-        "adGivenBreaks": 3,
-        "adProvider": "adProvider",
-        "adResource": "adResource",
-        "adTitle": "adTitle",
-        "adCustomDimensions": {
-          "adCustomDimension1": "adCustomDimension1",
-          "adCustomDimension2": "adCustomDimension2",
-          "adCustomDimension3": "adCustomDimension3",
-          "adCustomDimension4": "adCustomDimension4",
-          "adCustomDimension5": "adCustomDimension5"
-        }
-      },
-      "properties": {
-        "year": "your_year",
-        "cast": "your_cast",
-        "director": "your_director",
-        "owner": "your_owner",
-        "parental": "your_parental",
-        "rating": "your_rating",
-        "audioChannels": "your_audio_channels",
-        "device": "your_device"
-      },
-     "contentCustomDimensions": {
-        "contentCustomDimension1": "customDimension1",
-        "contentCustomDimension2": "customDimension2",
-        "contentCustomDimension3": "customDimension3",
-        "contentCustomDimension4": "customDimension4",
-        "contentCustomDimension5": "customDimension5"
-      }
-    }
-  }
+  "startPosition": 0
 }
 
 var getYouboraConfig = {
-  "accountCode": "yourCode",
-  "username": "your_app_logged_in_user_email_or_userId",
-  "userEmail": "user_email",
+  "accountCode": "kalturatest",
+  "username": "gourav_rn",
+  "userEmail": "gourav_rn@mobile.com",
   "userAnonymousId": "user_anonymous_Id",
   "userType": "user_type",
   "houseHoldId": "zxzxz",
@@ -817,7 +357,7 @@ var getYouboraConfig = {
     "contentFps": 60,
     "contentGenre": "drama",
     "contentGracenoteId": "i",
-    "contentId": "22222",
+    "contentId": "1st_media",
     "contentImdbId": "j",
     "contentIsLive": false,
     "contentIsLiveNoSeek": false,
@@ -827,6 +367,156 @@ var getYouboraConfig = {
     "contentPrice": 10000,
     "contentProgram": "program",
     "contentRendition": "22223",
+    // "contentResource": "http://ssss.m3u8", // TODO: THIS IS CREATING CRASH ON ANDROID NATIVE SIDE WHILE PARSGING THE JSON
+    "contentSaga": "ccc",
+    "contentSeason": "ddd",
+    "contentStreamingProtocol": "applehttp",
+    "contentSubtitles": "en",
+    "contentThroughput": 1230000,
+    "contentTitle": "title",
+    "contentTransactionCode": "dssd",
+    "contentTotalBytes": 123344,
+    "contentSendTotalBytes": false,
+    "contentTvShow": "sadsa",
+    "contentType": "drama"
+  },
+  "app": {
+    "appName": "MyTestApp",
+    "appReleaseVersion": "v1.0"
+  },
+  "parse": {
+    "parseManifest": true,
+    "parseCdnNode": true,
+    "parseCdnSwitchHeader": true,
+    "cdnNodeList": [
+      "Akamai",
+      "Cloudfront",
+      "Level3",
+      "Fastly",
+      "Highwinds"
+    ],
+    "cdnNameHeaders": "x-cdn-forward",
+    "parseCdnTTL": 60
+  },
+  "network": {
+    "networkIP": "1.1.1.1",
+    "networkConnectionType": "cellular",
+    "networkIsp": "orange"
+  },
+  "device": {
+    "deviceBrand": "deviceBrand",
+    "deviceCode": "deviceCode",
+    "deviceId": "deviceId",
+    "deviceModel": "deviceModel",
+    "deviceOsName": "deviceOsName",
+    "deviceOsVersion": "deviceOsVersion",
+    "deviceType": "deviceType",
+    "deviceIsAnonymous": false
+  },
+  "errors": {
+    "errorsIgnore": [
+      "exception1",
+      "exception2"
+    ],
+    "errorsFatal": [
+      "exception3",
+      "exception4"
+    ],
+    "errorsNonFatal": [
+      "exception5",
+      "exception6"
+    ]
+  },
+  "ads": {
+    "adBreaksTime": [
+      0,
+      15,
+      60
+    ],
+    "adCampaign": "AdCmap",
+    "adCreativeId": "adCreativeId",
+    "adExpectedBreaks": 3,
+    "adGivenAds": 5,
+    "adGivenBreaks": 3,
+    "adProvider": "adProvider",
+    "adResource": "adResource",
+    "adTitle": "adTitle",
+    "adCustomDimensions": {
+      "adCustomDimension1": "adCustomDimension1",
+      "adCustomDimension2": "adCustomDimension2",
+      "adCustomDimension3": "adCustomDimension3",
+      "adCustomDimension4": "adCustomDimension4",
+      "adCustomDimension5": "adCustomDimension5"
+    }
+  },
+  "properties": {
+    "year": "your_year",
+    "cast": "your_cast",
+    "director": "your_director",
+    "owner": "your_owner",
+    "parental": "your_parental",
+    "rating": "your_rating",
+    "audioChannels": "your_audio_channels",
+    "device": "your_device"
+  },
+  "contentCustomDimensions": {
+    "contentCustomDimension1": "customDimension1",
+    "contentCustomDimension2": "customDimension2",
+    "contentCustomDimension3": "customDimension3",
+    "contentCustomDimension4": "customDimension4",
+    "contentCustomDimension5": "customDimension5"
+  }
+}
+
+var getUpdatedYouboraConfig = {
+  "accountCode": "kalturatest",
+  "username": "gourav_rn",
+  "userEmail": "gourav_rn@mobile.com",
+  "userAnonymousId": "user_anonymous_Id",
+  "userType": "user_type",
+  "houseHoldId": "zxzxz",
+  "userObfuscateIp": true,
+  "httpSecure": true,
+  "transportFormat": "transportFormat",
+  "urlToParse": "urlToParse",
+  "linkedViewId": "linkedViewId",
+  "isAutoStart": true,
+  "isAutoDetectBackground": true,
+  "isEnabled": true,
+  "isForceInit": true,
+  "isOffline": false,
+  "haltOnError": false,
+  "enableAnalytics": true,
+  "enableSmartAds": true,
+  "content": {
+    "contentBitrate": 640000,
+    "contentCdn": "a",
+    "contentCdnNode": "b",
+    "contentCdnType": "c",
+    "contentChannel": "d",
+    "contentContractedResolution": "720p",
+    "contentCost": "122",
+    "contentDrm": "e",
+    "contentDuration": 1200000,
+    "contentEncodingAudioCodec": "ec-3",
+    "contentEncodingCodecProfile": "f",
+    "contentEncodingContainerFormat": "g",
+    "contentEncodingVideoCodec": "h",
+    "contentEpisodeTitle": "title2",
+    "contentFps": 60,
+    "contentGenre": "drama",
+    "contentGracenoteId": "i",
+    "contentId": "2nd_media",
+    "contentImdbId": "j",
+    "contentIsLive": false,
+    "contentIsLiveNoSeek": false,
+    "contentLanguage": "en",
+    "contentPackage": "aaa",
+    "contentPlaybackType": "bbb",
+    "contentPrice": 10000,
+    "contentProgram": "program",
+    "contentRendition": "22223",
+    // "contentResource": "http://ssss.m3u8", // TODO: THIS IS CREATING CRASH ON ANDROID NATIVE SIDE WHILE PARSGING THE JSON
     "contentSaga": "ccc",
     "contentSeason": "ddd",
     "contentStreamingProtocol": "applehttp",
