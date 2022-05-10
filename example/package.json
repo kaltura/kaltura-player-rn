@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "react": "16.13.1",
-    "react-native": "^0.68.0"
+    "react-native": "^0.68.0",
+    "react-native-element-dropdown": "^1.8.10"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
