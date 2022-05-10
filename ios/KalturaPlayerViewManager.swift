@@ -199,14 +199,16 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: [
                 "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
                 "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
-                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? ""
+                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? "",
+                "isSelected": true
             ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "textTrackChanged", body: [
                 "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
                 "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
-                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? ""
+                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? "",
+                "isSelected": true
             ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackInfo) { event in
