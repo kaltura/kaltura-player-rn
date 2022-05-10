@@ -33,6 +33,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
 class KalturaPlayerViewManager: RCTViewManager {
     var player: KalturaPlayerRNView!
     var kalturaPlayer: KalturaOTTPlayer!
+    var bufferedTime: Double = 0
 
     override func view() -> (KalturaPlayerRNView) {
         return player
@@ -108,6 +109,10 @@ class KalturaPlayerViewManager: RCTViewManager {
         }
     }
     
+    func safeJsonValue(value: String?) -> String? {
+        return value == nil ? "" : value;
+    }
+    
     @objc func observeAllEvents() {
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.canPlay) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "canPlay", body: [])
@@ -128,28 +133,117 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "durationChanged", body: ["duration": event.duration])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playheadUpdate) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "playheadUpdate", body: event.data)
+            let currentTime = event.currentTime as! Double
+            var bufferedTime = self.bufferedTime
+            
+            if (bufferedTime < currentTime) {
+                bufferedTime = currentTime
+            }
+            
+            if (self.kalturaPlayer.isLive()) {
+                let currentProgramTime = self.kalturaPlayer.currentProgramTime
+                let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
+                let currentProgramTimeDouble = currentProgramTimeEpochSeconds! as Double
+                
+                KalturaPlayerEvents.emitter.sendEvent(withName: "timeUpdate", body: [
+                    "position": currentTime,
+                    "bufferPosition": bufferedTime,
+                    "currentProgramTime": currentProgramTimeDouble
+                ])
+            } else {
+                KalturaPlayerEvents.emitter.sendEvent(withName: "timeUpdate", body: [
+                    "position": currentTime,
+                    "bufferPosition": bufferedTime
+                ])
+            }
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "sourceSelected", body: event.data)
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.tracksAvailable) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "tracksAvailable", body: event.data)
+            var audioTracks = [] as Array
+            let selectedAudioTrackId = self.kalturaPlayer.currentAudioTrack
+            let eventAudioTracks = event.tracks?.audioTracks ?? []
+            for track in eventAudioTracks {
+                audioTracks.append([
+                    "id": self.safeJsonValue(value: track.id) ?? "",
+                    "label": self.safeJsonValue(value: track.title) ?? "",
+                    "language": self.safeJsonValue(value: track.language) ?? "",
+                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "isSelected": selectedAudioTrackId == track.id
+                ])
+            }
+            
+            var textTracks = [] as Array;
+            let selectedTextTrackId = self.kalturaPlayer.currentTextTrack;
+            let eventTextTracks = event.tracks?.textTracks ?? []
+            for track in eventTextTracks {
+                textTracks.append([
+                    "id": self.safeJsonValue(value: track.id) ?? "",
+                    "label": self.safeJsonValue(value: track.title) ?? "",
+                    "language": self.safeJsonValue(value: track.language) ?? "",
+                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "isSelected": selectedTextTrackId == track.id
+                ])
+            }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: "tracksAvailable", body: [
+                "audio": audioTracks,
+                "text": textTracks
+            ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.videoTrackChanged) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "videoTrackChanged", body: ["bitrate": event.bitrate])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: event.data)
+            KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: [
+                "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
+                "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
+                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? ""
+            ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "textTrackChanged", body: event.data)
+            KalturaPlayerEvents.emitter.sendEvent(withName: "textTrackChanged", body: [
+                "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
+                "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
+                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? ""
+            ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackInfo) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "playbackInfo", body: ["totalBitrate": event.playbackInfo?.indicatedBitrate])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.error) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "error", body: event.data)
+            let errorMessage = event.error?.userInfo[NSLocalizedDescriptionKey] as! String
+            var errorCause: String? = (event.error?.localizedFailureReason)
+            
+            var errorCode = ""
+            var errorType = ""
+            switch (event.error?.code) {
+                case 7001:
+                    errorCode = "7007"
+                    errorType = "LOAD_ERROR"
+                    break;
+                case 7003:
+                    errorCode = "7000"
+                    errorType = "SOURCE_ERROR"
+                   break;
+                default:
+                    errorCode = "7002"
+                    errorType = "UNEXPECTED"
+                   break;
+            }
+
+            if (errorCause == nil || errorCause?.count == 0) {
+                errorCause = errorMessage
+            }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: "error", body: [
+                "errorType": errorType,
+                "errorCode": errorCode,
+                "errorSeverity": "Fatal",
+                "errorMessage": errorMessage,
+                "errorCause": errorCause
+            ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stateChanged) { event in
             let state: PlayerState = event.newState
