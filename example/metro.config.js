@@ -6,7 +6,7 @@ const pak = require('../package.json');
 const root = path.resolve(__dirname, '..');
 
 const modules = Object.keys({
-  ...pak.peerDependencies,
+  ...pak.dependencies,
 });
 
 module.exports = {

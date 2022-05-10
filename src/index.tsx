@@ -1,12 +1,13 @@
 import {
   requireNativeComponent,
-  ViewStyle,
   NativeModules,
+  ViewStyle,
   NativeEventEmitter
 } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+export const KalturaPlayerModule = NativeModules.KalturaPlayerViewManager;
 const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 export const KalturaPlayerEmitter = new NativeEventEmitter(KalturaPlayerEvents);
 
@@ -31,12 +32,10 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
         KalturaPlayerEmitter.emit('KPlayerEvent', { type, ...event })
       }));
     })
-    console.log("componentDidMount from Library.");
   }
 
   componentWillUnmount() {
     this.eventListeners.forEach(event => event.remove());
-    console.log("componentWillUnmount from Library");
   }
 
   static propTypes: {

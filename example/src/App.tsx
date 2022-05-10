@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { KalturaPlayer } from 'react-native-kaltura-player';
+import { KalturaPlayer } from 'kaltura-player-rn';
 import { NativeEventEmitter } from 'react-native';
 
 
