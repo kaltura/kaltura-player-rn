@@ -17,20 +17,20 @@ export default {
   TRACKS_AVAILABLE: 'tracksAvailable', // Sent when track info is available.
   REPLAY: 'replay', //Sent when replay happened.
   PLAYBACK_INFO_UPDATED: 'playbackInfoUpdated', // Sent event that notify about changes in the playback parameters. When bitrate of the video or audio track changes or new media loaded. Holds the PlaybackInfo.java object with relevant data.
-  VOLUME_CHANGED: '', // Sent when volume is changed.
+  VOLUME_CHANGED: 'volumeChanged', // Sent when volume is changed.
   STOPPED: 'stopped', // sent when stop player api is called
-  METADATA_AVAILABLE: '', // Sent when there is metadata available for this entry.
-  SOURCE_SELECTED: '', // Sent when the source was selected.
-  PLAYHEAD_UPDATED: '', //Send player position every 100 Milisec
+  METADATA_AVAILABLE: 'metadataAvailable', // Sent when there is metadata available for this entry.
+  SOURCE_SELECTED: 'sourceSelected', // Sent when the source was selected.
+  PLAYHEAD_UPDATED: 'playheadUpdated', //Send player position every 100 Milisec
   VIDEO_TRACK_CHANGED: 'videoTrackChanged',
   AUDIO_TRACK_CHANGED: 'audioTrackChanged',
   TEXT_TRACK_CHANGED: 'textTrackChanged',
   IMAGE_TRACK_CHANGED: 'imageTrackChanged',
-  PLAYBACK_RATE_CHANGED: '',
-  CONNECTION_ACQUIRED: '',
-  VIDEO_FRAMES_DROPPED: '', // Video frames were dropped, see PlayerEvent.VideoFramesDropped
-  OUTPUT_BUFFER_COUNT_UPDATE: '',
-  BYTES_LOADED: '', // Bytes were downloaded from the network
+  PLAYBACK_RATE_CHANGED: 'playbackRateChanged',
+  CONNECTION_ACQUIRED: 'connectionAcquired',
+  VIDEO_FRAMES_DROPPED: 'videoFramesDropped', // Video frames were dropped, see PlayerEvent.VideoFramesDropped
+  OUTPUT_BUFFER_COUNT_UPDATE: 'outputBufferCountUpdate',
+  BYTES_LOADED: 'bytesLoaded', // Bytes were downloaded from the network
   SUBTITLE_STYLE_CHANGED: 'subtitlesStyleChanged', // Subtitle style is changed.
   ASPECT_RATIO_RESIZE_MODE_CHANGED: 'surfaceAspectRationSizeModeChanged', //Send when updating the Surface Vide Aspect Ratio size mode.
   TIME_UPDATE: 'timeUpdate',
