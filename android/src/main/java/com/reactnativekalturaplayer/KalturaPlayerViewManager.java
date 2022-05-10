@@ -10,6 +10,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.kaltura.playkit.PKLog;
+import com.npaw.youbora.lib6.YouboraLog;
 
 public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNView> {
 
@@ -18,10 +19,12 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private PKLog log = PKLog.get(KalturaPlayerRNView.class.getSimpleName());
 
    private static final String PROP_PARTNER_ID = "partnerId";
+   private static final String PROP_PLAYER_TYPE = "playerType";
    private static final String PROP_PLAYER_INIT_OPTIONS = "playerInitOptions";
    private static final String PROP_ASSET_ID = "assetId";
    private static final String PROP_MEDIA_ASSET = "mediaAsset";
    private static final String PROP_LOAD = "load";
+   private static final String PROP_UPDATE_PLUGIN_CONFIG = "updatePluginConfig";
    private static final String PROP_ADD_LISTENERS = "addListeners";
    private static final String PROP_REMOVE_LISTENERS = "removeListeners";
    private static final String PROP_PLAY = "play";
@@ -72,14 +75,18 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       }
    }
 
+   @ReactProp(name = PROP_PLAYER_TYPE)
+   public void setPlayerType(KalturaPlayerRNView kalturaPlayerRNView, String playerType) {
+      log.d("setPlayerType playerType " + playerType);
+      if (!TextUtils.isEmpty(playerType)) {
+         kalturaPlayerRNView.setPlayerType(playerType);
+      }
+   }
+
    @ReactProp(name = PROP_PLAYER_INIT_OPTIONS)
    public void setPlayerInitOptions(KalturaPlayerRNView kalturaPlayerRNView, String playerInitOptions) {
       log.d("setPlayerInitOptions playerInitOptions Json is " + playerInitOptions);
-      if (!TextUtils.isEmpty(playerInitOptions)) {
-         kalturaPlayerRNView.setPlayerInitOptions(playerInitOptions);
-      } else {
-         log.d("playerInitOptions is invalid which is " + playerInitOptions);
-      }
+      kalturaPlayerRNView.createPlayerInstance(playerInitOptions);
    }
 
    @ReactProp(name = PROP_ASSET_ID)
@@ -105,7 +112,14 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_LOAD)
    public void load(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("preparePlayer autoPlay " + autoPlay);
+      YouboraLog.setDebugLevel(YouboraLog.Level.VERBOSE);
       kalturaPlayerRNView.load(true);
+   }
+
+   @ReactProp(name = PROP_UPDATE_PLUGIN_CONFIG)
+   public void updatePluginConfig(KalturaPlayerRNView kalturaPlayerRNView, String updatedPluginConfig) {
+      log.d("updatePluginConfig " + updatedPluginConfig);
+      kalturaPlayerRNView.updatePluginConfigs(updatedPluginConfig);
    }
 
    @ReactProp(name = PROP_ADD_LISTENERS)

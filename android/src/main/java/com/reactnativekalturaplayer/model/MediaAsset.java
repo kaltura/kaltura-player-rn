@@ -1,31 +1,38 @@
 package com.reactnativekalturaplayer.model;
 
+import android.text.TextUtils;
+
 import com.kaltura.playkit.providers.api.phoenix.APIDefines;
 import com.kaltura.playkit.providers.ott.OTTMediaAsset;
 import com.kaltura.playkit.providers.ott.PhoenixMediaProvider;
+import com.kaltura.playkit.providers.ovp.OVPMediaAsset;
 import com.kaltura.tvplayer.OTTMediaOptions;
+import com.kaltura.tvplayer.OVPMediaOptions;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class MediaAsset {
     private String ks;        // ovp or ott
+
+    // OTT Params
     private String format;    // ott
     private String fileId;    // ott
-
     private String assetType; // ott
     private String playbackContextType; // ott
     private String assetReferenceType;  // ott
     private String protocol;            // ott
-
-    private Boolean useApiCaptions = false; // ovp
     private String urlType; // ott
     private String streamerType; // ott
     private Map<String,String> adapterData; // ott
     private String referrer;
+
+    // OVP Params
+    private Boolean redirectFromEntryId = true;
+    private Boolean useApiCaptions = false;
+
     private Long startPosition;
     private Float initialVolume = 1.0f;
-    private Plugins plugins;
 
     private String getKs() {
         return ks;
@@ -57,10 +64,6 @@ public class MediaAsset {
 
     public Float getInitialVolume() {
         return initialVolume;
-    }
-
-    public Plugins getPlugins() {
-        return plugins;
     }
 
     private APIDefines.KalturaAssetType getAssetType() {
@@ -151,6 +154,10 @@ public class MediaAsset {
         return null;
     }
 
+    public Boolean getRedirectFromEntryId() {
+        return redirectFromEntryId;
+    }
+
     private APIDefines.KalturaStreamerType getStreamerType() {
         if (streamerType == null) {
             return null;
@@ -195,5 +202,37 @@ public class MediaAsset {
             ottMediaOptions.startPosition = startPosition;
         }
         return ottMediaOptions;
+    }
+
+    public OVPMediaOptions buildOvpMediaOptions(String entryId, String referenceId, String playerKS) {
+
+        OVPMediaAsset ovpMediaAsset = new OVPMediaAsset();
+
+        if (!TextUtils.isEmpty(entryId)) {
+            ovpMediaAsset.setEntryId(entryId);
+        }
+
+        ovpMediaAsset.setKs(ks != null ? ks : playerKS);
+        ovpMediaAsset.setReferrer(referrer);
+
+        if (!TextUtils.isEmpty(referenceId)) {
+            ovpMediaAsset.setReferenceId(referenceId);
+        }
+
+        if (redirectFromEntryId != null) {
+            ovpMediaAsset.setRedirectFromEntryId(redirectFromEntryId);
+        }
+
+        OVPMediaOptions ovpMediaOptions = new OVPMediaOptions(ovpMediaAsset);
+
+        if (useApiCaptions != null) {
+            ovpMediaOptions.setUseApiCaptions(useApiCaptions);
+        }
+
+        if (startPosition != null) {
+            ovpMediaOptions.startPosition = startPosition;
+        }
+
+        return ovpMediaOptions;
     }
 }

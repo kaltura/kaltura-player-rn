@@ -1,5 +1,5 @@
 {
-  "name": "kaltura-player-rn",
+  "name": "react-native-kaltura-player",
   "version": "0.1.0",
   "description": "React Native Library for KalturaPlayer",
   "main": "lib/commonjs/index",
