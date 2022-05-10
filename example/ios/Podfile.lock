@@ -11,9 +11,6 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.66.4)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - kaltura-player-rn (0.1.0):
-    - KalturaPlayer/OTT
-    - React-Core
   - KalturaNetKit (1.5.1):
     - KalturaNetKit/Core (= 1.5.1)
   - KalturaNetKit/Core (1.5.1):
@@ -309,6 +306,9 @@ PODS:
     - React-jsi (= 0.66.4)
     - React-logger (= 0.66.4)
     - React-perflogger (= 0.66.4)
+  - RNKalturaPlayer (0.1.0):
+    - KalturaPlayer/OTT
+    - React-Core
   - SwiftyJSON (5.0.0)
   - SwiftyXMLParser (5.0.0)
   - XCGLogger (7.0.0):
@@ -323,7 +323,6 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - kaltura-player-rn (from `../..`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -350,6 +349,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNKalturaPlayer (from `../..`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -377,8 +377,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  kaltura-player-rn:
-    :path: "../.."
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -427,6 +425,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNKalturaPlayer:
+    :path: "../.."
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -437,7 +437,6 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  kaltura-player-rn: cd7f8d4403c656ceac26fec9915dfd5cd337d436
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
   KalturaPlayer: c3aa7843491d137e301ac0f56eb5a82faa580ed9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
@@ -469,11 +468,12 @@ SPEC CHECKSUMS:
   React-RCTVibration: e3ffca672dd3772536cb844274094b0e2c31b187
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
+  RNKalturaPlayer: b32af9986905fdc948e2684e14ff9098de9c3847
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   SwiftyXMLParser: 5ebb8793192f403fa8cc691045143906122a7a75
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
 
-PODFILE CHECKSUM: f4af4025fe0350d3dfdcc8af43f32b79799f42c4
+PODFILE CHECKSUM: 5fda4aec02143fdbd0a4cfa56ca2ba3e8381680f
 
 COCOAPODS: 1.11.3

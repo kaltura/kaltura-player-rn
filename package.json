@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "kaltura-player-rn.podspec",
+    "RNKalturaPlayer.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "prop-types": "^15.8.1",
-    "react": "16.13.1",
+    "react": "17.0.2",
     "react-native": "^0.66.3"
   },
   "devDependencies": {

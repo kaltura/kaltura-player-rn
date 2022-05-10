@@ -1,17 +1,17 @@
-# kaltura-player-rn
+# react-native-kaltura-player
 
-react native llibrary for native player
+React Native library for native player
 
 ## Installation
 
 ```sh
-npm install kaltura-player-rn
+npm install react-native-kaltura-player
 ```
 
 ## Usage
 
 ```js
-import { KalturaPlayer } from "kaltura-player-rn";
+import { KalturaPlayer } from "react-native-kaltura-player";
 
 // ...
 

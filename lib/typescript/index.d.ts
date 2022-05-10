@@ -30,6 +30,14 @@ export declare enum DRM_SCHEME {
     WIDEVINE_CENC_CLASSIC = "WidevineClassic",
     PLAYREADY_CLASSIC = "PlayReadyClassic"
 }
+export declare enum PLAYER_PLUGIN {
+    IMA = "ima",
+    IMADAI = "imadai",
+    YOUBORA = "youbora",
+    KAVA = "kava",
+    OTT_ANALYTICS = "ottAnalytics",
+    BROADPEAK = "broadpeak"
+}
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
     eventListener: any;
@@ -50,8 +58,7 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     removeListeners: () => void;
     /**
      * This method creates a Player instance internally (Basic, OVP/OTT Player)
-     * We this, it take the PlayerInitOptions which are having essential Player settings values
-     * helpful for the playback
+     * With this, it take the PlayerInitOptions which are having essential Player settings values
      *
      * @param options PlayerInitOptions JSON String
      * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
@@ -60,6 +67,18 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      */
     setup: (options: string, id?: number) => void;
     /**
+     * Update a Plugin Config
+     *
+     * @param pluginName Plugin Name (Youbora, IMA etc)
+     * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+     */
+    updatePluginConfig: (pluginName: PLAYER_PLUGIN, config: object) => void;
+    /**
+     * Load the media with the given
+     *
+     * assetId OR mediaId OR entryID for OVP/OTT Kaltura Player
+     *
+     * playbackURL for Basic Kaltura Player
      *
      * @param id Playback URL for Kaltura Basic Player OR
      * MediaId for Kaltura OTT Player OR
@@ -99,13 +118,13 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      */
     setPlaybackRate: (rate: number) => void;
     /**
-      * Change the volume of the current audio track.
-      * Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume.
-      * If the volume parameter is higher then 1.0, it will be converted to 1.0.
-      * If the volume parameter is lower then 0.0, it be converted to 0.0.
-      *
-      * @param vol - volume to set.
-      */
+     * Change the volume of the current audio track.
+     * Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume.
+     * If the volume parameter is higher then 1.0, it will be converted to 1.0.
+     * If the volume parameter is lower then 0.0, it be converted to 0.0.
+     *
+     * @param vol - volume to set.
+     */
     setVolume: (vol: number) => void;
     setAutoPlay: (isAutoPlay: boolean) => void;
     setKS: (KS: string) => void;
