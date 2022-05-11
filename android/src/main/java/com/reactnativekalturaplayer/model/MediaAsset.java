@@ -12,6 +12,9 @@ import com.kaltura.tvplayer.OVPMediaOptions;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Media asset for OVP and OTT
+ */
 public class MediaAsset {
     private String ks;        // ovp or ott
 

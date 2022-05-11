@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import TrackList from "../src/components/TrackList";
 import {
   KalturaPlayer,
   MEDIA_ENTRY_TYPE,
@@ -14,9 +15,28 @@ import PlayerEvents from 'react-native-kaltura-player';
 
 const playerEventEmitter = new NativeEventEmitter();
 
-export default class App extends React.Component {
+export default class App extends React.Component<any, any> {
+
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      title: "Tracks Title",
+      trackList: [
+        {
+          "bitrate": 0,
+          "isSelected": true,
+          "isAdaptive": true,
+          "height": 0,
+          "width": 0,
+          "id": "NONE"
+        }
+      ]
+    }
+  }
+
   componentDidMount() {
     console.log('componentDidMount from App.');
+
     // OTT Configuration
     // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
     // this.player.addListeners();
@@ -31,10 +51,13 @@ export default class App extends React.Component {
     this.player.setup(JSON.stringify(basicInitOptions));
     this.player.addListeners();
     this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
-  }
 
+    // Subscribe to Player Events
+    this.subscribeToPlayerListeners();
+  }
+  
   componentWillUnmount() {
-    console.log('componentDidMount from App.');
+    console.log('componentWillUnmount from App.');
     this.player.removeListeners();
   }
 
@@ -60,10 +83,47 @@ export default class App extends React.Component {
     this.player.loadMedia(assetId, mediaAsset);
   };
 
+  onTrackChangeListener = (trackId) => {
+    console.log('Clicked Track from TrackList component is: ' + trackId);
+    this.player.changeTrack(trackId);
+  }
+
+  /**
+   * Add the Kaltura Player listeners to 
+   * add the Player, Ad and other Analytics 
+   * events
+   * 
+   * @param player Kaltura Player
+   */
+  subscribeToPlayerListeners = () => {
+
+    playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
+      console.log('TRACKS_AVAILABLE PlayerEvent: ' + JSON.stringify(payload));
+      //console.log('TRACKS_AVAILABLE tracks length: ' + Object.keys(payload).length);
+      const videoList = payload.video
+      console.log('Video Track list: ' + videoList);
+      this.setState(() => ({
+        title: 'Video Tracks',
+        trackList: videoList
+      }));
+    });
+    
+    playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
+      console.log('*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload));
+    });
+    
+  }
+
   render() {
+    
     return (
       <View>
-        <Text style={styles.red}>Welcome to Kaltura Player RN</Text>
+        <Text style={styles.red} >Kaltura Player Demo</Text>
+
+        <TrackList title = {this.state.title} 
+        trackList = {this.state.trackList}
+        onTrackChangeListener = {this.onTrackChangeListener}
+        />
 
         <KalturaPlayer
           ref={(ref: KalturaPlayer) => {
@@ -78,7 +138,7 @@ export default class App extends React.Component {
             this.doPlay();
           }}
         >
-          <Text style={[styles.bigBlue, styles.red]}>Play Media</Text>
+          <Text style={[styles.bigBlue]}>Play Media</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -86,7 +146,7 @@ export default class App extends React.Component {
             this.doPause();
           }}
         >
-          <Text style={[styles.red, styles.bigBlue]}>Pause Media</Text>
+          <Text style={[styles.bigBlue]}>Pause Media</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -94,7 +154,7 @@ export default class App extends React.Component {
             this.changePlaybackRate(2.0);
           }}
         >
-          <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 2.0</Text>
+          <Text style={[styles.bigBlue]}>PlaybackRate 2.0</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -102,7 +162,7 @@ export default class App extends React.Component {
             this.changePlaybackRate(0.5);
           }}
         >
-          <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
+          <Text style={[styles.bigBlue]}>PlaybackRate 0.5</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -113,7 +173,7 @@ export default class App extends React.Component {
             );
           }}
         >
-          <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
+          <Text style={[styles.bigBlue]}>Change Media</Text>
         </TouchableOpacity>
       </View>
     );
@@ -128,9 +188,13 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontWeight: 'bold',
     fontSize: 12,
+    margin: 3
   },
   red: {
     color: 'red',
+    textAlign: 'center',
+    fontSize: 20,
+    margin: 10,
   },
   center: {
     flex: 1,
@@ -140,14 +204,14 @@ const styles = StyleSheet.create({
   },
 });
 
-playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
-  console.log('*** TRACKS_AVAILABLE PlayerEvent: ' + JSON.stringify(payload));
-  console.log('*** TRACKS_AVAILABLE length: ' + Object.keys(payload).length);
-});
-
-playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-  console.log('*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload));
-});
+/**
+ * **********************
+ *                      *
+ * Below TEST JSONs for *
+ * Basic/OTT/OVP Player *
+ *                      *
+ * **********************
+ */
 
 // Kaltura Basic Player Test JSON
 const playbackUrl =

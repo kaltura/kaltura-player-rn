@@ -10,7 +10,10 @@ import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.google.gson.Gson;
@@ -39,15 +42,11 @@ import com.kaltura.playkit.plugins.ads.AdCuePoints;
 import com.kaltura.playkit.plugins.ads.AdEvent;
 import com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig;
 import com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent;
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakPlugin;
 import com.kaltura.playkit.plugins.ima.IMAConfig;
-import com.kaltura.playkit.plugins.ima.IMAPlugin;
 import com.kaltura.playkit.plugins.imadai.IMADAIConfig;
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig;
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig;
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsEvent;
-import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsPlugin;
-import com.kaltura.playkit.plugins.youbora.YouboraPlugin;
 import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig;
 import com.kaltura.playkit.utils.Consts;
 import com.kaltura.tvplayer.KalturaBasicPlayer;
@@ -70,8 +69,13 @@ import com.reactnativekalturaplayer.model.tracks.TextTrack;
 import com.reactnativekalturaplayer.model.tracks.TracksInfo;
 import com.reactnativekalturaplayer.model.tracks.VideoTrack;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -428,9 +432,10 @@ public class KalturaPlayerRNView extends FrameLayout {
          return;
       }
 
-      if (playerType == KalturaPlayer.Type.basic) {
-         BasicMediaAsset basicMediaAsset = getParsedJson(mediaAsset, BasicMediaAsset.class);
+      if (playerType == KalturaPlayer.Type.basic || isBasicPlaybackRequired(mediaAssetJson)) {
+         BasicMediaAsset basicMediaAsset = getParsedJson(mediaAssetJson, BasicMediaAsset.class);
          if (basicMediaAsset == null || basicMediaAsset.getMediaFormat() == null) {
+            log.e("Invalid Media Asset for player type " + playerType + " \n and media asset is " + basicMediaAsset);
             return;
          }
          PKMediaEntry mediaEntry = createMediaEntry(assetId, basicMediaAsset);
@@ -438,6 +443,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       } else if (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp) {
          MediaAsset mediaAsset = getParsedJson(mediaAssetJson, MediaAsset.class);
          if (mediaAsset == null || player == null) {
+            log.e("Invalid Media Asset for player type " + playerType + " \n and media asset is " + mediaAsset);
             return;
          }
 
@@ -475,6 +481,21 @@ public class KalturaPlayerRNView extends FrameLayout {
       } else {
          log.e("No Player type defined hence can not load the media. PlayerType " + playerType);
       }
+   }
+
+   /**
+    * This method checks if the Player type is OVP/OTT
+    * but still app wants to play a media using URL or DRM license URL
+    * instead of using our backend.
+    *
+    * @return `true` if basic playback required
+    */
+   protected boolean isBasicPlaybackRequired(String basicMediaAsset) {
+      if (basicMediaAsset != null && playerType != null && playerType != KalturaPlayer.Type.basic) {
+         BasicMediaAsset mediaAsset = getParsedJson(basicMediaAsset, BasicMediaAsset.class);
+         return mediaAsset != null && mediaAsset.getMediaFormat() != null;
+      }
+      return false;
    }
 
    protected void updatePluginConfigs(String pluginConfigJson) {
@@ -786,7 +807,13 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
       player.addListener(context, PlayerEvent.stateChanged, event -> sendPlayerEvent("stateChanged", "{ \"newState\": \"" + event.newState.name() + "\" }"));
       player.addListener(context, PlayerEvent.tracksAvailable, event -> {
-         sendPlayerEvent("tracksAvailable", gson.toJson(getTracksInfo(event.tracksInfo)));
+      //   sendPlayerEvent("tracksAvailable", gson.toJson(getTracksInfo(event.tracksInfo)));
+         try {
+            sendTracksAvailableEvent("tracksAvailable", getTracksInfo(event.tracksInfo));
+         } catch (JSONException e) {
+            log.e("Exception while parsing the tracks info \n " + e.getMessage());
+            e.printStackTrace();
+         }
       });
 
       player.addListener(context, PlayerEvent.loadedMetadata, event -> {
@@ -902,6 +929,11 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
    }
 
+   private void sendTracksAvailableEvent(String event, TracksInfo pkTracks) throws JSONException {
+      WritableMap tracksMap = convertJsonToMap(new JSONObject(gson.toJson(pkTracks)));
+      sendPlayerEvent(event, tracksMap);
+   }
+
    private TracksInfo getTracksInfo(PKTracks pkTracksInfo) {
       List<VideoTrack> videoTracksInfo = new ArrayList<>();
       List<AudioTrack> audioTracksInfo = new ArrayList<>();
@@ -952,7 +984,7 @@ public class KalturaPlayerRNView extends FrameLayout {
                  imageTrack.getRows(),
                  imageTrack.getDuration(),
                  imageTrack.getUrl(),
-                 (imageTrackIndex == 0) ? true : false));
+                 imageTrackIndex == 0));
          imageTrackIndex++;
       }
 
@@ -1111,6 +1143,56 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    private void sendPlayerEvent(String event, @NonNull WritableMap params) {
       emitter().emit(event, params);
+   }
+
+   private static WritableMap convertJsonToMap(JSONObject jsonObject) throws JSONException {
+      WritableMap map = new WritableNativeMap();
+
+      Iterator<String> iterator = jsonObject.keys();
+      while (iterator.hasNext()) {
+         String key = iterator.next();
+         Object value = jsonObject.get(key);
+         if (value instanceof JSONObject) {
+            map.putMap(key, convertJsonToMap((JSONObject) value));
+         } else if (value instanceof JSONArray) {
+            map.putArray(key, convertJsonToArray((JSONArray) value));
+         } else if (value instanceof  Boolean) {
+            map.putBoolean(key, (Boolean) value);
+         } else if (value instanceof  Integer) {
+            map.putInt(key, (Integer) value);
+         } else if (value instanceof  Double) {
+            map.putDouble(key, (Double) value);
+         } else if (value instanceof String)  {
+            map.putString(key, (String) value);
+         } else {
+            map.putString(key, value.toString());
+         }
+      }
+      return map;
+   }
+
+   private static WritableArray convertJsonToArray(JSONArray jsonArray) throws JSONException {
+      WritableArray array = new WritableNativeArray();
+
+      for (int i = 0; i < jsonArray.length(); i++) {
+         Object value = jsonArray.get(i);
+         if (value instanceof JSONObject) {
+            array.pushMap(convertJsonToMap((JSONObject) value));
+         } else if (value instanceof  JSONArray) {
+            array.pushArray(convertJsonToArray((JSONArray) value));
+         } else if (value instanceof  Boolean) {
+            array.pushBoolean((Boolean) value);
+         } else if (value instanceof  Integer) {
+            array.pushInt((Integer) value);
+         } else if (value instanceof  Double) {
+            array.pushDouble((Double) value);
+         } else if (value instanceof String)  {
+            array.pushString((String) value);
+         } else {
+            array.pushString(value.toString());
+         }
+      }
+      return array;
    }
 }
 
