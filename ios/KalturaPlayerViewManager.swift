@@ -24,7 +24,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
         return [
             "KPlayerEvent", "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
             "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-            "timedMetadata", "sourceSelected", "loadedTimeRanges", "timeUpdate", "error", "errorLog", "playbackStalled", "playbackRate"
+            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate"
         ]
     }
 }
@@ -143,7 +143,7 @@ class KalturaPlayerViewManager: RCTViewManager {
             if (self.kalturaPlayer.isLive()) {
                 let currentProgramTime = self.kalturaPlayer.currentProgramTime
                 let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
-                let currentProgramTimeDouble = currentProgramTimeEpochSeconds! as Double
+                let currentProgramTimeDouble = (currentProgramTimeEpochSeconds ?? 0) as Double
                 
                 KalturaPlayerEvents.emitter.sendEvent(withName: "timeUpdate", body: [
                     "position": currentTime,
@@ -189,7 +189,8 @@ class KalturaPlayerViewManager: RCTViewManager {
             
             KalturaPlayerEvents.emitter.sendEvent(withName: "tracksAvailable", body: [
                 "audio": audioTracks,
-                "text": textTracks
+                "text": textTracks,
+                "video": []
             ])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.videoTrackChanged) { event in
