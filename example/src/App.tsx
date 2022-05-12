@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import TrackList from "../src/components/TrackList";
+import TrackList from '../src/components/TrackList';
 import {
   KalturaPlayer,
   MEDIA_ENTRY_TYPE,
@@ -16,22 +16,30 @@ import PlayerEvents from 'react-native-kaltura-player';
 const playerEventEmitter = new NativeEventEmitter();
 
 export default class App extends React.Component<any, any> {
-
   constructor(props: any) {
     super(props);
     this.state = {
-      title: "Tracks Title",
-      trackList: [
+      videoTitle: 'No Video Tracks',
+      videoTrackList: [
         {
-          "bitrate": 0,
-          "isSelected": true,
-          "isAdaptive": true,
-          "height": 0,
-          "width": 0,
-          "id": "NONE"
-        }
-      ]
-    }
+          bitrate: 0,
+          isSelected: true,
+          isAdaptive: true,
+          height: 0,
+          width: 0,
+          id: 'NONE',
+        },
+      ],
+      textTitle: 'No Text Tracks',
+      textTrackList: [
+        {
+          language: 'none',
+          label: 'none',
+          isSelected: false,
+          id: 'NONE',
+        },
+      ],
+    };
   }
 
   componentDidMount() {
@@ -55,7 +63,7 @@ export default class App extends React.Component<any, any> {
     // Subscribe to Player Events
     this.subscribeToPlayerListeners();
   }
-  
+
   componentWillUnmount() {
     console.log('componentWillUnmount from App.');
     this.player.removeListeners();
@@ -69,6 +77,10 @@ export default class App extends React.Component<any, any> {
 
   doPlay = () => {
     this.player.play();
+  };
+
+  doReplay = () => {
+    this.player.replay();
   };
 
   changePlaybackRate = (rate: number) => {
@@ -86,44 +98,76 @@ export default class App extends React.Component<any, any> {
   onTrackChangeListener = (trackId) => {
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
-  }
+  };
 
   /**
-   * Add the Kaltura Player listeners to 
-   * add the Player, Ad and other Analytics 
+   * Add the Kaltura Player listeners to
+   * add the Player, Ad and other Analytics
    * events
-   * 
+   *
    * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
-
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
       console.log('TRACKS_AVAILABLE PlayerEvent: ' + JSON.stringify(payload));
       //console.log('TRACKS_AVAILABLE tracks length: ' + Object.keys(payload).length);
-      const videoList = payload.video
-      console.log('Video Track list: ' + videoList);
-      this.setState(() => ({
-        title: 'Video Tracks',
-        trackList: videoList
-      }));
+      const videoTracks = payload.video;
+      console.log('Video Track list: ' + videoTracks);
+
+      if (videoTracks.length > 0) {
+        this.setState(() => ({
+          videoTitle: 'Video Tracks',
+          videoTrackList: videoTracks,
+        }));
+      }
+
+      const textTracks = payload.text;
+      console.log('Text Track list: ' + textTracks);
+
+      if (textTracks.length > 0) {
+        this.setState(() => ({
+          textTitle: 'Text Tracks',
+          textTrackList: textTracks,
+        }));
+      }
     });
-    
+
     playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-      console.log('*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload));
+      console.log(
+        '*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload)
+      );
     });
-    
-  }
+  };
 
   render() {
-    
     return (
       <View>
-        <Text style={styles.red} >Kaltura Player Demo</Text>
+        <Text style={styles.red}>Kaltura Player Demo</Text>
 
-        <TrackList title = {this.state.title} 
-        trackList = {this.state.trackList}
-        onTrackChangeListener = {this.onTrackChangeListener}
-        />
+        <View
+          style={[
+            styles.flex_container,
+            {
+              flexDirection: 'row',
+            },
+          ]}
+        >
+          <TrackList
+            style={{ flex: 1 }}
+            trackType={'video'}
+            title={this.state.videoTitle}
+            trackList={this.state.videoTrackList}
+            onTrackChangeListener={this.onTrackChangeListener}
+          />
+
+          <TrackList
+            style={{ flex: 1 }}
+            trackType={'text'}
+            title={this.state.textTitle}
+            trackList={this.state.textTrackList}
+            onTrackChangeListener={this.onTrackChangeListener}
+          />
+        </View>
 
         <KalturaPlayer
           ref={(ref: KalturaPlayer) => {
@@ -159,6 +203,14 @@ export default class App extends React.Component<any, any> {
 
         <TouchableOpacity
           onPress={() => {
+            this.doReplay();
+          }}
+        >
+          <Text style={[styles.bigBlue]}>Replay Media</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
             this.changePlaybackRate(0.5);
           }}
         >
@@ -184,11 +236,15 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 50,
   },
+  flex_container: {
+    flex: 1,
+    marginBottom: 50,
+  },
   bigBlue: {
     color: 'blue',
     fontWeight: 'bold',
     fontSize: 12,
-    margin: 3
+    margin: 3,
   },
   red: {
     color: 'red',
