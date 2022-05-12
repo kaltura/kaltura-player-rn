@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import TrackList from '../src/components/TrackList';
 import {
   KalturaPlayer,
@@ -138,7 +138,7 @@ export default class App extends React.Component<any, any> {
 
   render() {
     return (
-      <View>
+      <ScrollView>
         <Text style={styles.blue_center}>Kaltura Player Demo</Text>
 
         <View
@@ -252,7 +252,7 @@ export default class App extends React.Component<any, any> {
             <Text style={[styles.bigWhite]}>Change Media</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -263,7 +263,6 @@ const styles = StyleSheet.create({
   },
   flex_container: {
     flex: 1,
-    marginBottom: 100,
     flexWrap: 'wrap',
   },
   bigBlue: {
