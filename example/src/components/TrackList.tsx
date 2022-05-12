@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
 export default function TrackList(props) {
-
   let trackType = props.trackType;
   let labelFieldName = 'bitrate';
 
@@ -23,7 +22,7 @@ export default function TrackList(props) {
       maxHeight={200}
       data={props.trackList}
       valueField="id"
-      labelField= {labelFieldName}
+      labelField={labelFieldName}
       placeholder={props.title}
       onChange={(track) => {
         {

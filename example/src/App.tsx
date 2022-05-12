@@ -137,7 +137,6 @@ export default class App extends React.Component<any, any> {
   };
 
   render() {
-    
     return (
       <View>
         <Text style={styles.blue_center}>Kaltura Player Demo</Text>
@@ -150,36 +149,39 @@ export default class App extends React.Component<any, any> {
             },
           ]}
         >
-          { this.state.videoTrackList.length > 0 ? 
-          <TrackList
-            style={{ flex: 1 }}
-            trackType={'video'}
-            title={this.state.videoTitle}
-            trackList={this.state.videoTrackList}
-            onTrackChangeListener={this.onTrackChangeListener}
-          />
-          : <Text></Text>
-          }
-          { this.state.audioTrackList.length > 0 ? 
-          <TrackList
-            style={{ flex: 1 }}
-            trackType={'audio'}
-            title={this.state.audioTitle}
-            trackList={this.state.audioTrackList}
-            onTrackChangeListener={this.onTrackChangeListener}
-          />
-          : <Text></Text>
-          }
-          { this.state.textTrackList.length > 0 ? 
-          <TrackList
-            style={{ flex: 1 }}
-            trackType={'text'}
-            title={this.state.textTitle}
-            trackList={this.state.textTrackList}
-            onTrackChangeListener={this.onTrackChangeListener}
-          />
-          : <Text></Text>
-          }
+          {this.state.videoTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'video'}
+              title={this.state.videoTitle}
+              trackList={this.state.videoTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
+          {this.state.audioTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'audio'}
+              title={this.state.audioTitle}
+              trackList={this.state.audioTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
+          {this.state.textTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'text'}
+              title={this.state.textTitle}
+              trackList={this.state.textTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
         </View>
 
         <KalturaPlayer
@@ -189,66 +191,67 @@ export default class App extends React.Component<any, any> {
           style={styles.center}
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
-        
-        <View style={styles.row} >
 
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.doPlay();
-          }}
-        >
-          <Text style={[styles.bigWhite]}>Play Media</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doPlay();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Play Media</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.doPause();
-          }}
-        >
-          <Text style={[styles.bigWhite]}>Pause Media</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doPause();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Pause Media</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.changePlaybackRate(2.0);
-          }}
-        >
-          <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
-        </TouchableOpacity>
-
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changePlaybackRate(2.0);
+            }}
+          >
+            <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.row} >
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doReplay();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Replay Media</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.doReplay();
-          }}
-        >
-          <Text style={[styles.bigWhite]}>Replay Media</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changePlaybackRate(0.5);
+            }}
+          >
+            <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.changePlaybackRate(0.5);
-          }}
-        >
-          <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[ styles.button ]}
-          onPress={() => {
-            this.changeMedia(
-              playbackUrlChangeMedia,
-              JSON.stringify(basicMediaAsset)
-            );
-          }}
-        >
-          <Text style={[styles.bigWhite]}>Change Media</Text>
-        </TouchableOpacity>
-
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changeMedia(
+                playbackUrlChangeMedia,
+                JSON.stringify(basicMediaAsset)
+              );
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Change Media</Text>
+          </TouchableOpacity>
         </View>
-
       </View>
     );
   }
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
   flex_container: {
     flex: 1,
     marginBottom: 100,
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   bigBlue: {
     color: 'blue',
@@ -276,9 +279,9 @@ const styles = StyleSheet.create({
     margin: 3,
   },
   row: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    margin: 10
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    margin: 10,
   },
   blue_center: {
     color: 'blue',
@@ -296,13 +299,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 4,
-    backgroundColor: "blue",
-    alignSelf: "flex-start",
-    marginHorizontal: "1%",
+    backgroundColor: 'blue',
+    alignSelf: 'flex-start',
+    marginHorizontal: '1%',
     marginBottom: 6,
-    minWidth: "20%",
-    textAlign: "center",
-  }
+    minWidth: '20%',
+    textAlign: 'center',
+  },
 });
 
 /**
