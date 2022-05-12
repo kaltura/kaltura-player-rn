@@ -95,11 +95,15 @@ export default class App extends React.Component<any, any> {
    * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
+
+    playerEventEmitter.addListener(PlayerEvents.DURATION_CHANGE, (payload) => {
+      console.log('PlayerEvent DURATION_CHANGE : ' + (payload.duration != null ? payload.duration : " Empty duration change"))
+    });
+
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
-      console.log('TRACKS_AVAILABLE PlayerEvent: ' + JSON.stringify(payload));
+      console.log('PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload));
       //console.log('TRACKS_AVAILABLE tracks length: ' + Object.keys(payload).length);
       const videoTracks = payload.video;
-      console.log('Video Track list: ' + videoTracks);
 
       if (videoTracks.length > 0) {
         this.setState(() => ({
@@ -109,7 +113,6 @@ export default class App extends React.Component<any, any> {
       }
 
       const audioTracks = payload.audio;
-      console.log('Audio Track list: ' + audioTracks);
 
       if (audioTracks.length > 0) {
         this.setState(() => ({
@@ -119,7 +122,6 @@ export default class App extends React.Component<any, any> {
       }
 
       const textTracks = payload.text;
-      console.log('Text Track list: ' + textTracks);
 
       if (textTracks.length > 0) {
         this.setState(() => ({
@@ -130,8 +132,7 @@ export default class App extends React.Component<any, any> {
     });
 
     playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-      console.log(
-        '*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload)
+      console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload)
       );
     });
   };
