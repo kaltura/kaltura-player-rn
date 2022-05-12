@@ -20,25 +20,11 @@ export default class App extends React.Component<any, any> {
     super(props);
     this.state = {
       videoTitle: 'No Video Tracks',
-      videoTrackList: [
-        {
-          bitrate: 0,
-          isSelected: true,
-          isAdaptive: true,
-          height: 0,
-          width: 0,
-          id: 'NONE',
-        },
-      ],
+      videoTrackList: [],
+      audioTitle: 'No Audio Tracks',
+      audioTrackList: [],
       textTitle: 'No Text Tracks',
-      textTrackList: [
-        {
-          language: 'none',
-          label: 'none',
-          isSelected: false,
-          id: 'NONE',
-        },
-      ],
+      textTrackList: [],
     };
   }
 
@@ -70,6 +56,7 @@ export default class App extends React.Component<any, any> {
   }
 
   player: KalturaPlayer;
+  videoTracks: Array;
 
   doPause = () => {
     this.player.pause();
@@ -121,6 +108,16 @@ export default class App extends React.Component<any, any> {
         }));
       }
 
+      const audioTracks = payload.audio;
+      console.log('Audio Track list: ' + audioTracks);
+
+      if (audioTracks.length > 0) {
+        this.setState(() => ({
+          audioTitle: 'Audio Tracks',
+          audioTrackList: audioTracks,
+        }));
+      }
+
       const textTracks = payload.text;
       console.log('Text Track list: ' + textTracks);
 
@@ -140,9 +137,10 @@ export default class App extends React.Component<any, any> {
   };
 
   render() {
+    
     return (
       <View>
-        <Text style={styles.red}>Kaltura Player Demo</Text>
+        <Text style={styles.blue_center}>Kaltura Player Demo</Text>
 
         <View
           style={[
@@ -152,6 +150,7 @@ export default class App extends React.Component<any, any> {
             },
           ]}
         >
+          { this.state.videoTrackList.length > 0 ? 
           <TrackList
             style={{ flex: 1 }}
             trackType={'video'}
@@ -159,7 +158,19 @@ export default class App extends React.Component<any, any> {
             trackList={this.state.videoTrackList}
             onTrackChangeListener={this.onTrackChangeListener}
           />
-
+          : <Text></Text>
+          }
+          { this.state.audioTrackList.length > 0 ? 
+          <TrackList
+            style={{ flex: 1 }}
+            trackType={'audio'}
+            title={this.state.audioTitle}
+            trackList={this.state.audioTrackList}
+            onTrackChangeListener={this.onTrackChangeListener}
+          />
+          : <Text></Text>
+          }
+          { this.state.textTrackList.length > 0 ? 
           <TrackList
             style={{ flex: 1 }}
             trackType={'text'}
@@ -167,6 +178,8 @@ export default class App extends React.Component<any, any> {
             trackList={this.state.textTrackList}
             onTrackChangeListener={this.onTrackChangeListener}
           />
+          : <Text></Text>
+          }
         </View>
 
         <KalturaPlayer
@@ -176,48 +189,54 @@ export default class App extends React.Component<any, any> {
           style={styles.center}
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
+        
+        <View style={styles.row} >
 
-        <TouchableOpacity
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.doPlay();
           }}
         >
-          <Text style={[styles.bigBlue]}>Play Media</Text>
+          <Text style={[styles.bigWhite]}>Play Media</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.doPause();
           }}
         >
-          <Text style={[styles.bigBlue]}>Pause Media</Text>
+          <Text style={[styles.bigWhite]}>Pause Media</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.changePlaybackRate(2.0);
           }}
         >
-          <Text style={[styles.bigBlue]}>PlaybackRate 2.0</Text>
+          <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        </View>
+
+        <View style={styles.row} >
+
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.doReplay();
           }}
         >
-          <Text style={[styles.bigBlue]}>Replay Media</Text>
+          <Text style={[styles.bigWhite]}>Replay Media</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.changePlaybackRate(0.5);
           }}
         >
-          <Text style={[styles.bigBlue]}>PlaybackRate 0.5</Text>
+          <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        <TouchableOpacity style={[ styles.button ]}
           onPress={() => {
             this.changeMedia(
               playbackUrlChangeMedia,
@@ -225,8 +244,11 @@ export default class App extends React.Component<any, any> {
             );
           }}
         >
-          <Text style={[styles.bigBlue]}>Change Media</Text>
+          <Text style={[styles.bigWhite]}>Change Media</Text>
         </TouchableOpacity>
+
+        </View>
+
       </View>
     );
   }
@@ -238,7 +260,8 @@ const styles = StyleSheet.create({
   },
   flex_container: {
     flex: 1,
-    marginBottom: 50,
+    marginBottom: 100,
+    flexWrap: 'wrap'
   },
   bigBlue: {
     color: 'blue',
@@ -246,8 +269,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     margin: 3,
   },
-  red: {
-    color: 'red',
+  bigWhite: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+    margin: 3,
+  },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    margin: 10
+  },
+  blue_center: {
+    color: 'blue',
     textAlign: 'center',
     fontSize: 20,
     margin: 10,
@@ -258,6 +292,17 @@ const styles = StyleSheet.create({
     height: 300,
     alignItems: 'center',
   },
+  button: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 4,
+    backgroundColor: "blue",
+    alignSelf: "flex-start",
+    marginHorizontal: "1%",
+    marginBottom: 6,
+    minWidth: "20%",
+    textAlign: "center",
+  }
 });
 
 /**
