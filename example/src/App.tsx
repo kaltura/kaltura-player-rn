@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import {
+  AppState,
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import TrackList from '../src/components/TrackList';
 import {
   KalturaPlayer,
@@ -16,6 +23,10 @@ import PlayerEvents from 'react-native-kaltura-player';
 const playerEventEmitter = new NativeEventEmitter();
 
 export default class App extends React.Component<any, any> {
+  player: KalturaPlayer;
+  videoTracks: Array;
+  appStateSubscription: string | undefined;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -25,11 +36,29 @@ export default class App extends React.Component<any, any> {
       audioTrackList: [],
       textTitle: 'No Text Tracks',
       textTrackList: [],
+
+      appState: AppState.currentState,
     };
   }
 
   componentDidMount() {
     console.log('componentDidMount from App.');
+
+    this.appStateSubscription = AppState.addEventListener(
+      'change',
+      (nextAppState) => {
+        if (nextAppState === 'active') {
+          if (this.player != null) {
+            this.player.onApplicationResumed(); // <TODO Add a condition if player is playing or not />
+          }
+        } else if (nextAppState === 'background') {
+          this.player.onApplicationPaused();
+        }
+
+        console.log('App has come to the! ' + nextAppState);
+        this.setState({ appState: nextAppState });
+      }
+    );
 
     // OTT Configuration
     // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
@@ -52,11 +81,9 @@ export default class App extends React.Component<any, any> {
 
   componentWillUnmount() {
     console.log('componentWillUnmount from App.');
+    this.appStateSubscription.remove();
     this.player.removeListeners();
   }
-
-  player: KalturaPlayer;
-  videoTracks: Array;
 
   doPause = () => {
     this.player.pause();
@@ -95,9 +122,13 @@ export default class App extends React.Component<any, any> {
    * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
-
     playerEventEmitter.addListener(PlayerEvents.DURATION_CHANGE, (payload) => {
-      console.log('PlayerEvent DURATION_CHANGE : ' + (payload.duration != null ? payload.duration : " Empty duration change"))
+      console.log(
+        'PlayerEvent DURATION_CHANGE : ' +
+          (payload.duration != null
+            ? payload.duration
+            : ' Empty duration change')
+      );
     });
 
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
@@ -132,8 +163,7 @@ export default class App extends React.Component<any, any> {
     });
 
     playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-      console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload)
-      );
+      console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload));
     });
   };
 

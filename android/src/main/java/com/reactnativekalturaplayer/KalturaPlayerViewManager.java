@@ -27,6 +27,9 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_UPDATE_PLUGIN_CONFIG = "updatePluginConfig";
    private static final String PROP_ADD_LISTENERS = "addListeners";
    private static final String PROP_REMOVE_LISTENERS = "removeListeners";
+   private static final String PROP_ON_APPLICATION_PAUSE = "onApplicationPaused";
+   private static final String PROP_ON_APPLICATION_RESUME = "onApplicationResumed";
+   private static final String PROP_ON_DESTROY = "onDestroy";
    private static final String PROP_PLAY = "play";
    private static final String PROP_PAUSE = "pause";
    private static final String PROP_REPLAY = "replay";
@@ -38,6 +41,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SET_KS = "ks";
    private static final String PROP_SET_Z_INDEX = "zIndex";
    private static final String PROP_SET_VOLUME = "volume";
+   private static final String PROP_IS_PLAYING = "isPlaying";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -61,7 +65,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       // Cleanup player resources
       super.onDropViewInstance(view);
       if (view != null) {
-         view.onApplicationDestroy();
+         view.destroy();
       }
    }
 
@@ -132,6 +136,24 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    public void removePlayerListeners(KalturaPlayerRNView kalturaPlayerRNView, boolean autoPlay) {
       log.d("removePlayerListeners");
       kalturaPlayerRNView.removePlayerListeners();
+   }
+
+   @ReactProp(name = PROP_ON_APPLICATION_PAUSE)
+   public void onApplicationPaused(KalturaPlayerRNView kalturaPlayerRNView, boolean isPause) {
+      log.d("onApplicationPaused");
+      kalturaPlayerRNView.onApplicationPaused();
+   }
+
+   @ReactProp(name = PROP_ON_APPLICATION_RESUME)
+   public void onApplicationResumed(KalturaPlayerRNView kalturaPlayerRNView, boolean isResume) {
+      log.d("onApplicationResumed");
+      kalturaPlayerRNView.onApplicationResumed();
+   }
+
+   @ReactProp(name = PROP_ON_DESTROY)
+   public void onApplicationDestroyed(KalturaPlayerRNView kalturaPlayerRNView, boolean isDestroyed) {
+      log.d("onApplicationDestroyed");
+      kalturaPlayerRNView.destroy();
    }
 
    @ReactProp(name = PROP_PLAY)

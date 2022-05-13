@@ -71,22 +71,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   };
 
   /**
-   * Add the listners for the Kaltura Player
-   */
-  addListeners = () => {
-    console.log('Calling Native Prop addListeners()');
-    this.setNativeProps({ addListeners: true });
-  };
-
-  /**
-   * Add the listners for the Kaltura Player
-   */
-  removeListeners = () => {
-    console.log('Calling Native Prop removeListeners()');
-    this.setNativeProps({ removeListeners: true });
-  };
-
-  /**
    * This method creates a Player instance internally (Basic, OVP/OTT Player)
    * With this, it take the PlayerInitOptions which are having essential Player settings values
    *
@@ -99,22 +83,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     console.log('Setting up the Player');
     this.setNativeProps({ partnerId: id });
     this.setNativeProps({ playerInitOptions: options });
-  };
-
-  /**
-   * Update a Plugin Config
-   *
-   * @param pluginName Plugin Name (Youbora, IMA etc)
-   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
-   */
-  updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
-    const pluginJson = {
-      pluginName: pluginName,
-      pluginConfig: config,
-    };
-    const stringifiedJson = JSON.stringify(pluginJson);
-    console.log('Updated Plugin is: ' + stringifiedJson);
-    this.setNativeProps({ updatePluginConfig: stringifiedJson });
   };
 
   /**
@@ -136,6 +104,55 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ assetId: id });
     this.setNativeProps({ mediaAsset: asset });
     this.setNativeProps({ load: true });
+  };
+
+  /**
+   * Add the listners for the Kaltura Player
+   */
+   addListeners = () => {
+    console.log('Calling Native Prop addListeners()');
+    this.setNativeProps({ addListeners: true });
+  };
+
+  /**
+   * Add the listners for the Kaltura Player
+   */
+  removeListeners = () => {
+    console.log('Calling Native Prop removeListeners()');
+    this.setNativeProps({ removeListeners: true });
+  };
+
+  /**
+   * Should be called when the application is in background
+   */
+  onApplicationPaused = () => { 
+    console.log('Calling Native Prop onApplicationPaused()');
+    this.setNativeProps({ onApplicationPaused: true });
+  }
+
+  /**
+   * Should be called when the application comes back to
+   * foreground
+   */
+  onApplicationResumed = () => { 
+    console.log('Calling Native Prop onApplicationResumed()');
+    this.setNativeProps({ onApplicationResumed: true });
+  }
+
+  /**
+   * Update a Plugin Config
+   *
+   * @param pluginName Plugin Name (Youbora, IMA etc)
+   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+   */
+   updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
+    const pluginJson = {
+      pluginName: pluginName,
+      pluginConfig: config,
+    };
+    const stringifiedJson = JSON.stringify(pluginJson);
+    console.log('Updated Plugin is: ' + stringifiedJson);
+    this.setNativeProps({ updatePluginConfig: stringifiedJson });
   };
 
   /**
@@ -161,6 +178,14 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     console.log('Calling Native Prop stop()');
     this.setNativeProps({ stop: true });
   };
+
+  /**
+   * Destroy the Kaltura Player instance
+   */
+   destroy = () => { 
+    console.log('Calling Native Prop destroy()');
+    this.setNativeProps({ onDestroy: true });
+  }
 
   /**
    * Replays the media from the beginning

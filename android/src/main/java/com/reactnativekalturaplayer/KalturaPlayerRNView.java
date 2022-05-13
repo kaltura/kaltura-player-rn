@@ -101,7 +101,7 @@ public class KalturaPlayerRNView extends FrameLayout {
    public KalturaPlayerRNView(@NonNull ThemedReactContext context) {
       super(context);
       this.context = context;
-      addActivityLifeCycleListeners(context);
+      // addActivityLifeCycleListeners(context);// Intentionally commented out because RN FE is handling it
    }
 
    protected void setPartnerId(int partnerId) {
@@ -160,6 +160,7 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    protected void onApplicationResumed() {
       if (player != null) {
+         requestLayout(); // TODO: This does not fix the problem while coming to foreground. Look for another solution
          player.onApplicationResumed();
       }
    }
@@ -168,14 +169,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       if (player != null) {
          player.onApplicationPaused();
       }
-   }
-
-   protected void onApplicationDestroy() {
-      if (player != null) {
-         player.destroy();
-      }
-      player = null;
-      playerViewAdded = false;
    }
 
    private void addActivityLifeCycleListeners(ThemedReactContext context) {
@@ -201,7 +194,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          @Override
          public void onHostDestroy() {
             log.d("Activity destroyed");
-            onApplicationDestroy();
+            destroy();
          }
       });
    }
@@ -608,6 +601,14 @@ public class KalturaPlayerRNView extends FrameLayout {
       if (player != null) {
          player.setPlaybackRate(playbackRate);
       }
+   }
+
+   protected void destroy() {
+      if (player != null) {
+         player.destroy();
+      }
+      player = null;
+      playerViewAdded = false;
    }
 
    public void stop() {
