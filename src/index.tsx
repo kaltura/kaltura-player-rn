@@ -98,6 +98,12 @@ export class KalturaPlayerAPI {
   static stop = () => {
     return KalturaPlayerModule.stop();
   }
+  static changeTrack = (trackId: string) => {
+    return KalturaPlayerModule.changeTrack(trackId);
+  }
+  static prepare = () => {
+    return KalturaPlayerModule.prepare();
+  }
   static setAutoplay = (value: boolean) => {
     return KalturaPlayerModule.setAutoplay(value);
   }

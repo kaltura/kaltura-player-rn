@@ -17,6 +17,8 @@ RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
 RCT_EXTERN_METHOD(seekTo:(nonnull double)position)
 RCT_EXTERN_METHOD(setPlayerVisibility:(nonnull BOOL)isVisible)
 RCT_EXTERN_METHOD(setAutoplay:(nonnull BOOL)value)
+RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
+RCT_EXTERN_METHOD(prepare)
 RCT_EXTERN_METHOD(destroy)
 
 @end

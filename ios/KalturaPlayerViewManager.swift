@@ -103,6 +103,18 @@ class KalturaPlayerViewManager: RCTViewManager {
         }
     }
     
+    @objc func changeTrack(_ trackId: String) {
+        DispatchQueue.main.async {
+            self.kalturaPlayer.selectTrack(trackId: trackId)
+        }
+    }
+    
+    @objc func prepare() {
+        DispatchQueue.main.async {
+            self.kalturaPlayer.prepare()
+        }
+    }
+    
     @objc func destroy() {
         DispatchQueue.main.async {
             self.kalturaPlayer.destroy()
