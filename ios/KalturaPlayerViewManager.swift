@@ -365,7 +365,7 @@ class KalturaPlayerRNView : UIView {
         if (str.caseInsensitiveCompare("playback") == ComparisonResult.orderedSame) { return PlaybackContextType.playback }
         if (str.caseInsensitiveCompare("catchup") == ComparisonResult.orderedSame) { return PlaybackContextType.catchup }
         if (str.caseInsensitiveCompare("trailer") == ComparisonResult.orderedSame) { return PlaybackContextType.trailer }
-        if (str.caseInsensitiveCompare("startOver") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
+        if (str.caseInsensitiveCompare("start_over") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
         
         return PlaybackContextType.unset
     }
