@@ -155,7 +155,7 @@ class KalturaPlayerViewManager: RCTViewManager {
             if (self.kalturaPlayer.isLive()) {
                 let currentProgramTime = self.kalturaPlayer.currentProgramTime
                 let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
-                let currentProgramTimeDouble = (currentProgramTimeEpochSeconds ?? 0) as Double
+                let currentProgramTimeDouble = ((currentProgramTimeEpochSeconds ?? 0) as Double) * 1000
                 
                 KalturaPlayerEvents.emitter.sendEvent(withName: "timeUpdate", body: [
                     "position": currentTime,
