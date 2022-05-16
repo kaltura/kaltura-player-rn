@@ -160,7 +160,6 @@ public class KalturaPlayerRNView extends FrameLayout {
 
    protected void onApplicationResumed() {
       if (player != null) {
-         requestLayout(); // TODO: This does not fix the problem while coming to foreground. Look for another solution
          player.onApplicationResumed();
       }
    }
@@ -772,7 +771,10 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, PlayerEvent.canPlay, event -> sendPlayerEvent(KalturaPlayerEvents.CAN_PLAY));
 
-      player.addListener(context, PlayerEvent.playing, event -> sendPlayerEvent(KalturaPlayerEvents.PLAYING));
+      player.addListener(context, PlayerEvent.playing, event -> {
+         requestLayout(); // TODO: This does not fix the problem while coming to foreground. Look for another solution
+         sendPlayerEvent(KalturaPlayerEvents.PLAYING);
+      });
 
       player.addListener(context, PlayerEvent.play, event -> sendPlayerEvent(KalturaPlayerEvents.PLAY));
 

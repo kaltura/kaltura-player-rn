@@ -12,6 +12,7 @@ interface KalturaPlayerProps {
 
 export default PlayerEvents;
 
+//TODO: Extract to separate file
 export enum PLAYER_TYPE {
   OVP = 'ovp',
   OTT = 'ott',

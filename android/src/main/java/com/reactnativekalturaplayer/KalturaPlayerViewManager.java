@@ -41,7 +41,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SET_KS = "ks";
    private static final String PROP_SET_Z_INDEX = "zIndex";
    private static final String PROP_SET_VOLUME = "volume";
-   private static final String PROP_IS_PLAYING = "isPlaying";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -72,11 +71,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    @ReactProp(name = PROP_PARTNER_ID)
    public void setPartnerId(KalturaPlayerRNView kalturaPlayerRNView, int partnerId) {
       log.d("setPartnerId partnerId " + partnerId);
-      if (partnerId > 0) {
-         kalturaPlayerRNView.setPartnerId(partnerId);
-      } else {
-         log.d("Invalid partner id which is " + partnerId);
-      }
+      kalturaPlayerRNView.setPartnerId(partnerId);
    }
 
    @ReactProp(name = PROP_PLAYER_TYPE)
