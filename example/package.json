@@ -9,13 +9,14 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "@miblanchard/react-native-slider": "^2.1.0",
     "react": "17.0.2",
     "react-native": "^0.66.3",
     "react-native-element-dropdown": "^1.8.10"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.17.9",
     "@babel/core": "^7.12.10",
+    "@babel/runtime": "^7.17.9",
     "babel-plugin-module-resolver": "^4.0.0",
     "metro-react-native-babel-preset": "^0.70.3"
   }

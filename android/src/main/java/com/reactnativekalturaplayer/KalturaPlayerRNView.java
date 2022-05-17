@@ -792,7 +792,8 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, PlayerEvent.playheadUpdated, event -> {
          String timeUpdatePayload = "\"position\": " + (event.position / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
-                 ", \"bufferPosition\": " + (event.bufferPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT);
+                 ", \"bufferPosition\": " + (event.bufferPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
+                 ", \"duration\": " + (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT);
 
          if (player != null && player.isLive() && player.getCurrentProgramTime() > 0) {
             timeUpdatePayload = "{ " + timeUpdatePayload +

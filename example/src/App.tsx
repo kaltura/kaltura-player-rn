@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import TrackList from '../src/components/TrackList';
+import SeekBar from '../src/components/SeekBar';
 import {
   KalturaPlayer,
   MEDIA_ENTRY_TYPE,
@@ -26,10 +27,12 @@ export default class App extends React.Component<any, any> {
   player: KalturaPlayer;
   videoTracks: Array;
   appStateSubscription: string | undefined;
+  isSliderSeeking: boolean = false;
 
   constructor(props: any) {
     super(props);
     this.state = {
+      // Track List Props default States
       videoTitle: 'No Video Tracks',
       videoTrackList: [],
       audioTitle: 'No Audio Tracks',
@@ -37,7 +40,12 @@ export default class App extends React.Component<any, any> {
       textTitle: 'No Text Tracks',
       textTrackList: [],
 
+      // Application lifecycle default States
       appState: AppState.currentState,
+
+      // Seekbar Props default States
+      currentPosition: 0,
+      totalDuration: 0,
     };
   }
 
@@ -52,9 +60,10 @@ export default class App extends React.Component<any, any> {
             this.player.onApplicationResumed(); // <TODO Add a condition if player is playing or not />
           }
         } else if (nextAppState === 'background') {
-          this.player.onApplicationPaused();
+          if (this.player != null) {
+            this.player.onApplicationPaused();
+          }
         }
-
         console.log('App has come to the! ' + nextAppState);
         this.setState({ appState: nextAppState });
       }
@@ -114,6 +123,16 @@ export default class App extends React.Component<any, any> {
     this.player.changeTrack(trackId);
   };
 
+  onSeekBarScrubbed = (seekedPosition) => {
+    console.log('Scrubbed seek position is: ' + seekedPosition);
+    //this.player.seekTo(seekedPosition);
+  };
+
+  onSeekBarScrubbing = (isSeeking) => {
+    console.log('onSeekBarScrubbing is: ' + isSeeking);
+    this.isSliderSeeking = isSeeking;
+  };
+
   /**
    * Add the Kaltura Player listeners to
    * add the Player, Ad and other Analytics
@@ -129,6 +148,20 @@ export default class App extends React.Component<any, any> {
             ? payload.duration
             : ' Empty duration change')
       );
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
+      //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + 'duration: ' + payload.duration);
+      if (!this.isSliderSeeking) {
+        this.setState(() => ({
+          currentPosition: payload.position,
+          totalDuration: payload.duration,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
+      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
     });
 
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
@@ -222,6 +255,13 @@ export default class App extends React.Component<any, any> {
           style={styles.center}
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
+
+        <SeekBar
+          position={this.state.currentPosition}
+          duration={this.state.totalDuration}
+          onSeekBarScrubbed={this.onSeekBarScrubbed}
+          onSeekBarScrubbing={this.onSeekBarScrubbing}
+        ></SeekBar>
 
         <View style={styles.row}>
           <TouchableOpacity
