@@ -19,7 +19,11 @@ import {
   PLAYER_PLUGIN,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
-import { PlayerEvents, AdEvents, AnalyticsEvents } from 'react-native-kaltura-player';
+import {
+  PlayerEvents,
+  AdEvents,
+  AnalyticsEvents,
+} from 'react-native-kaltura-player';
 
 const playerEventEmitter = new NativeEventEmitter();
 
@@ -52,24 +56,7 @@ export default class App extends React.Component<any, any> {
 
   componentDidMount() {
     console.log('componentDidMount from App.');
-
-    this.appStateSubscription = AppState.addEventListener(
-      'change',
-      (nextAppState) => {
-        if (nextAppState === 'active') {
-          if (this.player != null) {
-            this.player.onApplicationResumed(); // <TODO Add a condition if player is playing or not />
-          }
-        } else if (nextAppState === 'background') {
-          if (this.player != null) {
-            this.player.onApplicationPaused();
-          }
-        }
-        console.log('App has come to the! ' + nextAppState);
-        this.setState({ appState: nextAppState });
-      }
-    );
-
+    this.subscribeToAppLifecyle();
     // OTT Configuration
     // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
     // this.player.addListeners();
@@ -132,6 +119,25 @@ export default class App extends React.Component<any, any> {
   onSeekBarScrubbing = (isSeeking) => {
     console.log('onSeekBarScrubbing is: ' + isSeeking);
     this.isSliderSeeking = isSeeking;
+  };
+
+  subscribeToAppLifecyle = () => {
+    this.appStateSubscription = AppState.addEventListener(
+      'change',
+      (nextAppState) => {
+        if (nextAppState === 'active') {
+          if (this.player != null) {
+            this.player.onApplicationResumed(); // <TODO Add a condition if player is playing or not />
+          }
+        } else if (nextAppState === 'background') {
+          if (this.player != null) {
+            this.player.onApplicationPaused();
+          }
+        }
+        console.log('App has come to the! ' + nextAppState);
+        this.setState({ appState: nextAppState });
+      }
+    );
   };
 
   /**
@@ -211,14 +217,14 @@ export default class App extends React.Component<any, any> {
     playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_PAUSE_REQUESTED');
       this.setState(() => ({
-        showSeekbar: false
+        showSeekbar: false,
       }));
     });
 
     playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_RESUME_REQUESTED');
       this.setState(() => ({
-        showSeekbar: true
+        showSeekbar: true,
       }));
     });
   };
@@ -279,13 +285,14 @@ export default class App extends React.Component<any, any> {
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
 
-        { this.state.showSeekbar ?
-        (<SeekBar
-          position={this.state.currentPosition}
-          duration={this.state.totalDuration}
-          onSeekBarScrubbed={this.onSeekBarScrubbed}
-          onSeekBarScrubbing={this.onSeekBarScrubbing}
-        ></SeekBar>) : (
+        {this.state.showSeekbar ? (
+          <SeekBar
+            position={this.state.currentPosition}
+            duration={this.state.totalDuration}
+            onSeekBarScrubbed={this.onSeekBarScrubbed}
+            onSeekBarScrubbing={this.onSeekBarScrubbing}
+          ></SeekBar>
+        ) : (
           <Text></Text>
         )}
 
