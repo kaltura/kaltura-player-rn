@@ -36,4 +36,5 @@ export const PlayerEvents = {
   TIME_UPDATE: 'timeUpdate',
   LOAD_TIME_RANGES: 'loadedTimeRanges',
   DRM_INITIALIZED: 'drmInitialized',
+  THUMBNAIL_INFO_RESPONSE: 'thumbnailInfoResponse',
 };

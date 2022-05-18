@@ -1,4 +1,3 @@
-//TODO
 export const AnalyticsEvents = {
   PHOENIX_REPORT_SENT: 'reportSent',
   PHOENIX_CONCURRENCY_ERROR: 'concurrencyError',

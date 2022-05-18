@@ -57,6 +57,7 @@ import com.kaltura.tvplayer.OVPMediaOptions;
 import com.kaltura.tvplayer.PlayerInitOptions;
 import com.npaw.youbora.lib6.YouboraLog;
 import com.reactnativekalturaplayer.events.KalturaPlayerAdEvents;
+import com.reactnativekalturaplayer.events.KalturaPlayerAnalyticsEvents;
 import com.reactnativekalturaplayer.events.KalturaPlayerEvents;
 import com.reactnativekalturaplayer.model.BasicMediaAsset;
 import com.reactnativekalturaplayer.model.InitOptions;
@@ -555,7 +556,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          }
          log.d("DRM initialized; supported: " + pkDeviceSupportInfo.getSupportedDrmSchemes() + " isHardwareDrmSupported = " + pkDeviceSupportInfo.isHardwareDrmSupported());
          Gson gson = new Gson();
-         sendPlayerEvent("drmInitialized", gson.toJson(pkDeviceSupportInfo));
+         sendPlayerEvent(KalturaPlayerEvents.DRM_INITIALIZED, gson.toJson(pkDeviceSupportInfo));
       }));
    }
 
@@ -703,7 +704,7 @@ public class KalturaPlayerRNView extends FrameLayout {
          ThumbnailInfo thumbnailInfo = player.getThumbnailInfo((long) positionMs);
          if (thumbnailInfo != null && positionMs >= 0) {
             String thumbnailInfoJson = "{ \"position\": " + positionMs + ", \"thumbnailInfo\": " + gson.toJson(thumbnailInfo) + " }";
-            sendPlayerEvent("thumbnailInfoResponse", thumbnailInfoJson);
+            sendPlayerEvent(KalturaPlayerEvents.THUMBNAIL_INFO_RESPONSE, thumbnailInfoJson);
          } else {
             log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid");
          }
@@ -786,7 +787,7 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, PlayerEvent.durationChanged, event -> {
          reportedDuration = event.duration;
-         String durationJson = "{ \"duration\": " + (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT) + " }";
+         String durationJson = createJSONForEventPayload("duration", (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT));
          sendPlayerEvent(KalturaPlayerEvents.DURATION_CHANGE, durationJson);
       });
 
@@ -813,7 +814,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.stateChanged, event -> {
-         sendPlayerEvent(KalturaPlayerEvents.STATE_CHANGED, "{ \"newState\": \"" + event.newState.name() + "\" }");
+         sendPlayerEvent(KalturaPlayerEvents.STATE_CHANGED, createJSONForEventPayload( "newState", event.newState.name()));
       });
 
       player.addListener(context, PlayerEvent.tracksAvailable, event -> {
@@ -829,15 +830,15 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.volumeChanged, event -> {
-         sendPlayerEvent(KalturaPlayerEvents.VOLUME_CHANGED , createJSONForEventPayload("volume", event.volume));
+         sendPlayerEvent(KalturaPlayerEvents.VOLUME_CHANGED, createJSONForEventPayload("volume", event.volume));
       });
 
       player.addListener(context, PlayerEvent.surfaceAspectRationSizeModeChanged, event -> {
-         sendPlayerEvent(KalturaPlayerEvents.ASPECT_RATIO_RESIZE_MODE_CHANGED , createJSONForEventPayload("surfaceAspectRationSizeModeChanged", event.resizeMode.name()));
+         sendPlayerEvent(KalturaPlayerEvents.ASPECT_RATIO_RESIZE_MODE_CHANGED, createJSONForEventPayload("surfaceAspectRationSizeModeChanged", event.resizeMode.name()));
       });
 
       player.addListener(context, PlayerEvent.subtitlesStyleChanged, event -> {
-         sendPlayerEvent(KalturaPlayerEvents.SUBTITLE_STYLE_CHANGED , createJSONForEventPayload("subtitlesStyleChanged" , event.styleName));
+         sendPlayerEvent(KalturaPlayerEvents.SUBTITLE_STYLE_CHANGED, createJSONForEventPayload("subtitlesStyleChanged" , event.styleName));
       });
 
       player.addListener(context, PlayerEvent.videoTrackChanged, event -> {
@@ -884,7 +885,9 @@ public class KalturaPlayerRNView extends FrameLayout {
                  " }");
       });
 
-      player.addListener(context, PlayerEvent.seeking, event -> sendPlayerEvent(KalturaPlayerEvents.SEEKING, "{ \"targetPosition\": " + (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT) + " }"));
+      player.addListener(context, PlayerEvent.seeking, event -> {
+          sendPlayerEvent(KalturaPlayerEvents.SEEKING, createJSONForEventPayload("targetPosition", (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
+      });
 
       player.addListener(context, PlayerEvent.seeked, event -> sendPlayerEvent(KalturaPlayerEvents.SEEKED));
 
@@ -896,13 +899,13 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PhoenixAnalyticsEvent.bookmarkError, event -> {
-         sendPlayerEvent("bookmarkError", "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+         sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_BOOKMARK_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
                  ", \"errorType\": \"" + event.type + "\" " +
                  " }");
       });
       player.addListener(context, PhoenixAnalyticsEvent.concurrencyError, event -> {
-         sendPlayerEvent("concurrencyError", "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+         sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_CONCURRENCY_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
                  ", \"errorType\": \"" + event.type + "\" " +
                  " }");
@@ -916,7 +919,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, AdEvent.adProgress, event -> {
-         sendPlayerEvent(KalturaPlayerAdEvents.AD_PROGRESS, "{ \"currentAdPosition\": " + (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT) + " }");
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_PROGRESS, createJSONForEventPayload("currentAdPosition", (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
       });
 
       player.addListener(context, AdEvent.cuepointsChanged, event -> sendPlayerEvent(KalturaPlayerAdEvents.CUEPOINTS_CHANGED, getCuePointsJson(event.cuePoints)));
@@ -931,11 +934,15 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, AdEvent.adBufferStart, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BUFFER_START));
 
-      player.addListener(context, AdEvent.adClickedEvent, event -> sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, "{ \"clickThruUrl\": \"" + event.clickThruUrl + "\" }"));
+      player.addListener(context, AdEvent.adClickedEvent, event -> {
+          sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, createJSONForEventPayload("clickThruUrl", event.clickThruUrl));
+      });
 
       player.addListener(context, AdEvent.skipped, event -> sendPlayerEvent(KalturaPlayerAdEvents.SKIPPED));
 
-      player.addListener(context, AdEvent.adRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, "{ \"adTagUrl\": \"" + event.adTagUrl + "\" }"));
+      player.addListener(context, AdEvent.adRequested, event -> {
+          sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, createJSONForEventPayload("adTagUrl" , event.adTagUrl));
+      });
 
       player.addListener(context, AdEvent.contentPauseRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_PAUSE_REQUESTED));
 
@@ -1115,55 +1122,64 @@ public class KalturaPlayerRNView extends FrameLayout {
       return KalturaPlayer.Type.ott;
    }
 
-   private String createJSONForEventPayload(String key, Object value) {
-      return "{ \" " + key + "\": " + value + "\" }";
-   }
-
-   @Nullable
-   private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
-      if (TextUtils.isEmpty(parsableJson)) {
-         log.e("getParsedJson parsable Json is empty.");
-         return null;
-      }
-
-      try {
-         return gson.fromJson(parsableJson, parsingClass);
-      } catch (JsonSyntaxException exception) {
-         log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
-                 exception.getMessage());
-      }
-
-      return null;
-   }
-
-   /** Device Event Emitter for React Native to android event communication **/
+   /*****************************************************
+    * Device Event Emitter and event helper methods for *
+    * React Native to android event communication       *
+    ****************************************************/
 
    private DeviceEventManagerModule.RCTDeviceEventEmitter emitter() {
       return context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
    }
 
-   private void sendPlayerEvent(String event) {
+    /**
+     * Create a JSON with only one Key-Value pair
+     * @param key JSON object key
+     * @param value JSON object value
+     * @return JSON object
+     */
+    private String createJSONForEventPayload(String key, Object value) {
+        return "{ \"" + key + "\": " + value + " }";
+    }
+
+    @Nullable
+    private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
+        if (TextUtils.isEmpty(parsableJson)) {
+            log.e("getParsedJson parsable Json is empty.");
+            return null;
+        }
+
+        try {
+            return gson.fromJson(parsableJson, parsingClass);
+        } catch (JsonSyntaxException exception) {
+            log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
+                    exception.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Send Event without any payload
+     * @param eventName name of the event
+     */
+   private void sendPlayerEvent(String eventName) {
       WritableMap params = Arguments.createMap();
-      emitter().emit(event, params);
+      emitter().emit(eventName, params);
    }
 
-   //   private void sendPlayerEvent(String event, String payload) {
-//      WritableMap params = Arguments.createMap();
-//      if (!TextUtils.isEmpty(payload)) {
-//         params.putString("payload", payload);
-//      }
-//      //log.d("sendPlayerEvent Event Name: " + event + "Payload is: " + payload) ;
-//      emitter().emit(event, params);
-//   }
-//
-   private void sendPlayerEvent(String event, @Nullable String payloadString) {
+    /**
+     * Send Event with payload JSON object
+     * @param eventName name of the event
+     * @param payloadString payload JSON data
+     */
+   private void sendPlayerEvent(String eventName, @Nullable String payloadString) {
       WritableMap eventPayloadMap = convertStringToWritableMap(payloadString);
       if (eventPayloadMap == null) {
-         log.e("Event payload is null hence returning event is: " + event);
+         log.e("Event payload is null hence returning event is: " + eventName);
          return;
       }
 
-      emitter().emit(event, eventPayloadMap);
+      emitter().emit(eventName, eventPayloadMap);
    }
 
    @Nullable

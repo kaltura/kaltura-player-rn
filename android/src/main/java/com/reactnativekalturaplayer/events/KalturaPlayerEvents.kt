@@ -73,5 +73,7 @@ class KalturaPlayerEvents {
         val LOAD_TIME_RANGES = "loadedTimeRanges"
         @JvmField
         val DRM_INITIALIZED = "drmInitialized"
+        @JvmField
+        val THUMBNAIL_INFO_RESPONSE = "thumbnailInfoResponse"
     }
 }
