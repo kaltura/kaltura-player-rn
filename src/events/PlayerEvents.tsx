@@ -1,4 +1,4 @@
-export default {
+export const PlayerEvents = {
   // TODO: All the "" string needs to be added on Native android layer
   // TODO: Generate it using some script
   // TODO: Add pending events

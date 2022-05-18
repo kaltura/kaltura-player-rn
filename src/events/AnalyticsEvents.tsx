@@ -1,5 +1,5 @@
 //TODO
-export default {
+export const AnalyticsEvents = {
   PHOENIX_REPORT_SENT: 'reportSent',
   PHOENIX_CONCURRENCY_ERROR: 'concurrencyError',
   PHOENIX_BOOKMARK_ERROR: 'bookmarkError',

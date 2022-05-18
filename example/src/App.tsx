@@ -19,7 +19,7 @@ import {
   PLAYER_PLUGIN,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
-import PlayerEvents from 'react-native-kaltura-player';
+import { PlayerEvents, AdEvents, AnalyticsEvents } from 'react-native-kaltura-player';
 
 const playerEventEmitter = new NativeEventEmitter();
 
@@ -44,6 +44,7 @@ export default class App extends React.Component<any, any> {
       appState: AppState.currentState,
 
       // Seekbar Props default States
+      showSeekbar: false,
       currentPosition: 0,
       totalDuration: 0,
     };
@@ -125,7 +126,7 @@ export default class App extends React.Component<any, any> {
 
   onSeekBarScrubbed = (seekedPosition) => {
     console.log('Scrubbed seek position is: ' + seekedPosition);
-    //this.player.seekTo(seekedPosition);
+    this.player.seekTo(seekedPosition);
   };
 
   onSeekBarScrubbing = (isSeeking) => {
@@ -148,14 +149,19 @@ export default class App extends React.Component<any, any> {
             ? payload.duration
             : ' Empty duration change')
       );
+
+      if (payload.duration != null) {
+        this.setState(() => ({
+          totalDuration: payload.duration,
+        }));
+      }
     });
 
     playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
-      //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + 'duration: ' + payload.duration);
+      //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
       if (!this.isSliderSeeking) {
         this.setState(() => ({
           currentPosition: payload.position,
-          totalDuration: payload.duration,
         }));
       }
     });
@@ -166,7 +172,6 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
       console.log('PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload));
-      //console.log('TRACKS_AVAILABLE tracks length: ' + Object.keys(payload).length);
       const videoTracks = payload.video;
 
       if (videoTracks.length > 0) {
@@ -197,6 +202,24 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
       console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload));
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
+      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+    });
+
+    playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
+      console.log('AdEvent CONTENT_PAUSE_REQUESTED');
+      this.setState(() => ({
+        showSeekbar: false
+      }));
+    });
+
+    playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
+      console.log('AdEvent CONTENT_RESUME_REQUESTED');
+      this.setState(() => ({
+        showSeekbar: true
+      }));
     });
   };
 
@@ -256,12 +279,15 @@ export default class App extends React.Component<any, any> {
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
 
-        <SeekBar
+        { this.state.showSeekbar ?
+        (<SeekBar
           position={this.state.currentPosition}
           duration={this.state.totalDuration}
           onSeekBarScrubbed={this.onSeekBarScrubbed}
           onSeekBarScrubbing={this.onSeekBarScrubbing}
-        ></SeekBar>
+        ></SeekBar>) : (
+          <Text></Text>
+        )}
 
         <View style={styles.row}>
           <TouchableOpacity
