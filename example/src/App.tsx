@@ -33,6 +33,8 @@ export default class App extends React.Component<any, any> {
   appStateSubscription: string | undefined;
   isSliderSeeking: boolean = false;
 
+  contentDuration: number = 0;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -48,7 +50,7 @@ export default class App extends React.Component<any, any> {
       appState: AppState.currentState,
 
       // Seekbar Props default States
-      showSeekbar: false,
+      isAdPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
     };
@@ -157,17 +159,16 @@ export default class App extends React.Component<any, any> {
       );
 
       if (payload.duration != null) {
-        this.setState(() => ({
-          totalDuration: payload.duration,
-        }));
+        this.contentDuration = payload.duration;
       }
     });
 
     playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
       //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
-      if (!this.isSliderSeeking) {
+      if (!this.isSliderSeeking && !this.state.isAdPlaying) {
         this.setState(() => ({
           currentPosition: payload.position,
+          totalDuration: this.contentDuration,
         }));
       }
     });
@@ -217,15 +218,38 @@ export default class App extends React.Component<any, any> {
     playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_PAUSE_REQUESTED');
       this.setState(() => ({
-        showSeekbar: false,
+        isAdPlaying: true,
       }));
     });
 
     playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_RESUME_REQUESTED');
       this.setState(() => ({
-        showSeekbar: true,
+        isAdPlaying: false,
       }));
+    });
+
+    playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
+      console.log(
+        'AdEvents LOADED : ' +
+          (payload.adDuration != null
+            ? payload.adDuration
+            : ' Empty Ad duration')
+      );
+      if (payload.adDuration != null) {
+        this.setState(() => ({
+          totalDuration: payload.adDuration / 1000,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
+      console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
+      if (payload.currentAdPosition != null) {
+        this.setState(() => ({
+          currentPosition: payload.currentAdPosition,
+        }));
+      }
     });
   };
 
@@ -285,16 +309,13 @@ export default class App extends React.Component<any, any> {
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
 
-        {this.state.showSeekbar ? (
-          <SeekBar
-            position={this.state.currentPosition}
-            duration={this.state.totalDuration}
-            onSeekBarScrubbed={this.onSeekBarScrubbed}
-            onSeekBarScrubbing={this.onSeekBarScrubbing}
-          ></SeekBar>
-        ) : (
-          <Text></Text>
-        )}
+        <SeekBar
+          isAdPlaying={this.state.isAdPlaying}
+          position={this.state.currentPosition}
+          duration={this.state.totalDuration}
+          onSeekBarScrubbed={this.onSeekBarScrubbed}
+          onSeekBarScrubbing={this.onSeekBarScrubbing}
+        ></SeekBar>
 
         <View style={styles.row}>
           <TouchableOpacity

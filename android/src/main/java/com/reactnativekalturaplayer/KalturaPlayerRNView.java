@@ -125,8 +125,7 @@ public class KalturaPlayerRNView extends FrameLayout {
                  (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp)){
             createKalturaOttOvpPlayer(partnerId, initOptions);
          } else {
-            //TODO: Fix log message
-            log.e("Player can not be created.");
+            log.e("Player can not be created. playerType is " + playerType + " and partnerId is " + partnerId);
          }
       } else {
          log.e("PartnerId is not valid.");
@@ -920,6 +919,10 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, AdEvent.adProgress, event -> {
          sendPlayerEvent(KalturaPlayerAdEvents.AD_PROGRESS, createJSONForEventPayload("currentAdPosition", (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
+      });
+
+      player.addListener(context, AdEvent.loaded, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.LOADED, gson.toJson(event.adInfo));
       });
 
       player.addListener(context, AdEvent.cuepointsChanged, event -> sendPlayerEvent(KalturaPlayerAdEvents.CUEPOINTS_CHANGED, getCuePointsJson(event.cuePoints)));

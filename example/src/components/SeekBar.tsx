@@ -6,6 +6,7 @@ export default function SeekBar(props) {
   return (
     <>
       <Slider
+        disabled={props.isAdPlaying ? true : false}
         animateTransitions={true}
         value={props.position}
         maximumValue={props.duration}
