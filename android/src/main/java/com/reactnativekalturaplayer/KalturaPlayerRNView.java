@@ -638,7 +638,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   //NOT ADDED YET AS PROPS
+   //TODO: NOT ADDED YET AS PROPS
    public void setFrame(int playerViewWidth, int playerViewHeight, int playerViewPosX, int playerViewPosY) {
       log.d("setFrame " + playerViewWidth + "/" + playerViewHeight + " " + playerViewPosX + "/" + playerViewPosY);
 
@@ -682,7 +682,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   //NOT ADDED YET AS PROPS
+   //TODO: NOT ADDED YET AS PROPS
    public void setPlayerVisibility(boolean isVisible, float volume) {
       log.d("setPlayerVisibility: " + isVisible + " volume = " + volume);
       if (player != null && player.getPlayerView() != null) {
@@ -696,7 +696,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   //NOT ADDED YET AS PROPS
+   //TODO: NOT ADDED YET AS PROPS
    public void requestThumbnailInfo(float positionMs) {
       log.d("requestThumbnailInfo:" + positionMs);
       if (player != null) {
@@ -710,7 +710,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
-   //NOT ADDED YET AS PROPS
+   // TODO: NOT ADDED YET AS PROPS
    public void setLogLevel(String logLevel) {
       log.d("setLogLevel: " + logLevel);
       if (TextUtils.isEmpty(logLevel)) {
@@ -897,14 +897,69 @@ public class KalturaPlayerRNView extends FrameLayout {
          }
       });
 
+      player.addListener(context, PlayerEvent.metadataAvailable, event -> {
+         if (!event.metadataList.isEmpty()) {
+            sendPlayerEvent(KalturaPlayerEvents.METADATA_AVAILABLE, gson.toJson(event.metadataList));
+            //TODO: Add event stream after the player release v4.23.0
+         }
+      });
+
+      player.addListener(context, PlayerEvent.sourceSelected, event -> {
+         if (event.source != null) {
+            sendPlayerEvent(KalturaPlayerEvents.SOURCE_SELECTED, gson.toJson(event.source));
+         }
+      });
+
+      player.addListener(context, PlayerEvent.playbackRateChanged, event -> {
+         if (event.rate > 0) {
+            sendPlayerEvent(KalturaPlayerEvents.PLAYBACK_RATE_CHANGED, createJSONForEventPayload("rate", event.rate));
+         }
+      });
+
+      player.addListener(context, PlayerEvent.connectionAcquired, event -> {
+         if (event.uriConnectionAcquiredInfo != null) {
+            sendPlayerEvent(KalturaPlayerEvents.CONNECTION_ACQUIRED, gson.toJson(event.uriConnectionAcquiredInfo));
+         }
+      });
+
+      player.addListener(context, PlayerEvent.videoFramesDropped, event -> {
+         sendPlayerEvent(KalturaPlayerEvents.VIDEO_FRAMES_DROPPED, "{ \"droppedVideoFrames\": " + event.droppedVideoFrames +
+                 ", \"droppedVideoFramesPeriod\": " + event.droppedVideoFramesPeriod +
+                 ", \"totalDroppedVideoFrames\": " + event.totalDroppedVideoFrames +
+                 " }");
+      });
+
+      player.addListener(context, PlayerEvent.outputBufferCountUpdate, event -> {
+         sendPlayerEvent(KalturaPlayerEvents.OUTPUT_BUFFER_COUNT_UPDATE, "{ \"skippedOutputBufferCount\": " + event.skippedOutputBufferCount +
+                 ", \"renderedOutputBufferCount\": " + event.renderedOutputBufferCount +
+                 " }");
+      });
+
+      player.addListener(context, PlayerEvent.bytesLoaded, event -> {
+         sendPlayerEvent(KalturaPlayerEvents.BYTES_LOADED, "{ \"bytesLoaded\": " + event.bytesLoaded +
+                 ", \"dataType\": " + event.dataType +
+                 ", \"loadDuration\": " + event.loadDuration +
+                 ", \"totalBytesLoaded\": " + event.totalBytesLoaded +
+                 ", \"trackType\": " + event.trackType +
+                 " }");
+      });
+
       player.addListener(context, PhoenixAnalyticsEvent.bookmarkError, event -> {
          sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_BOOKMARK_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
                  ", \"errorType\": \"" + event.type + "\" " +
                  " }");
       });
+
       player.addListener(context, PhoenixAnalyticsEvent.concurrencyError, event -> {
          sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_CONCURRENCY_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+                 ", \"errorCode\": \"" + event.errorCode + "\" " +
+                 ", \"errorType\": \"" + event.type + "\" " +
+                 " }");
+      });
+
+      player.addListener(context, PhoenixAnalyticsEvent.error, event -> {
+         sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
                  ", \"errorType\": \"" + event.type + "\" " +
                  " }");

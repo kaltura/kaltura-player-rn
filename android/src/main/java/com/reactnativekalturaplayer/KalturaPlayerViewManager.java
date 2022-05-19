@@ -245,7 +245,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    public void setVolume(KalturaPlayerRNView kalturaPlayerRNView, float volume) {
       log.d("setVolume " + volume);
       if (volume > 0f) {
-         kalturaPlayerRNView.setZIndex(volume);
+         kalturaPlayerRNView.setVolume(volume);
       } else {
          log.d("Invalid Volume which is " + volume);
       }

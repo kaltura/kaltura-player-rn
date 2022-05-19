@@ -29,8 +29,8 @@ const playerEventEmitter = new NativeEventEmitter();
 
 export default class App extends React.Component<any, any> {
   player: KalturaPlayer;
-  videoTracks: Array;
-  appStateSubscription: string | undefined;
+  videoTracks = [];
+  appStateSubscription: string = "";
   isSliderSeeking: boolean = false;
 
   contentDuration: number = 0;
@@ -244,7 +244,7 @@ export default class App extends React.Component<any, any> {
     });
 
     playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
-      console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
+      //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
       if (payload.currentAdPosition != null) {
         this.setState(() => ({
           currentPosition: payload.currentAdPosition,

@@ -42,6 +42,8 @@ class KalturaPlayerEvents {
         @JvmField
         val METADATA_AVAILABLE = "metadataAvailable" // Sent when there is metadata available for this entry.
         @JvmField
+        val EVENT_STREAM_CHANGED = "eventStreamChanged" //Send event streams received from manifest
+        @JvmField
         val SOURCE_SELECTED = "sourceSelected" // Sent when the source was selected.
         @JvmField
         val PLAYHEAD_UPDATED = "playheadUpdated" //Send player position every 100 Milisec
@@ -67,8 +69,6 @@ class KalturaPlayerEvents {
         val SUBTITLE_STYLE_CHANGED = "subtitlesStyleChanged" // Subtitle style is changed.
         @JvmField
         val ASPECT_RATIO_RESIZE_MODE_CHANGED = "surfaceAspectRationSizeModeChanged" //Send when updating the Surface Vide Aspect Ratio size mode.
-        @JvmField
-        val TIME_UPDATE = "timeUpdate"
         @JvmField
         val LOAD_TIME_RANGES = "loadedTimeRanges"
         @JvmField

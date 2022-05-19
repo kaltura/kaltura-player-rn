@@ -35,5 +35,5 @@ export const AdEvents = {
   ERROR: 'error',
   DAI_SOURCE_SELECTED: 'daiSourceSelected',
   AD_WATERFALLING: 'adWaterFalling',
-  AD_WATERFALLING_FAILED: 'adWaterFallingFailed',
+  AD_WATERFALLING_FAILED: 'adWaterFallingFailed'
 };
