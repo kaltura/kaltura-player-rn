@@ -79,7 +79,7 @@ class KalturaPlayerViewManager: RCTViewManager {
     
     @objc func setVolume(_ volume: Float) {
         DispatchQueue.main.async {
-            // setVolume not found
+            self.kalturaPlayer.volume = volume
         }
     }
     
