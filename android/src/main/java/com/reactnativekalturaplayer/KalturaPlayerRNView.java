@@ -813,7 +813,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.stateChanged, event -> {
-         sendPlayerEvent(KalturaPlayerEvents.STATE_CHANGED, createJSONForEventPayload( "newState", event.newState.name()));
+         sendPlayerEvent(KalturaPlayerEvents.STATE_CHANGED, createJSONForEventPayload("newState", event.newState.name()));
       });
 
       player.addListener(context, PlayerEvent.tracksAvailable, event -> {
@@ -841,47 +841,23 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.videoTrackChanged, event -> {
-         final com.kaltura.playkit.player.VideoTrack newTrack = event.newTrack;
-         VideoTrack videoTrack = new VideoTrack(newTrack.getUniqueId(), newTrack.getWidth(), newTrack.getHeight(), newTrack.getBitrate(), true, newTrack.isAdaptive());
-         sendPlayerEvent(KalturaPlayerEvents.VIDEO_TRACK_CHANGED, gson.toJson(videoTrack));
+        sendPlayerEvent(KalturaPlayerEvents.VIDEO_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.audioTrackChanged, event -> {
-         final com.kaltura.playkit.player.AudioTrack newTrack = event.newTrack;
-         AudioTrack audioTrack = new AudioTrack(newTrack.getUniqueId(), newTrack.getBitrate(), newTrack.getLanguage(), newTrack.getLabel(), newTrack.getChannelCount(), true);
-         sendPlayerEvent(KalturaPlayerEvents.AUDIO_TRACK_CHANGED, gson.toJson(audioTrack));
+        sendPlayerEvent(KalturaPlayerEvents.AUDIO_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.textTrackChanged, event -> {
-         final com.kaltura.playkit.player.TextTrack newTrack = event.newTrack;
-         TextTrack textTrack = new TextTrack(newTrack.getUniqueId(), newTrack.getLanguage(), newTrack.getLabel(), true);
-         sendPlayerEvent(KalturaPlayerEvents.TEXT_TRACK_CHANGED, gson.toJson(textTrack));
+         sendPlayerEvent(KalturaPlayerEvents.TEXT_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.imageTrackChanged, event -> {
-         final com.kaltura.playkit.player.ImageTrack newImageTrack = event.newTrack;
-
-         ImageTrack imageTrack = new ImageTrack(newImageTrack.getUniqueId(), newImageTrack.getLabel(),
-                 newImageTrack.getBitrate(),
-                 newImageTrack.getWidth(),
-                 newImageTrack.getHeight(),
-                 newImageTrack.getCols(),
-                 newImageTrack.getRows(),
-                 newImageTrack.getDuration(),
-                 newImageTrack.getUrl(),
-                 true);
-
-         sendPlayerEvent(KalturaPlayerEvents.IMAGE_TRACK_CHANGED, gson.toJson(imageTrack));
+         sendPlayerEvent(KalturaPlayerEvents.IMAGE_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.playbackInfoUpdated, event -> {
-         long videoBitrate = (event.playbackInfo.getVideoBitrate() > 0) ? event.playbackInfo.getVideoBitrate() : 0;
-         long audioBitrate = (event.playbackInfo.getAudioBitrate() > 0) ? event.playbackInfo.getAudioBitrate() : 0;
-         long totalBitrate = (videoBitrate + audioBitrate);
-         sendPlayerEvent(KalturaPlayerEvents.PLAYBACK_INFO_UPDATED, "{ \"videoBitrate\": " + event.playbackInfo.getVideoBitrate() +
-                 ", \"audioBitrate\": " + event.playbackInfo.getAudioBitrate() +
-                 ", \"totalBitrate\": " + totalBitrate +
-                 " }");
+         sendPlayerEvent(KalturaPlayerEvents.PLAYBACK_INFO_UPDATED, gson.toJson(event.playbackInfo));
       });
 
       player.addListener(context, PlayerEvent.seeking, event -> {
@@ -892,8 +868,7 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, PlayerEvent.error, event -> {
          if (event.error.isFatal()) {
-            log.e("error event : " + getErrorJson(event.error));
-            sendPlayerEvent(KalturaPlayerEvents.ERROR, getErrorJson(event.error));
+            sendPlayerEvent(KalturaPlayerEvents.ERROR, gson.toJson(event.error));
          }
       });
 
@@ -944,6 +919,97 @@ public class KalturaPlayerRNView extends FrameLayout {
                  " }");
       });
 
+      player.addListener(context, AdEvent.adProgress, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_PROGRESS, createJSONForEventPayload("currentAdPosition", (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
+      });
+
+      player.addListener(context, AdEvent.loaded, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.LOADED, gson.toJson(event.adInfo));
+      });
+
+      player.addListener(context, AdEvent.cuepointsChanged, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.CUEPOINTS_CHANGED, gson.toJson(event.cuePoints));
+      });
+
+      player.addListener(context, AdEvent.started, event -> sendPlayerEvent(KalturaPlayerAdEvents.STARTED));
+
+      player.addListener(context, AdEvent.completed, event -> sendPlayerEvent(KalturaPlayerAdEvents.COMPLETED));
+
+      player.addListener(context, AdEvent.paused, event -> sendPlayerEvent(KalturaPlayerAdEvents.PAUSED));
+
+      player.addListener(context, AdEvent.resumed, event -> sendPlayerEvent(KalturaPlayerAdEvents.RESUMED));
+
+      player.addListener(context, AdEvent.adBufferStart, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_BUFFER_START, createJSONForEventPayload("adPosition" , event.adPosition));
+      });
+
+      player.addListener(context, AdEvent.adBufferEnd, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_BUFFER_END, createJSONForEventPayload("adPosition" , event.adPosition));
+      });
+
+      player.addListener(context, AdEvent.adClickedEvent, event -> {
+          sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, createJSONForEventPayload("clickThruUrl", event.clickThruUrl));
+      });
+
+      player.addListener(context, AdEvent.skipped, event -> sendPlayerEvent(KalturaPlayerAdEvents.SKIPPED));
+
+      player.addListener(context, AdEvent.adRequested, event -> {
+          sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, createJSONForEventPayload("adTagUrl" , event.adTagUrl));
+      });
+
+      player.addListener(context, AdEvent.contentPauseRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_PAUSE_REQUESTED));
+
+      player.addListener(context, AdEvent.contentResumeRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_RESUME_REQUESTED));
+
+      player.addListener(context, AdEvent.allAdsCompleted, event -> sendPlayerEvent(KalturaPlayerAdEvents.ALL_ADS_COMPLETED));
+
+      player.addListener(context, AdEvent.error, event -> {
+         if (event.error.isFatal()) {
+            sendPlayerEvent(KalturaPlayerAdEvents.ERROR, gson.toJson(event.error));
+         }
+      });
+
+      player.addListener(context, AdEvent.adFirstPlay, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_FIRST_PLAY));
+
+      player.addListener(context, AdEvent.firstQuartile, event -> sendPlayerEvent(KalturaPlayerAdEvents.FIRST_QUARTILE));
+
+      player.addListener(context, AdEvent.midpoint, event -> sendPlayerEvent(KalturaPlayerAdEvents.MIDPOINT));
+
+      player.addListener(context, AdEvent.thirdQuartile, event -> sendPlayerEvent(KalturaPlayerAdEvents.THIRD_QUARTILE));
+
+      player.addListener(context, AdEvent.skippableStateChanged, event -> sendPlayerEvent(KalturaPlayerAdEvents.SKIPPABLE_STATE_CHANGED));
+
+      player.addListener(context, AdEvent.tapped, event -> sendPlayerEvent(KalturaPlayerAdEvents.TAPPED));
+
+      player.addListener(context, AdEvent.iconFallbackImageClosed, event -> sendPlayerEvent(KalturaPlayerAdEvents.ICON_FALLBACK_IMAGE_CLOSED));
+
+      player.addListener(context, AdEvent.iconTapped, event -> sendPlayerEvent(KalturaPlayerAdEvents.ICON_TAPPED));
+
+      player.addListener(context, AdEvent.adBreakReady, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BREAK_READY));
+
+      player.addListener(context, AdEvent.adBreakStarted, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BREAK_STARTED));
+
+      player.addListener(context, AdEvent.adBreakEnded, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BREAK_ENDED));
+
+      player.addListener(context, AdEvent.adBreakFetchError, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BREAK_FETCH_ERROR));
+
+      player.addListener(context, AdEvent.adBreakIgnored, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BREAK_IGNORED));
+
+      player.addListener(context, AdEvent.playHeadChanged, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.PLAY_HEAD_CHANGED, createJSONForEventPayload("adPlayHead" , event.adPlayHead));
+      });
+
+      player.addListener(context, AdEvent.adPlaybackInfoUpdated, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_PLAYBACK_INFO_UPDATED, "{ \"bitrate\": " + event.bitrate +
+                 ", \"height\": " + event.height +
+                 ", \"width\": " + event.width +
+                 " }");
+      });
+
+      player.addListener(context, AdEvent.daiSourceSelected, event -> {
+         sendPlayerEvent(KalturaPlayerAdEvents.DAI_SOURCE_SELECTED, createJSONForEventPayload("sourceURL" , event.sourceURL));
+      });
+
       player.addListener(context, PhoenixAnalyticsEvent.bookmarkError, event -> {
          sendPlayerEvent(KalturaPlayerAnalyticsEvents.PHOENIX_BOOKMARK_ERROR, "{ \"errorMessage\": \"" + event.errorMessage + "\" " +
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
@@ -970,48 +1036,6 @@ public class KalturaPlayerRNView extends FrameLayout {
                  ", \"errorCode\": \"" + event.errorCode + "\" " +
                  ", \"errorType\": \"" + event.type + "\" " +
                  " }");
-      });
-
-      player.addListener(context, AdEvent.adProgress, event -> {
-         sendPlayerEvent(KalturaPlayerAdEvents.AD_PROGRESS, createJSONForEventPayload("currentAdPosition", (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
-      });
-
-      player.addListener(context, AdEvent.loaded, event -> {
-         sendPlayerEvent(KalturaPlayerAdEvents.LOADED, gson.toJson(event.adInfo));
-      });
-
-      player.addListener(context, AdEvent.cuepointsChanged, event -> sendPlayerEvent(KalturaPlayerAdEvents.CUEPOINTS_CHANGED, getCuePointsJson(event.cuePoints)));
-
-      player.addListener(context, AdEvent.started, event -> sendPlayerEvent(KalturaPlayerAdEvents.STARTED));
-
-      player.addListener(context, AdEvent.completed, event -> sendPlayerEvent(KalturaPlayerAdEvents.COMPLETED));
-
-      player.addListener(context, AdEvent.paused, event -> sendPlayerEvent(KalturaPlayerAdEvents.PAUSED));
-
-      player.addListener(context, AdEvent.resumed, event -> sendPlayerEvent(KalturaPlayerAdEvents.RESUMED));
-
-      player.addListener(context, AdEvent.adBufferStart, event -> sendPlayerEvent(KalturaPlayerAdEvents.AD_BUFFER_START));
-
-      player.addListener(context, AdEvent.adClickedEvent, event -> {
-          sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, createJSONForEventPayload("clickThruUrl", event.clickThruUrl));
-      });
-
-      player.addListener(context, AdEvent.skipped, event -> sendPlayerEvent(KalturaPlayerAdEvents.SKIPPED));
-
-      player.addListener(context, AdEvent.adRequested, event -> {
-          sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, createJSONForEventPayload("adTagUrl" , event.adTagUrl));
-      });
-
-      player.addListener(context, AdEvent.contentPauseRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_PAUSE_REQUESTED));
-
-      player.addListener(context, AdEvent.contentResumeRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_RESUME_REQUESTED));
-
-      player.addListener(context, AdEvent.allAdsCompleted, event -> sendPlayerEvent(KalturaPlayerAdEvents.ALL_ADS_COMPLETED));
-
-      player.addListener(context, AdEvent.error, event -> {
-         if (event.error.isFatal()) {
-            sendPlayerEvent(KalturaPlayerAdEvents.ERROR, getErrorJson(event.error));
-         }
       });
    }
 
@@ -1077,6 +1101,9 @@ public class KalturaPlayerRNView extends FrameLayout {
       return tracksInfo;
    }
 
+   /**
+    * NOOP
+    * */
    private String getErrorJson(PKError error) {
       String errorCause = (error.exception != null) ? error.exception.getCause() + "" : "";
 
@@ -1096,6 +1123,9 @@ public class KalturaPlayerRNView extends FrameLayout {
       return gson.toJson(errorJson);
    }
 
+   /**
+    * NOOP
+    * */
    private String getCuePointsJson(AdCuePoints adCuePoints) {
 
       if (adCuePoints == null) {

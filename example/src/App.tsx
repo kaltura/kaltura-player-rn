@@ -30,7 +30,7 @@ const playerEventEmitter = new NativeEventEmitter();
 export default class App extends React.Component<any, any> {
   player: KalturaPlayer;
   videoTracks = [];
-  appStateSubscription: string = "";
+  appStateSubscription: any;
   isSliderSeeking: boolean = false;
 
   contentDuration: number = 0;
@@ -53,6 +53,7 @@ export default class App extends React.Component<any, any> {
       isAdPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
+
     };
   }
 
@@ -108,17 +109,17 @@ export default class App extends React.Component<any, any> {
     this.player.loadMedia(assetId, mediaAsset);
   };
 
-  onTrackChangeListener = (trackId) => {
+  onTrackChangeListener = (trackId: string) => {
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
   };
 
-  onSeekBarScrubbed = (seekedPosition) => {
+  onSeekBarScrubbed = (seekedPosition: number) => {
     console.log('Scrubbed seek position is: ' + seekedPosition);
     this.player.seekTo(seekedPosition);
   };
 
-  onSeekBarScrubbing = (isSeeking) => {
+  onSeekBarScrubbing = (isSeeking: boolean) => {
     console.log('onSeekBarScrubbing is: ' + isSeeking);
     this.isSliderSeeking = isSeeking;
   };
@@ -175,6 +176,11 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
       console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+    });
+
+
+    playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
+      console.log('PlayerEvent ERROR : ' + payload.message);
     });
 
     playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
@@ -250,6 +256,10 @@ export default class App extends React.Component<any, any> {
           currentPosition: payload.currentAdPosition,
         }));
       }
+    });
+
+    playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
+      //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
     });
   };
 

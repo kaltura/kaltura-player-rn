@@ -10,7 +10,7 @@ class KalturaPlayerAdEvents {
         @JvmField
         val STARTED = "started"
         @JvmField
-        val AD_DISPLAYED_AFTER_CONTENT_PAUSE = "adDisplayedAfterContentPause"
+        val AD_DISPLAYED_AFTER_CONTENT_PAUSE = "adDisplayedAfterContentPause" // Not in USE in SDK
         @JvmField
         val PAUSED = "paused"
         @JvmField
@@ -60,7 +60,7 @@ class KalturaPlayerAdEvents {
         @JvmField
         val ALL_ADS_COMPLETED = "allAdsCompleted"
         @JvmField
-        val AD_LOAD_TIMEOUT_TIMER_STARTED = "adLoadTimeoutTimerStarted"
+        val AD_LOAD_TIMEOUT_TIMER_STARTED = "adLoadTimeoutTimerStarted" // Not in USE in SDK
         @JvmField
         val AD_BUFFER_START = "adBufferStart"
         @JvmField
@@ -72,8 +72,8 @@ class KalturaPlayerAdEvents {
         @JvmField
         val DAI_SOURCE_SELECTED = "daiSourceSelected"
         @JvmField
-        val AD_WATERFALLING = "adWaterFalling"
+        val AD_WATERFALLING = "adWaterFalling" // Not required until we has AdLayout feature in RN
         @JvmField
-        val AD_WATERFALLING_FAILED = "adWaterFallingFailed"
+        val AD_WATERFALLING_FAILED = "adWaterFallingFailed" // Not required until we has AdLayout feature in RN
     }
 }
