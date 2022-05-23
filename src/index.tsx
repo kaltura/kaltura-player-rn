@@ -1,14 +1,9 @@
-import { requireNativeComponent, ViewStyle } from 'react-native';
+import { requireNativeComponent } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
 import PlayerEvents from './events/PlayerEvents';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
-
-interface KalturaPlayerProps {
-  style: ViewStyle;
-  playerType: PLAYER_TYPE;
-}
 
 export default PlayerEvents;
 
@@ -49,13 +44,13 @@ export enum PLAYER_PLUGIN {
   BROADPEAK = 'broadpeak',
 }
 
-export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
+export class KalturaPlayer extends React.Component {
   nativeComponentRef: any;
   eventListener: any;
-  playerType: PLAYER_TYPE | undefined;
-
-  static propTypes: {
-    style: object;
+  
+  static propTypes: { 
+    style: PropTypes.Requireable<object>;
+    playerType: PropTypes.Requireable<String>;
   };
 
   componentDidMount() {
@@ -236,5 +231,15 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 }
 
 KalturaPlayer.propTypes = {
+  /**
+   * The Styling of the player.
+   */
   style: PropTypes.object,
+
+  /**
+   * A String value that determines the player type.
+   * Basic / OVP / OTT Player
+   * Use PLAYER_TYPE.
+   */
+  playerType: PropTypes.string
 };

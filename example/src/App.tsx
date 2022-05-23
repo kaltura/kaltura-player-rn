@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, NativeModules, NativeEventEmitter } from 'react-native';
 import {
   KalturaPlayer,
   MEDIA_ENTRY_TYPE,
@@ -9,10 +9,10 @@ import {
   DRM_SCHEME,
   PLAYER_PLUGIN,
 } from 'react-native-kaltura-player';
-import { NativeEventEmitter } from 'react-native';
 import PlayerEvents from 'react-native-kaltura-player';
 
-const playerEventEmitter = new NativeEventEmitter();
+const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
+const playerEventEmitter = new NativeEventEmitter(KalturaPlayerEvents);
 
 export default class App extends React.Component {
   componentDidMount() {
