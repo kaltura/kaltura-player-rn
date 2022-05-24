@@ -17,6 +17,7 @@ import {
   PLAYER_TYPE,
   DRM_SCHEME,
   PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import {
@@ -492,6 +493,7 @@ var basicInitOptions = {
   allowCrossProtocolRedirect: true,
   allowFairPlayOnExternalScreens: true,
   shouldPlayImmediately: true,
+  aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
   networkSettings: {
     autoBuffer: true,
     preferredForwardBufferDuration: 30000,

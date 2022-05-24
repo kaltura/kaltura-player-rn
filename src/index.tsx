@@ -18,7 +18,7 @@ export { PlayerEvents, AdEvents, AnalyticsEvents };
 export enum PLAYER_TYPE {
   OVP = 'ovp',
   OTT = 'ott',
-  BASIC = 'basic',
+  BASIC = 'basic'
 }
 
 export enum MEDIA_FORMAT {
@@ -27,20 +27,20 @@ export enum MEDIA_FORMAT {
   WVM = 'wvm',
   MP4 = 'mp4',
   MP3 = 'mp3',
-  UDP = 'udp',
+  UDP = 'udp'
 }
 
 export enum MEDIA_ENTRY_TYPE {
   VOD = 'Vod',
   LIVE = 'Live',
-  DVRLIVE = 'DvrLive',
+  DVRLIVE = 'DvrLive'
 }
 
 export enum DRM_SCHEME {
   WIDEVINE_CENC = 'WidevineCENC',
   PLAYREADY_CENC = 'PlayReadyCENC',
   WIDEVINE_CENC_CLASSIC = 'WidevineClassic',
-  PLAYREADY_CLASSIC = 'PlayReadyClassic',
+  PLAYREADY_CLASSIC = 'PlayReadyClassic'
 }
 
 export enum PLAYER_PLUGIN {
@@ -49,7 +49,15 @@ export enum PLAYER_PLUGIN {
   YOUBORA = 'youbora',
   KAVA = 'kava',
   OTT_ANALYTICS = 'ottAnalytics',
-  BROADPEAK = 'broadpeak',
+  BROADPEAK = 'broadpeak'
+}
+
+export enum PLAYER_RESIZE_MODES {
+  FIT = 'fit',
+  FIXED_WIDTH = 'fixedWidth',
+  FIXED_HEIGHT = 'fixedHeight',
+  FILL = 'fill',
+  ZOOM = 'zoom'
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
@@ -283,6 +291,14 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    updateSubtitleStyle = (subtitleStyle: string) => {
     console.log('Calling Native Prop updateSubtitleStyle()');
     this.setNativeProps({ updateSubtitleStyle: subtitleStyle });
+  };
+
+  /**
+   * Update the Resize Mode 
+   */
+   updateResizeMode = (mode: PLAYER_RESIZE_MODES) => {
+    console.log('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
+    this.setNativeProps({ updateSurfaceAspectRatioResizeMode: mode });
   };
 
   render() {

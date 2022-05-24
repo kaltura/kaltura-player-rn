@@ -33,6 +33,7 @@ import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.ads.PKAdErrorType;
 import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MediaSupport;
+import com.kaltura.playkit.player.PKAspectRatioResizeMode;
 import com.kaltura.playkit.player.PKHttpClientManager;
 import com.kaltura.playkit.player.PKPlayerErrorType;
 import com.kaltura.playkit.player.PKSubtitlePosition;
@@ -708,6 +709,17 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
+   public void updateResizeMode(String resizeMode) {
+      log.d("updateResizeMode");
+      if (player != null && !TextUtils.isEmpty(resizeMode)) {
+         try {
+            player.updateSurfaceAspectRatioResizeMode(PKAspectRatioResizeMode.valueOf(resizeMode));
+         } catch (IllegalArgumentException exception) {
+            log.e("Invalid resize mode is passed hence can not update it and resizeMode is " + resizeMode);
+         }
+      }
+   }
+
    //TODO: NOT ADDED YET AS PROPS
    public void setPlayerVisibility(boolean isVisible, float volume) {
       log.d("setPlayerVisibility: " + isVisible + " volume = " + volume);
@@ -867,11 +879,11 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.videoTrackChanged, event -> {
-        sendPlayerEvent(KalturaPlayerEvents.VIDEO_TRACK_CHANGED, gson.toJson(event.newTrack));
+         sendPlayerEvent(KalturaPlayerEvents.VIDEO_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.audioTrackChanged, event -> {
-        sendPlayerEvent(KalturaPlayerEvents.AUDIO_TRACK_CHANGED, gson.toJson(event.newTrack));
+         sendPlayerEvent(KalturaPlayerEvents.AUDIO_TRACK_CHANGED, gson.toJson(event.newTrack));
       });
 
       player.addListener(context, PlayerEvent.textTrackChanged, event -> {
@@ -887,7 +899,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, PlayerEvent.seeking, event -> {
-          sendPlayerEvent(KalturaPlayerEvents.SEEKING, createJSONForEventPayload("targetPosition", (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
+         sendPlayerEvent(KalturaPlayerEvents.SEEKING, createJSONForEventPayload("targetPosition", (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)));
       });
 
       player.addListener(context, PlayerEvent.seeked, event -> sendPlayerEvent(KalturaPlayerEvents.SEEKED));
@@ -974,13 +986,13 @@ public class KalturaPlayerRNView extends FrameLayout {
       });
 
       player.addListener(context, AdEvent.adClickedEvent, event -> {
-          sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, createJSONForEventPayload("clickThruUrl", event.clickThruUrl));
+         sendPlayerEvent(KalturaPlayerAdEvents.CLICKED, createJSONForEventPayload("clickThruUrl", event.clickThruUrl));
       });
 
       player.addListener(context, AdEvent.skipped, event -> sendPlayerEvent(KalturaPlayerAdEvents.SKIPPED));
 
       player.addListener(context, AdEvent.adRequested, event -> {
-          sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, createJSONForEventPayload("adTagUrl" , event.adTagUrl));
+         sendPlayerEvent(KalturaPlayerAdEvents.AD_REQUESTED, createJSONForEventPayload("adTagUrl" , event.adTagUrl));
       });
 
       player.addListener(context, AdEvent.contentPauseRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_PAUSE_REQUESTED));
@@ -1283,47 +1295,47 @@ public class KalturaPlayerRNView extends FrameLayout {
       return context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
    }
 
-    /**
-     * Create a JSON with only one Key-Value pair
-     * @param key JSON object key
-     * @param value JSON object value
-     * @return JSON object
-     */
-    private String createJSONForEventPayload(String key, Object value) {
-        return "{ \"" + key + "\": " + value + " }";
-    }
+   /**
+    * Create a JSON with only one Key-Value pair
+    * @param key JSON object key
+    * @param value JSON object value
+    * @return JSON object
+    */
+   private String createJSONForEventPayload(String key, Object value) {
+      return "{ \"" + key + "\": " + value + " }";
+   }
 
-    @Nullable
-    private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
-        if (TextUtils.isEmpty(parsableJson)) {
-            log.e("getParsedJson parsable Json is empty.");
-            return null;
-        }
+   @Nullable
+   private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
+      if (TextUtils.isEmpty(parsableJson)) {
+         log.e("getParsedJson parsable Json is empty.");
+         return null;
+      }
 
-        try {
-            return gson.fromJson(parsableJson, parsingClass);
-        } catch (JsonSyntaxException exception) {
-            log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
-                    exception.getMessage());
-        }
+      try {
+         return gson.fromJson(parsableJson, parsingClass);
+      } catch (JsonSyntaxException exception) {
+         log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
+                 exception.getMessage());
+      }
 
-        return null;
-    }
+      return null;
+   }
 
-    /**
-     * Send Event without any payload
-     * @param eventName name of the event
-     */
+   /**
+    * Send Event without any payload
+    * @param eventName name of the event
+    */
    private void sendPlayerEvent(String eventName) {
       WritableMap params = Arguments.createMap();
       emitter().emit(eventName, params);
    }
 
-    /**
-     * Send Event with payload JSON object
-     * @param eventName name of the event
-     * @param payloadString payload JSON data
-     */
+   /**
+    * Send Event with payload JSON object
+    * @param eventName name of the event
+    * @param payloadString payload JSON data
+    */
    private void sendPlayerEvent(String eventName, @Nullable String payloadString) {
       WritableMap eventPayloadMap = convertStringToWritableMap(payloadString);
       if (eventPayloadMap == null) {

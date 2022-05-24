@@ -43,6 +43,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SET_VOLUME = "volume";
    private static final String PROP_SEEK_TO_LIVE_DEFAULT_POSITION = "seekToLiveDefaultPosition";
    private static final String PROP_UPDATE_SUBTITLE_STYLE = "updateSubtitleStyle";
+   private static final String PROP_UPDATE_RESIZE_MODE = "updateSurfaceAspectRatioResizeMode";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -266,6 +267,16 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
          kalturaPlayerRNView.updateSubtitleStyle(subtitleStyleSettings);
       } else {
          log.e("Invalid subtitleStyleSettings. Can not update the subtitles.");
+      }
+   }
+
+   @ReactProp(name = PROP_UPDATE_RESIZE_MODE)
+   public void updateResizeMode(KalturaPlayerRNView kalturaPlayerRNView, String resizeMode) {
+      log.d("updateResizeMode");
+      if (!TextUtils.isEmpty(resizeMode)) {
+         kalturaPlayerRNView.updateResizeMode(resizeMode);
+      } else {
+         log.e("Invalid resizeMode. Can not update the resizeMode.");
       }
    }
 }
