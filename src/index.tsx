@@ -277,6 +277,14 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ seekToLiveDefaultPosition: true });
   };
 
+  /**
+   * Update the existing subtitle styling
+   */
+   updateSubtitleStyle = (subtitleStyle: string) => {
+    console.log('Calling Native Prop updateSubtitleStyle()');
+    this.setNativeProps({ updateSubtitleStyle: subtitleStyle });
+  };
+
   render() {
     return (
       <RNKalturaPlayer

@@ -35,7 +35,9 @@ import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MediaSupport;
 import com.kaltura.playkit.player.PKHttpClientManager;
 import com.kaltura.playkit.player.PKPlayerErrorType;
+import com.kaltura.playkit.player.PKSubtitlePosition;
 import com.kaltura.playkit.player.PKTracks;
+import com.kaltura.playkit.player.SubtitleStyleSettings;
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo;
 import com.kaltura.playkit.plugins.ads.AdCuePoints;
 import com.kaltura.playkit.plugins.ads.AdEvent;
@@ -64,6 +66,7 @@ import com.reactnativekalturaplayer.model.InitOptions;
 import com.reactnativekalturaplayer.model.MediaAsset;
 import com.reactnativekalturaplayer.model.PlayerPluginUtilsKt;
 import com.reactnativekalturaplayer.model.PlayerPlugins;
+import com.reactnativekalturaplayer.model.SubtitleStyling;
 import com.reactnativekalturaplayer.model.UpdatePluginConfigJson;
 import com.reactnativekalturaplayer.model.tracks.AudioTrack;
 import com.reactnativekalturaplayer.model.tracks.ImageTrack;
@@ -370,6 +373,11 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
       if (initOptionsModel.trackSelection != null && initOptionsModel.trackSelection.textLanguage != null && initOptionsModel.trackSelection.textMode != null) {
          initOptions.setTextLanguage(initOptionsModel.trackSelection.textLanguage, initOptionsModel.trackSelection.textMode);
+      }
+
+      SubtitleStyleSettings subtitleStyleSettings = getParsedSubtitleStyleSettings(initOptionsModel.subtitleStyling);
+      if (subtitleStyleSettings != null) {
+         initOptions.setSubtitleStyle(subtitleStyleSettings);
       }
    }
 
@@ -686,6 +694,17 @@ public class KalturaPlayerRNView extends FrameLayout {
       log.d("seekToLiveDefaultPosition");
       if (player != null) {
          player.seekToLiveDefaultPosition();
+      }
+   }
+
+   public void updateSubtitleStyle(String subtitleStyleSettings) {
+      log.d("updateSubtitleStyle");
+      if (player != null && !TextUtils.isEmpty(subtitleStyleSettings)) {
+         SubtitleStyling subtitleStyling = getParsedJson(subtitleStyleSettings, SubtitleStyling.class);
+         if (subtitleStyling != null) {
+            SubtitleStyleSettings style = getParsedSubtitleStyleSettings(subtitleStyling);
+            player.updateSubtitleStyle(style);
+         }
       }
    }
 
@@ -1215,6 +1234,44 @@ public class KalturaPlayerRNView extends FrameLayout {
          return KalturaPlayer.Type.ovp;
       }
       return KalturaPlayer.Type.ott;
+   }
+
+   /**
+    * Parse the {@link SubtitleStyling} object to
+    * Player's {@link SubtitleStyleSettings} object
+    *
+    * @param subtitleStyling styling object from app
+    * @return SubtitleStyleSettings object
+    */
+   @Nullable
+   private SubtitleStyleSettings getParsedSubtitleStyleSettings(SubtitleStyling subtitleStyling) {
+      SubtitleStyleSettings subtitleStyleSettings = null;
+
+      if (subtitleStyling != null) {
+         subtitleStyleSettings =  new SubtitleStyleSettings(subtitleStyling.getSubtitleStyleName())
+                 .setBackgroundColor(subtitleStyling.getStringToColor(subtitleStyling.getSubtitleBackgroundColor()))
+                 .setTextColor(subtitleStyling.getStringToColor(subtitleStyling.getSubtitleTextColor()))
+                 .setWindowColor(subtitleStyling.getStringToColor(subtitleStyling.getSubtitleWindowColor()))
+                 .setEdgeColor(subtitleStyling.getStringToColor(subtitleStyling.getSubtitleEdgeColor()))
+                 .setTextSizeFraction(subtitleStyling.getSubtitleTextSizeFraction())
+                 .setTypeface(subtitleStyling.getSubtitleStyleTypeface())
+                 .setEdgeType(subtitleStyling.getSubtitleEdgeType());
+
+         PKSubtitlePosition pkSubtitlePosition = new PKSubtitlePosition(subtitleStyling.getOverrideInlineCueConfig());
+
+         if (subtitleStyling.getHorizontalPositionPercentage() == null && subtitleStyling.getVerticalPositionPercentage() != null) {
+            pkSubtitlePosition.setVerticalPosition(subtitleStyling.getVerticalPositionPercentage());
+         } else if (subtitleStyling.getHorizontalPositionPercentage() != null &&
+                 subtitleStyling.getVerticalPositionPercentage() != null) {
+            pkSubtitlePosition.setPosition(subtitleStyling.getHorizontalPositionPercentage(),
+                    subtitleStyling.getVerticalPositionPercentage(),
+                    subtitleStyling.getHorizontalAlignment());
+         }
+
+         subtitleStyleSettings.setSubtitlePosition(pkSubtitlePosition);
+      }
+
+      return subtitleStyleSettings;
    }
 
    /*****************************************************

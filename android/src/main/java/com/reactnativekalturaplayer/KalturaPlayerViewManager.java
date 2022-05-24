@@ -42,6 +42,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SET_Z_INDEX = "zIndex";
    private static final String PROP_SET_VOLUME = "volume";
    private static final String PROP_SEEK_TO_LIVE_DEFAULT_POSITION = "seekToLiveDefaultPosition";
+   private static final String PROP_UPDATE_SUBTITLE_STYLE = "updateSubtitleStyle";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -257,5 +258,14 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       log.d("seekToLiveDefaultPosition");
       kalturaPlayerRNView.seekToLiveDefaultPosition();
    }
-}
 
+   @ReactProp(name = PROP_UPDATE_SUBTITLE_STYLE)
+   public void updateSubtitleStyle(KalturaPlayerRNView kalturaPlayerRNView, String subtitleStyleSettings) {
+      log.d("updateSubtitleStyle");
+      if (!TextUtils.isEmpty(subtitleStyleSettings)) {
+         kalturaPlayerRNView.updateSubtitleStyle(subtitleStyleSettings);
+      } else {
+         log.e("Invalid subtitleStyleSettings. Can not update the subtitles.");
+      }
+   }
+}

@@ -53,7 +53,6 @@ export default class App extends React.Component<any, any> {
       isAdPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
-
     };
   }
 
@@ -177,7 +176,6 @@ export default class App extends React.Component<any, any> {
     playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
       console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
     });
-
 
     playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
       console.log('PlayerEvent ERROR : ' + payload.message);
@@ -499,6 +497,20 @@ var basicInitOptions = {
     preferredForwardBufferDuration: 30000,
     automaticallyWaitsToMinimizeStalling: true,
   },
+  subtitleStyling: {
+    subtitleStyleName: 'MyCustomSubtitleStyle',
+    subtitleTextColor: '#FFFFFF',
+    subtitleBackgroundColor: '#FF00FF',
+    subtitleWindowColor: '#FF00FF',
+    subtitleEdgeColor: '#0000FF',
+    subtitleTextSizeFraction: 'SUBTITLE_FRACTION_50',
+    subtitleStyleTypeface: 'MONOSPACE',
+    subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
+    overrideInlineCueConfig: true,
+    verticalPositionPercentage: 50,
+    horizontalPositionPercentage: 50,
+    horizontalAlignment: 'ALIGN_CENTER'
+  },
   trackSelection: {
     textMode: 'AUTO',
     textLanguage: 'en',
@@ -509,10 +521,10 @@ var basicInitOptions = {
   plugins: {
     ima: {
       //"adTagUrl" : "",
-      adTagUrl:
-        'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
-      alwaysStartWithPreroll: true,
-      enableDebugMode: false,
+      // adTagUrl:
+      //   'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
+      // alwaysStartWithPreroll: true,
+      // enableDebugMode: false,
     },
     youbora: {
       accountCode: 'kalturatest',
@@ -918,3 +930,17 @@ var getUpdatedYouboraConfig = {
     contentCustomDimension5: 'customDimension5',
   },
 };
+
+var updatedSubtitleStyling = {
+    subtitleStyleName: 'MyCustomSubtitleStyle',
+    subtitleTextColor: '#FFFFFF',
+    subtitleBackgroundColor: '#FF00FF',
+    subtitleWindowColor: '#FF00FF',
+    subtitleEdgeColor: '#0000FF',
+    subtitleTextSizeFraction: 'SUBTITLE_FRACTION_100',
+    subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
+    overrideInlineCueConfig: true,
+    verticalPositionPercentage: 50,
+    horizontalPositionPercentage: 50,
+    horizontalAlignment: 'ALIGN_CENTER'
+}
