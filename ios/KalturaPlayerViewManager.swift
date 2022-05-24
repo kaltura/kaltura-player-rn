@@ -353,6 +353,7 @@ class KalturaPlayerRNView : UIView {
             if (error != nil) {
                 print("Error in loadMedia: %@", error!)
             }
+            self.kalturaPlayer.volume = 0
         }
     }
     
