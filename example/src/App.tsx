@@ -499,6 +499,10 @@ var basicInitOptions = {
     preferredForwardBufferDuration: 30000,
     automaticallyWaitsToMinimizeStalling: true,
   },
+  abrSettings: {
+    minVideoBitrate: 500000, // For Basic 1st media, Harold
+    //maxVideoBitrate: 800000, // For Basic 1st media, Harold
+  },
   subtitleStyling: {
     subtitleStyleName: 'MyCustomSubtitleStyle',
     subtitleTextColor: '#FFFFFF',
@@ -945,4 +949,9 @@ var updatedSubtitleStyling = {
     verticalPositionPercentage: 50,
     horizontalPositionPercentage: 50,
     horizontalAlignment: 'ALIGN_CENTER'
+}
+
+var updatedAbrSettings: {
+  //minVideoBitrate: 500000, // For Basic 1st media, Harold
+  maxVideoBitrate: 800000, // For Basic 1st media, Harold
 }

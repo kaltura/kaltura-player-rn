@@ -16,7 +16,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
 
    private ReactApplicationContext context;
    private static final String PLAYER_CLASS = "KalturaPlayerView";
-   private PKLog log = PKLog.get(KalturaPlayerRNView.class.getSimpleName());
+   private PKLog log = PKLog.get(KalturaPlayerViewManager.class.getSimpleName());
 
    private static final String PROP_PARTNER_ID = "partnerId";
    private static final String PROP_PLAYER_TYPE = "playerType";
@@ -44,6 +44,8 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SEEK_TO_LIVE_DEFAULT_POSITION = "seekToLiveDefaultPosition";
    private static final String PROP_UPDATE_SUBTITLE_STYLE = "updateSubtitleStyle";
    private static final String PROP_UPDATE_RESIZE_MODE = "updateSurfaceAspectRatioResizeMode";
+   private static final String PROP_UPDATE_ABR_SETTINGS = "updateABRSettings";
+   private static final String PROP_RESET_ABR_SETTINGS = "resetABRSettings";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -266,7 +268,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       if (!TextUtils.isEmpty(subtitleStyleSettings)) {
          kalturaPlayerRNView.updateSubtitleStyle(subtitleStyleSettings);
       } else {
-         log.e("Invalid subtitleStyleSettings. Can not update the subtitles.");
+         log.e("Invalid subtitleStyleSettings. Can not update the subtitles. Style is: " + subtitleStyleSettings);
       }
    }
 
@@ -276,7 +278,24 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       if (!TextUtils.isEmpty(resizeMode)) {
          kalturaPlayerRNView.updateResizeMode(resizeMode);
       } else {
-         log.e("Invalid resizeMode. Can not update the resizeMode.");
+         log.e("Invalid resizeMode. Can not update the resizeMode. Mode is: " + resizeMode);
       }
    }
+
+   @ReactProp(name = PROP_UPDATE_ABR_SETTINGS)
+   public void updateAbrSettings(KalturaPlayerRNView kalturaPlayerRNView, String abrSettings) {
+      log.d("updateAbrSettings");
+      if (!TextUtils.isEmpty(abrSettings)) {
+         kalturaPlayerRNView.updateAbrSettings(abrSettings);
+      } else {
+         log.e("Invalid abrSettings. Can not update the abrSettings. Setting is: " + abrSettings);
+      }
+   }
+
+   @ReactProp(name = PROP_RESET_ABR_SETTINGS)
+   public void resetAbrSettings(KalturaPlayerRNView kalturaPlayerRNView, boolean isReset) {
+      log.d("resetAbrSettings");
+      kalturaPlayerRNView.resetAbrSettings();
+   }
 }
+

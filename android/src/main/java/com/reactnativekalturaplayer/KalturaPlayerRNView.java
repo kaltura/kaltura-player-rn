@@ -31,6 +31,7 @@ import com.kaltura.playkit.PKRequestConfig;
 import com.kaltura.playkit.PlayKitManager;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.ads.PKAdErrorType;
+import com.kaltura.playkit.player.ABRSettings;
 import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MediaSupport;
 import com.kaltura.playkit.player.PKAspectRatioResizeMode;
@@ -717,6 +718,23 @@ public class KalturaPlayerRNView extends FrameLayout {
          } catch (IllegalArgumentException exception) {
             log.e("Invalid resize mode is passed hence can not update it and resizeMode is " + resizeMode);
          }
+      }
+   }
+
+   public void updateAbrSettings(String abrSettings) {
+      log.d("updateAbrSettings");
+      if (player != null && !TextUtils.isEmpty(abrSettings)) {
+         ABRSettings settings = getParsedJson(abrSettings, ABRSettings.class);
+         if (settings != null) {
+            player.updateABRSettings(settings);
+         }
+      }
+   }
+
+   public void resetAbrSettings() {
+      log.d("resetAbrSettings");
+      if (player != null) {
+         player.resetABRSettings();
       }
    }
 
