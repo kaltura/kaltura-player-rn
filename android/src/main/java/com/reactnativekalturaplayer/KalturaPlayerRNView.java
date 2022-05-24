@@ -432,7 +432,7 @@ public class KalturaPlayerRNView extends FrameLayout {
             return;
          }
          PKMediaEntry mediaEntry = createMediaEntry(assetId, basicMediaAsset);
-         player.setMedia(mediaEntry);
+         player.setMedia(mediaEntry, basicMediaAsset.getStartPosition());
       } else if (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp) {
          MediaAsset mediaAsset = getParsedJson(mediaAssetJson, MediaAsset.class);
          if (mediaAsset == null || player == null) {
@@ -679,6 +679,13 @@ public class KalturaPlayerRNView extends FrameLayout {
 
          player.setVolume(finalPlayerVolume);
 
+      }
+   }
+
+   public void seekToLiveDefaultPosition() {
+      log.d("seekToLiveDefaultPosition");
+      if (player != null) {
+         player.seekToLiveDefaultPosition();
       }
    }
 

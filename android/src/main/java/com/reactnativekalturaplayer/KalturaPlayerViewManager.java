@@ -41,6 +41,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_SET_KS = "ks";
    private static final String PROP_SET_Z_INDEX = "zIndex";
    private static final String PROP_SET_VOLUME = "volume";
+   private static final String PROP_SEEK_TO_LIVE_DEFAULT_POSITION = "seekToLiveDefaultPosition";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -249,6 +250,12 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       } else {
          log.d("Invalid Volume which is " + volume);
       }
+   }
+
+   @ReactProp(name = PROP_SEEK_TO_LIVE_DEFAULT_POSITION)
+   public void seekToLiveDefaultPosition(KalturaPlayerRNView kalturaPlayerRNView, boolean seekToLive) {
+      log.d("seekToLiveDefaultPosition");
+      kalturaPlayerRNView.seekToLiveDefaultPosition();
    }
 }
 

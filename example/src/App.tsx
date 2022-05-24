@@ -474,6 +474,7 @@ var basicMediaAsset = {
   duration: duration,
   mediaEntryType: entryType,
   mediaFormat: playbackFormat,
+  startPosition: 0,
   // "drmData" : [
   //   {
   //     "licenseUri" : basicDRMUrl,

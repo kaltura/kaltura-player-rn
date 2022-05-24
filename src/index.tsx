@@ -238,19 +238,43 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ volume: vol });
   };
 
+  /**
+   * Set the media to play automatically at the start (load)
+   * if false, user will have to click on UI play button
+   * 
+   * @param isAutoPlay media should be autoplayed at the start or not
+   */
   setAutoPlay = (isAutoPlay: boolean) => {
     console.log('Calling Native Prop setAutoPlay()');
     this.setNativeProps({ autoPlay: isAutoPlay });
   };
 
+  /**
+   * Set the KS for the media (only for OVP/OTT users)
+   * Call this before calling {@link loadMedia}
+   * @param KS Kaltura Secret key
+   */
   setKS = (KS: string) => {
     console.log('Calling Native Prop setKS()');
     this.setNativeProps({ ks: KS });
   };
 
+  /**
+   * NOOP
+   * @param index 
+   */
   setZIndex = (index: number) => {
     console.log('Calling Native Prop setZIndex()');
     this.setNativeProps({ zIndex: index });
+  };
+
+  /**
+   * Only for Live Media.
+   * Seek player to Live Default Position.
+   */
+   seekToLiveDefaultPosition = () => {
+    console.log('Calling Native Prop seekToLiveDefaultPosition()');
+    this.setNativeProps({ seekToLiveDefaultPosition: true });
   };
 
   render() {

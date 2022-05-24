@@ -19,6 +19,7 @@ public class BasicMediaAsset {
    Map<String, String> metadata;
    List<PKExternalSubtitle> externalSubtitleList;
    String externalVttThumbnailUrl;
+   private long startPosition;
 
    public String getId() {
       return id;
@@ -58,5 +59,9 @@ public class BasicMediaAsset {
 
    public String getExternalVttThumbnailUrl() {
       return externalVttThumbnailUrl;
+   }
+
+   public long getStartPosition() {
+      return startPosition;
    }
 }
