@@ -870,7 +870,9 @@ public class KalturaPlayerRNView extends FrameLayout {
 
          if (player != null && player.isLive() && player.getCurrentProgramTime() > 0) {
             timeUpdatePayload = "{ " + timeUpdatePayload +
-                    ", \"currentProgramTime\": " + player.getCurrentProgramTime() + " }";
+                    ", \"currentProgramTime\": " + player.getCurrentProgramTime() +
+                    ", \"currentLiveOffset\": " + player.getCurrentLiveOffset() +
+                    " }";
          } else {
             timeUpdatePayload = "{ " + timeUpdatePayload + " }";
          }
