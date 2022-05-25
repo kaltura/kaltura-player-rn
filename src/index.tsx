@@ -86,6 +86,9 @@ export class KalturaPlayerAPI {
   static setPlayerVisibility = (isVisible: boolean) => {
     return KalturaPlayerModule.setPlayerVisibility(isVisible);
   }
+  static setKeepAwake = (value: boolean) => {
+    return KalturaPlayerModule.setKeepAwake(value);
+  }
   static play = () => {
     return KalturaPlayerModule.play();
   }

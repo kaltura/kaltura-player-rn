@@ -94,6 +94,12 @@ class KalturaPlayerViewManager: RCTViewManager {
             self.kalturaPlayer!.view?.isHidden = !isVisible;
         }
     }
+    
+    @objc func setKeepAwake(_ value: Bool) {
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = value
+        }
+    }
 
     @objc func setAutoplay(_ value: Bool) {
         DispatchQueue.main.async {
@@ -353,7 +359,6 @@ class KalturaPlayerRNView : UIView {
             if (error != nil) {
                 print("Error in loadMedia: %@", error!)
             }
-            self.kalturaPlayer.volume = 0
         }
     }
     
