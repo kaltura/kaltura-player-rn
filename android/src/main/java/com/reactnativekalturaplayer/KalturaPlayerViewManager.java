@@ -46,6 +46,8 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    private static final String PROP_UPDATE_RESIZE_MODE = "updateSurfaceAspectRatioResizeMode";
    private static final String PROP_UPDATE_ABR_SETTINGS = "updateABRSettings";
    private static final String PROP_RESET_ABR_SETTINGS = "resetABRSettings";
+   private static final String PROP_UPDATE_LL_CONFIG = "updateLowLatencyConfig";
+   private static final String PROP_RESET_LL_CONFIG = "resetLowLatencyConfig";
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       context = reactContext;
@@ -297,5 +299,20 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       log.d("resetAbrSettings");
       kalturaPlayerRNView.resetAbrSettings();
    }
-}
 
+   @ReactProp(name = PROP_UPDATE_LL_CONFIG)
+   public void updateLlConfi(KalturaPlayerRNView kalturaPlayerRNView, String pkLowLatencyConfig) {
+      log.d("updateLlConfig");
+      if (!TextUtils.isEmpty(pkLowLatencyConfig)) {
+         kalturaPlayerRNView.updateLlConfig(pkLowLatencyConfig);
+      } else {
+         log.e("Invalid pkLowLatencyConfig. Can not update the Low Latency Config. Setting is: " + pkLowLatencyConfig);
+      }
+   }
+
+   @ReactProp(name = PROP_RESET_LL_CONFIG)
+   public void resetLlConfig(KalturaPlayerRNView kalturaPlayerRNView, boolean isReset) {
+      log.d("resetLlConfig");
+      kalturaPlayerRNView.resetLlConfig();
+   }
+}

@@ -321,6 +321,28 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     this.setNativeProps({ resetABRSettings: true });
   };
 
+  /**
+   * Update the Low Latency Config
+   * Only for Live Media
+   */
+   updateLowLatencyConfig = (lowLatencyConfig: string) => {
+    if (!lowLatencyConfig) {
+      console.error(`lowLatencyConfig is invalid which is: ${lowLatencyConfig}`);
+      return;
+    }
+    console.log('Calling Native Prop updateLowLatencyConfig()');
+    this.setNativeProps({ updateLowLatencyConfig: lowLatencyConfig });
+  };
+
+  /**
+   * Reset the Low Latency Config
+   * Only for Live Media
+   */
+  resetLowLatencyConfig = () => {
+    console.log('Calling Native Prop resetLowLatencyConfig()');
+    this.setNativeProps({ resetLowLatencyConfig: true });
+  };
+
   render() {
     return (
       <RNKalturaPlayer

@@ -17,7 +17,7 @@ import {
   PLAYER_TYPE,
   DRM_SCHEME,
   PLAYER_PLUGIN,
-  PLAYER_RESIZE_MODES
+  PLAYER_RESIZE_MODES,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import {
@@ -456,6 +456,9 @@ const playbackUrl =
 const playbackUrlChangeMedia =
   'http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multi_language_subs.m3u8';
 
+// const playbackUrl =
+//  'https://livesim.dashif.org/livesim/chunkdur_1/ato_7/testpic4_8s/Manifest300.mpd'; // LIVE MEDIA WITH LOW LATENCY
+
 const basicUrlWithDrm =
   'https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd';
 const basicDRMUrl =
@@ -500,8 +503,13 @@ var basicInitOptions = {
     automaticallyWaitsToMinimizeStalling: true,
   },
   abrSettings: {
-    minVideoBitrate: 500000, // For Basic 1st media, Harold
+    //minVideoBitrate: 500000, // For Basic 1st media, Harold
     //maxVideoBitrate: 800000, // For Basic 1st media, Harold
+  },
+  lowLatencyConfig: {
+    targetOffsetMs: 15000,
+    maxOffsetMs: 12000,
+    maxPlaybackSpeed: 2,
   },
   subtitleStyling: {
     subtitleStyleName: 'MyCustomSubtitleStyle',
@@ -515,7 +523,7 @@ var basicInitOptions = {
     overrideInlineCueConfig: true,
     verticalPositionPercentage: 50,
     horizontalPositionPercentage: 50,
-    horizontalAlignment: 'ALIGN_CENTER'
+    horizontalAlignment: 'ALIGN_CENTER',
   },
   trackSelection: {
     textMode: 'AUTO',
@@ -938,20 +946,26 @@ var getUpdatedYouboraConfig = {
 };
 
 var updatedSubtitleStyling = {
-    subtitleStyleName: 'MyCustomSubtitleStyle',
-    subtitleTextColor: '#FFFFFF',
-    subtitleBackgroundColor: '#FF00FF',
-    subtitleWindowColor: '#FF00FF',
-    subtitleEdgeColor: '#0000FF',
-    subtitleTextSizeFraction: 'SUBTITLE_FRACTION_100',
-    subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
-    overrideInlineCueConfig: true,
-    verticalPositionPercentage: 50,
-    horizontalPositionPercentage: 50,
-    horizontalAlignment: 'ALIGN_CENTER'
-}
+  subtitleStyleName: 'MyCustomSubtitleStyle',
+  subtitleTextColor: '#FFFFFF',
+  subtitleBackgroundColor: '#FF00FF',
+  subtitleWindowColor: '#FF00FF',
+  subtitleEdgeColor: '#0000FF',
+  subtitleTextSizeFraction: 'SUBTITLE_FRACTION_100',
+  subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
+  overrideInlineCueConfig: true,
+  verticalPositionPercentage: 50,
+  horizontalPositionPercentage: 50,
+  horizontalAlignment: 'ALIGN_CENTER',
+};
 
-var updatedAbrSettings: {
+var updatedAbrSettings = {
   //minVideoBitrate: 500000, // For Basic 1st media, Harold
-  maxVideoBitrate: 800000, // For Basic 1st media, Harold
+  maxVideoBitrate: 800000 // For Basic 1st media, Harold
+};
+
+var updatedLowLatencyConfig = {
+  targetOffsetMs: 5000,
+  maxOffsetMs: 5000,
+  maxPlaybackSpeed: 4,
 }

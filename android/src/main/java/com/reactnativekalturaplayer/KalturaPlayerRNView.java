@@ -36,6 +36,7 @@ import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MediaSupport;
 import com.kaltura.playkit.player.PKAspectRatioResizeMode;
 import com.kaltura.playkit.player.PKHttpClientManager;
+import com.kaltura.playkit.player.PKLowLatencyConfig;
 import com.kaltura.playkit.player.PKPlayerErrorType;
 import com.kaltura.playkit.player.PKSubtitlePosition;
 import com.kaltura.playkit.player.PKTracks;
@@ -735,6 +736,23 @@ public class KalturaPlayerRNView extends FrameLayout {
       log.d("resetAbrSettings");
       if (player != null) {
          player.resetABRSettings();
+      }
+   }
+
+   public void updateLlConfig(String pkLowLatencyConfig) {
+      log.d("updateLlConfig");
+      if (player != null && !TextUtils.isEmpty(pkLowLatencyConfig)) {
+         PKLowLatencyConfig config = getParsedJson(pkLowLatencyConfig, PKLowLatencyConfig.class);
+         if (config != null) {
+            player.updatePKLowLatencyConfig(config);
+         }
+      }
+   }
+
+   public void resetLlConfig() {
+      log.d("resetLlConfig");
+      if (player != null) {
+         player.updatePKLowLatencyConfig(PKLowLatencyConfig.UNSET);
       }
    }
 
