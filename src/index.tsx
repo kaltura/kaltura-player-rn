@@ -4,6 +4,14 @@ import PropTypes from 'prop-types';
 import { PlayerEvents } from './events/PlayerEvents';
 import { AdEvents } from './events/AdEvents';
 import { AnalyticsEvents } from './events/AnalyticsEvents';
+import {
+  PLAYER_TYPE,
+  MEDIA_FORMAT,
+  MEDIA_ENTRY_TYPE,
+  DRM_SCHEME,
+  PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES,
+} from './consts';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 
@@ -12,53 +20,17 @@ interface KalturaPlayerProps {
   playerType: PLAYER_TYPE;
 }
 
-export { PlayerEvents, AdEvents, AnalyticsEvents };
-
-//TODO: Extract to separate file
-export enum PLAYER_TYPE {
-  OVP = 'ovp',
-  OTT = 'ott',
-  BASIC = 'basic',
-}
-
-export enum MEDIA_FORMAT {
-  DASH = 'dash',
-  HLS = 'hls',
-  WVM = 'wvm',
-  MP4 = 'mp4',
-  MP3 = 'mp3',
-  UDP = 'udp',
-}
-
-export enum MEDIA_ENTRY_TYPE {
-  VOD = 'Vod',
-  LIVE = 'Live',
-  DVRLIVE = 'DvrLive',
-}
-
-export enum DRM_SCHEME {
-  WIDEVINE_CENC = 'WidevineCENC',
-  PLAYREADY_CENC = 'PlayReadyCENC',
-  WIDEVINE_CENC_CLASSIC = 'WidevineClassic',
-  PLAYREADY_CLASSIC = 'PlayReadyClassic',
-}
-
-export enum PLAYER_PLUGIN {
-  IMA = 'ima',
-  IMADAI = 'imadai',
-  YOUBORA = 'youbora',
-  KAVA = 'kava',
-  OTT_ANALYTICS = 'ottAnalytics',
-  BROADPEAK = 'broadpeak',
-}
-
-export enum PLAYER_RESIZE_MODES {
-  FIT = 'fit',
-  FIXED_WIDTH = 'fixedWidth',
-  FIXED_HEIGHT = 'fixedHeight',
-  FILL = 'fill',
-  ZOOM = 'zoom',
-}
+export {
+  PlayerEvents,
+  AdEvents,
+  AnalyticsEvents,
+  PLAYER_TYPE,
+  MEDIA_FORMAT,
+  MEDIA_ENTRY_TYPE,
+  DRM_SCHEME,
+  PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES,
+};
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
@@ -118,7 +90,9 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
 
-    console.log(`Loading the media. assetId is: ${id} and Media asset is: ${asset}`);
+    console.log(
+      `Loading the media. assetId is: ${id} and media asset is: ${asset}`
+    );
     this.setNativeProps({ assetId: id });
     this.setNativeProps({ mediaAsset: asset });
     this.setNativeProps({ load: true });
@@ -165,7 +139,9 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
     if (pluginName == null || !config) {
-      console.error(`updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`);
+      console.error(
+        `updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`
+      );
       return;
     }
 
