@@ -355,9 +355,18 @@ class KalturaPlayerRNView : UIView {
             mediaOptions.startTime = ((options["startPosition"] as? TimeInterval)!)
         }
         
+        var initialVolume = 1.0
+        if ((options["initialVolume"]) != nil) {
+            initialVolume = ((options["initialVolume"] as? Double)!)
+        }
+        
         kalturaPlayer.loadMedia(options: mediaOptions) { error in
             if (error != nil) {
                 print("Error in loadMedia: %@", error!)
+            }
+            
+            if (initialVolume < 1.0) {
+                self.kalturaPlayer.volume = Float(initialVolume)
             }
         }
     }
