@@ -301,7 +301,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
    }
 
    @ReactProp(name = PROP_UPDATE_LL_CONFIG)
-   public void updateLlConfi(KalturaPlayerRNView kalturaPlayerRNView, String pkLowLatencyConfig) {
+   public void updateLlConfig(KalturaPlayerRNView kalturaPlayerRNView, String pkLowLatencyConfig) {
       log.d("updateLlConfig");
       if (!TextUtils.isEmpty(pkLowLatencyConfig)) {
          kalturaPlayerRNView.updateLlConfig(pkLowLatencyConfig);
