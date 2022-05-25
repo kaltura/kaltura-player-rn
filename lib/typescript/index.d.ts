@@ -1,43 +1,14 @@
 import { ViewStyle } from 'react-native';
 import React from 'react';
-import PlayerEvents from './events/PlayerEvents';
+import { PlayerEvents } from './events/PlayerEvents';
+import { AdEvents } from './events/AdEvents';
+import { AnalyticsEvents } from './events/AnalyticsEvents';
+import { PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES } from './consts';
 interface KalturaPlayerProps {
     style: ViewStyle;
     playerType: PLAYER_TYPE;
 }
-export default PlayerEvents;
-export declare enum PLAYER_TYPE {
-    OVP = "ovp",
-    OTT = "ott",
-    BASIC = "basic"
-}
-export declare enum MEDIA_FORMAT {
-    DASH = "dash",
-    HLS = "hls",
-    WVM = "wvm",
-    MP4 = "mp4",
-    MP3 = "mp3",
-    UDP = "udp"
-}
-export declare enum MEDIA_ENTRY_TYPE {
-    VOD = "Vod",
-    LIVE = "Live",
-    DVRLIVE = "DvrLive"
-}
-export declare enum DRM_SCHEME {
-    WIDEVINE_CENC = "WidevineCENC",
-    PLAYREADY_CENC = "PlayReadyCENC",
-    WIDEVINE_CENC_CLASSIC = "WidevineClassic",
-    PLAYREADY_CLASSIC = "PlayReadyClassic"
-}
-export declare enum PLAYER_PLUGIN {
-    IMA = "ima",
-    IMADAI = "imadai",
-    YOUBORA = "youbora",
-    KAVA = "kava",
-    OTT_ANALYTICS = "ottAnalytics",
-    BROADPEAK = "broadpeak"
-}
+export { PlayerEvents, AdEvents, AnalyticsEvents, PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, };
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
     eventListener: any;
@@ -49,14 +20,6 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     componentWillUnmount(): void;
     setNativeProps: (nativeProps: any) => void;
     /**
-     * Add the listners for the Kaltura Player
-     */
-    addListeners: () => void;
-    /**
-     * Add the listners for the Kaltura Player
-     */
-    removeListeners: () => void;
-    /**
      * This method creates a Player instance internally (Basic, OVP/OTT Player)
      * With this, it take the PlayerInitOptions which are having essential Player settings values
      *
@@ -66,13 +29,6 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      * for the mediaId or the entryId)
      */
     setup: (options: string, id?: number) => void;
-    /**
-     * Update a Plugin Config
-     *
-     * @param pluginName Plugin Name (Youbora, IMA etc)
-     * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
-     */
-    updatePluginConfig: (pluginName: PLAYER_PLUGIN, config: object) => void;
     /**
      * Load the media with the given
      *
@@ -87,6 +43,30 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      */
     loadMedia: (id: string, asset: string) => void;
     /**
+     * Add the listners for the Kaltura Player
+     */
+    addListeners: () => void;
+    /**
+     * Add the listners for the Kaltura Player
+     */
+    removeListeners: () => void;
+    /**
+     * Should be called when the application is in background
+     */
+    onApplicationPaused: () => void;
+    /**
+     * Should be called when the application comes back to
+     * foreground
+     */
+    onApplicationResumed: () => void;
+    /**
+     * Update a Plugin Config
+     *
+     * @param pluginName Plugin Name (Youbora, IMA etc)
+     * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+     */
+    updatePluginConfig: (pluginName: PLAYER_PLUGIN, config: object) => void;
+    /**
      * Play the player if it is not playing
      */
     play: () => void;
@@ -98,6 +78,10 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      * Stops the player to the initial state
      */
     stop: () => void;
+    /**
+     * Destroy the Kaltura Player instance
+     */
+    destroy: () => void;
     /**
      * Replays the media from the beginning
      */
@@ -126,8 +110,54 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
      * @param vol - volume to set.
      */
     setVolume: (vol: number) => void;
+    /**
+     * Set the media to play automatically at the start (load)
+     * if false, user will have to click on UI play button
+     *
+     * @param isAutoPlay media should be autoplayed at the start or not
+     */
     setAutoPlay: (isAutoPlay: boolean) => void;
+    /**
+     * Set the KS for the media (only for OVP/OTT users)
+     * Call this before calling {@link loadMedia}
+     * @param KS Kaltura Secret key
+     */
     setKS: (KS: string) => void;
+    /**
+     * NOOP
+     * @param index
+     */
     setZIndex: (index: number) => void;
+    /**
+     * Only for Live Media.
+     * Seek player to Live Default Position.
+     */
+    seekToLiveDefaultPosition: () => void;
+    /**
+     * Update the existing subtitle styling
+     */
+    updateSubtitleStyle: (subtitleStyle: string) => void;
+    /**
+     * Update the Resize Mode
+     */
+    updateResizeMode: (mode: PLAYER_RESIZE_MODES) => void;
+    /**
+     * Update the ABR Settings
+     */
+    updateAbrSettings: (abrSettings: string) => void;
+    /**
+     * Reset the ABR Settings
+     */
+    resetAbrSettings: () => void;
+    /**
+     * Update the Low Latency Config
+     * Only for Live Media
+     */
+    updateLowLatencyConfig: (lowLatencyConfig: string) => void;
+    /**
+     * Reset the Low Latency Config
+     * Only for Live Media
+     */
+    resetLowLatencyConfig: () => void;
     render(): JSX.Element;
 }
