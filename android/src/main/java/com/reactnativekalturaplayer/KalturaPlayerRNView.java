@@ -28,6 +28,8 @@ import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.PKPluginConfigs;
 import com.kaltura.playkit.PKRequestConfig;
+import com.kaltura.playkit.PKSubtitlePreference;
+import com.kaltura.playkit.PKWakeMode;
 import com.kaltura.playkit.PlayKitManager;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.ads.PKAdErrorType;
@@ -381,6 +383,22 @@ public class KalturaPlayerRNView extends FrameLayout {
       SubtitleStyleSettings subtitleStyleSettings = getParsedSubtitleStyleSettings(initOptionsModel.subtitleStyling);
       if (subtitleStyleSettings != null) {
          initOptions.setSubtitleStyle(subtitleStyleSettings);
+      }
+
+      if (initOptionsModel.wakeMode != null && !TextUtils.isEmpty(initOptionsModel.wakeMode.toString())) {
+         try {
+            initOptions.setWakeMode(PKWakeMode.valueOf(initOptionsModel.wakeMode.toString()));
+         } catch (IllegalArgumentException exception) {
+            log.e("Illegal wake mode passed which is " + initOptionsModel.wakeMode.toString());
+         }
+      }
+
+      if (initOptionsModel.subtitlePreference != null && !TextUtils.isEmpty(initOptionsModel.subtitlePreference.toString())) {
+         try {
+            initOptions.setSubtitlePreference(PKSubtitlePreference.valueOf(initOptionsModel.subtitlePreference.toString()));
+         } catch (IllegalArgumentException exception) {
+            log.e("Illegal subtitlePreference passed which is " + initOptionsModel.subtitlePreference.toString());
+         }
       }
    }
 

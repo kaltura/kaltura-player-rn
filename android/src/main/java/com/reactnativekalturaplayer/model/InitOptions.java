@@ -50,10 +50,12 @@ public class InitOptions {
     public MulticastSettings multicastSettings;
     public MediaEntryCacheConfig mediaEntryCacheConfig;
     public SubtitleStyling subtitleStyling;
+    public PKWakeMode wakeMode;
+    public PKSubtitlePreference subtitlePreference;
+
     public LoadControlBuffers loadControlBuffers;
     public VRSettings vrSettings;
     public VideoCodecSettings videoCodecSettings;
     public AudioCodecSettings audioCodecSettings;
-    public PKWakeMode wakeMode;
-    public PKSubtitlePreference subtitlePreference;
+
 }

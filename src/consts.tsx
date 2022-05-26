@@ -42,3 +42,31 @@ export enum PLAYER_TYPE {
     FILL = 'fill',
     ZOOM = 'zoom',
   }
+
+  export enum WAKEMODE {
+    NONE = 'NONE',
+    LOCAL = 'LOCAL',
+    NETWORK = 'NETWORK'
+  }
+
+  export enum SUBTITLE_PREFERENCE {
+    OFF = 'OFF',
+    INTERNAL = 'INTERNAL',
+    EXTERNAL = 'EXTERNAL'
+  }
+
+  export enum VIDEO_CODEC {
+    HEVC = 'HEVC',
+    AV1 = 'AV1',
+    VP9 = 'VP9',
+    VP8 = 'VP8',
+    AVC = 'AVC',
+  }
+
+  export enum AUDIO_CODEC {
+    AAC = 'AAC',
+    AC3 = 'AC3',
+    E_AC3 = 'E_AC3',
+    OPUS = 'OPUS',
+  }
+  

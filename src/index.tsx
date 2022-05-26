@@ -11,6 +11,10 @@ import {
   DRM_SCHEME,
   PLAYER_PLUGIN,
   PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
 } from './consts';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
@@ -30,6 +34,10 @@ export {
   DRM_SCHEME,
   PLAYER_PLUGIN,
   PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
 };
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {

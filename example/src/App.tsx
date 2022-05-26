@@ -18,6 +18,10 @@ import {
   DRM_SCHEME,
   PLAYER_PLUGIN,
   PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import {
@@ -497,6 +501,8 @@ var basicInitOptions = {
   allowFairPlayOnExternalScreens: true,
   shouldPlayImmediately: true,
   aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
+  // wakeMode: WAKEMODE.NETWORK,
+  // subtitlePreference: SUBTITLE_PREFERENCE.OFF,
   networkSettings: {
     autoBuffer: true,
     preferredForwardBufferDuration: 30000,
