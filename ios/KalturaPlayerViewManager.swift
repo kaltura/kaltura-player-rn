@@ -38,7 +38,7 @@ class KalturaPlayerViewManager: RCTViewManager {
     override func view() -> (KalturaPlayerRNView) {
         return player
     }
-    
+
     @objc func setup(_ partnerId: Int64, options: NSDictionary) {
         DispatchQueue.main.async {
             self.player = KalturaPlayerRNView()
@@ -46,55 +46,55 @@ class KalturaPlayerViewManager: RCTViewManager {
             self.observeAllEvents()
         }
     }
-    
+
     @objc func load(_ assetId: String, options: NSDictionary) {
         DispatchQueue.main.async {
             self.player.load(assetId: assetId, options: options)
         }
     }
-    
+
     @objc func play() {
         DispatchQueue.main.async {
             self.kalturaPlayer.play()
         }
     }
-    
+
     @objc func pause() {
         DispatchQueue.main.async {
             self.kalturaPlayer.pause()
         }
     }
-    
+
     @objc func replay() {
         DispatchQueue.main.async {
             self.kalturaPlayer.replay()
         }
     }
-    
+
     @objc func stop() {
         DispatchQueue.main.async {
             self.kalturaPlayer.stop()
         }
     }
-    
+
     @objc func setVolume(_ volume: Float) {
         DispatchQueue.main.async {
             self.kalturaPlayer.volume = volume
         }
     }
-    
+
     @objc func seekTo(_ to: TimeInterval) {
         DispatchQueue.main.async {
             self.kalturaPlayer.seek(to: to)
         }
     }
-    
+
     @objc func setPlayerVisibility(_ isVisible: Bool) {
         DispatchQueue.main.async {
             self.kalturaPlayer!.view?.isHidden = !isVisible;
         }
     }
-    
+
     @objc func setKeepAwake(_ value: Bool) {
         DispatchQueue.main.async {
             UIApplication.shared.isIdleTimerDisabled = value
@@ -108,29 +108,29 @@ class KalturaPlayerViewManager: RCTViewManager {
             self.kalturaPlayer.updatePlayerOptions(options)
         }
     }
-    
+
     @objc func changeTrack(_ trackId: String) {
         DispatchQueue.main.async {
             self.kalturaPlayer.selectTrack(trackId: trackId)
         }
     }
-    
+
     @objc func prepare() {
         DispatchQueue.main.async {
             self.kalturaPlayer.prepare()
         }
     }
-    
+
     @objc func destroy() {
         DispatchQueue.main.async {
             self.kalturaPlayer.destroy()
         }
     }
-    
+
     func safeJsonValue(value: String?) -> String? {
         return value == nil ? "" : value;
     }
-    
+
     @objc func observeAllEvents() {
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.canPlay) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "canPlay", body: [])
@@ -153,16 +153,16 @@ class KalturaPlayerViewManager: RCTViewManager {
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playheadUpdate) { event in
             let currentTime = event.currentTime as! Double
             var bufferedTime = self.bufferedTime
-            
+
             if (bufferedTime < currentTime) {
                 bufferedTime = currentTime
             }
-            
+
             if (self.kalturaPlayer.isLive()) {
                 let currentProgramTime = self.kalturaPlayer.currentProgramTime
                 let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
                 let currentProgramTimeDouble = ((currentProgramTimeEpochSeconds ?? 0) as Double) * 1000
-                
+
                 KalturaPlayerEvents.emitter.sendEvent(withName: "timeUpdate", body: [
                     "position": currentTime,
                     "bufferPosition": bufferedTime,
@@ -175,6 +175,10 @@ class KalturaPlayerViewManager: RCTViewManager {
                 ])
             }
         }
+        self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.ended) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: "ended", body: event.data)
+        }
+
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "sourceSelected", body: event.data)
         }
@@ -191,7 +195,7 @@ class KalturaPlayerViewManager: RCTViewManager {
                     "isSelected": selectedAudioTrackId == track.id
                 ])
             }
-            
+
             var textTracks = [] as Array;
             let selectedTextTrackId = self.kalturaPlayer.currentTextTrack;
             let eventTextTracks = event.tracks?.textTracks ?? []
@@ -204,7 +208,7 @@ class KalturaPlayerViewManager: RCTViewManager {
                     "isSelected": selectedTextTrackId == track.id
                 ])
             }
-            
+
             KalturaPlayerEvents.emitter.sendEvent(withName: "tracksAvailable", body: [
                 "audio": audioTracks,
                 "text": textTracks,
@@ -236,7 +240,7 @@ class KalturaPlayerViewManager: RCTViewManager {
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.error) { event in
             let errorMessage = event.error?.userInfo[NSLocalizedDescriptionKey] as! String
             var errorCause: String? = (event.error?.localizedFailureReason)
-            
+
             var errorCode = ""
             var errorType = ""
             switch (event.error?.code) {
@@ -257,7 +261,7 @@ class KalturaPlayerViewManager: RCTViewManager {
             if (errorCause == nil || errorCause?.count == 0) {
                 errorCause = errorMessage
             }
-            
+
             KalturaPlayerEvents.emitter.sendEvent(withName: "error", body: [
                 "errorType": errorType,
                 "errorCode": errorCode,
@@ -301,16 +305,16 @@ class KalturaPlayerViewManager: RCTViewManager {
 
 class KalturaPlayerRNView : UIView {
     var kalturaPlayer: KalturaOTTPlayer!
-    
+
     @objc func setup(partnerId: Int64, options: NSDictionary) -> KalturaOTTPlayer {
         KalturaOTTPlayer.setup(partnerId: partnerId, serverURL: options["serverUrl"] as! String)
-        
+
         let playerOptions = PlayerOptions()
         playerOptions.preload = options["preload"] as! Bool
         playerOptions.autoPlay = options["autoplay"] as! Bool
         playerOptions.ks = options["ks"] as? String
         kalturaPlayer = KalturaOTTPlayer(options: playerOptions)
-        
+
         let playerView = KalturaPlayerView()
         playerView.contentMode = .scaleAspectFit
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -318,7 +322,7 @@ class KalturaPlayerRNView : UIView {
         kalturaPlayer.view = playerView
         return kalturaPlayer
     }
-    
+
     @objc func load(assetId: String, options: NSDictionary) {
         let mediaOptions = OTTMediaOptions()
         mediaOptions.assetId = assetId
@@ -326,74 +330,74 @@ class KalturaPlayerRNView : UIView {
         mediaOptions.assetType = getAssetType(str: options["assetType"] as! String)
         mediaOptions.playbackContextType = getPlaybackContextType(str: options["playbackContextType"] as! String)
         //mediaOptions.adapterData = options["adapterData"] as? [String : String]
-        
+
         if ((options["assetReferenceType"]) != nil) {
             mediaOptions.assetReferenceType = getAssetReferenceType(str: options["assetReferenceType"] as! String)
         }
-        
+
         if ((options["protocol"]) != nil) {
             mediaOptions.networkProtocol = options["protocol"] as! String
         }
-        
+
         if ((options["format"]) != nil) {
             mediaOptions.formats = [options["format"] as! String]
         }
-        
+
         if ((options["urlType"]) != nil) {
             mediaOptions.urlType = options["urlType"] as? String
         }
-        
+
         if ((options["fileId"]) != nil) {
             mediaOptions.fileIds = [options["urlType"] as! String]
         }
-        
+
         if ((options["streamerType"]) != nil) {
             mediaOptions.streamerType = (options["streamerType"] as! String).lowercased()
         }
-        
+
         if ((options["startPosition"]) != nil) {
             mediaOptions.startTime = ((options["startPosition"] as? TimeInterval)!)
         }
-        
+
         var initialVolume = 1.0
         if ((options["initialVolume"]) != nil) {
             initialVolume = ((options["initialVolume"] as? Double)!)
         }
-        
+
         kalturaPlayer.loadMedia(options: mediaOptions) { error in
             if (error != nil) {
                 print("Error in loadMedia: %@", error!)
             }
-            
+
             if (initialVolume < 1.0) {
                 self.kalturaPlayer.volume = Float(initialVolume)
             }
         }
     }
-    
+
     func getAssetType(str: String) -> AssetType {
         if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetType.media }
         if (str.caseInsensitiveCompare("recording") == ComparisonResult.orderedSame) { return AssetType.recording }
         if (str.caseInsensitiveCompare("epg") == ComparisonResult.orderedSame) { return AssetType.epg }
-        
+
         return AssetType.unset
     }
-    
+
     func getAssetReferenceType(str: String) -> AssetReferenceType {
         if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetReferenceType.media }
         if (str.caseInsensitiveCompare("epgInternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgInternal }
         if (str.caseInsensitiveCompare("epgExternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgExternal }
         if (str.caseInsensitiveCompare("npvr") == ComparisonResult.orderedSame) { return AssetReferenceType.npvr }
-        
+
         return AssetReferenceType.unset
     }
-    
+
     func getPlaybackContextType(str: String) -> PlaybackContextType {
         if (str.caseInsensitiveCompare("playback") == ComparisonResult.orderedSame) { return PlaybackContextType.playback }
         if (str.caseInsensitiveCompare("catchup") == ComparisonResult.orderedSame) { return PlaybackContextType.catchup }
         if (str.caseInsensitiveCompare("trailer") == ComparisonResult.orderedSame) { return PlaybackContextType.trailer }
         if (str.caseInsensitiveCompare("start_over") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
-        
+
         return PlaybackContextType.unset
     }
 }
