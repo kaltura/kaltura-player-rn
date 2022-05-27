@@ -15,6 +15,7 @@ import {
   SUBTITLE_PREFERENCE,
   VIDEO_CODEC,
   AUDIO_CODEC,
+  VR_INTERACTION_MODE,
 } from './consts';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
@@ -38,6 +39,7 @@ export {
   SUBTITLE_PREFERENCE,
   VIDEO_CODEC,
   AUDIO_CODEC,
+  VR_INTERACTION_MODE,
 };
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {

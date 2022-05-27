@@ -52,10 +52,8 @@ public class InitOptions {
     public SubtitleStyling subtitleStyling;
     public PKWakeMode wakeMode;
     public PKSubtitlePreference subtitlePreference;
-
-    public LoadControlBuffers loadControlBuffers;
-    public VRSettings vrSettings;
     public VideoCodecSettings videoCodecSettings;
     public AudioCodecSettings audioCodecSettings;
-
+    public LoadControlBuffers loadControlBuffers;
+    public VRSettings vrSettings;
 }

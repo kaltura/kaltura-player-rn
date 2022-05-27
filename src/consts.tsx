@@ -69,4 +69,11 @@ export enum PLAYER_TYPE {
     E_AC3 = 'E_AC3',
     OPUS = 'OPUS',
   }
-  
+
+  export enum VR_INTERACTION_MODE {
+    MOTION = 'Motion',
+    TOUCH = 'Touch',
+    MOTION_WITH_TOUCH = 'MotionWithTouch',
+    CARD_BOARD_MOTION = 'CardboardMotion',
+    CARD_BOARD_MOTION_WITH_TOUCH = 'CardboardMotionWithTouch',
+  }

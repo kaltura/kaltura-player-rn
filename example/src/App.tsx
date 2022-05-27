@@ -22,6 +22,7 @@ import {
   SUBTITLE_PREFERENCE,
   VIDEO_CODEC,
   AUDIO_CODEC,
+  VR_INTERACTION_MODE,
 } from 'react-native-kaltura-player';
 import { NativeEventEmitter } from 'react-native';
 import {
@@ -503,40 +504,78 @@ var basicInitOptions = {
   aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
   // wakeMode: WAKEMODE.NETWORK,
   // subtitlePreference: SUBTITLE_PREFERENCE.OFF,
-  networkSettings: {
-    autoBuffer: true,
-    preferredForwardBufferDuration: 30000,
-    automaticallyWaitsToMinimizeStalling: true,
-  },
-  abrSettings: {
+  //networkSettings: {
+    // autoBuffer: true,
+    // preferredForwardBufferDuration: 30000,
+    // automaticallyWaitsToMinimizeStalling: true,
+  //},
+  //abrSettings: {
     //minVideoBitrate: 500000, // For Basic 1st media, Harold
     //maxVideoBitrate: 800000, // For Basic 1st media, Harold
-  },
-  lowLatencyConfig: {
-    targetOffsetMs: 15000,
-    maxOffsetMs: 12000,
-    maxPlaybackSpeed: 2,
-  },
-  subtitleStyling: {
-    subtitleStyleName: 'MyCustomSubtitleStyle',
-    subtitleTextColor: '#FFFFFF',
-    subtitleBackgroundColor: '#FF00FF',
-    subtitleWindowColor: '#FF00FF',
-    subtitleEdgeColor: '#0000FF',
-    subtitleTextSizeFraction: 'SUBTITLE_FRACTION_50',
-    subtitleStyleTypeface: 'MONOSPACE',
-    subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
-    overrideInlineCueConfig: true,
-    verticalPositionPercentage: 50,
-    horizontalPositionPercentage: 50,
-    horizontalAlignment: 'ALIGN_CENTER',
-  },
-  trackSelection: {
-    textMode: 'AUTO',
-    textLanguage: 'en',
-    audioMode: 'AUTO',
-    audioLanguage: 'en',
-  },
+  //},
+  //videoCodecSettings: {
+    // allowSoftwareDecoder: false,
+    // allowMixedCodecAdaptiveness: false,
+    // codecPriorityList: [
+    //   VIDEO_CODEC.VP9,
+    //   VIDEO_CODEC.AVC,
+    //   VIDEO_CODEC.HEVC,
+    //   VIDEO_CODEC.AV1,
+    //   VIDEO_CODEC.VP8,
+    // ],
+  //},
+  //audioCodecSettings: {
+    // allowMixedCodecs: false,
+    // allowMixedBitrates: false,
+    // codecPriorityList: [
+    //   AUDIO_CODEC.AAC,
+    //   AUDIO_CODEC.AC3,
+    //   AUDIO_CODEC.E_AC3,
+    //   AUDIO_CODEC.OPUS
+    // ],
+  //},
+  //loadControlBuffers: {
+    // minPlayerBufferMs: 50000,
+    // maxPlayerBufferMs: 50000,
+    // minBufferAfterInteractionMs: 2500,
+    // minBufferAfterReBufferMs: 5000,
+    // backBufferDurationMs: 0,
+    // retainBackBufferFromKeyframe: false,
+    // allowedVideoJoiningTimeMs: 5000,
+  //},
+  //vrSettings: {
+    // ONLY FOR VR MEDIAs
+
+    // interactionMode: VR_INTERACTION_MODE.MOTION,
+    // vrModeEnabled: false,
+    // zoomWithPinchEnabled: false,
+    // flingEnabled: false,
+  //},
+  //lowLatencyConfig: {
+    // targetOffsetMs: 15000,
+    // maxOffsetMs: 12000,
+    // maxPlaybackSpeed: 2,
+  //},
+  // subtitleStyling: {
+  //   subtitleStyleName: 'MyCustomSubtitleStyle',
+  //   subtitleTextColor: '#FFFFFF',
+  //   subtitleBackgroundColor: '#FF00FF',
+  //   subtitleWindowColor: '#FF00FF',
+  //   subtitleEdgeColor: '#0000FF',
+  //   subtitleTextSizeFraction: 'SUBTITLE_FRACTION_50',
+  //   subtitleStyleTypeface: 'MONOSPACE',
+  //   subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
+  //   overrideInlineCueConfig: true,
+  //   verticalPositionPercentage: 50,
+  //   horizontalPositionPercentage: 50,
+  //   horizontalAlignment: 'ALIGN_CENTER',
+  // },
+  //trackSelection: {
+    // textMode: 'AUTO',
+    // textLanguage: 'en',
+    // audioMode: 'AUTO',
+    // audioLanguage: 'en',
+  //},
   handleAudioFocus: true,
   plugins: {
     ima: {

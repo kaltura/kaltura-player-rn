@@ -34,6 +34,7 @@ import com.kaltura.playkit.PlayKitManager;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.ads.PKAdErrorType;
 import com.kaltura.playkit.player.ABRSettings;
+import com.kaltura.playkit.player.AudioCodecSettings;
 import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MediaSupport;
 import com.kaltura.playkit.player.PKAspectRatioResizeMode;
@@ -43,6 +44,7 @@ import com.kaltura.playkit.player.PKPlayerErrorType;
 import com.kaltura.playkit.player.PKSubtitlePosition;
 import com.kaltura.playkit.player.PKTracks;
 import com.kaltura.playkit.player.SubtitleStyleSettings;
+import com.kaltura.playkit.player.VideoCodecSettings;
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo;
 import com.kaltura.playkit.plugins.ads.AdCuePoints;
 import com.kaltura.playkit.plugins.ads.AdEvent;
@@ -338,56 +340,56 @@ public class KalturaPlayerRNView extends FrameLayout {
     * PlayerInitOptions which can be used for
     * OVP, OTT and Basic Player types
     *
-    * @param initOptions PlayerInitOptions
+    * @param playerInitOptions PlayerInitOptions
     * @param initOptionsModel InitOptions model passed by FE apps
     */
-   private void setCommonPlayerInitOptions(PlayerInitOptions initOptions, InitOptions initOptionsModel) {
-      initOptions.setAutoPlay(initOptionsModel.autoplay);
-      initOptions.setPreload(initOptionsModel.preload);
+   private void setCommonPlayerInitOptions(PlayerInitOptions playerInitOptions, InitOptions initOptionsModel) {
+      playerInitOptions.setAutoPlay(initOptionsModel.autoplay);
+      playerInitOptions.setPreload(initOptionsModel.preload);
       if (initOptionsModel.requestConfig != null) {
-         initOptions.setPKRequestConfig(initOptionsModel.requestConfig);
+         playerInitOptions.setPKRequestConfig(initOptionsModel.requestConfig);
       } else {
-         initOptions.setAllowCrossProtocolEnabled(initOptionsModel.allowCrossProtocolRedirect);
+         playerInitOptions.setAllowCrossProtocolEnabled(initOptionsModel.allowCrossProtocolRedirect);
       }
-      initOptions.setReferrer(initOptionsModel.referrer);
-      initOptions.setPKLowLatencyConfig(initOptionsModel.lowLatencyConfig);
-      initOptions.setAbrSettings(initOptionsModel.abrSettings);
-      initOptions.setPreferredMediaFormat(initOptionsModel.preferredMediaFormat);
-      initOptions.setSecureSurface(initOptionsModel.secureSurface);
-      initOptions.setAspectRatioResizeMode(initOptionsModel.aspectRatioResizeMode);
-      initOptions.setAllowClearLead(initOptionsModel.allowClearLead);
-      initOptions.setEnableDecoderFallback(initOptionsModel.enableDecoderFallback);
-      initOptions.setAdAutoPlayOnResume(initOptionsModel.adAutoPlayOnResume);
-      initOptions.setIsVideoViewHidden(initOptionsModel.isVideoViewHidden);
-      initOptions.forceSinglePlayerEngine(initOptionsModel.forceSinglePlayerEngine);
-      initOptions.setTunneledAudioPlayback(initOptionsModel.isTunneledAudioPlayback);
-      initOptions.setMaxAudioBitrate(initOptionsModel.maxAudioBitrate);
-      initOptions.setMaxAudioChannelCount(initOptionsModel.maxAudioChannelCount);
-      initOptions.setMaxVideoBitrate(initOptionsModel.maxVideoBitrate);
-      initOptions.setMaxVideoSize(initOptionsModel.maxVideoSize);
-      initOptions.setHandleAudioBecomingNoisy(initOptionsModel.handleAudioBecomingNoisyEnabled);
-      initOptions.setHandleAudioFocus(initOptionsModel.handleAudioFocus);
-      initOptions.setMulticastSettings(initOptionsModel.multicastSettings);
+      playerInitOptions.setReferrer(initOptionsModel.referrer);
+      playerInitOptions.setPKLowLatencyConfig(initOptionsModel.lowLatencyConfig);
+      playerInitOptions.setAbrSettings(initOptionsModel.abrSettings);
+      playerInitOptions.setPreferredMediaFormat(initOptionsModel.preferredMediaFormat);
+      playerInitOptions.setSecureSurface(initOptionsModel.secureSurface);
+      playerInitOptions.setAspectRatioResizeMode(initOptionsModel.aspectRatioResizeMode);
+      playerInitOptions.setAllowClearLead(initOptionsModel.allowClearLead);
+      playerInitOptions.setEnableDecoderFallback(initOptionsModel.enableDecoderFallback);
+      playerInitOptions.setAdAutoPlayOnResume(initOptionsModel.adAutoPlayOnResume);
+      playerInitOptions.setIsVideoViewHidden(initOptionsModel.isVideoViewHidden);
+      playerInitOptions.forceSinglePlayerEngine(initOptionsModel.forceSinglePlayerEngine);
+      playerInitOptions.setTunneledAudioPlayback(initOptionsModel.isTunneledAudioPlayback);
+      playerInitOptions.setMaxAudioBitrate(initOptionsModel.maxAudioBitrate);
+      playerInitOptions.setMaxAudioChannelCount(initOptionsModel.maxAudioChannelCount);
+      playerInitOptions.setMaxVideoBitrate(initOptionsModel.maxVideoBitrate);
+      playerInitOptions.setMaxVideoSize(initOptionsModel.maxVideoSize);
+      playerInitOptions.setHandleAudioBecomingNoisy(initOptionsModel.handleAudioBecomingNoisyEnabled);
+      playerInitOptions.setHandleAudioFocus(initOptionsModel.handleAudioFocus);
+      playerInitOptions.setMulticastSettings(initOptionsModel.multicastSettings);
 
       if (initOptionsModel.networkSettings != null && initOptionsModel.networkSettings.preferredForwardBufferDuration > 0) {
-         initOptions.setLoadControlBuffers(new LoadControlBuffers().setMaxPlayerBufferMs(initOptionsModel.networkSettings.preferredForwardBufferDuration));
+         playerInitOptions.setLoadControlBuffers(new LoadControlBuffers().setMaxPlayerBufferMs(initOptionsModel.networkSettings.preferredForwardBufferDuration));
       }
 
       if (initOptionsModel.trackSelection != null && initOptionsModel.trackSelection.audioLanguage != null && initOptionsModel.trackSelection.audioMode != null) {
-         initOptions.setAudioLanguage(initOptionsModel.trackSelection.audioLanguage, initOptionsModel.trackSelection.audioMode);
+         playerInitOptions.setAudioLanguage(initOptionsModel.trackSelection.audioLanguage, initOptionsModel.trackSelection.audioMode);
       }
       if (initOptionsModel.trackSelection != null && initOptionsModel.trackSelection.textLanguage != null && initOptionsModel.trackSelection.textMode != null) {
-         initOptions.setTextLanguage(initOptionsModel.trackSelection.textLanguage, initOptionsModel.trackSelection.textMode);
+         playerInitOptions.setTextLanguage(initOptionsModel.trackSelection.textLanguage, initOptionsModel.trackSelection.textMode);
       }
 
       SubtitleStyleSettings subtitleStyleSettings = getParsedSubtitleStyleSettings(initOptionsModel.subtitleStyling);
       if (subtitleStyleSettings != null) {
-         initOptions.setSubtitleStyle(subtitleStyleSettings);
+         playerInitOptions.setSubtitleStyle(subtitleStyleSettings);
       }
 
       if (initOptionsModel.wakeMode != null && !TextUtils.isEmpty(initOptionsModel.wakeMode.toString())) {
          try {
-            initOptions.setWakeMode(PKWakeMode.valueOf(initOptionsModel.wakeMode.toString()));
+            playerInitOptions.setWakeMode(PKWakeMode.valueOf(initOptionsModel.wakeMode.toString()));
          } catch (IllegalArgumentException exception) {
             log.e("Illegal wake mode passed which is " + initOptionsModel.wakeMode.toString());
          }
@@ -395,10 +397,40 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       if (initOptionsModel.subtitlePreference != null && !TextUtils.isEmpty(initOptionsModel.subtitlePreference.toString())) {
          try {
-            initOptions.setSubtitlePreference(PKSubtitlePreference.valueOf(initOptionsModel.subtitlePreference.toString()));
+            playerInitOptions.setSubtitlePreference(PKSubtitlePreference.valueOf(initOptionsModel.subtitlePreference.toString()));
          } catch (IllegalArgumentException exception) {
             log.e("Illegal subtitlePreference passed which is " + initOptionsModel.subtitlePreference.toString());
          }
+      }
+
+      if (initOptionsModel.videoCodecSettings != null) {
+         VideoCodecSettings videoCodecSettings = new VideoCodecSettings();
+         videoCodecSettings.setAllowMixedCodecAdaptiveness(initOptionsModel.videoCodecSettings.getAllowMixedCodecAdaptiveness());
+         videoCodecSettings.setAllowSoftwareDecoder(initOptionsModel.videoCodecSettings.isAllowSoftwareDecoder());
+         if (initOptionsModel.videoCodecSettings.getCodecPriorityList() != null &&
+                 !initOptionsModel.videoCodecSettings.getCodecPriorityList().isEmpty()) {
+            videoCodecSettings.setCodecPriorityList(initOptionsModel.videoCodecSettings.getCodecPriorityList());
+         }
+         playerInitOptions.setVideoCodecSettings(videoCodecSettings);
+      }
+
+      if (initOptionsModel.audioCodecSettings != null) {
+         AudioCodecSettings audioCodecSettings = new AudioCodecSettings();
+         audioCodecSettings.setAllowMixedCodecs(initOptionsModel.audioCodecSettings.getAllowMixedCodecs());
+         audioCodecSettings.setAllowMixedBitrates(initOptionsModel.audioCodecSettings.getAllowMixedBitrates());
+         if (initOptionsModel.audioCodecSettings.getCodecPriorityList() != null &&
+                 !initOptionsModel.audioCodecSettings.getCodecPriorityList().isEmpty()) {
+            audioCodecSettings.setCodecPriorityList(initOptionsModel.audioCodecSettings.getCodecPriorityList());
+         }
+         playerInitOptions.setAudioCodecSettings(audioCodecSettings);
+      }
+
+      if (initOptionsModel.loadControlBuffers != null) {
+         playerInitOptions.setLoadControlBuffers(initOptionsModel.loadControlBuffers);
+      }
+
+      if (initOptionsModel.vrSettings != null) {
+         playerInitOptions.setVRSettings(initOptionsModel.vrSettings);
       }
    }
 
@@ -757,6 +789,10 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
+   /**
+    * PROP: Update Low latency config
+    * @param pkLowLatencyConfig config JSON
+    */
    public void updateLlConfig(String pkLowLatencyConfig) {
       log.d("updateLlConfig");
       if (player != null && !TextUtils.isEmpty(pkLowLatencyConfig)) {
@@ -767,6 +803,9 @@ public class KalturaPlayerRNView extends FrameLayout {
       }
    }
 
+   /**
+    * PROP: Reset Low latency config
+    */
    public void resetLlConfig() {
       log.d("resetLlConfig");
       if (player != null) {
@@ -1342,6 +1381,23 @@ public class KalturaPlayerRNView extends FrameLayout {
       return subtitleStyleSettings;
    }
 
+   @Nullable
+   private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
+      if (TextUtils.isEmpty(parsableJson)) {
+         log.e("getParsedJson parsable Json is empty.");
+         return null;
+      }
+
+      try {
+         return gson.fromJson(parsableJson, parsingClass);
+      } catch (JsonSyntaxException exception) {
+         log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
+                 exception.getMessage());
+      }
+
+      return null;
+   }
+
    /*****************************************************
     * Device Event Emitter and event helper methods for *
     * React Native to android event communication       *
@@ -1359,23 +1415,6 @@ public class KalturaPlayerRNView extends FrameLayout {
     */
    private String createJSONForEventPayload(String key, Object value) {
       return "{ \"" + key + "\": " + value + " }";
-   }
-
-   @Nullable
-   private <T> T getParsedJson(String parsableJson, Class<T> parsingClass) {
-      if (TextUtils.isEmpty(parsableJson)) {
-         log.e("getParsedJson parsable Json is empty.");
-         return null;
-      }
-
-      try {
-         return gson.fromJson(parsableJson, parsingClass);
-      } catch (JsonSyntaxException exception) {
-         log.e("JsonSyntaxException while parsing " + parsingClass.getSimpleName() + "\n and the exception is \n" +
-                 exception.getMessage());
-      }
-
-      return null;
    }
 
    /**
