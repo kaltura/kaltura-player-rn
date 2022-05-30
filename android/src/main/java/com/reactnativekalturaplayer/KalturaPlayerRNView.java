@@ -153,23 +153,12 @@ public class KalturaPlayerRNView extends FrameLayout {
    @Override
    public void requestLayout() {
       super.requestLayout();
-      // This view relies on a measure + layout pass happening after it calls requestLayout().
-      // https://github.com/facebook/react-native/issues/17968#issuecomment-721958427
-      post(measureAndLayout);
+      reMeasureAndReLayout();
    }
-
-   private final Runnable measureAndLayout = new Runnable() {
-      @Override
-      public void run() {
-         measure(
-                 MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
-                 MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
-         layout(getLeft(), getTop(), getRight(), getBottom());
-      }
-   };
 
    protected void onApplicationResumed() {
       if (player != null) {
+         reMeasureAndReLayout();
          player.onApplicationResumed();
       }
    }
@@ -903,7 +892,6 @@ public class KalturaPlayerRNView extends FrameLayout {
       player.addListener(context, PlayerEvent.canPlay, event -> sendPlayerEvent(KalturaPlayerEvents.CAN_PLAY));
 
       player.addListener(context, PlayerEvent.playing, event -> {
-         requestLayout(); // TODO: This does not fix the problem while coming to foreground. Look for another solution
          sendPlayerEvent(KalturaPlayerEvents.PLAYING);
       });
 
@@ -1092,7 +1080,10 @@ public class KalturaPlayerRNView extends FrameLayout {
 
       player.addListener(context, AdEvent.contentPauseRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_PAUSE_REQUESTED));
 
-      player.addListener(context, AdEvent.contentResumeRequested, event -> sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_RESUME_REQUESTED));
+      player.addListener(context, AdEvent.contentResumeRequested, event -> {
+         reMeasureAndReLayout();
+         sendPlayerEvent(KalturaPlayerAdEvents.CONTENT_RESUME_REQUESTED);
+      });
 
       player.addListener(context, AdEvent.allAdsCompleted, event -> sendPlayerEvent(KalturaPlayerAdEvents.ALL_ADS_COMPLETED));
 
@@ -1320,6 +1311,19 @@ public class KalturaPlayerRNView extends FrameLayout {
                  "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson);
       }
    }
+
+   private void reMeasureAndReLayout() {
+      post(measureAndLayout);
+   }
+
+   private final Runnable measureAndLayout = () -> {
+      // This view relies on a measure + layout pass happening after it calls requestLayout().
+      // https://github.com/facebook/react-native/issues/17968#issuecomment-721958427
+      measure(
+              MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+              MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+      layout(getLeft(), getTop(), getRight(), getBottom());
+   };
 
    /**
     * Method to update the plugin config on Player

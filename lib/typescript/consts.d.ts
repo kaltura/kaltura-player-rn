@@ -37,3 +37,26 @@ export declare enum PLAYER_RESIZE_MODES {
     FILL = "fill",
     ZOOM = "zoom"
 }
+export declare enum WAKEMODE {
+    NONE = "NONE",
+    LOCAL = "LOCAL",
+    NETWORK = "NETWORK"
+}
+export declare enum SUBTITLE_PREFERENCE {
+    OFF = "OFF",
+    INTERNAL = "INTERNAL",
+    EXTERNAL = "EXTERNAL"
+}
+export declare enum VIDEO_CODEC {
+    HEVC = "HEVC",
+    AV1 = "AV1",
+    VP9 = "VP9",
+    VP8 = "VP8",
+    AVC = "AVC"
+}
+export declare enum AUDIO_CODEC {
+    AAC = "AAC",
+    AC3 = "AC3",
+    E_AC3 = "E_AC3",
+    OPUS = "OPUS"
+}
