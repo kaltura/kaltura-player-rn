@@ -59,7 +59,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       return PLAYER_CLASS;
    }
 
-   @SuppressLint("ResourceType")
    @NonNull
    @Override
    protected KalturaPlayerRNView createViewInstance(@NonNull ThemedReactContext reactContext) {
