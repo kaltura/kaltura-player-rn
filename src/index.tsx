@@ -12,6 +12,7 @@ import {
   PLAYER_PLUGIN,
   PLAYER_RESIZE_MODES,
   WAKEMODE,
+  SUBTITLE_STYLE,
   SUBTITLE_PREFERENCE,
   VIDEO_CODEC,
   AUDIO_CODEC,
@@ -36,6 +37,7 @@ export {
   PLAYER_PLUGIN,
   PLAYER_RESIZE_MODES,
   WAKEMODE,
+  SUBTITLE_STYLE,
   SUBTITLE_PREFERENCE,
   VIDEO_CODEC,
   AUDIO_CODEC,
@@ -335,9 +337,11 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * Update the Low Latency Config
    * Only for Live Media
    */
-   updateLowLatencyConfig = (lowLatencyConfig: string) => {
+  updateLowLatencyConfig = (lowLatencyConfig: string) => {
     if (!lowLatencyConfig) {
-      console.error(`lowLatencyConfig is invalid which is: ${lowLatencyConfig}`);
+      console.error(
+        `lowLatencyConfig is invalid which is: ${lowLatencyConfig}`
+      );
       return;
     }
     console.log('Calling Native Prop updateLowLatencyConfig()');
