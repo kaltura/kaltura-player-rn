@@ -18,5 +18,5 @@ Pod::Spec.new do |s|
   s.dependency "React-Core"
   s.dependency "KalturaPlayer"
   s.dependency "KalturaPlayer/OTT"
-  s.dependency "PlayKitYoubora",:git => 'https://github.com/kaltura/playkit-ios-youbora.git', :branch => 'develop'
+  s.dependency "PlayKitYoubora"
 end
