@@ -315,6 +315,10 @@ class KalturaPlayerRNView : UIView {
         playerOptions.ks = options["ks"] as? String
         kalturaPlayer = KalturaOTTPlayer(options: playerOptions)
 
+        if (options["plugins"] != nil){
+            updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
+        }
+
         let playerView = KalturaPlayerView()
         playerView.contentMode = .scaleAspectFit
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -330,6 +334,10 @@ class KalturaPlayerRNView : UIView {
         mediaOptions.assetType = getAssetType(str: options["assetType"] as! String)
         mediaOptions.playbackContextType = getPlaybackContextType(str: options["playbackContextType"] as! String)
         //mediaOptions.adapterData = options["adapterData"] as? [String : String]
+
+        if (options["plugins"] != nil){
+            updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
+        }
 
         if ((options["assetReferenceType"]) != nil) {
             mediaOptions.assetReferenceType = getAssetReferenceType(str: options["assetReferenceType"] as! String)
@@ -399,5 +407,16 @@ class KalturaPlayerRNView : UIView {
         if (str.caseInsensitiveCompare("start_over") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
 
         return PlaybackContextType.unset
+    }
+
+    func updatePluginsConfig(plugins: Dictionary<String, Any>) {
+        if (plugins["youbora"] != nil){
+            updateYouboraConfig(youboraPlugin: plugins["youbora"] as! Dictionary<String, Any>)
+        }
+    }
+    
+    func updateYouboraConfig(youboraPlugin: Dictionary<String,Any>){
+        let youboraConfig = AnalyticsConfig(params:youboraPlugin)
+        kalturaPlayer.updatePluginConfig(pluginName: YouboraPlugin.pluginName, config: youboraConfig)
     }
 }
