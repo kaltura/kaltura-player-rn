@@ -313,6 +313,12 @@ class KalturaPlayerRNView : UIView {
         playerOptions.preload = options["preload"] as! Bool
         playerOptions.autoPlay = options["autoplay"] as! Bool
         playerOptions.ks = options["ks"] as? String
+
+        if let plugins = options["plugins"] as? Dictionary<String, Any> {
+            if let pluginsConfig = getPluginsConfigs(plugins:plugins) {
+                playerOptions.pluginConfig = pluginsConfig
+            }
+        }
         kalturaPlayer = KalturaOTTPlayer(options: playerOptions)
 
         let playerView = KalturaPlayerView()
@@ -330,6 +336,10 @@ class KalturaPlayerRNView : UIView {
         mediaOptions.assetType = getAssetType(str: options["assetType"] as! String)
         mediaOptions.playbackContextType = getPlaybackContextType(str: options["playbackContextType"] as! String)
         //mediaOptions.adapterData = options["adapterData"] as? [String : String]
+
+        if (options["plugins"] != nil){
+            updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
+        }
 
         if ((options["assetReferenceType"]) != nil) {
             mediaOptions.assetReferenceType = getAssetReferenceType(str: options["assetReferenceType"] as! String)
@@ -399,5 +409,28 @@ class KalturaPlayerRNView : UIView {
         if (str.caseInsensitiveCompare("start_over") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
 
         return PlaybackContextType.unset
+    }
+
+    func getPluginsConfigs(plugins: Dictionary<String, Any>)-> PluginConfig?{
+        var pluginConfigs: [String: Any] = [:]
+        if let youboraParams = plugins["youbora"] as? Dictionary<String, Any> {
+            let youboraConfig = AnalyticsConfig(params:youboraParams)
+            pluginConfigs[YouboraPlugin.pluginName] = youboraConfig
+        }
+        if (!pluginConfigs.isEmpty){
+            return PluginConfig(config: pluginConfigs)
+        }
+        return nil
+    }
+    
+    func updatePluginsConfig(plugins: Dictionary<String, Any>) {
+        if (plugins["youbora"] != nil) {
+            updateYouboraConfig(youboraPlugin: plugins["youbora"] as! Dictionary<String, Any>)
+        }
+    }
+    
+    func updateYouboraConfig(youboraPlugin: Dictionary<String,Any>) {
+        let youboraConfig = AnalyticsConfig(params:youboraPlugin)
+        kalturaPlayer.updatePluginConfig(pluginName: YouboraPlugin.pluginName, config: youboraConfig)
     }
 }
