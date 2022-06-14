@@ -315,7 +315,7 @@ class KalturaPlayerRNView : UIView {
         playerOptions.ks = options["ks"] as? String
 
         if let plugins = options["plugins"] as? Dictionary<String, Any> {
-            if let pluginsConfig =  getPluginsConfigs(plugins:plugins ) {
+            if let pluginsConfig = getPluginsConfigs(plugins:plugins) {
                 playerOptions.pluginConfig = pluginsConfig
             }
         }
