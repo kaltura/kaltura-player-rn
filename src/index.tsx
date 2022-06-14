@@ -1,4 +1,4 @@
-import { requireNativeComponent, ViewStyle } from 'react-native';
+import { requireNativeComponent, NativeModules, ViewStyle } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { PlayerEvents } from './events/PlayerEvents';
@@ -20,6 +20,7 @@ import {
 } from './consts';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
+const { KalturaPlayerModule } = NativeModules;
 
 interface KalturaPlayerProps {
   style: ViewStyle;
@@ -80,8 +81,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Setting up the Player');
-    this.setNativeProps({ partnerId: id });
-    this.setNativeProps({ playerInitOptions: options });
+    KalturaPlayerModule.setUpPlayer(id, options);
   };
 
   /**
@@ -105,9 +105,8 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     console.log(
       `Loading the media. assetId is: ${id} and media asset is: ${asset}`
     );
-    this.setNativeProps({ assetId: id });
-    this.setNativeProps({ mediaAsset: asset });
-    this.setNativeProps({ load: true });
+
+    KalturaPlayerModule.load(id, asset);
   };
 
   /**
@@ -115,7 +114,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   addListeners = () => {
     console.log('Calling Native Prop addListeners()');
-    this.setNativeProps({ addListeners: true });
+    KalturaPlayerModule.addKalturaPlayerListeners();
   };
 
   /**
@@ -123,7 +122,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   removeListeners = () => {
     console.log('Calling Native Prop removeListeners()');
-    this.setNativeProps({ removeListeners: true });
+    KalturaPlayerModule.removeKalturaPlayerListeners();
   };
 
   /**
@@ -131,7 +130,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   onApplicationPaused = () => {
     console.log('Calling Native Prop onApplicationPaused()');
-    this.setNativeProps({ onApplicationPaused: true });
+    KalturaPlayerModule.onApplicationPaused();
   };
 
   /**
@@ -140,7 +139,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   onApplicationResumed = () => {
     console.log('Calling Native Prop onApplicationResumed()');
-    this.setNativeProps({ onApplicationResumed: true });
+    KalturaPlayerModule.onApplicationResumed();
   };
 
   /**
@@ -163,7 +162,8 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     };
     const stringifiedJson = JSON.stringify(pluginJson);
     console.log(`Updated Plugin is: ${stringifiedJson}`);
-    this.setNativeProps({ updatePluginConfig: stringifiedJson });
+
+    KalturaPlayerModule.updatePluginConfigs(stringifiedJson);
   };
 
   /**
@@ -171,7 +171,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   play = () => {
     console.log('Calling Native Prop play()');
-    this.setNativeProps({ play: true });
+    KalturaPlayerModule.play();
   };
 
   /**
@@ -179,7 +179,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   pause = () => {
     console.log('Calling Native Prop pause()');
-    this.setNativeProps({ pause: true });
+    KalturaPlayerModule.pause();
   };
 
   /**
@@ -187,7 +187,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   stop = () => {
     console.log('Calling Native Prop stop()');
-    this.setNativeProps({ stop: true });
+    KalturaPlayerModule.stop();
   };
 
   /**
@@ -195,7 +195,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   destroy = () => {
     console.log('Calling Native Prop destroy()');
-    this.setNativeProps({ onDestroy: true });
+    KalturaPlayerModule.destroy();
   };
 
   /**
@@ -203,7 +203,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   replay = () => {
     console.log('Calling Native Prop replay()');
-    this.setNativeProps({ replay: true });
+    KalturaPlayerModule.replay();
   };
 
   /**
@@ -212,7 +212,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   seekTo = (position: number) => {
     console.log(`Calling Native Prop seekTo() position is: ${position}`);
-    this.setNativeProps({ seek: position });
+    KalturaPlayerModule.seekTo(position);
   };
 
   /**
@@ -225,7 +225,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Calling Native Prop changeTrack()');
-    this.setNativeProps({ changeTrack: trackId });
+    KalturaPlayerModule.changeTrack(trackId);
   };
 
   /**
@@ -234,7 +234,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   setPlaybackRate = (rate: number) => {
     console.log(`Calling Native Prop setPlaybackRate() rate is: ${rate}`);
-    this.setNativeProps({ playbackRate: rate });
+    KalturaPlayerModule.changePlaybackRate(rate);
   };
 
   /**
@@ -247,7 +247,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   setVolume = (vol: number) => {
     console.log('Calling Native Prop setVolume()');
-    this.setNativeProps({ volume: vol });
+    KalturaPlayerModule.setVolume(vol);
   };
 
   /**
@@ -258,7 +258,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   setAutoPlay = (isAutoPlay: boolean) => {
     console.log('Calling Native Prop setAutoPlay()');
-    this.setNativeProps({ autoPlay: isAutoPlay });
+    KalturaPlayerModule.setAutoplay(isAutoPlay);
   };
 
   /**
@@ -272,7 +272,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Calling Native Prop setKS()');
-    this.setNativeProps({ ks: KS });
+    KalturaPlayerModule.setKS(KS);
   };
 
   /**
@@ -281,7 +281,6 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   setZIndex = (index: number) => {
     console.log('Calling Native Prop setZIndex()');
-    this.setNativeProps({ zIndex: index });
   };
 
   /**
@@ -290,7 +289,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   seekToLiveDefaultPosition = () => {
     console.log('Calling Native Prop seekToLiveDefaultPosition()');
-    this.setNativeProps({ seekToLiveDefaultPosition: true });
+    KalturaPlayerModule.seekToLiveDefaultPosition();
   };
 
   /**
@@ -302,7 +301,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Calling Native Prop updateSubtitleStyle()');
-    this.setNativeProps({ updateSubtitleStyle: subtitleStyle });
+    KalturaPlayerModule.updateSubtitleStyle(subtitleStyle);
   };
 
   /**
@@ -310,7 +309,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   updateResizeMode = (mode: PLAYER_RESIZE_MODES) => {
     console.log('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
-    this.setNativeProps({ updateSurfaceAspectRatioResizeMode: mode });
+    KalturaPlayerModule.updateResizeMode(mode);
   };
 
   /**
@@ -322,7 +321,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Calling Native Prop updateABRSettings()');
-    this.setNativeProps({ updateABRSettings: abrSettings });
+    KalturaPlayerModule.updateAbrSettings(abrSettings);
   };
 
   /**
@@ -330,7 +329,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   resetAbrSettings = () => {
     console.log('Calling Native Prop resetABRSettings()');
-    this.setNativeProps({ resetABRSettings: true });
+    KalturaPlayerModule.resetAbrSettings();
   };
 
   /**
@@ -345,7 +344,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       return;
     }
     console.log('Calling Native Prop updateLowLatencyConfig()');
-    this.setNativeProps({ updateLowLatencyConfig: lowLatencyConfig });
+    KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
   };
 
   /**
@@ -354,7 +353,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    */
   resetLowLatencyConfig = () => {
     console.log('Calling Native Prop resetLowLatencyConfig()');
-    this.setNativeProps({ resetLowLatencyConfig: true });
+    KalturaPlayerModule.resetLlConfig();
   };
 
   render() {
