@@ -6,10 +6,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.kaltura.tvplayer.KalturaOttPlayer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +37,6 @@ public class KalturaPlayerPackage implements ReactPackage {
       modules.add(new KalturaPlayerModule(reactContext, kalturaPlayerViewManager));
       return modules;
    }
-
 }
 
 

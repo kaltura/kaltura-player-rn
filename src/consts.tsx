@@ -50,7 +50,7 @@ export enum WAKEMODE {
 }
 
 /**
- * Subtitle Style Settings helper 
+ * Subtitle Style Settings helper
  * constants
  */
 export enum SUBTITLE_STYLE {

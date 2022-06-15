@@ -44,6 +44,7 @@ export default class App extends React.Component<any, any> {
 
   constructor(props: any) {
     super(props);
+    console.log('in constructor from App.');
     this.state = {
       // Track List Props default States
       videoTitle: 'No Video Tracks',
@@ -77,12 +78,17 @@ export default class App extends React.Component<any, any> {
     // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset));
 
     // BASIC Configuration
-    this.player.setup(JSON.stringify(basicInitOptions));
-    this.player.addListeners();
-    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
+    this.player.setup(
+      JSON.stringify(basicInitOptions),
+      (isPlayerCreated: Boolean) => {
+        console.log(`isPlayerCreated => ${isPlayerCreated}`);
+        this.player.addListeners();
+        this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
 
-    // Subscribe to Player Events
-    this.subscribeToPlayerListeners();
+        // Subscribe to Player Events
+        this.subscribeToPlayerListeners();
+      }
+    );
   }
 
   componentWillUnmount() {

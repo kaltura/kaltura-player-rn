@@ -75,13 +75,15 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
-  setup = (options: string, id: number = 0) => {
+  setup = (options: string, isPlayerCreated: Function, id: number = 0) => {
     if (!options) {
       console.error(`setup, invalid options = ${options}`);
       return;
     }
     console.log('Setting up the Player');
-    KalturaPlayerModule.setUpPlayer(id, options);
+    KalturaPlayerModule.setUpPlayer(id, options, (playerCreated: Boolean) => {
+      isPlayerCreated(playerCreated);
+    });
   };
 
   /**

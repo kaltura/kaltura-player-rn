@@ -1,19 +1,16 @@
 package com.reactnativekalturaplayer
 
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import androidx.annotation.NonNull
+import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.kaltura.playkit.PKLog
 
-
 class KalturaPlayerModule(
     reactApplicationContext: ReactApplicationContext,
-    kalturaPlayerViewManager: KalturaPlayerViewManager?
-) : ReactContextBaseJavaModule(reactApplicationContext) {
+    kalturaPlayerViewManager: KalturaPlayerViewManager?) : ReactContextBaseJavaModule(reactApplicationContext) {
 
     private val log = PKLog.get(KalturaPlayerModule::class.java.simpleName)
     private val PLAYER_CLASS = "KalturaPlayerModule"
@@ -35,9 +32,9 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
-    fun setUpPlayer(partnerId: Int = 0, initOptions: String?) {
+    fun setUpPlayer(partnerId: Int = 0, initOptions: String?, callback: Callback) {
         log.d("setPartnerId: $partnerId")
-        kalturaPlayerRN.createPlayerInstance(partnerId, initOptions)
+        kalturaPlayerRN.createPlayerInstance(partnerId, initOptions, callback)
     }
 
     @ReactMethod

@@ -39,7 +39,7 @@ import org.json.JSONObject
 
 class KalturaPlayerRN(
     private val context: ReactApplicationContext,
-    private val kalturaPlayerRNView: KalturaPlayerRNView) {
+    private val kalturaPlayerRNView: KalturaPlayerRNView): LifecycleEventListener {
 
     private val log = PKLog.get(KalturaPlayerRN::class.java.simpleName)
 
@@ -56,20 +56,18 @@ class KalturaPlayerRN(
         mainHandler?.post(runnable)
     }
 
-    private fun getPlayerType() {
+    fun createPlayerInstance(partnerId: Int, initOptions: String?, callback: Callback) {
         this.playerType = kalturaPlayerRNView.playerType
-    }
 
-    fun createPlayerInstance(partnerId: Int, initOptions: String?) {
-        log.d("createPlayerInstance PartnerId: $partnerId initOptions : $initOptions")
-        getPlayerType()
+        log.d("createPlayerInstance PartnerId: $partnerId initOptions : $initOptions playerType: ${this.playerType}")
+
         if (partnerId > 0 && !TextUtils.isEmpty(initOptions) || playerType == KalturaPlayer.Type.basic) {
             if (playerType == KalturaPlayer.Type.basic) {
-                createKalturaBasicPlayer(initOptions!!)
+                createKalturaBasicPlayer(initOptions!!, callback)
             } else if (!TextUtils.isEmpty(initOptions) &&
                 (playerType == KalturaPlayer.Type.ott || playerType == KalturaPlayer.Type.ovp)
             ) {
-                createKalturaOttOvpPlayer(partnerId, initOptions!!)
+                createKalturaOttOvpPlayer(partnerId, initOptions!!, callback)
             } else {
                 log.e("Player can not be created. playerType is $playerType and partnerId is $partnerId")
             }
@@ -88,6 +86,7 @@ class KalturaPlayerRN(
     fun onApplicationResumed() {
         log.d("onApplicationResumed")
         runOnUiThread {
+            kalturaPlayerRNView?.reMeasureAndReLayout()
             player?.onApplicationResumed()
         }
     }
@@ -220,7 +219,9 @@ class KalturaPlayerRN(
             player = null
             playerViewAdded = false
             mainHandler = null
+            removeLifeCycleEventListener(context)
         }
+
     }
 
     fun stop() {
@@ -413,7 +414,7 @@ class KalturaPlayerRN(
         }
     }
 
-    private fun createKalturaBasicPlayer(initOptions: String) {
+    private fun createKalturaBasicPlayer(initOptions: String, callback: Callback) {
         log.d("Creating Basic Player instance.")
         val initOptionsModel = getParsedJson(initOptions, InitOptions::class.java)
         val playerInitOptions = PlayerInitOptions()
@@ -427,18 +428,43 @@ class KalturaPlayerRN(
         }
 
         createUiHandler()
+        addLifeCycleEventListener(context)
 
-        if (player == null) {
-            player = KalturaBasicPlayer.create(context, playerInitOptions)
+        runOnUiThread {
+            if (player == null) {
+                player = KalturaBasicPlayer.create(context, playerInitOptions)
+            }
+
+            callback.invoke(true)
+
+            initDrm(context)
+
+            addPlayerViewToRNView(player)
         }
-
-        initDrm(context)
-
-        addPlayerViewToRNView(player)
     }
 
     private fun createUiHandler() {
         mainHandler = Handler(Looper.getMainLooper())
+    }
+
+    private fun addLifeCycleEventListener(context: ReactApplicationContext) {
+        context.addLifecycleEventListener(this)
+    }
+
+    private fun removeLifeCycleEventListener(context: ReactApplicationContext) {
+        context.removeLifecycleEventListener(this)
+    }
+
+    override fun onHostResume() {
+        // This is being controlled by the RN FE apps
+    }
+
+    override fun onHostPause() {
+        // This is being controlled by the RN FE apps
+    }
+
+    override fun onHostDestroy() {
+        destroy()
     }
 
     private fun addPlayerViewToRNView(kalturaPlayer: KalturaPlayer?) {
@@ -505,7 +531,7 @@ class KalturaPlayerRN(
         }
     }
 
-    private fun createKalturaOttOvpPlayer(partnerId: Int, playerInitOptionsJson: String) {
+    private fun createKalturaOttOvpPlayer(partnerId: Int, playerInitOptionsJson: String, callback: Callback) {
         log.d("createKalturaOttOvpPlayer:$partnerId, \n initOptions: \n $playerInitOptionsJson")
         val initOptionsModel = getParsedJson(
             playerInitOptionsJson,
@@ -540,6 +566,7 @@ class KalturaPlayerRN(
         playerInitOptions.setPluginConfigs(pkPluginConfigs)
 
         createUiHandler()
+        addLifeCycleEventListener(context)
 
         //playerInitOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
         //playerInitOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
@@ -1597,5 +1624,4 @@ class KalturaPlayerRN(
         }
         return array
     }
-
 }
