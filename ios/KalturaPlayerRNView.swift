@@ -117,7 +117,7 @@ class KalturaPlayerRNView : UIView {
         kalturaPlayer.view = playerView
     }
     
-    func loadOTT(assetId: String, options: NSDictionary) {
+    func loadOTT(assetId: String, options: [String: Any]) {
         let mediaOptions = OTTMediaOptions()
         mediaOptions.assetId = assetId
         mediaOptions.ks = options["ks"] as? String
