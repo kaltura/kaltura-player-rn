@@ -18,6 +18,22 @@ class KalturaPlayerRNView : UIView {
         case ott
     }
     
+    var kalturaPlayer: KalturaPlayer!
+    var initOptions: RNKPInitOptions?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
+    // MARK: - Props
     @objc var style: NSDictionary?
     @objc var playerType: String = ""
     @objc var partnerId: NSNumber = 0
@@ -27,7 +43,9 @@ class KalturaPlayerRNView : UIView {
                 PKLog.debug("playerInitOptions was set but is empty.")
                 return
             }
-            guard let playerOptions = dictonary(from: playerInitOptions) else { return }
+            guard let playerOptions = playerInitOptions.toDictionary() else { return }
+            initOptions = RNKPInitOptions.parse(initOptions: playerOptions)
+            if initOptions == nil { return }
             
             switch PlayerType(rawValue: playerType) {
             case .basic:
@@ -35,8 +53,7 @@ class KalturaPlayerRNView : UIView {
             case .ovp:
                 break
             case .ott:
-                setupOTT(partnerId: Int64(truncating: partnerId), options: playerOptions)
-                break
+                setupOTT(partnerId: Int64(truncating: partnerId))
             case .none:
                 PKLog.debug("playerType was not set.")
             }
@@ -51,47 +68,44 @@ class KalturaPlayerRNView : UIView {
                 PKLog.debug("mediaAsset was set but is empty.")
                 return
             }
-            guard let mediaOptions = dictonary(from: mediaAsset) else { return }
+            guard let mediaOptions = mediaAsset.toDictionary() else { return }
             if load {
-                loadOTT(assetId: assetId, options: mediaOptions)
+                switch PlayerType(rawValue: playerType) {
+                case .basic:
+                    break
+                case .ovp:
+                    break
+                case .ott:
+                    loadOTT(assetId: assetId, options: mediaOptions)
+                case .none:
+                    PKLog.debug("playerType was not set.")
+                }
+                
             }
         }
     }
     
-    var kalturaPlayer: KalturaPlayer!
+    // MARK: -
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
+
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
-    func dictonary(from jsonString: String) -> NSDictionary? {
-        var dictonary: NSDictionary?
-        if let data = jsonString.data(using: String.Encoding.utf8) {
-            do {
-                dictonary = try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject] as NSDictionary?
-            } catch let error as NSError {
-                PKLog.debug("An error occured while creating a dictonary from the string: \(error)")
-            }
-        }
-        return dictonary
-    }
+
     
     // TODO: Fix all the '!'
-    func setupOTT(partnerId: Int64, options: NSDictionary) {
-        KalturaOTTPlayer.setup(partnerId: partnerId, serverURL: options["serverUrl"] as! String)
+    func setupOTT(partnerId: Int64) {
+        guard let options = initOptions else { return }
+        guard let serverUrl = options.serverUrl else { return }
+        
+        KalturaOTTPlayer.setup(partnerId: partnerId, serverURL: serverUrl)
         
         let playerOptions = PlayerOptions()
-        playerOptions.preload = options["preload"] as! Bool
-        playerOptions.autoPlay = options["autoplay"] as! Bool
-        playerOptions.ks = options["ks"] as? String
+        if let preload = options.preload {
+            playerOptions.preload = preload
+        }
+        if let autoplay = options.autoplay {
+            playerOptions.autoPlay = autoplay
+        }
+//        playerOptions.ks = options["ks"] as? String
         kalturaPlayer = KalturaOTTPlayer(options: playerOptions)
         
         let playerView = KalturaPlayerView()
