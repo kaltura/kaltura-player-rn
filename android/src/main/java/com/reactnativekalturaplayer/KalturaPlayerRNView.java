@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.kaltura.playkit.PKLog;
@@ -42,6 +43,7 @@ public class KalturaPlayerRNView extends FrameLayout {
       this.playerType = getKalturaPlayerType(playerType);
    }
 
+   @Nullable
    public KalturaPlayer.Type getPlayerType() {
       return this.playerType;
    }
