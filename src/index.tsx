@@ -1,56 +1,57 @@
-import { requireNativeComponent } from 'react-native';
+import { requireNativeComponent, NativeModules, ViewStyle } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
-import PlayerEvents from './events/PlayerEvents';
+import { PlayerEvents } from './events/PlayerEvents';
+import { AdEvents } from './events/AdEvents';
+import { AnalyticsEvents } from './events/AnalyticsEvents';
+import {
+  PLAYER_TYPE,
+  MEDIA_FORMAT,
+  MEDIA_ENTRY_TYPE,
+  DRM_SCHEME,
+  PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_STYLE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
+  VR_INTERACTION_MODE,
+} from './consts';
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
+const { KalturaPlayerModule } = NativeModules;
 
-export default PlayerEvents;
-
-export enum PLAYER_TYPE {
-  OVP = 'ovp',
-  OTT = 'ott',
-  BASIC = 'basic',
+interface KalturaPlayerProps {
+  style: ViewStyle;
+  playerType: PLAYER_TYPE;
 }
 
-export enum MEDIA_FORMAT {
-  DASH = 'dash',
-  HLS = 'hls',
-  WVM = 'wvm',
-  MP4 = 'mp4',
-  MP3 = 'mp3',
-  UDP = 'udp',
-}
+export {
+  PlayerEvents,
+  AdEvents,
+  AnalyticsEvents,
+  PLAYER_TYPE,
+  MEDIA_FORMAT,
+  MEDIA_ENTRY_TYPE,
+  DRM_SCHEME,
+  PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_STYLE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
+  VR_INTERACTION_MODE,
+};
 
-export enum MEDIA_ENTRY_TYPE {
-  VOD = 'Vod',
-  LIVE = 'Live',
-  DVRLIVE = 'DvrLive',
-}
-
-export enum DRM_SCHEME {
-  WIDEVINE_CENC = 'WidevineCENC',
-  PLAYREADY_CENC = 'PlayReadyCENC',
-  WIDEVINE_CENC_CLASSIC = 'WidevineClassic',
-  PLAYREADY_CLASSIC = 'PlayReadyClassic',
-}
-
-export enum PLAYER_PLUGIN {
-  IMA = 'ima',
-  IMADAI = 'imadai',
-  YOUBORA = 'youbora',
-  KAVA = 'kava',
-  OTT_ANALYTICS = 'ottAnalytics',
-  BROADPEAK = 'broadpeak',
-}
-
-export class KalturaPlayer extends React.Component {
+export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
   eventListener: any;
-  
-  static propTypes: { 
-    style: PropTypes.Requireable<object>;
-    playerType: PropTypes.Requireable<String>;
+  playerType: PLAYER_TYPE | undefined;
+
+  static propTypes: {
+    style: object;
   };
 
   componentDidMount() {
@@ -66,22 +67,6 @@ export class KalturaPlayer extends React.Component {
   };
 
   /**
-   * Add the listners for the Kaltura Player
-   */
-  addListeners = () => {
-    console.log('Calling Native Prop addListeners()');
-    this.setNativeProps({ addListeners: true });
-  };
-
-  /**
-   * Add the listners for the Kaltura Player
-   */
-  removeListeners = () => {
-    console.log('Calling Native Prop removeListeners()');
-    this.setNativeProps({ removeListeners: true });
-  };
-
-  /**
    * This method creates a Player instance internally (Basic, OVP/OTT Player)
    * With this, it take the PlayerInitOptions which are having essential Player settings values
    *
@@ -90,26 +75,15 @@ export class KalturaPlayer extends React.Component {
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
-  setup = (options: string, id: number = 0) => {
+  setup = (options: string, isPlayerCreated: Function, id: number = 0) => {
+    if (!options) {
+      console.error(`setup, invalid options = ${options}`);
+      return;
+    }
     console.log('Setting up the Player');
-    this.setNativeProps({ partnerId: id });
-    this.setNativeProps({ playerInitOptions: options });
-  };
-
-  /**
-   * Update a Plugin Config
-   *
-   * @param pluginName Plugin Name (Youbora, IMA etc)
-   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
-   */
-  updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
-    const pluginJson = {
-      pluginName: pluginName,
-      pluginConfig: config,
-    };
-    const stringifiedJson = JSON.stringify(pluginJson);
-    console.log('Updated Plugin is: ' + stringifiedJson);
-    this.setNativeProps({ updatePluginConfig: stringifiedJson });
+    KalturaPlayerModule.setUpPlayer(id, options, (playerCreated: Boolean) => {
+      isPlayerCreated(playerCreated);
+    });
   };
 
   /**
@@ -125,12 +99,73 @@ export class KalturaPlayer extends React.Component {
    * @param asset Media Asset JSON String
    */
   loadMedia = (id: string, asset: string) => {
+    if (!id || !asset) {
+      console.error(`loadMedia, invalid id = ${id} or asset = ${asset}`);
+      return;
+    }
+
     console.log(
-      'Loading the media. assetId: ' + id + ' and Media asset id: ' + asset
+      `Loading the media. assetId is: ${id} and media asset is: ${asset}`
     );
-    this.setNativeProps({ assetId: id });
-    this.setNativeProps({ mediaAsset: asset });
-    this.setNativeProps({ load: true });
+
+    KalturaPlayerModule.load(id, asset);
+  };
+
+  /**
+   * Add the listners for the Kaltura Player
+   */
+  addListeners = () => {
+    console.log('Calling Native Prop addListeners()');
+    KalturaPlayerModule.addKalturaPlayerListeners();
+  };
+
+  /**
+   * Add the listners for the Kaltura Player
+   */
+  removeListeners = () => {
+    console.log('Calling Native Prop removeListeners()');
+    KalturaPlayerModule.removeKalturaPlayerListeners();
+  };
+
+  /**
+   * Should be called when the application is in background
+   */
+  onApplicationPaused = () => {
+    console.log('Calling Native Prop onApplicationPaused()');
+    KalturaPlayerModule.onApplicationPaused();
+  };
+
+  /**
+   * Should be called when the application comes back to
+   * foreground
+   */
+  onApplicationResumed = () => {
+    console.log('Calling Native Prop onApplicationResumed()');
+    KalturaPlayerModule.onApplicationResumed();
+  };
+
+  /**
+   * Update a Plugin Config
+   *
+   * @param pluginName Plugin Name (Youbora, IMA etc)
+   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+   */
+  updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
+    if (pluginName == null || !config) {
+      console.error(
+        `updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`
+      );
+      return;
+    }
+
+    const pluginJson = {
+      pluginName: pluginName,
+      pluginConfig: config,
+    };
+    const stringifiedJson = JSON.stringify(pluginJson);
+    console.log(`Updated Plugin is: ${stringifiedJson}`);
+
+    KalturaPlayerModule.updatePluginConfigs(stringifiedJson);
   };
 
   /**
@@ -138,7 +173,7 @@ export class KalturaPlayer extends React.Component {
    */
   play = () => {
     console.log('Calling Native Prop play()');
-    this.setNativeProps({ play: true });
+    KalturaPlayerModule.play();
   };
 
   /**
@@ -146,7 +181,7 @@ export class KalturaPlayer extends React.Component {
    */
   pause = () => {
     console.log('Calling Native Prop pause()');
-    this.setNativeProps({ pause: true });
+    KalturaPlayerModule.pause();
   };
 
   /**
@@ -154,7 +189,15 @@ export class KalturaPlayer extends React.Component {
    */
   stop = () => {
     console.log('Calling Native Prop stop()');
-    this.setNativeProps({ stop: true });
+    KalturaPlayerModule.stop();
+  };
+
+  /**
+   * Destroy the Kaltura Player instance
+   */
+  destroy = () => {
+    console.log('Calling Native Prop destroy()');
+    KalturaPlayerModule.destroy();
   };
 
   /**
@@ -162,7 +205,7 @@ export class KalturaPlayer extends React.Component {
    */
   replay = () => {
     console.log('Calling Native Prop replay()');
-    this.setNativeProps({ replay: true });
+    KalturaPlayerModule.replay();
   };
 
   /**
@@ -170,8 +213,8 @@ export class KalturaPlayer extends React.Component {
    * @param position in miliseconds (Ms)
    */
   seekTo = (position: number) => {
-    console.log('Calling Native Prop seekTo()');
-    this.setNativeProps({ seek: position });
+    console.log(`Calling Native Prop seekTo() position is: ${position}`);
+    KalturaPlayerModule.seekTo(position);
   };
 
   /**
@@ -179,8 +222,12 @@ export class KalturaPlayer extends React.Component {
    * @param trackId Unique track ID which was sent in `tracksAvailable` event
    */
   changeTrack = (trackId: string) => {
+    if (!trackId) {
+      console.error(`trackId is invalid which is: ${trackId}`);
+      return;
+    }
     console.log('Calling Native Prop changeTrack()');
-    this.setNativeProps({ changeTrack: trackId });
+    KalturaPlayerModule.changeTrack(trackId);
   };
 
   /**
@@ -188,8 +235,8 @@ export class KalturaPlayer extends React.Component {
    * @param rate Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)
    */
   setPlaybackRate = (rate: number) => {
-    console.log('Calling Native Prop setPlaybackRate()');
-    this.setNativeProps({ playbackRate: rate });
+    console.log(`Calling Native Prop setPlaybackRate() rate is: ${rate}`);
+    KalturaPlayerModule.changePlaybackRate(rate);
   };
 
   /**
@@ -202,22 +249,113 @@ export class KalturaPlayer extends React.Component {
    */
   setVolume = (vol: number) => {
     console.log('Calling Native Prop setVolume()');
-    this.setNativeProps({ volume: vol });
+    KalturaPlayerModule.setVolume(vol);
   };
 
+  /**
+   * Set the media to play automatically at the start (load)
+   * if false, user will have to click on UI play button
+   *
+   * @param isAutoPlay media should be autoplayed at the start or not
+   */
   setAutoPlay = (isAutoPlay: boolean) => {
     console.log('Calling Native Prop setAutoPlay()');
-    this.setNativeProps({ autoPlay: isAutoPlay });
+    KalturaPlayerModule.setAutoplay(isAutoPlay);
   };
 
+  /**
+   * Set the KS for the media (only for OVP/OTT users)
+   * Call this before calling {@link loadMedia}
+   * @param KS Kaltura Secret key
+   */
   setKS = (KS: string) => {
+    if (!KS) {
+      console.error('KS is invalid which is: ' + KS);
+      return;
+    }
     console.log('Calling Native Prop setKS()');
-    this.setNativeProps({ ks: KS });
+    KalturaPlayerModule.setKS(KS);
   };
 
-  setZIndex = (index: number) => {
-    console.log('Calling Native Prop setZIndex()');
-    this.setNativeProps({ zIndex: index });
+  /**
+   * NOOP
+   * @param index
+   */
+  //setZIndex = (index: number) => {
+  //  console.log('Calling Native Prop setZIndex()');
+  //};
+
+  /**
+   * Only for Live Media.
+   * Seek player to Live Default Position.
+   */
+  seekToLiveDefaultPosition = () => {
+    console.log('Calling Native Prop seekToLiveDefaultPosition()');
+    KalturaPlayerModule.seekToLiveDefaultPosition();
+  };
+
+  /**
+   * Update the existing subtitle styling
+   */
+  updateSubtitleStyle = (subtitleStyle: string) => {
+    if (!subtitleStyle) {
+      console.error(`subtitleStyle is invalid which is: ${subtitleStyle}`);
+      return;
+    }
+    console.log('Calling Native Prop updateSubtitleStyle()');
+    KalturaPlayerModule.updateSubtitleStyle(subtitleStyle);
+  };
+
+  /**
+   * Update the Resize Mode
+   */
+  updateResizeMode = (mode: PLAYER_RESIZE_MODES) => {
+    console.log('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
+    KalturaPlayerModule.updateResizeMode(mode);
+  };
+
+  /**
+   * Update the ABR Settings
+   */
+  updateAbrSettings = (abrSettings: string) => {
+    if (!abrSettings) {
+      console.error(`abrSettings is invalid which is: ${abrSettings}`);
+      return;
+    }
+    console.log('Calling Native Prop updateABRSettings()');
+    KalturaPlayerModule.updateAbrSettings(abrSettings);
+  };
+
+  /**
+   * Reset the ABR Settings
+   */
+  resetAbrSettings = () => {
+    console.log('Calling Native Prop resetABRSettings()');
+    KalturaPlayerModule.resetAbrSettings();
+  };
+
+  /**
+   * Update the Low Latency Config
+   * Only for Live Media
+   */
+  updateLowLatencyConfig = (lowLatencyConfig: string) => {
+    if (!lowLatencyConfig) {
+      console.error(
+        `lowLatencyConfig is invalid which is: ${lowLatencyConfig}`
+      );
+      return;
+    }
+    console.log('Calling Native Prop updateLowLatencyConfig()');
+    KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
+  };
+
+  /**
+   * Reset the Low Latency Config
+   * Only for Live Media
+   */
+  resetLowLatencyConfig = () => {
+    console.log('Calling Native Prop resetLowLatencyConfig()');
+    KalturaPlayerModule.resetLlConfig();
   };
 
   render() {
@@ -231,15 +369,5 @@ export class KalturaPlayer extends React.Component {
 }
 
 KalturaPlayer.propTypes = {
-  /**
-   * The Styling of the player.
-   */
   style: PropTypes.object,
-
-  /**
-   * A String value that determines the player type.
-   * Basic / OVP / OTT Player
-   * Use PLAYER_TYPE.
-   */
-  playerType: PropTypes.string
 };

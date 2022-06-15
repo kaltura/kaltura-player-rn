@@ -12,6 +12,9 @@ import com.kaltura.tvplayer.OVPMediaOptions;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Media asset for OVP and OTT
+ */
 public class MediaAsset {
     private String ks;        // ovp or ott
 
@@ -31,7 +34,7 @@ public class MediaAsset {
     private Boolean redirectFromEntryId = true;
     private Boolean useApiCaptions = false;
 
-    private Long startPosition;
+    private long startPosition;
     private Float initialVolume = 1.0f;
 
     private String getKs() {
@@ -58,7 +61,7 @@ public class MediaAsset {
         return adapterData;
     }
 
-    public Long getStartPosition() {
+    public long getStartPosition() {
         return startPosition;
     }
 
@@ -198,9 +201,7 @@ public class MediaAsset {
             ottMediaAsset.setMediaFileIds(Collections.singletonList(fileId));
         }
         OTTMediaOptions ottMediaOptions = new OTTMediaOptions(ottMediaAsset);
-        if (startPosition != null) {
-            ottMediaOptions.startPosition = startPosition;
-        }
+        ottMediaOptions.startPosition = startPosition;
         return ottMediaOptions;
     }
 
@@ -229,9 +230,7 @@ public class MediaAsset {
             ovpMediaOptions.setUseApiCaptions(useApiCaptions);
         }
 
-        if (startPosition != null) {
-            ovpMediaOptions.startPosition = startPosition;
-        }
+        ovpMediaOptions.startPosition = startPosition;
 
         return ovpMediaOptions;
     }

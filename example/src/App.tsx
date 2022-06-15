@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { StyleSheet, View, Text, TouchableOpacity, NativeModules, NativeEventEmitter } from 'react-native';
+import {
+  AppState,
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import TrackList from '../src/components/TrackList';
+import SeekBar from '../src/components/SeekBar';
 import {
   KalturaPlayer,
   MEDIA_ENTRY_TYPE,
@@ -8,15 +17,56 @@ import {
   PLAYER_TYPE,
   DRM_SCHEME,
   PLAYER_PLUGIN,
+  PLAYER_RESIZE_MODES,
+  WAKEMODE,
+  SUBTITLE_STYLE,
+  SUBTITLE_PREFERENCE,
+  VIDEO_CODEC,
+  AUDIO_CODEC,
+  VR_INTERACTION_MODE,
 } from 'react-native-kaltura-player';
-import PlayerEvents from 'react-native-kaltura-player';
+import { NativeEventEmitter } from 'react-native';
+import {
+  PlayerEvents,
+  AdEvents,
+  AnalyticsEvents,
+} from 'react-native-kaltura-player';
 
-const KalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
-const playerEventEmitter = new NativeEventEmitter(KalturaPlayerEvents);
+const playerEventEmitter = new NativeEventEmitter();
 
-export default class App extends React.Component {
+export default class App extends React.Component<any, any> {
+  player: KalturaPlayer;
+  videoTracks = [];
+  appStateSubscription: any;
+  isSliderSeeking: boolean = false;
+
+  contentDuration: number = 0;
+
+  constructor(props: any) {
+    super(props);
+    console.log('in constructor from App.');
+    this.state = {
+      // Track List Props default States
+      videoTitle: 'No Video Tracks',
+      videoTrackList: [],
+      audioTitle: 'No Audio Tracks',
+      audioTrackList: [],
+      textTitle: 'No Text Tracks',
+      textTrackList: [],
+
+      // Application lifecycle default States
+      appState: AppState.currentState,
+
+      // Seekbar Props default States
+      isAdPlaying: false,
+      currentPosition: 0,
+      totalDuration: 0,
+    };
+  }
+
   componentDidMount() {
     console.log('componentDidMount from App.');
+    this.subscribeToAppLifecyle();
     // OTT Configuration
     // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
     // this.player.addListeners();
@@ -28,17 +78,24 @@ export default class App extends React.Component {
     // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset));
 
     // BASIC Configuration
-    this.player.setup(JSON.stringify(basicInitOptions));
-    this.player.addListeners();
-    this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
+    this.player.setup(
+      JSON.stringify(basicInitOptions),
+      (isPlayerCreated: Boolean) => {
+        console.log(`isPlayerCreated => ${isPlayerCreated}`);
+        this.player.addListeners();
+        this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
+
+        // Subscribe to Player Events
+        this.subscribeToPlayerListeners();
+      }
+    );
   }
 
   componentWillUnmount() {
-    console.log('componentDidMount from App.');
+    console.log('componentWillUnmount from App.');
+    this.appStateSubscription.remove();
     this.player.removeListeners();
   }
-
-  player: KalturaPlayer;
 
   doPause = () => {
     this.player.pause();
@@ -46,6 +103,10 @@ export default class App extends React.Component {
 
   doPlay = () => {
     this.player.play();
+  };
+
+  doReplay = () => {
+    this.player.replay();
   };
 
   changePlaybackRate = (rate: number) => {
@@ -60,10 +121,206 @@ export default class App extends React.Component {
     this.player.loadMedia(assetId, mediaAsset);
   };
 
+  onTrackChangeListener = (trackId: string) => {
+    console.log('Clicked Track from TrackList component is: ' + trackId);
+    this.player.changeTrack(trackId);
+  };
+
+  onSeekBarScrubbed = (seekedPosition: number) => {
+    console.log('Scrubbed seek position is: ' + seekedPosition);
+    this.player.seekTo(seekedPosition);
+  };
+
+  onSeekBarScrubbing = (isSeeking: boolean) => {
+    console.log('onSeekBarScrubbing is: ' + isSeeking);
+    this.isSliderSeeking = isSeeking;
+  };
+
+  subscribeToAppLifecyle = () => {
+    this.appStateSubscription = AppState.addEventListener(
+      'change',
+      (nextAppState) => {
+        if (nextAppState === 'active') {
+          if (this.player != null) {
+            this.player.onApplicationResumed(); // <TODO Add a condition if player is playing or not />
+          }
+        } else if (nextAppState === 'background') {
+          if (this.player != null) {
+            this.player.onApplicationPaused();
+          }
+        }
+        console.log('App has come to the! ' + nextAppState);
+        this.setState({ appState: nextAppState });
+      }
+    );
+  };
+
+  /**
+   * Add the Kaltura Player listeners to
+   * add the Player, Ad and other Analytics
+   * events
+   *
+   * @param player Kaltura Player
+   */
+  subscribeToPlayerListeners = () => {
+    playerEventEmitter.addListener(PlayerEvents.DURATION_CHANGE, (payload) => {
+      console.log(
+        'PlayerEvent DURATION_CHANGE : ' +
+          (payload.duration != null
+            ? payload.duration
+            : ' Empty duration change')
+      );
+
+      if (payload.duration != null) {
+        this.contentDuration = payload.duration;
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
+      //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
+      if (!this.isSliderSeeking && !this.state.isAdPlaying) {
+        this.setState(() => ({
+          currentPosition: payload.position,
+          totalDuration: this.contentDuration,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
+      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
+      console.log('PlayerEvent ERROR : ' + payload.message);
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
+      console.log('PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload));
+      const videoTracks = payload.video;
+
+      if (videoTracks.length > 0) {
+        this.setState(() => ({
+          videoTitle: 'Video Tracks',
+          videoTrackList: videoTracks,
+        }));
+      }
+
+      const audioTracks = payload.audio;
+
+      if (audioTracks.length > 0) {
+        this.setState(() => ({
+          audioTitle: 'Audio Tracks',
+          audioTrackList: audioTracks,
+        }));
+      }
+
+      const textTracks = payload.text;
+
+      if (textTracks.length > 0) {
+        this.setState(() => ({
+          textTitle: 'Text Tracks',
+          textTrackList: textTracks,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
+      console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload));
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
+      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+    });
+
+    playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
+      console.log('AdEvent CONTENT_PAUSE_REQUESTED');
+      this.setState(() => ({
+        isAdPlaying: true,
+      }));
+    });
+
+    playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
+      console.log('AdEvent CONTENT_RESUME_REQUESTED');
+      this.setState(() => ({
+        isAdPlaying: false,
+      }));
+    });
+
+    playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
+      console.log(
+        'AdEvents LOADED : ' +
+          (payload.adDuration != null
+            ? payload.adDuration
+            : ' Empty Ad duration')
+      );
+      if (payload.adDuration != null) {
+        this.setState(() => ({
+          totalDuration: payload.adDuration / 1000,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
+      //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
+      if (payload.currentAdPosition != null) {
+        this.setState(() => ({
+          currentPosition: payload.currentAdPosition,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
+      //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
+    });
+  };
+
   render() {
     return (
-      <View>
-        <Text style={styles.red}>Welcome to Kaltura Player RN</Text>
+      <ScrollView>
+        <Text style={styles.blue_center}>Kaltura Player Demo</Text>
+
+        <View
+          style={[
+            styles.flex_container,
+            {
+              flexDirection: 'row',
+            },
+          ]}
+        >
+          {this.state.videoTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'video'}
+              title={this.state.videoTitle}
+              trackList={this.state.videoTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
+          {this.state.audioTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'audio'}
+              title={this.state.audioTitle}
+              trackList={this.state.audioTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
+          {this.state.textTrackList.length > 0 ? (
+            <TrackList
+              style={{ flex: 1 }}
+              trackType={'text'}
+              title={this.state.textTitle}
+              trackList={this.state.textTrackList}
+              onTrackChangeListener={this.onTrackChangeListener}
+            />
+          ) : (
+            <Text></Text>
+          )}
+        </View>
 
         <KalturaPlayer
           ref={(ref: KalturaPlayer) => {
@@ -73,49 +330,75 @@ export default class App extends React.Component {
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.doPlay();
-          }}
-        >
-          <Text style={[styles.bigBlue, styles.red]}>Play Media</Text>
-        </TouchableOpacity>
+        <SeekBar
+          isAdPlaying={this.state.isAdPlaying}
+          position={this.state.currentPosition}
+          duration={this.state.totalDuration}
+          onSeekBarScrubbed={this.onSeekBarScrubbed}
+          onSeekBarScrubbing={this.onSeekBarScrubbing}
+        ></SeekBar>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.doPause();
-          }}
-        >
-          <Text style={[styles.red, styles.bigBlue]}>Pause Media</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doPlay();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Play Media</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.changePlaybackRate(2.0);
-          }}
-        >
-          <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 2.0</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doPause();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Pause Media</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.changePlaybackRate(0.5);
-          }}
-        >
-          <Text style={[styles.red, styles.bigBlue]}>PlaybackRate 0.5</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changePlaybackRate(2.0);
+            }}
+          >
+            <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          onPress={() => {
-            this.changeMedia(
-              playbackUrlChangeMedia,
-              JSON.stringify(basicMediaAsset)
-            );
-          }}
-        >
-          <Text style={[styles.red, styles.bigBlue]}>Change Media</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.doReplay();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Replay Media</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changePlaybackRate(0.5);
+            }}
+          >
+            <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              this.changeMedia(
+                playbackUrlChangeMedia,
+                JSON.stringify(basicMediaAsset)
+              );
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Change Media</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -124,13 +407,32 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 50,
   },
+  flex_container: {
+    flex: 1,
+    flexWrap: 'wrap',
+  },
   bigBlue: {
     color: 'blue',
     fontWeight: 'bold',
     fontSize: 12,
+    margin: 3,
   },
-  red: {
-    color: 'red',
+  bigWhite: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+    margin: 3,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    margin: 10,
+  },
+  blue_center: {
+    color: 'blue',
+    textAlign: 'center',
+    fontSize: 20,
+    margin: 10,
   },
   center: {
     flex: 1,
@@ -138,22 +440,36 @@ const styles = StyleSheet.create({
     height: 300,
     alignItems: 'center',
   },
+  button: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 4,
+    backgroundColor: 'blue',
+    alignSelf: 'flex-start',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '20%',
+    textAlign: 'center',
+  },
 });
 
-playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
-  console.log('*** TRACKS_AVAILABLE PlayerEvent: ' + JSON.stringify(payload));
-  console.log('*** TRACKS_AVAILABLE length: ' + Object.keys(payload).length);
-});
-
-playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-  console.log('*** DRM_INITIALIZED PlayerEvent: ' + JSON.stringify(payload));
-});
+/**
+ * **********************
+ *                      *
+ * Below TEST JSONs for *
+ * Basic/OTT/OVP Player *
+ *                      *
+ * **********************
+ */
 
 // Kaltura Basic Player Test JSON
 const playbackUrl =
   'http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8';
 const playbackUrlChangeMedia =
   'http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multi_language_subs.m3u8';
+
+// const playbackUrl =
+//  'https://livesim.dashif.org/livesim/chunkdur_1/ato_7/testpic4_8s/Manifest300.mpd'; // LIVE MEDIA WITH LOW LATENCY
 
 const basicUrlWithDrm =
   'https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd';
@@ -172,6 +488,7 @@ var basicMediaAsset = {
   duration: duration,
   mediaEntryType: entryType,
   mediaFormat: playbackFormat,
+  startPosition: 0,
   // "drmData" : [
   //   {
   //     "licenseUri" : basicDRMUrl,
@@ -191,25 +508,89 @@ var basicInitOptions = {
   allowCrossProtocolRedirect: true,
   allowFairPlayOnExternalScreens: true,
   shouldPlayImmediately: true,
-  networkSettings: {
-    autoBuffer: true,
-    preferredForwardBufferDuration: 30000,
-    automaticallyWaitsToMinimizeStalling: true,
-  },
-  trackSelection: {
-    textMode: 'AUTO',
-    textLanguage: 'en',
-    audioMode: 'AUTO',
-    audioLanguage: 'en',
-  },
+  aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
+  // wakeMode: WAKEMODE.NETWORK,
+  // subtitlePreference: SUBTITLE_PREFERENCE.OFF,
+  //networkSettings: {
+  // autoBuffer: true,
+  // preferredForwardBufferDuration: 30000,
+  // automaticallyWaitsToMinimizeStalling: true,
+  //},
+  //abrSettings: {
+  //minVideoBitrate: 500000, // For Basic 1st media, Harold
+  //maxVideoBitrate: 800000, // For Basic 1st media, Harold
+  //},
+  //videoCodecSettings: {
+  // allowSoftwareDecoder: false,
+  // allowMixedCodecAdaptiveness: false,
+  // codecPriorityList: [
+  //   VIDEO_CODEC.VP9,
+  //   VIDEO_CODEC.AVC,
+  //   VIDEO_CODEC.HEVC,
+  //   VIDEO_CODEC.AV1,
+  //   VIDEO_CODEC.VP8,
+  // ],
+  //},
+  //audioCodecSettings: {
+  // allowMixedCodecs: false,
+  // allowMixedBitrates: false,
+  // codecPriorityList: [
+  //   AUDIO_CODEC.AAC,
+  //   AUDIO_CODEC.AC3,
+  //   AUDIO_CODEC.E_AC3,
+  //   AUDIO_CODEC.OPUS
+  // ],
+  //},
+  //loadControlBuffers: {
+  // minPlayerBufferMs: 50000,
+  // maxPlayerBufferMs: 50000,
+  // minBufferAfterInteractionMs: 2500,
+  // minBufferAfterReBufferMs: 5000,
+  // backBufferDurationMs: 0,
+  // retainBackBufferFromKeyframe: false,
+  // allowedVideoJoiningTimeMs: 5000,
+  //},
+  //vrSettings: {
+  // ONLY FOR VR MEDIAs
+
+  // interactionMode: VR_INTERACTION_MODE.MOTION,
+  // vrModeEnabled: false,
+  // zoomWithPinchEnabled: false,
+  // flingEnabled: false,
+  //},
+  //lowLatencyConfig: {
+  // targetOffsetMs: 15000,
+  // maxOffsetMs: 12000,
+  // maxPlaybackSpeed: 2,
+  //},
+  // subtitleStyling: {
+  //   subtitleStyleName: 'MyCustomSubtitleStyle',
+  //   subtitleTextColor: '#FFFFFF',
+  //   subtitleBackgroundColor: '#FF00FF',
+  //   subtitleWindowColor: '#FF00FF',
+  //   subtitleEdgeColor: '#0000FF',
+  //   subtitleTextSizeFraction: SUBTITLE_STYLE.FRACTION_50,
+  //   subtitleStyleTypeface: SUBTITLE_STYLE.MONOSPACE,
+  //   subtitleEdgeType: SUBTITLE_STYLE.EDGE_TYPE_DROP_SHADOW,
+  //   overrideInlineCueConfig: true,
+  //   verticalPositionPercentage: 50,
+  //   horizontalPositionPercentage: 50,
+  //   horizontalAlignment: SUBTITLE_STYLE.HORIZONTAL_ALIGNMENT_CENTER,
+  // },
+  //trackSelection: {
+  // textMode: 'AUTO',
+  // textLanguage: 'en',
+  // audioMode: 'AUTO',
+  // audioLanguage: 'en',
+  //},
   handleAudioFocus: true,
   plugins: {
     ima: {
       //"adTagUrl" : "",
-      adTagUrl:
-        'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
-      alwaysStartWithPreroll: true,
-      enableDebugMode: false,
+      // adTagUrl:
+      //   'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
+      // alwaysStartWithPreroll: true,
+      // enableDebugMode: false,
     },
     youbora: {
       accountCode: 'kalturatest',
@@ -614,4 +995,29 @@ var getUpdatedYouboraConfig = {
     contentCustomDimension4: 'customDimension4',
     contentCustomDimension5: 'customDimension5',
   },
+};
+
+var updatedSubtitleStyling = {
+  subtitleStyleName: 'MyCustomSubtitleStyle',
+  subtitleTextColor: '#FFFFFF',
+  subtitleBackgroundColor: '#FF00FF',
+  subtitleWindowColor: '#FF00FF',
+  subtitleEdgeColor: '#0000FF',
+  subtitleTextSizeFraction: 'SUBTITLE_FRACTION_100',
+  subtitleEdgeType: 'EDGE_TYPE_DROP_SHADOW',
+  overrideInlineCueConfig: true,
+  verticalPositionPercentage: 50,
+  horizontalPositionPercentage: 50,
+  horizontalAlignment: 'ALIGN_CENTER',
+};
+
+var updatedAbrSettings = {
+  //minVideoBitrate: 500000, // For Basic 1st media, Harold
+  maxVideoBitrate: 800000, // For Basic 1st media, Harold
+};
+
+var updatedLowLatencyConfig = {
+  targetOffsetMs: 5000,
+  maxOffsetMs: 5000,
+  maxPlaybackSpeed: 4,
 };

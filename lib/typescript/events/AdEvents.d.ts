@@ -1,4 +1,4 @@
-declare const _default: {
+export declare const AdEvents: {
     AD_REQUESTED: string;
     AD_FIRST_PLAY: string;
     STARTED: string;
@@ -36,4 +36,3 @@ declare const _default: {
     AD_WATERFALLING: string;
     AD_WATERFALLING_FAILED: string;
 };
-export default _default;

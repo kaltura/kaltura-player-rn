@@ -1,4 +1,4 @@
-export default {
+export const PlayerEvents = {
   // TODO: All the "" string needs to be added on Native android layer
   // TODO: Generate it using some script
   // TODO: Add pending events
@@ -20,6 +20,7 @@ export default {
   VOLUME_CHANGED: 'volumeChanged', // Sent when volume is changed.
   STOPPED: 'stopped', // sent when stop player api is called
   METADATA_AVAILABLE: 'metadataAvailable', // Sent when there is metadata available for this entry.
+  EVENT_STREAM_CHANGED: 'eventStreamChanged', //Send event streams received from manifest
   SOURCE_SELECTED: 'sourceSelected', // Sent when the source was selected.
   PLAYHEAD_UPDATED: 'playheadUpdated', //Send player position every 100 Milisec
   VIDEO_TRACK_CHANGED: 'videoTrackChanged',
@@ -33,7 +34,7 @@ export default {
   BYTES_LOADED: 'bytesLoaded', // Bytes were downloaded from the network
   SUBTITLE_STYLE_CHANGED: 'subtitlesStyleChanged', // Subtitle style is changed.
   ASPECT_RATIO_RESIZE_MODE_CHANGED: 'surfaceAspectRationSizeModeChanged', //Send when updating the Surface Vide Aspect Ratio size mode.
-  TIME_UPDATE: 'timeUpdate',
   LOAD_TIME_RANGES: 'loadedTimeRanges',
   DRM_INITIALIZED: 'drmInitialized',
+  THUMBNAIL_INFO_RESPONSE: 'thumbnailInfoResponse'
 };

@@ -2,11 +2,18 @@ package com.reactnativekalturaplayer.model;
 
 import com.kaltura.playkit.PKMediaFormat;
 import com.kaltura.playkit.PKRequestConfig;
+import com.kaltura.playkit.PKSubtitlePreference;
+import com.kaltura.playkit.PKWakeMode;
 import com.kaltura.playkit.player.ABRSettings;
+import com.kaltura.playkit.player.AudioCodecSettings;
+import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MulticastSettings;
 import com.kaltura.playkit.player.PKAspectRatioResizeMode;
 import com.kaltura.playkit.player.PKLowLatencyConfig;
 import com.kaltura.playkit.player.PKMaxVideoSize;
+import com.kaltura.playkit.player.SubtitleStyleSettings;
+import com.kaltura.playkit.player.VideoCodecSettings;
+import com.kaltura.playkit.player.vr.VRSettings;
 import com.kaltura.tvplayer.config.MediaEntryCacheConfig;
 
 import java.util.List;
@@ -42,4 +49,11 @@ public class InitOptions {
     public Integer maxAudioChannelCount;
     public MulticastSettings multicastSettings;
     public MediaEntryCacheConfig mediaEntryCacheConfig;
+    public SubtitleStyling subtitleStyling;
+    public PKWakeMode wakeMode;
+    public PKSubtitlePreference subtitlePreference;
+    public VideoCodecSettings videoCodecSettings;
+    public AudioCodecSettings audioCodecSettings;
+    public LoadControlBuffers loadControlBuffers;
+    public VRSettings vrSettings;
 }

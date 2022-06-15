@@ -26,11 +26,11 @@ PODS:
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PlayKit (3.25.0):
-    - PlayKit/Core (= 3.25.0)
-  - PlayKit/AnalyticsCommon (3.25.0):
+  - PlayKit (3.25.1):
+    - PlayKit/Core (= 3.25.1)
+  - PlayKit/AnalyticsCommon (3.25.1):
     - PlayKit/Core
-  - PlayKit/Core (3.25.0):
+  - PlayKit/Core (3.25.1):
     - KalturaNetKit (~> 1.5.1)
     - PlayKitUtils (~> 0.5)
     - SwiftyJSON (= 5.0.0)
@@ -440,7 +440,7 @@ SPEC CHECKSUMS:
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
   KalturaPlayer: c3aa7843491d137e301ac0f56eb5a82faa580ed9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PlayKit: 535ee453b55becb60ec3fa38e42e6c41966024f7
+  PlayKit: 7e0ee7b12343f0e3b5990956f17a2571866c9379
   PlayKitKava: 4e6d9330ce90a9d2af2ac722c53907350b7e4524
   PlayKitProviders: 6937c5a40c18f50e0e1b7899d124c2140c19702b
   PlayKitUtils: 8edb43515c8b91d9aa9a47ae8b5af1e7dd58f6f3

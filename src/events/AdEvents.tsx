@@ -1,4 +1,4 @@
-export default {
+export const AdEvents = {
   // TODO: Generate it using some script
   AD_REQUESTED: 'adRequested',
   AD_FIRST_PLAY: 'adFirstPlay',
@@ -35,5 +35,5 @@ export default {
   ERROR: 'error',
   DAI_SOURCE_SELECTED: 'daiSourceSelected',
   AD_WATERFALLING: 'adWaterFalling',
-  AD_WATERFALLING_FAILED: 'adWaterFallingFailed',
+  AD_WATERFALLING_FAILED: 'adWaterFallingFailed'
 };
