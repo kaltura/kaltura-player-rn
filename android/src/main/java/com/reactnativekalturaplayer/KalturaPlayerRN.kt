@@ -69,17 +69,17 @@ class KalturaPlayerRN(
         return playerType as KalturaPlayer.Type
     }
 
-    fun createPlayerInstance(partnerId: Int, initOptions: String?, callback: Callback) {
+    fun createPlayerInstance(partnerId: Int, initOptions: String?, promise: Promise) {
         playerType = kalturaPlayerRNView.playerType
 
         log.d("createPlayerInstance PartnerId: $partnerId initOptions : $initOptions playerType: ${this.getPlayerType()}")
 
         if (partnerId > 0 && !TextUtils.isEmpty(initOptions) || getPlayerType() == KalturaPlayer.Type.basic) {
             if (getPlayerType() == KalturaPlayer.Type.basic) {
-                createKalturaBasicPlayer(initOptions, callback)
+                createKalturaBasicPlayer(initOptions, promise)
             } else if (!TextUtils.isEmpty(initOptions) &&
                 (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp)) {
-                createKalturaOttOvpPlayer(partnerId, initOptions, callback)
+                createKalturaOttOvpPlayer(partnerId, initOptions, promise)
             } else {
                 log.e("Player can not be created. playerType is ${getPlayerType()} and partnerId is $partnerId")
             }
@@ -426,7 +426,7 @@ class KalturaPlayerRN(
         }
     }
 
-    private fun createKalturaBasicPlayer(initOptions: String?, callback: Callback) {
+    private fun createKalturaBasicPlayer(initOptions: String?, promise: Promise) {
         log.d("Creating Basic Player instance.")
         val initOptionsModel = getParsedJson(initOptions, InitOptions::class.java)
         val playerInitOptions = PlayerInitOptions()
@@ -449,7 +449,7 @@ class KalturaPlayerRN(
 
             // This will let the apps know that Player has been created now
             // app can add the listeners and load the media
-            sendCallbackToJS(callback, true)
+            sendCallbackToJS(promise, true)
             initDrm(context)
             addPlayerViewToRNView(player)
         }
@@ -522,7 +522,7 @@ class KalturaPlayerRN(
         }
     }
 
-    private fun createKalturaOttOvpPlayer(partnerId: Int, playerInitOptionsJson: String?, callback: Callback) {
+    private fun createKalturaOttOvpPlayer(partnerId: Int, playerInitOptionsJson: String?, promise: Promise) {
         log.d("createKalturaOttOvpPlayer:$partnerId, \n initOptions: \n $playerInitOptionsJson")
         val initOptionsModel = getParsedJson(
             playerInitOptionsJson,
@@ -565,7 +565,7 @@ class KalturaPlayerRN(
             }
             // This will let the apps know that Player has been created now
             // app can add the listeners and load the media
-            sendCallbackToJS(callback, true)
+            sendCallbackToJS(promise, true)
             initDrm(context)
             addPlayerViewToRNView(player)
         }
@@ -1089,8 +1089,13 @@ class KalturaPlayerRN(
     /**
      * Send the callback to react native apps
      */
-    private fun sendCallbackToJS(callback: Callback, args: Any) {
-        callback.invoke(args) // Callback to
+    private fun sendCallbackToJS(promise: Promise, args: Any, isError: Boolean = false, throwable: Throwable? = null) {
+        log.d("sendCallbackToJS ${args}" )
+        if (isError && throwable != null) {
+            promise.reject(args.toString(), throwable)
+        } else {
+            promise.resolve(args)
+        }
     }
 
     private fun createUiHandler() {
