@@ -73,24 +73,28 @@ export default class App extends React.Component<any, any> {
     this._isMounted = true;
     this.subscribeToAppLifecyle();
     // OTT Configuration
-    // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
-    // this.player.addListeners();
-    // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset));
+    // var partnerId = OttPartnerId; // Required only for OTT/OVP Player
+    // var options = initOptions;
+    // var asset = mediaAsset;
+    // var mediaId = OttMediaId;
 
     // OVP Configuration
-    // this.player.setup(JSON.stringify(ovpInitOptions), OvpPartnerId);
-    // this.player.addListeners();
-    // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset));
-
+    // var partnerId = OvpPartnerId; // Required only for OTT/OVP Player
+    // var options = ovpInitOptions;
+    // var asset = ovpMediaAsset;
+    // var mediaId = OvpEntryId;
+    
     // BASIC Configuration
-
-    // this.player.setup(0, JSON.stringify(basicInitOptions));
+    var partnerId = 0; // Required only for OTT/OVP Player
+    var options = basicInitOptions;
+    var asset = basicMediaAsset;
+    var mediaId = playbackUrl;
 
     setupKalturaPlayer(
       this.player,
-      JSON.stringify(basicInitOptions),
-      JSON.stringify(basicMediaAsset),
-      playbackUrl
+      JSON.stringify(options),
+      JSON.stringify(asset),
+      mediaId
     ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
   }
 
@@ -102,8 +106,20 @@ export default class App extends React.Component<any, any> {
   }
 
   doPause = () => {
-    this.player.pause();
+     this.player.pause();
   };
+
+  getPlayerCurrentPosition = () => {
+    this.player.getCurrentPosition().then( (value: any) => console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`));
+  }
+
+  checkIfPlayerIsPlaying = () => {
+    this.player.isPlaying().then( (value: any) => console.log(`checkIfPlayerIsPlaying isPlaying ${value}`));
+  }
+
+  checkIfMediaIsLive = () => {
+    this.player.isLive().then( (value: any) => console.log(`isLive ${value}`))
+  }
 
   doPlay = () => {
     this.player.play();

@@ -39,7 +39,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 class KalturaPlayerRN(
     private val context: ReactApplicationContext,
@@ -355,6 +354,33 @@ class KalturaPlayerRN(
         log.d("resetLlConfig")
         runOnUiThread {
             player?.updatePKLowLatencyConfig(PKLowLatencyConfig.UNSET)
+        }
+    }
+
+    fun getCurrentPosition(promise: Promise) {
+        log.d("getCurrentPosition")
+        player?.let {
+            runOnUiThread {
+                sendCallbackToJS(promise, it.currentPosition.toString())
+            }
+        }
+    }
+
+    fun isPlaying(promise: Promise) {
+        log.d("isPlaying")
+        player?.let {
+            runOnUiThread {
+                sendCallbackToJS(promise, it.isPlaying)
+            }
+        }
+    }
+
+    fun isLive(promise: Promise) {
+        log.d("isLive")
+        player?.let {
+            runOnUiThread {
+                sendCallbackToJS(promise, it.isLive)
+            }
         }
     }
 
@@ -1088,9 +1114,10 @@ class KalturaPlayerRN(
 
     /**
      * Send the callback to react native apps
+     * args does not support Long
      */
     private fun sendCallbackToJS(promise: Promise, args: Any, isError: Boolean = false, throwable: Throwable? = null) {
-        log.d("sendCallbackToJS ${args}" )
+        log.d("sendCallbackToJS $args" )
         if (isError && throwable != null) {
             promise.reject(args.toString(), throwable)
         } else {

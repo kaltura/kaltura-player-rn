@@ -19,14 +19,6 @@ import {
   VR_INTERACTION_MODE,
 } from './consts';
 
-const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
-const { KalturaPlayerModule } = NativeModules;
-
-interface KalturaPlayerProps {
-  style: ViewStyle;
-  playerType: PLAYER_TYPE;
-}
-
 export {
   PlayerEvents,
   AdEvents,
@@ -44,6 +36,17 @@ export {
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
 };
+
+const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
+const { KalturaPlayerModule } = NativeModules;
+
+const POSITION_UNSET: number = -1
+
+interface KalturaPlayerProps {
+  style: ViewStyle;
+  playerType: PLAYER_TYPE;
+}
+
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
@@ -365,6 +368,34 @@ export class KalturaPlayerAPI {
     console.log('Calling Native Prop resetLowLatencyConfig()');
     KalturaPlayerModule.resetLlConfig();
   };
+
+  /**
+   * Getter for the current playback position.
+   * @returns string: Position of the player or {@link POSITION_UNSET}
+   */
+  static getCurrentPosition = async () => {
+    console.log('Calling Native Prop getCurrentPosition()');
+    return await getCurrentPosition();
+  }
+
+  /**
+   * Checks if Player is currently playing or not
+   * @returns boolean
+   */
+  static isPlaying = async () => {
+    console.log('Calling Native Prop isPlaying');
+    return await isPlaying();
+  }
+
+  /**
+   * Checks if the stream is Live or Not
+   * @returns boolean
+   */
+  static isLive = async () => {
+    console.log('Calling Native Prop isLive');
+    return await isLive();
+  }
+
 }
 
 async function setupKalturaPlayer(id: number, options: string) {
@@ -376,7 +407,40 @@ async function setupKalturaPlayer(id: number, options: string) {
     console.log(`Player is created: ${kalturaPlayerSetup}`);
     return kalturaPlayerSetup;
   } catch (e) {
-    console.log(`Exception: ${e}`);
+    console.error(`Exception: ${e}`);
+    return false;
+  }
+}
+
+async function getCurrentPosition() {
+  try {
+    const currentPosition = await KalturaPlayerModule.getCurrentPosition();
+    console.log(`Current Position: ${currentPosition}`);
+    return currentPosition;
+  } catch (e) {
+    console.error(`Exception: ${e}`);
+    return POSITION_UNSET;
+  }
+}
+
+async function isPlaying() {
+  try {
+    const isPlayerPlaying = await KalturaPlayerModule.isPlaying();
+    console.log(`isPlayerPlaying ${isPlayerPlaying}`);
+    return isPlayerPlaying;
+  } catch (e) {
+    console.error(`Exception: ${e}`);
+    return false;
+  }
+}
+
+async function isLive() {
+  try {
+    const isPlayerLive = await KalturaPlayerModule.isLive();
+    console.log(`isPlayerLive ${isPlayerLive}`);
+    return isPlayerLive;
+  } catch (e) {
+    console.error(`Exception: ${e}`);
     return false;
   }
 }

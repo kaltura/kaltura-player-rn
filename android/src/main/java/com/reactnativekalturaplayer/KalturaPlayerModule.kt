@@ -200,6 +200,24 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
+    fun getCurrentPosition(promise: Promise) {
+        log.d("getCurrentPosition")
+        kalturaPlayerRN.getCurrentPosition(promise)
+    }
+
+    @ReactMethod
+    fun isPlaying(promise: Promise) {
+        log.d("isPlaying")
+        kalturaPlayerRN.isPlaying(promise)
+    }
+
+    @ReactMethod
+    fun isLive(promise: Promise) {
+        log.d("isLive")
+        kalturaPlayerRN.isLive(promise)
+    }
+
+    @ReactMethod
     fun removeKalturaPlayerListeners() {
         kalturaPlayerRN.removeKalturaPlayerListeners()
     }
