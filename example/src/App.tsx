@@ -26,14 +26,18 @@ import {
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
 } from 'react-native-kaltura-player';
-import { NativeEventEmitter } from 'react-native';
+import { 
+  NativeModules, 
+  NativeEventEmitter
+} from 'react-native';
 import {
   PlayerEvents,
   AdEvents,
   AnalyticsEvents,
 } from 'react-native-kaltura-player';
 
-const playerEventEmitter = new NativeEventEmitter();
+const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
+const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
