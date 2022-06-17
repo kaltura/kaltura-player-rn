@@ -1,9 +1,5 @@
 #import "React/RCTViewManager.h"
-#import "React/RCTEventEmitter.h"
 
-@interface RCT_EXTERN_MODULE(KalturaPlayerEvents, RCTEventEmitter)
-
-@end
 
 @interface RCT_EXTERN_MODULE(KalturaPlayerViewManager, RCTViewManager)
 

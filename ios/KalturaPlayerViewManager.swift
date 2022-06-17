@@ -2,41 +2,16 @@ import KalturaPlayer
 //import PlayKit
 //import PlayKitProviders
 
-@objc(KalturaPlayerEvents)
-class KalturaPlayerEvents: RCTEventEmitter {
-    public static var emitter: RCTEventEmitter!
-    var hasListener: Bool = false
 
-    override init() {
-        super.init()
-        KalturaPlayerEvents.emitter = self
-    }
-
-    override func startObserving() {
-        hasListener = true
-    }
-
-    override func stopObserving() {
-        hasListener = false
-    }
-
-    override func supportedEvents() -> [String]! {
-        return [
-            "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
-            "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "drmInitialized"
-        ]
-    }
-}
 
 @objc(KalturaPlayerViewManager)
 class KalturaPlayerViewManager: RCTViewManager {
-    var player: KalturaPlayerRNView!
+    var kalturaPlayerRNView: KalturaPlayerRNView!
     var kalturaPlayer: KalturaOTTPlayer?
 
     override func view() -> (KalturaPlayerRNView) {
-        player = KalturaPlayerRNView()
-        return player
+        kalturaPlayerRNView = KalturaPlayerRNView()
+        return kalturaPlayerRNView
     }
     
     override static func requiresMainQueueSetup() -> Bool {
