@@ -2,7 +2,7 @@ package com.reactnativekalturaplayer
 
 import android.text.TextUtils
 import androidx.annotation.NonNull
-import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -32,9 +32,9 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
-    fun setUpPlayer(partnerId: Int = 0, initOptions: String?, callback: Callback) {
+    fun setUpPlayer(partnerId: Int = 0, initOptions: String?, promise: Promise) {
         log.d("setPartnerId: $partnerId")
-        kalturaPlayerRN.createPlayerInstance(partnerId, initOptions, callback)
+        kalturaPlayerRN.createPlayerInstance(partnerId, initOptions, promise)
     }
 
     @ReactMethod
@@ -197,6 +197,24 @@ class KalturaPlayerModule(
     fun resetLlConfig() {
         log.d("resetLlConfig")
         kalturaPlayerRN.resetLlConfig()
+    }
+
+    @ReactMethod
+    fun getCurrentPosition(promise: Promise) {
+        log.d("getCurrentPosition")
+        kalturaPlayerRN.getCurrentPosition(promise)
+    }
+
+    @ReactMethod
+    fun isPlaying(promise: Promise) {
+        log.d("isPlaying")
+        kalturaPlayerRN.isPlaying(promise)
+    }
+
+    @ReactMethod
+    fun isLive(promise: Promise) {
+        log.d("isLive")
+        kalturaPlayerRN.isLive(promise)
     }
 
     @ReactMethod

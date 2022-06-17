@@ -12,6 +12,7 @@ import TrackList from '../src/components/TrackList';
 import SeekBar from '../src/components/SeekBar';
 import {
   KalturaPlayer,
+  KalturaPlayerAPI,
   MEDIA_ENTRY_TYPE,
   MEDIA_FORMAT,
   PLAYER_TYPE,
@@ -35,16 +36,19 @@ import {
 const playerEventEmitter = new NativeEventEmitter();
 
 export default class App extends React.Component<any, any> {
-  player: KalturaPlayer;
+  player = KalturaPlayerAPI;
   videoTracks = [];
   appStateSubscription: any;
   isSliderSeeking: boolean = false;
+
+  _isMounted: boolean = false;
 
   contentDuration: number = 0;
 
   constructor(props: any) {
     super(props);
     console.log('in constructor from App.');
+    this._isMounted = false;
     this.state = {
       // Track List Props default States
       videoTitle: 'No Video Tracks',
@@ -66,40 +70,56 @@ export default class App extends React.Component<any, any> {
 
   componentDidMount() {
     console.log('componentDidMount from App.');
+    this._isMounted = true;
     this.subscribeToAppLifecyle();
     // OTT Configuration
-    // this.player.setup(JSON.stringify(initOptions), OttPartnerId);
-    // this.player.addListeners();
-    // this.player.loadMedia(OttMediaId, JSON.stringify(mediaAsset));
+    // var partnerId = OttPartnerId; // Required only for OTT/OVP Player
+    // var options = initOptions;
+    // var asset = mediaAsset;
+    // var mediaId = OttMediaId;
 
     // OVP Configuration
-    // this.player.setup(JSON.stringify(ovpInitOptions), OvpPartnerId);
-    // this.player.addListeners();
-    // this.player.loadMedia(OvpEntryId, JSON.stringify(ovpMediaAsset));
-
+    // var partnerId = OvpPartnerId; // Required only for OTT/OVP Player
+    // var options = ovpInitOptions;
+    // var asset = ovpMediaAsset;
+    // var mediaId = OvpEntryId;
+    
     // BASIC Configuration
-    this.player.setup(
-      JSON.stringify(basicInitOptions),
-      (isPlayerCreated: Boolean) => {
-        console.log(`isPlayerCreated => ${isPlayerCreated}`);
-        this.player.addListeners();
-        this.player.loadMedia(playbackUrl, JSON.stringify(basicMediaAsset));
+    var partnerId = 0; // Required only for OTT/OVP Player
+    var options = basicInitOptions;
+    var asset = basicMediaAsset;
+    var mediaId = playbackUrl;
 
-        // Subscribe to Player Events
-        this.subscribeToPlayerListeners();
-      }
-    );
+    setupKalturaPlayer(
+      this.player,
+      JSON.stringify(options),
+      JSON.stringify(asset),
+      mediaId
+    ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
   }
 
   componentWillUnmount() {
     console.log('componentWillUnmount from App.');
-    this.appStateSubscription.remove();
+    this._isMounted = false;
     this.player.removeListeners();
+    this.appStateSubscription.remove();
   }
 
   doPause = () => {
-    this.player.pause();
+     this.player.pause();
   };
+
+  getPlayerCurrentPosition = () => {
+    this.player.getCurrentPosition().then( (value: any) => console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`));
+  }
+
+  checkIfPlayerIsPlaying = () => {
+    this.player.isPlaying().then( (value: any) => console.log(`checkIfPlayerIsPlaying isPlaying ${value}`));
+  }
+
+  checkIfMediaIsLive = () => {
+    this.player.isLive().then( (value: any) => console.log(`isLive ${value}`))
+  }
 
   doPlay = () => {
     this.player.play();
@@ -150,7 +170,9 @@ export default class App extends React.Component<any, any> {
           }
         }
         console.log('App has come to the! ' + nextAppState);
-        this.setState({ appState: nextAppState });
+        if (this._isMounted) {
+          this.setState({ appState: nextAppState });
+        }
       }
     );
   };
@@ -178,7 +200,7 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
       //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
-      if (!this.isSliderSeeking && !this.state.isAdPlaying) {
+      if (this._isMounted && !this.isSliderSeeking && !this.state.isAdPlaying) {
         this.setState(() => ({
           currentPosition: payload.position,
           totalDuration: this.contentDuration,
@@ -198,7 +220,7 @@ export default class App extends React.Component<any, any> {
       console.log('PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload));
       const videoTracks = payload.video;
 
-      if (videoTracks.length > 0) {
+      if (this._isMounted && videoTracks.length > 0) {
         this.setState(() => ({
           videoTitle: 'Video Tracks',
           videoTrackList: videoTracks,
@@ -207,7 +229,7 @@ export default class App extends React.Component<any, any> {
 
       const audioTracks = payload.audio;
 
-      if (audioTracks.length > 0) {
+      if (this._isMounted && audioTracks.length > 0) {
         this.setState(() => ({
           audioTitle: 'Audio Tracks',
           audioTrackList: audioTracks,
@@ -216,7 +238,7 @@ export default class App extends React.Component<any, any> {
 
       const textTracks = payload.text;
 
-      if (textTracks.length > 0) {
+      if (this._isMounted && textTracks.length > 0) {
         this.setState(() => ({
           textTitle: 'Text Tracks',
           textTrackList: textTracks,
@@ -234,16 +256,20 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_PAUSE_REQUESTED');
-      this.setState(() => ({
-        isAdPlaying: true,
-      }));
+      if (this._isMounted) {
+        this.setState(() => ({
+          isAdPlaying: true,
+        }));
+      }
     });
 
     playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
       console.log('AdEvent CONTENT_RESUME_REQUESTED');
-      this.setState(() => ({
-        isAdPlaying: false,
-      }));
+      if (this._isMounted) {
+        this.setState(() => ({
+          isAdPlaying: false,
+        }));
+      }
     });
 
     playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
@@ -253,7 +279,7 @@ export default class App extends React.Component<any, any> {
             ? payload.adDuration
             : ' Empty Ad duration')
       );
-      if (payload.adDuration != null) {
+      if (this._isMounted && payload.adDuration != null) {
         this.setState(() => ({
           totalDuration: payload.adDuration / 1000,
         }));
@@ -262,7 +288,7 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
       //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
-      if (payload.currentAdPosition != null) {
+      if (this._isMounted && payload.currentAdPosition != null) {
         this.setState(() => ({
           currentPosition: payload.currentAdPosition,
         }));
@@ -323,9 +349,6 @@ export default class App extends React.Component<any, any> {
         </View>
 
         <KalturaPlayer
-          ref={(ref: KalturaPlayer) => {
-            this.player = ref;
-          }}
           style={styles.center}
           playerType={PLAYER_TYPE.BASIC}
         ></KalturaPlayer>
@@ -400,6 +423,25 @@ export default class App extends React.Component<any, any> {
         </View>
       </ScrollView>
     );
+  }
+}
+
+async function setupKalturaPlayer(
+  player: KalturaPlayerAPI,
+  options: String,
+  mediaAsset: String,
+  mediaId: String, // PlaybackUrl
+  partnerId: number = 0
+) {
+  try {
+    const playerCreated = await player.setup(partnerId, options);
+    console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
+
+    player.addListeners();
+    player.loadMedia(mediaId, mediaAsset);
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 }
 
