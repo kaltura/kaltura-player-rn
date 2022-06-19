@@ -1,6 +1,7 @@
 import KalturaPlayer
 import PlayKit
 import PlayKitProviders
+import PlayKitYoubora
 
 @objc(KalturaPlayerEvents)
 class KalturaPlayerEvents: RCTEventEmitter {
