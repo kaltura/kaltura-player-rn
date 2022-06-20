@@ -83,7 +83,7 @@ export default class App extends React.Component<any, any> {
     // var options = ovpInitOptions;
     // var asset = ovpMediaAsset;
     // var mediaId = OvpEntryId;
-    
+
     // BASIC Configuration
     var partnerId = 0; // Required only for OTT/OVP Player
     var options = basicInitOptions;
@@ -106,20 +106,28 @@ export default class App extends React.Component<any, any> {
   }
 
   doPause = () => {
-     this.player.pause();
+    this.player.pause();
   };
 
   getPlayerCurrentPosition = () => {
-    this.player.getCurrentPosition().then( (value: any) => console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`));
-  }
+    this.player
+      .getCurrentPosition()
+      .then((value: any) =>
+        console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`)
+      );
+  };
 
   checkIfPlayerIsPlaying = () => {
-    this.player.isPlaying().then( (value: any) => console.log(`checkIfPlayerIsPlaying isPlaying ${value}`));
-  }
+    this.player
+      .isPlaying()
+      .then((value: any) =>
+        console.log(`checkIfPlayerIsPlaying isPlaying ${value}`)
+      );
+  };
 
   checkIfMediaIsLive = () => {
-    this.player.isLive().then( (value: any) => console.log(`isLive ${value}`))
-  }
+    this.player.isLive().then((value: any) => console.log(`isLive ${value}`));
+  };
 
   doPlay = () => {
     this.player.play();

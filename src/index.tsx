@@ -40,13 +40,12 @@ export {
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 const { KalturaPlayerModule } = NativeModules;
 
-const POSITION_UNSET: number = -1
+const POSITION_UNSET: number = -1;
 
 interface KalturaPlayerProps {
   style: ViewStyle;
   playerType: PLAYER_TYPE;
 }
-
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
@@ -376,7 +375,7 @@ export class KalturaPlayerAPI {
   static getCurrentPosition = async () => {
     console.log('Calling Native Prop getCurrentPosition()');
     return await getCurrentPosition();
-  }
+  };
 
   /**
    * Checks if Player is currently playing or not
@@ -385,7 +384,7 @@ export class KalturaPlayerAPI {
   static isPlaying = async () => {
     console.log('Calling Native Prop isPlaying');
     return await isPlaying();
-  }
+  };
 
   /**
    * Checks if the stream is Live or Not
@@ -394,8 +393,7 @@ export class KalturaPlayerAPI {
   static isLive = async () => {
     console.log('Calling Native Prop isLive');
     return await isLive();
-  }
-
+  };
 }
 
 async function setupKalturaPlayer(id: number, options: string) {
