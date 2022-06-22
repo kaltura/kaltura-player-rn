@@ -9,36 +9,65 @@ import Foundation
 import PlayKit
 //import PlayKitYoubora
 
-struct RNKPInitOptions: Decodable {
+struct RNKPInitOptions: Codable {
     let serverUrl: String?
     let autoplay: Bool?
     let preload: Bool?
+    let plugins: Plugins?
     let requestConfig: RequestConfig?
     let allowCrossProtocolRedirect: Bool?
-    let allowFairPlayOnExternalScreens: Bool?
-    let shouldPlayImmediately: Bool?
+//    let warmupUrls: [String]?
+    let ks: String?
+    let referrer: String?
+    let abrSettings: ABRSettings?
     let networkSettings: NetworkSettings?
+    let trackSelection: TrackSelection?
+//    let preferredMediaFormat: PKMediaFormat?
+//    let lowLatencyConfig: PKLowLatencyConfig?
+//    let allowClearLead: Bool?
+//    let enableDecoderFallback: Bool?
+//    let secureSurface: Bool?
+//    let adAutoPlayOnResume: Bool?
+//    let isVideoViewHidden: Bool?
+//    let forceSinglePlayerEngine: Bool?
+//    let aspectRatioResizeMode: PKAspectRatioResizeMode?
+//    let isTunneledAudioPlayback: Bool?
+//    let handleAudioBecomingNoisyEnabled: Bool?
+//    let handleAudioFocus: Bool?
+//    let maxVideoSize: PKMaxVideoSize?
+//    let maxVideoBitrate: Int?
+//    let maxAudioBitrate: Int?
+//    let maxAudioChannelCount: Int?
     let multicastSettings: MulticastSettings?
     let mediaEntryCacheConfig: MediaEntryCacheConfig?
-    let abrSettings: ABRSettings?
-    let trackSelection: TrackSelection?
+//    let subtitleStyling: SubtitleStyling?
+//    let wakeMode: PKWakeMode?
+//    let subtitlePreference: PKSubtitlePreference?
+//    let videoCodecSettings: VideoCodecSettings?
+//    let audioCodecSettings: AudioCodecSettings?
+//    let loadControlBuffers: LoadControlBuffers?
+//    let vrSettings: VRSettings?
+    
+    let allowFairPlayOnExternalScreens: Bool?
+    let shouldPlayImmediately: Bool?
     let handleAudioFocus: Bool?
-    let plugins: Plugins?
+    
+    
 }
 
-struct RequestConfig: Decodable {
+struct RequestConfig: Codable {
     let crossProtocolRedirectEnabled: Bool?
     let readTimeoutMs: Double?
     let connectTimeoutMs: Double?
 }
 
-struct NetworkSettings: Decodable {
+struct NetworkSettings: Codable {
     let autoBuffer: Bool?
     let preferredForwardBufferDuration: Double?
     let automaticallyWaitsToMinimizeStalling: Bool?
 }
 
-struct MulticastSettings: Decodable {
+struct MulticastSettings: Codable {
     let useExoDefaultSettings: Bool?
     let maxPacketSize: Double?
     let socketTimeoutMillis: Double?
@@ -46,51 +75,31 @@ struct MulticastSettings: Decodable {
     let firstSampleTimestampUs: Double?
 }
 
-struct MediaEntryCacheConfig: Decodable {
+struct MediaEntryCacheConfig: Codable {
     let allowMediaEntryCaching: Bool?
     let maxMediaEntryCacheSize: Double?
     let timeoutMs: Double?
 }
 
-struct ABRSettings: Decodable {
+struct ABRSettings: Codable {
     let minVideoBitrate: Double?
     let maxVideoBitrate: Double?
 }
 
-struct TrackSelection: Decodable {
+struct TrackSelection: Codable {
     let textMode: String?
     let textLanguage: String?
     let audioMode: String?
     let audioLanguage: String?
 }
 
-struct Plugins: Decodable {
+struct Plugins: Codable {
     let ima: IMA?
 //    let youbora: YouboraConfig?
 }
 
-struct IMA: Decodable {
+struct IMA: Codable {
     let adTagUrl: String?
     let alwaysStartWithPreroll: Bool?
     let enableDebugMode: Bool?
-}
-
-extension RNKPInitOptions {
-    static func parse(initOptions: [String: Any]) -> RNKPInitOptions? {
-        if !JSONSerialization.isValidJSONObject(initOptions) {
-            PKLog.error("Options is not a valid JSON Object")
-            return nil
-        }
-        
-        do {
-            let data = try JSONSerialization.data(withJSONObject: initOptions, options: .prettyPrinted)
-            let decodedInitOptions = try JSONDecoder().decode(RNKPInitOptions.self, from: data)
-            return decodedInitOptions
-            
-        } catch let error as NSError {
-            PKLog.error("Couldn't parse data into RNKPInitOptions error: \(error)")
-        }
-        
-        return nil
-    }
 }

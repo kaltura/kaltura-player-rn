@@ -16,6 +16,10 @@ class KalturaPlayerEvents: RCTEventEmitter {
         super.init()
         KalturaPlayerEvents.emitter = self
     }
+    
+    override static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
 
     override func startObserving() {
         hasListener = true
@@ -35,7 +39,15 @@ class KalturaPlayerEvents: RCTEventEmitter {
 }
 
 @objc(KalturaPlayerModule)
-class KalturaPlayerModule: NSObject {
+class KalturaPlayerModule: NSObject, RCTBridgeModule {
+    
+    var bridge: RCTBridge!
+    var initOptions: RNKPInitOptions?
+    var kalturaPlayerViewManager: KalturaPlayerViewManager?
+    
+    static func moduleName() -> String! {
+        return "KalturaPlayerModule"
+    }
     
     // Special method in order to expose static data.
     // Will enable to see the object in the JS console.
@@ -51,7 +63,52 @@ class KalturaPlayerModule: NSObject {
         return true
     }
     
-    func setUpPlayer(partnerId: Int = 0, initOptions: String?, callback: RCTResponseSenderBlock) {
+    @objc
+    func setUpPlayer(_ partnerId: Int = 0, initOptions: String?, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        
+        guard let options = initOptions, !options.isEmpty else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            reject("ERROR_SETUPPLAYER", "The initOptions can not be empty.", error)
+            return
+        }
+        
+        let data = Data(options.utf8)
+        do {
+            self.initOptions = try JSONDecoder().decode(RNKPInitOptions.self, from: data)
+        } catch let error as NSError {
+            reject("ERROR_SETUPPLAYER", "The initOptions could not be parsed.", error)
+            return
+        }
+        
+        print(self.initOptions)
+        
+        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
+                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
+            return
+        }
+        
+        self.kalturaPlayerViewManager = playerViewManager
+
+        let playerType = playerViewManager.kalturaPlayerRNView.playerType
+        
+        switch KalturaPlayerRNView.PlayerType(rawValue: playerType) {
+        case .basic:
+            break
+        case .ott:
+            break
+        case .ovp:
+            break
+        case .none:
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            reject("ERROR_SETUPPLAYER", "The KalturaPlayerRNView playerType isn't a valid option.", error)
+            return
+        }
+    }
+    
+    @objc
+    func onApplicationResumed() {
         
     }
     

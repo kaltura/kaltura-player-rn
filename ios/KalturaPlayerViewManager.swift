@@ -7,7 +7,7 @@ import KalturaPlayer
 @objc(KalturaPlayerViewManager)
 class KalturaPlayerViewManager: RCTViewManager {
     var kalturaPlayerRNView: KalturaPlayerRNView!
-    var kalturaPlayer: KalturaOTTPlayer?
+//    var kalturaPlayer: KalturaOTTPlayer?
 
     override func view() -> (KalturaPlayerRNView) {
         kalturaPlayerRNView = KalturaPlayerRNView()
@@ -18,7 +18,9 @@ class KalturaPlayerViewManager: RCTViewManager {
         return true
     }
     
-
+    override class func moduleName() -> String! {
+        return "KalturaPlayerViewManager"
+    }
     
     
 //    @objc func addListeners(_ value: Bool) {
