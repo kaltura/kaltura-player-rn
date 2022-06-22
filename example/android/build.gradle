@@ -3,9 +3,11 @@
 buildscript {
     ext.kotlin_version = '1.5.20'
     ext {
+        RNNKotlinVersion = kotlin_version
         minSdkVersion = 21
         compileSdkVersion = 31
         targetSdkVersion = 30
+        androidXCore = "1.8.0"
     }
     repositories {
         google()

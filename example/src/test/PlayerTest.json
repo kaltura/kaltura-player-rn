@@ -1,0 +1,179 @@
+{
+  "basic": {
+    "vod": {
+      "hls": [
+        {
+          "id": "hls_basic_playback",
+          "partnerId": 0,
+          "mediaId": "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8",
+          "mediaAsset": {
+            "id": "basicId",
+            "name": "basicName",
+            "duration": 120,
+            "mediaEntryType": "Vod",
+            "mediaFormat": "hls",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "requestConfig": {
+              "crossProtocolRedirectEnabled": true,
+              "readTimeoutMs": 8000,
+              "connectTimeoutMs": 8000
+            },
+            "allowCrossProtocolRedirect": true,
+            "allowFairPlayOnExternalScreens": true,
+            "shouldPlayImmediately": true,
+            "aspectRatioResizeMode": "fit",
+            "handleAudioFocus": true,
+            "plugins": {
+              "ima": {
+                "adTagUrl": "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=",
+                "alwaysStartWithPreroll": true,
+                "enableDebugMode": false
+              },
+              "youbora": {
+                "accountCode": "kalturatest",
+                "username": "gourav_rn",
+                "userEmail": "gourav_rn@mobile.com",
+                "userAnonymousId": "user_anonymous_Id",
+                "userType": "user_type",
+                "houseHoldId": "zxzxz",
+                "userObfuscateIp": true,
+                "httpSecure": true,
+                "transportFormat": "transportFormat",
+                "urlToParse": "urlToParse",
+                "linkedViewId": "linkedViewId",
+                "isAutoStart": true,
+                "isAutoDetectBackground": true,
+                "isEnabled": true,
+                "isForceInit": true,
+                "isOffline": false,
+                "haltOnError": false,
+                "enableAnalytics": true,
+                "enableSmartAds": true,
+                "content": {
+                  "contentBitrate": 640000,
+                  "contentCdn": "a",
+                  "contentCdnNode": "b",
+                  "contentCdnType": "c",
+                  "contentChannel": "d",
+                  "contentContractedResolution": "720p",
+                  "contentCost": "122",
+                  "contentDrm": "e",
+                  "contentDuration": 1200000,
+                  "contentEncodingAudioCodec": "ec-3",
+                  "contentEncodingCodecProfile": "f",
+                  "contentEncodingContainerFormat": "g",
+                  "contentEncodingVideoCodec": "h",
+                  "contentEpisodeTitle": "title2",
+                  "contentFps": 60,
+                  "contentGenre": "drama",
+                  "contentGracenoteId": "i",
+                  "contentId": "1st_media",
+                  "contentImdbId": "j",
+                  "contentIsLive": false,
+                  "contentIsLiveNoSeek": false,
+                  "contentLanguage": "en",
+                  "contentPackage": "aaa",
+                  "contentPlaybackType": "bbb",
+                  "contentPrice": 10000,
+                  "contentProgram": "program",
+                  "contentRendition": "22223",
+                  "contentSaga": "ccc",
+                  "contentSeason": "ddd",
+                  "contentStreamingProtocol": "applehttp",
+                  "contentSubtitles": "en",
+                  "contentThroughput": 1230000,
+                  "contentTitle": "title",
+                  "contentTransactionCode": "dssd",
+                  "contentTotalBytes": 123344,
+                  "contentSendTotalBytes": false,
+                  "contentTvShow": "sadsa",
+                  "contentType": "drama"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dash": [],
+      "mp4": []
+    }, 
+    "drm": {
+       "dash":[
+         
+       ] 
+    }
+  },
+  "ovp": {
+    "vod": {
+      "dash": [
+        {
+          "id": "abr_maxBit_1M",
+          "partnerId": 2215841,
+          "mediaId": "1_w9zx2eti",
+          "mediaAsset": {
+            "initialVolume": 1.0,
+            "format": "Mobile_Main",
+            "assetType": "media",
+            "protocol": "http",
+            "playbackContextType": "playback",
+            "urlType": "PLAYMANIFEST",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true,
+            "preload": true,
+            "requestConfig": {
+              "crossProtocolRedirectEnabled": true,
+              "readTimeoutMs": 8000,
+              "connectTimeoutMs": 8000
+            },
+            "allowCrossProtocolRedirect": true,
+            "allowFairPlayOnExternalScreens": true,
+            "shouldPlayImmediately": true,
+            "networkSettings": {
+              "autoBuffer": true,
+              "preferredForwardBufferDuration": 30000,
+              "automaticallyWaitsToMinimizeStalling": true
+            },
+            "multicastSettings": {
+              "useExoDefaultSettings": true,
+              "maxPacketSize": 3000,
+              "socketTimeoutMillis": 10000,
+              "extractorMode": "MODE_MULTI_PMT",
+              "firstSampleTimestampUs": 0
+            },
+            "mediaEntryCacheConfig": {
+              "allowMediaEntryCaching": true,
+              "maxMediaEntryCacheSize": 15,
+              "timeoutMs": 3600000
+            },
+            "abrSettings": {
+              "minVideoBitrate": 600000,
+              "maxVideoBitrate": 1500000
+            },
+            "trackSelection": {
+              "textMode": "AUTO",
+              "textLanguage": "en",
+              "audioMode": "AUTO",
+              "audioLanguage": "en"
+            },
+            "handleAudioFocus": true
+          }
+        }
+      ],
+      "hls": [],
+      "mp4": []
+    }, 
+    "drm": {
+       "dash":[
+
+       ] 
+    }
+  },
+  "ott": {}
+}

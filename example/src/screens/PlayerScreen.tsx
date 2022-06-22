@@ -1,5 +1,6 @@
 import React from 'react';
-
+import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import {
   AppState,
   StyleSheet,
@@ -8,8 +9,8 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import TrackList from '../src/components/TrackList';
-import SeekBar from '../src/components/SeekBar';
+import TrackList from '../components/TrackList';
+import SeekBar from '../components/SeekBar';
 import {
   KalturaPlayer,
   KalturaPlayerAPI,
@@ -35,18 +36,20 @@ import {
   AdEvents,
   AnalyticsEvents,
 } from 'react-native-kaltura-player';
+import { showToast, hideToast } from '../components/ScreenMessage';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
+
+var playerType: PLAYER_TYPE = null;
+let networkUnsubscribe: NetInfoSubscription | null = null;
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
   videoTracks = [];
   appStateSubscription: any;
   isSliderSeeking: boolean = false;
-
   _isMounted: boolean = false;
-
   contentDuration: number = 0;
 
   constructor(props: any) {
@@ -70,60 +73,72 @@ export default class App extends React.Component<any, any> {
       currentPosition: 0,
       totalDuration: 0,
     };
+    // Subscribe
+    networkUnsubscribe = NetInfo.addEventListener((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      if (!state.isConnected) {
+        showToast('No internet connection');
+      }
+    });
   }
 
   componentDidMount() {
     console.log('componentDidMount from App.');
     this._isMounted = true;
     this.subscribeToAppLifecyle();
-    // OTT Configuration
-    // var partnerId = OttPartnerId; // Required only for OTT/OVP Player
-    // var options = initOptions;
-    // var asset = mediaAsset;
-    // var mediaId = OttMediaId;
+    console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
+    console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
-    // OVP Configuration
-    // var partnerId = OvpPartnerId; // Required only for OTT/OVP Player
-    // var options = ovpInitOptions;
-    // var asset = ovpMediaAsset;
-    // var mediaId = OvpEntryId;
-    
-    // BASIC Configuration
-    var partnerId = 0; // Required only for OTT/OVP Player
-    var options = basicInitOptions;
-    var asset = basicMediaAsset;
-    var mediaId = playbackUrl;
+    var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
+    var options = this.props.incomingJson.initOptions;
+    var asset = this.props.incomingJson.mediaAsset;
+    var mediaId = this.props.incomingJson.mediaId;
 
     setupKalturaPlayer(
       this.player,
       JSON.stringify(options),
       JSON.stringify(asset),
-      mediaId
+      mediaId,
+      partnerId
     ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
   }
 
   componentWillUnmount() {
     console.log('componentWillUnmount from App.');
     this._isMounted = false;
+    if (networkUnsubscribe != null) {
+      networkUnsubscribe();
+    }
     this.player.removeListeners();
     this.appStateSubscription.remove();
+    this.player.destroy();
+    playerType = null;
   }
 
   doPause = () => {
-     this.player.pause();
+    this.player.pause();
   };
 
   getPlayerCurrentPosition = () => {
-    this.player.getCurrentPosition().then( (value: any) => console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`));
-  }
+    this.player
+      .getCurrentPosition()
+      .then((value: any) =>
+        console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`)
+      );
+  };
 
   checkIfPlayerIsPlaying = () => {
-    this.player.isPlaying().then( (value: any) => console.log(`checkIfPlayerIsPlaying isPlaying ${value}`));
-  }
+    this.player
+      .isPlaying()
+      .then((value: any) =>
+        console.log(`checkIfPlayerIsPlaying isPlaying ${value}`)
+      );
+  };
 
   checkIfMediaIsLive = () => {
-    this.player.isLive().then( (value: any) => console.log(`isLive ${value}`))
-  }
+    this.player.isLive().then((value: any) => console.log(`isLive ${value}`));
+  };
 
   doPlay = () => {
     this.player.play();
@@ -305,127 +320,140 @@ export default class App extends React.Component<any, any> {
   };
 
   render() {
+    if (this.props.playerType == 'basic') {
+      playerType = PLAYER_TYPE.BASIC;
+    } else if (this.props.playerType == 'ovp') {
+      playerType = PLAYER_TYPE.OVP;
+    } else {
+      playerType = PLAYER_TYPE.OTT;
+    }
+
+    // console.log("IN render Playertype is this.props.playerTyp : " + this.props.playerType);
+    // console.log("IN render Playertype is: " + playerType);
+
     return (
-      <ScrollView>
-        <Text style={styles.blue_center}>Kaltura Player Demo</Text>
+      <RootSiblingParent>
+        <ScrollView>
+          <Text style={styles.blue_center}>Kaltura Player Demo</Text>
 
-        <View
-          style={[
-            styles.flex_container,
-            {
-              flexDirection: 'row',
-            },
-          ]}
-        >
-          {this.state.videoTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'video'}
-              title={this.state.videoTitle}
-              trackList={this.state.videoTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-          {this.state.audioTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'audio'}
-              title={this.state.audioTitle}
-              trackList={this.state.audioTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-          {this.state.textTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'text'}
-              title={this.state.textTitle}
-              trackList={this.state.textTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-        </View>
-
-        <KalturaPlayer
-          style={styles.center}
-          playerType={PLAYER_TYPE.BASIC}
-        ></KalturaPlayer>
-
-        <SeekBar
-          isAdPlaying={this.state.isAdPlaying}
-          position={this.state.currentPosition}
-          duration={this.state.totalDuration}
-          onSeekBarScrubbed={this.onSeekBarScrubbed}
-          onSeekBarScrubbing={this.onSeekBarScrubbing}
-        ></SeekBar>
-
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doPlay();
-            }}
+          <View
+            style={[
+              styles.flex_container,
+              {
+                flexDirection: 'row',
+              },
+            ]}
           >
-            <Text style={[styles.bigWhite]}>Play Media</Text>
-          </TouchableOpacity>
+            {this.state.videoTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'video'}
+                title={this.state.videoTitle}
+                trackList={this.state.videoTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+            {this.state.audioTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'audio'}
+                title={this.state.audioTitle}
+                trackList={this.state.audioTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+            {this.state.textTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'text'}
+                title={this.state.textTitle}
+                trackList={this.state.textTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doPause();
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Pause Media</Text>
-          </TouchableOpacity>
+          <KalturaPlayer
+            style={styles.center}
+            playerType={playerType}
+          ></KalturaPlayer>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changePlaybackRate(2.0);
-            }}
-          >
-            <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
-          </TouchableOpacity>
-        </View>
+          <SeekBar
+            isAdPlaying={this.state.isAdPlaying}
+            position={this.state.currentPosition}
+            duration={this.state.totalDuration}
+            onSeekBarScrubbed={this.onSeekBarScrubbed}
+            onSeekBarScrubbing={this.onSeekBarScrubbing}
+          ></SeekBar>
 
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doReplay();
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Replay Media</Text>
-          </TouchableOpacity>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doPlay();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Play Media</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changePlaybackRate(0.5);
-            }}
-          >
-            <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doPause();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Pause Media</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changeMedia(
-                playbackUrlChangeMedia,
-                JSON.stringify(basicMediaAsset)
-              );
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Change Media</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changePlaybackRate(2.0);
+              }}
+            >
+              <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doReplay();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Replay Media</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changePlaybackRate(0.5);
+              }}
+            >
+              <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changeMedia(
+                  playbackUrlChangeMedia,
+                  JSON.stringify(basicMediaAsset)
+                );
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Change Media</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </RootSiblingParent>
     );
   }
 }
@@ -555,88 +583,13 @@ var basicInitOptions = {
   allowFairPlayOnExternalScreens: true,
   shouldPlayImmediately: true,
   aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
-  // wakeMode: WAKEMODE.NETWORK,
-  // subtitlePreference: SUBTITLE_PREFERENCE.OFF,
-  //networkSettings: {
-  // autoBuffer: true,
-  // preferredForwardBufferDuration: 30000,
-  // automaticallyWaitsToMinimizeStalling: true,
-  //},
-  //abrSettings: {
-  //minVideoBitrate: 500000, // For Basic 1st media, Harold
-  //maxVideoBitrate: 800000, // For Basic 1st media, Harold
-  //},
-  //videoCodecSettings: {
-  // allowSoftwareDecoder: false,
-  // allowMixedCodecAdaptiveness: false,
-  // codecPriorityList: [
-  //   VIDEO_CODEC.VP9,
-  //   VIDEO_CODEC.AVC,
-  //   VIDEO_CODEC.HEVC,
-  //   VIDEO_CODEC.AV1,
-  //   VIDEO_CODEC.VP8,
-  // ],
-  //},
-  //audioCodecSettings: {
-  // allowMixedCodecs: false,
-  // allowMixedBitrates: false,
-  // codecPriorityList: [
-  //   AUDIO_CODEC.AAC,
-  //   AUDIO_CODEC.AC3,
-  //   AUDIO_CODEC.E_AC3,
-  //   AUDIO_CODEC.OPUS
-  // ],
-  //},
-  //loadControlBuffers: {
-  // minPlayerBufferMs: 50000,
-  // maxPlayerBufferMs: 50000,
-  // minBufferAfterInteractionMs: 2500,
-  // minBufferAfterReBufferMs: 5000,
-  // backBufferDurationMs: 0,
-  // retainBackBufferFromKeyframe: false,
-  // allowedVideoJoiningTimeMs: 5000,
-  //},
-  //vrSettings: {
-  // ONLY FOR VR MEDIAs
-
-  // interactionMode: VR_INTERACTION_MODE.MOTION,
-  // vrModeEnabled: false,
-  // zoomWithPinchEnabled: false,
-  // flingEnabled: false,
-  //},
-  //lowLatencyConfig: {
-  // targetOffsetMs: 15000,
-  // maxOffsetMs: 12000,
-  // maxPlaybackSpeed: 2,
-  //},
-  // subtitleStyling: {
-  //   subtitleStyleName: 'MyCustomSubtitleStyle',
-  //   subtitleTextColor: '#FFFFFF',
-  //   subtitleBackgroundColor: '#FF00FF',
-  //   subtitleWindowColor: '#FF00FF',
-  //   subtitleEdgeColor: '#0000FF',
-  //   subtitleTextSizeFraction: SUBTITLE_STYLE.FRACTION_50,
-  //   subtitleStyleTypeface: SUBTITLE_STYLE.MONOSPACE,
-  //   subtitleEdgeType: SUBTITLE_STYLE.EDGE_TYPE_DROP_SHADOW,
-  //   overrideInlineCueConfig: true,
-  //   verticalPositionPercentage: 50,
-  //   horizontalPositionPercentage: 50,
-  //   horizontalAlignment: SUBTITLE_STYLE.HORIZONTAL_ALIGNMENT_CENTER,
-  // },
-  //trackSelection: {
-  // textMode: 'AUTO',
-  // textLanguage: 'en',
-  // audioMode: 'AUTO',
-  // audioLanguage: 'en',
-  //},
   handleAudioFocus: true,
   plugins: {
     ima: {
-      //"adTagUrl" : "",
-      // adTagUrl:
-      //   'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
-      // alwaysStartWithPreroll: true,
-      // enableDebugMode: false,
+      adTagUrl:
+        'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
+      alwaysStartWithPreroll: true,
+      enableDebugMode: false,
     },
     youbora: {
       accountCode: 'kalturatest',
