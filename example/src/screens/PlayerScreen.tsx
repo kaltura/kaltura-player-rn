@@ -1,5 +1,6 @@
 import React from 'react';
-
+import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import {
   AppState,
   StyleSheet,
@@ -32,9 +33,11 @@ import {
   AdEvents,
   AnalyticsEvents,
 } from 'react-native-kaltura-player';
+import { showToast, hideToast } from '../components/ScreenMessage';
 
 const playerEventEmitter = new NativeEventEmitter();
 var playerType: PLAYER_TYPE = null;
+let networkUnsubscribe: NetInfoSubscription | null = null;
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
@@ -43,7 +46,6 @@ export default class App extends React.Component<any, any> {
   isSliderSeeking: boolean = false;
   _isMounted: boolean = false;
   contentDuration: number = 0;
-
 
   constructor(props: any) {
     super(props);
@@ -66,32 +68,22 @@ export default class App extends React.Component<any, any> {
       currentPosition: 0,
       totalDuration: 0,
     };
+    // Subscribe
+    networkUnsubscribe = NetInfo.addEventListener((state) => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      if (!state.isConnected) {
+        showToast('No internet connection');
+      }
+    });
   }
 
   componentDidMount() {
     console.log('componentDidMount from App.');
     this._isMounted = true;
     this.subscribeToAppLifecyle();
-    // OTT Configuration
-    // var partnerId = OttPartnerId; // Required only for OTT/OVP Player
-    // var options = initOptions;
-    // var asset = mediaAsset;
-    // var mediaId = OttMediaId;
-
-    // OVP Configuration
-    // var partnerId = OvpPartnerId; // Required only for OTT/OVP Player
-    // var options = ovpInitOptions;
-    // var asset = ovpMediaAsset;
-    // var mediaId = OvpEntryId;
-
-    // BASIC Configuration
-    // var partnerId = 0; // Required only for OTT/OVP Player
-    // var options = basicInitOptions;
-    // var asset = basicMediaAsset;
-    // var mediaId = playbackUrl;
-
-    console.log(`PlayerScreen: ${this.props.incomingJson}`);
-    console.log(`PlayerScreen: ${this.props.playerType}`);
+    console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
+    console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
     var options = this.props.incomingJson.initOptions;
@@ -110,6 +102,9 @@ export default class App extends React.Component<any, any> {
   componentWillUnmount() {
     console.log('componentWillUnmount from App.');
     this._isMounted = false;
+    if (networkUnsubscribe != null) {
+      networkUnsubscribe();
+    }
     this.player.removeListeners();
     this.appStateSubscription.remove();
     this.player.destroy();
@@ -332,126 +327,128 @@ export default class App extends React.Component<any, any> {
     // console.log("IN render Playertype is: " + playerType);
 
     return (
-      <ScrollView>
-        <Text style={styles.blue_center}>Kaltura Player Demo</Text>
+      <RootSiblingParent>
+        <ScrollView>
+          <Text style={styles.blue_center}>Kaltura Player Demo</Text>
 
-        <View
-          style={[
-            styles.flex_container,
-            {
-              flexDirection: 'row',
-            },
-          ]}
-        >
-          {this.state.videoTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'video'}
-              title={this.state.videoTitle}
-              trackList={this.state.videoTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-          {this.state.audioTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'audio'}
-              title={this.state.audioTitle}
-              trackList={this.state.audioTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-          {this.state.textTrackList.length > 0 ? (
-            <TrackList
-              style={{ flex: 1 }}
-              trackType={'text'}
-              title={this.state.textTitle}
-              trackList={this.state.textTrackList}
-              onTrackChangeListener={this.onTrackChangeListener}
-            />
-          ) : (
-            <Text></Text>
-          )}
-        </View>
-
-        <KalturaPlayer
-          style={styles.center}
-          playerType={playerType}
-        ></KalturaPlayer>
-
-        <SeekBar
-          isAdPlaying={this.state.isAdPlaying}
-          position={this.state.currentPosition}
-          duration={this.state.totalDuration}
-          onSeekBarScrubbed={this.onSeekBarScrubbed}
-          onSeekBarScrubbing={this.onSeekBarScrubbing}
-        ></SeekBar>
-
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doPlay();
-            }}
+          <View
+            style={[
+              styles.flex_container,
+              {
+                flexDirection: 'row',
+              },
+            ]}
           >
-            <Text style={[styles.bigWhite]}>Play Media</Text>
-          </TouchableOpacity>
+            {this.state.videoTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'video'}
+                title={this.state.videoTitle}
+                trackList={this.state.videoTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+            {this.state.audioTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'audio'}
+                title={this.state.audioTitle}
+                trackList={this.state.audioTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+            {this.state.textTrackList.length > 0 ? (
+              <TrackList
+                style={{ flex: 1 }}
+                trackType={'text'}
+                title={this.state.textTitle}
+                trackList={this.state.textTrackList}
+                onTrackChangeListener={this.onTrackChangeListener}
+              />
+            ) : (
+              <Text></Text>
+            )}
+          </View>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doPause();
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Pause Media</Text>
-          </TouchableOpacity>
+          <KalturaPlayer
+            style={styles.center}
+            playerType={playerType}
+          ></KalturaPlayer>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changePlaybackRate(2.0);
-            }}
-          >
-            <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
-          </TouchableOpacity>
-        </View>
+          <SeekBar
+            isAdPlaying={this.state.isAdPlaying}
+            position={this.state.currentPosition}
+            duration={this.state.totalDuration}
+            onSeekBarScrubbed={this.onSeekBarScrubbed}
+            onSeekBarScrubbing={this.onSeekBarScrubbing}
+          ></SeekBar>
 
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.doReplay();
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Replay Media</Text>
-          </TouchableOpacity>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doPlay();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Play Media</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changePlaybackRate(0.5);
-            }}
-          >
-            <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doPause();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Pause Media</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.changeMedia(
-                playbackUrlChangeMedia,
-                JSON.stringify(basicMediaAsset)
-              );
-            }}
-          >
-            <Text style={[styles.bigWhite]}>Change Media</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changePlaybackRate(2.0);
+              }}
+            >
+              <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.doReplay();
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Replay Media</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changePlaybackRate(0.5);
+              }}
+            >
+              <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                this.changeMedia(
+                  playbackUrlChangeMedia,
+                  JSON.stringify(basicMediaAsset)
+                );
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Change Media</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </RootSiblingParent>
     );
   }
 }

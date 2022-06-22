@@ -10,8 +10,12 @@ export default class PlayerTypeDetails extends PureComponent {
   constructor(props: any) {
     super(props);
     this.state = {
-      playerType: this.props.id,
+      clickedItem: this.props.clickedItem,
+      playerType: this.props.playerType,
     };
+
+    console.log(`this.state.clickedItem = ${this.state.clickedItem}`);
+    console.log(`this.state.playerType = ${this.state.playerType}`);
 
     this.handleInnerItemClick = this.handleInnerItemClick.bind(this);
   }
@@ -28,23 +32,21 @@ export default class PlayerTypeDetails extends PureComponent {
       'handleInnerItemClick this.state.playerType ' + this.state.playerType
     );
 
-    console.log(
-      'MAIN JSON IS: ' +
-        JSON.stringify(
-          playerTestJson[this.state.playerType][categoryName][subId]
-        )
-    );
+    let listData =
+      playerTestJson[this.state.playerType][this.state.clickedItem][
+        categoryName
+      ][subId];
 
-    openPlayerScreen(
-      this.props,
-      playerTestJson[this.state.playerType][categoryName][subId],
-      this.state.playerType,
-      subName
-    );
+    console.log('MAIN JSON IS: ' + JSON.stringify(listData));
+
+    openPlayerScreen(this.props, listData, this.state.playerType, subName);
   }
 
   render() {
-    let parsedJsonData: ListData[] = parseJSONData(this.state.playerType);
+    let parsedJsonData: ListData[] = parseJSONData(
+      this.state.playerType,
+      this.state.clickedItem
+    );
 
     return (
       <View style={styles.root}>
@@ -72,8 +74,10 @@ type ListData = {
   subCategory: { id: number; name: string }[];
 };
 
-function parseJSONData(id: string): ListData[] {
-  var subArrayUnderPlayerType = Object.getOwnPropertyNames(playerTestJson[id]);
+function parseJSONData(playerType: string, clickedItem: string): ListData[] {
+  let subJson = playerTestJson[playerType][clickedItem];
+
+  var subArrayUnderPlayerType = Object.getOwnPropertyNames(subJson);
 
   var categoryJsonArray: ListData[] = [];
 
@@ -81,7 +85,7 @@ function parseJSONData(id: string): ListData[] {
     console.log(`parsed data is: ${value}`);
     var subCategoryJsonArray = [];
 
-    playerTestJson[id][value].forEach((value: string, index: number) => {
+    subJson[value].forEach((value: string, index: number) => {
       var playerDetailsElement = value.id;
 
       console.log(`Internal parsed data is: ${playerDetailsElement}`);

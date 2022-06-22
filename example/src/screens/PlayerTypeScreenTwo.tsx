@@ -1,13 +1,17 @@
-import { PLAYER_TYPE_DETAILS, PLAYER_TYPE_SCREEN_TWO } from '../../index';
+import { PLAYER_TYPE_DETAILS } from '../../index';
 import React, { PureComponent } from 'react';
 import { FlatList, View, Text, StyleSheet } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 import playerTestJson from '../test/PlayerTest.json';
 
-export default class PlayerTypeScreen extends PureComponent {
-  // Gets the name of the JSON Key objects
-  names: string[] = Object.getOwnPropertyNames(playerTestJson);
+export default class PlayerTypeScreenTwo extends PureComponent {
+  state = {
+      playerType: this.props.playerType,
+  };
+  names: string[] = Object.getOwnPropertyNames(
+    playerTestJson[this.state.playerType]
+  );
 
   // Renders a line seperator
   renderSeparator = () => {
@@ -50,17 +54,18 @@ export default class PlayerTypeScreen extends PureComponent {
 // Item on click of Flat List
 const itemOnClick = (item: string, props) => {
   console.log(`Clicked item is: ${item}`);
-  openPlayerTypeScreenTwo(props, item);
+  openPlayerTypeDetails(props, item);
 };
 
 // Open the Next Screen for the specific Player Type
-function openPlayerTypeScreenTwo(props, title: string) {
+function openPlayerTypeDetails(props, title: string) {
   Navigation.push(props.componentId, {
     component: {
-      name: PLAYER_TYPE_SCREEN_TWO,
-      id: PLAYER_TYPE_SCREEN_TWO,
+      name: PLAYER_TYPE_DETAILS,
+      id: PLAYER_TYPE_DETAILS,
       passProps: {
-        playerType: title,
+        clickedItem: title,
+        playerType: props.playerType
       },
       options: {
         topBar: {
