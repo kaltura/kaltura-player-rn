@@ -6,10 +6,11 @@
  */
 
 #import "AppDelegate.h"
-#import <ReactNativeNavigation/ReactNativeNavigation.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+#import <ReactNativeNavigation/ReactNativeNavigation.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -33,13 +34,13 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  #ifdef FB_SONARKIT_ENABLED
-    InitializeFlipper(application);
-  #endif
+#ifdef FB_SONARKIT_ENABLED
+  InitializeFlipper(application);
+#endif
+  
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-[ReactNativeNavigation bootstrapWithBridge:bridge];
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-
+  [ReactNativeNavigation bootstrapWithBridge:bridge];
+  
   return YES;
 }
 
