@@ -8,8 +8,8 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import TrackList from '../src/components/TrackList';
-import SeekBar from '../src/components/SeekBar';
+import TrackList from '../components/TrackList';
+import SeekBar from '../components/SeekBar';
 import {
   KalturaPlayer,
   KalturaPlayerAPI,
@@ -34,16 +34,16 @@ import {
 } from 'react-native-kaltura-player';
 
 const playerEventEmitter = new NativeEventEmitter();
+var playerType: PLAYER_TYPE = null;
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
   videoTracks = [];
   appStateSubscription: any;
   isSliderSeeking: boolean = false;
-
   _isMounted: boolean = false;
-
   contentDuration: number = 0;
+
 
   constructor(props: any) {
     super(props);
@@ -85,16 +85,25 @@ export default class App extends React.Component<any, any> {
     // var mediaId = OvpEntryId;
 
     // BASIC Configuration
-    var partnerId = 0; // Required only for OTT/OVP Player
-    var options = basicInitOptions;
-    var asset = basicMediaAsset;
-    var mediaId = playbackUrl;
+    // var partnerId = 0; // Required only for OTT/OVP Player
+    // var options = basicInitOptions;
+    // var asset = basicMediaAsset;
+    // var mediaId = playbackUrl;
+
+    console.log(`PlayerScreen: ${this.props.incomingJson}`);
+    console.log(`PlayerScreen: ${this.props.playerType}`);
+
+    var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
+    var options = this.props.incomingJson.initOptions;
+    var asset = this.props.incomingJson.mediaAsset;
+    var mediaId = this.props.incomingJson.mediaId;
 
     setupKalturaPlayer(
       this.player,
       JSON.stringify(options),
       JSON.stringify(asset),
-      mediaId
+      mediaId,
+      partnerId
     ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
   }
 
@@ -103,6 +112,8 @@ export default class App extends React.Component<any, any> {
     this._isMounted = false;
     this.player.removeListeners();
     this.appStateSubscription.remove();
+    this.player.destroy();
+    playerType = null;
   }
 
   doPause = () => {
@@ -309,6 +320,17 @@ export default class App extends React.Component<any, any> {
   };
 
   render() {
+    if (this.props.playerType == 'basic') {
+      playerType = PLAYER_TYPE.BASIC;
+    } else if (this.props.playerType == 'ovp') {
+      playerType = PLAYER_TYPE.OVP;
+    } else {
+      playerType = PLAYER_TYPE.OTT;
+    }
+
+    // console.log("IN render Playertype is this.props.playerTyp : " + this.props.playerType);
+    // console.log("IN render Playertype is: " + playerType);
+
     return (
       <ScrollView>
         <Text style={styles.blue_center}>Kaltura Player Demo</Text>
@@ -358,7 +380,7 @@ export default class App extends React.Component<any, any> {
 
         <KalturaPlayer
           style={styles.center}
-          playerType={PLAYER_TYPE.BASIC}
+          playerType={playerType}
         ></KalturaPlayer>
 
         <SeekBar
@@ -559,88 +581,13 @@ var basicInitOptions = {
   allowFairPlayOnExternalScreens: true,
   shouldPlayImmediately: true,
   aspectRatioResizeMode: PLAYER_RESIZE_MODES.FIT,
-  // wakeMode: WAKEMODE.NETWORK,
-  // subtitlePreference: SUBTITLE_PREFERENCE.OFF,
-  //networkSettings: {
-  // autoBuffer: true,
-  // preferredForwardBufferDuration: 30000,
-  // automaticallyWaitsToMinimizeStalling: true,
-  //},
-  //abrSettings: {
-  //minVideoBitrate: 500000, // For Basic 1st media, Harold
-  //maxVideoBitrate: 800000, // For Basic 1st media, Harold
-  //},
-  //videoCodecSettings: {
-  // allowSoftwareDecoder: false,
-  // allowMixedCodecAdaptiveness: false,
-  // codecPriorityList: [
-  //   VIDEO_CODEC.VP9,
-  //   VIDEO_CODEC.AVC,
-  //   VIDEO_CODEC.HEVC,
-  //   VIDEO_CODEC.AV1,
-  //   VIDEO_CODEC.VP8,
-  // ],
-  //},
-  //audioCodecSettings: {
-  // allowMixedCodecs: false,
-  // allowMixedBitrates: false,
-  // codecPriorityList: [
-  //   AUDIO_CODEC.AAC,
-  //   AUDIO_CODEC.AC3,
-  //   AUDIO_CODEC.E_AC3,
-  //   AUDIO_CODEC.OPUS
-  // ],
-  //},
-  //loadControlBuffers: {
-  // minPlayerBufferMs: 50000,
-  // maxPlayerBufferMs: 50000,
-  // minBufferAfterInteractionMs: 2500,
-  // minBufferAfterReBufferMs: 5000,
-  // backBufferDurationMs: 0,
-  // retainBackBufferFromKeyframe: false,
-  // allowedVideoJoiningTimeMs: 5000,
-  //},
-  //vrSettings: {
-  // ONLY FOR VR MEDIAs
-
-  // interactionMode: VR_INTERACTION_MODE.MOTION,
-  // vrModeEnabled: false,
-  // zoomWithPinchEnabled: false,
-  // flingEnabled: false,
-  //},
-  //lowLatencyConfig: {
-  // targetOffsetMs: 15000,
-  // maxOffsetMs: 12000,
-  // maxPlaybackSpeed: 2,
-  //},
-  // subtitleStyling: {
-  //   subtitleStyleName: 'MyCustomSubtitleStyle',
-  //   subtitleTextColor: '#FFFFFF',
-  //   subtitleBackgroundColor: '#FF00FF',
-  //   subtitleWindowColor: '#FF00FF',
-  //   subtitleEdgeColor: '#0000FF',
-  //   subtitleTextSizeFraction: SUBTITLE_STYLE.FRACTION_50,
-  //   subtitleStyleTypeface: SUBTITLE_STYLE.MONOSPACE,
-  //   subtitleEdgeType: SUBTITLE_STYLE.EDGE_TYPE_DROP_SHADOW,
-  //   overrideInlineCueConfig: true,
-  //   verticalPositionPercentage: 50,
-  //   horizontalPositionPercentage: 50,
-  //   horizontalAlignment: SUBTITLE_STYLE.HORIZONTAL_ALIGNMENT_CENTER,
-  // },
-  //trackSelection: {
-  // textMode: 'AUTO',
-  // textLanguage: 'en',
-  // audioMode: 'AUTO',
-  // audioLanguage: 'en',
-  //},
   handleAudioFocus: true,
   plugins: {
     ima: {
-      //"adTagUrl" : "",
-      // adTagUrl:
-      //   'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
-      // alwaysStartWithPreroll: true,
-      // enableDebugMode: false,
+      adTagUrl:
+        'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=',
+      alwaysStartWithPreroll: true,
+      enableDebugMode: false,
     },
     youbora: {
       accountCode: 'kalturatest',
