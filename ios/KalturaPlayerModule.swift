@@ -42,6 +42,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
 class KalturaPlayerModule: NSObject, RCTBridgeModule {
     
     var bridge: RCTBridge!
+    var playerType: PlayerType = .basic
     var initOptions: RNKPInitOptions?
     var kalturaPlayerViewManager: KalturaPlayerViewManager?
     
@@ -64,7 +65,8 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     }
     
     @objc
-    func setUpPlayer(_ partnerId: Int = 0, initOptions: String?, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
+                     resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         
         guard let options = initOptions, !options.isEmpty else {
             let error = NSError(domain: "", code: 200, userInfo: nil)
@@ -82,29 +84,30 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         
         print(self.initOptions)
         
-        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
-                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
-            return
-        }
+        self.playerType = getPlayerType(from: type)
         
-        self.kalturaPlayerViewManager = playerViewManager
+//        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
+//                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
+//            let error = NSError(domain: "", code: 200, userInfo: nil)
+//            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
+//            return
+//        }
+//
+//        self.kalturaPlayerViewManager = playerViewManager
 
-        let playerType = playerViewManager.kalturaPlayerRNView.playerType
+//        let playerType = playerViewManager.kalturaPlayerRNView.playerType
         
-        switch KalturaPlayerRNView.PlayerType(rawValue: playerType) {
+        switch self.playerType {
         case .basic:
             break
+            
         case .ott:
             break
         case .ovp:
             break
-        case .none:
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("ERROR_SETUPPLAYER", "The KalturaPlayerRNView playerType isn't a valid option.", error)
-            return
         }
+        
+        resolve("sucess")
     }
     
     @objc
@@ -112,4 +115,22 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         
     }
     
+}
+
+extension KalturaPlayerModule {
+    
+    enum PlayerType: String {
+        case basic
+        case ovp
+        case ott
+    }
+    
+    private func getPlayerType(from type: String) -> PlayerType {
+        
+        if let playerType = PlayerType(rawValue: type.lowercased()) {
+            return playerType
+        }
+        
+        return .basic
+    }
 }

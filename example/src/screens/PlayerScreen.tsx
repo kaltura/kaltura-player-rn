@@ -97,6 +97,7 @@ export default class App extends React.Component<any, any> {
 
     setupKalturaPlayer(
       this.player,
+      playerType,
       JSON.stringify(options),
       JSON.stringify(asset),
       mediaId,
@@ -381,7 +382,6 @@ export default class App extends React.Component<any, any> {
 
           <KalturaPlayer
             style={styles.center}
-            playerType={playerType}
           ></KalturaPlayer>
 
           <SeekBar
@@ -460,13 +460,14 @@ export default class App extends React.Component<any, any> {
 
 async function setupKalturaPlayer(
   player: KalturaPlayerAPI,
+  playerType: String,
   options: String,
   mediaAsset: String,
   mediaId: String, // PlaybackUrl
   partnerId: number = 0
 ) {
   try {
-    const playerCreated = await player.setup(partnerId, options);
+    const playerCreated = await player.setup(playerType, partnerId, options);
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
 
     player.addListeners();

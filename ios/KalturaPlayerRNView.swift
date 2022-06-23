@@ -12,15 +12,6 @@ import Foundation
 
 class KalturaPlayerRNView : UIView {
     
-    enum PlayerType: String {
-        case basic
-        case ovp
-        case ott
-    }
-    
-    var kalturaPlayer: KalturaPlayer!
-//    var initOptions: RNKPInitOptions?
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -34,66 +25,12 @@ class KalturaPlayerRNView : UIView {
     }
     
     // MARK: - Props
+    
     @objc var style: NSDictionary?
-    @objc var playerType: String = "" {
-        didSet{
-            print(playerType)
-        }
-    }
-//    @objc var partnerId: NSNumber = 0
-//    @objc var playerInitOptions: String = "" {
-//        didSet {
-//            if playerInitOptions.isEmpty {
-//                PKLog.debug("playerInitOptions was set but is empty.")
-//                return
-//            }
-//            guard let playerOptions = playerInitOptions.toDictionary() else { return }
-//            initOptions = RNKPInitOptions.parse(initOptions: playerOptions)
-//            if initOptions == nil { return }
-//
-//            switch PlayerType(rawValue: playerType) {
-//            case .basic:
-//                break
-//            case .ovp:
-//                break
-//            case .ott:
-//                setupOTT(partnerId: Int64(truncating: partnerId))
-//            case .none:
-//                PKLog.debug("playerType was not set.")
-//            }
-//        }
-//    }
-//
-//    @objc var assetId: String = ""
-//    @objc var mediaAsset: String = ""
-//    @objc var load: Bool = false {
-//        didSet {
-//            if mediaAsset.isEmpty {
-//                PKLog.debug("mediaAsset was set but is empty.")
-//                return
-//            }
-//            guard let mediaOptions = mediaAsset.toDictionary() else { return }
-//            if load {
-//                switch PlayerType(rawValue: playerType) {
-//                case .basic:
-//                    break
-//                case .ovp:
-//                    break
-//                case .ott:
-//                    loadOTT(assetId: assetId, options: mediaOptions)
-//                case .none:
-//                    PKLog.debug("playerType was not set.")
-//                }
-//
-//            }
-//        }
-//    }
+    
     
     // MARK: -
     
-
-    
-
     
 //    // TODO: Fix all the '!'
 //    func setupOTT(partnerId: Int64) {

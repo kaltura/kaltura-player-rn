@@ -82,18 +82,19 @@ export class KalturaPlayerAPI {
    * This method creates a Player instance internally (Basic, OVP/OTT Player)
    * With this, it take the PlayerInitOptions which are having essential Player settings values
    *
-   * @param options PlayerInitOptions JSON String
+   * @param playerType The Player Type, Basic/OVP/OTT.
+   * @param options PlayerInitOptions JSON String.
    * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
-  static setup = async (id: number = 0, options: string) => {
+  static setup = async (playerType: string, id: number = 0, options: string) => {
     if (!options) {
       console.error(`setup, invalid options = ${options}`);
       return;
     }
     console.log('Setting up the Player');
-    return await setupKalturaPlayer(id, options);
+    return await setupKalturaPlayer(playerType, id, options);
   };
 
   /**
@@ -396,9 +397,10 @@ export class KalturaPlayerAPI {
   };
 }
 
-async function setupKalturaPlayer(id: number, options: string) {
+async function setupKalturaPlayer(type: string, id: number, options: string) {
   try {
     const kalturaPlayerSetup = await KalturaPlayerModule.setUpPlayer(
+      type,
       id,
       options
     );
