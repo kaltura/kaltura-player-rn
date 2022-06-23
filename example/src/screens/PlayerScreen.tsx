@@ -332,7 +332,6 @@ export default class App extends React.Component<any, any> {
     return (
       <RootSiblingParent>
         <ScrollView>
-        
           <View
             style={[
               styles.flex_container,
@@ -462,9 +461,12 @@ async function setupKalturaPlayer(
   try {
     const playerCreated = await player.setup(playerType, options, partnerId);
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
-
-    player.addListeners();
-    player.loadMedia(mediaId, mediaAsset);
+    if (playerCreated != null) {
+      player.addListeners();
+      player.loadMedia(mediaId, mediaAsset);
+    } else {
+      console.error('Player is not created.');
+    }
   } catch (err) {
     console.log(err);
     throw err;

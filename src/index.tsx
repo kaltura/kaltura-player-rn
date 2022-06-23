@@ -44,10 +44,12 @@ const POSITION_UNSET: number = -1;
 
 interface KalturaPlayerProps {
   style: ViewStyle;
+  playerType: PLAYER_TYPE;
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
+  playerType: PLAYER_TYPE | undefined;
 
   static propTypes: {
     style: object;
@@ -80,19 +82,24 @@ export class KalturaPlayerAPI {
    * This method creates a Player instance internally (Basic, OVP/OTT Player)
    * With this, it take the PlayerInitOptions which are having essential Player settings values
    *
-   * @param playerType PlayerType Basic, OVP or OTT
-   * @param options PlayerInitOptions JSON String
+   * @param playerType The Player Type, Basic/OVP/OTT.
+   * @param options PlayerInitOptions JSON String.
    * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
   static setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0) => {
+    if (playerType == null) {
+      console.error(`Invalid playerType = ${playerType}`);
+      return;
+    }
+
     if (!options) {
       console.error(`setup, invalid options = ${options}`);
       return;
     }
     console.log('Setting up the Player');
-    return await setupKalturaPlayer(playerType, id, options);
+    return await setupKalturaPlayer(playerType, options, id);
   };
 
   /**
@@ -395,7 +402,7 @@ export class KalturaPlayerAPI {
   };
 }
 
-async function setupKalturaPlayer(playerType: PLAYER_TYPE, id: number, options: string) {
+async function setupKalturaPlayer(playerType: PLAYER_TYPE, options: string, id: number) {
   try {
     const kalturaPlayerSetup = await KalturaPlayerModule.setUpPlayer(
       playerType,

@@ -24,12 +24,13 @@ export declare class KalturaPlayerAPI {
      * This method creates a Player instance internally (Basic, OVP/OTT Player)
      * With this, it take the PlayerInitOptions which are having essential Player settings values
      *
-     * @param options PlayerInitOptions JSON String
+     * @param playerType The Player Type, Basic/OVP/OTT.
+     * @param options PlayerInitOptions JSON String.
      * @param id PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value
      * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
      * for the mediaId or the entryId)
      */
-    static setup: (id: number | undefined, options: string) => Promise<any>;
+    static setup: (playerType: PLAYER_TYPE, options: string, id?: number) => Promise<any>;
     /**
      * Load the media with the given
      *

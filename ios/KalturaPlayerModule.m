@@ -15,7 +15,8 @@
 
 @interface RCT_EXTERN_MODULE(KalturaPlayerModule, NSObject)
 
-RCT_EXTERN_METHOD(setUpPlayer:(nonnull int)partnerId
+RCT_EXTERN_METHOD(setUpPlayer:(nonnull NSString *)type
+                  partnerId:(nonnull int)partnerId
                   initOptions:(nonnull NSString *)initOptions
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
