@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import TrackList from '../components/TrackList';
-import SeekBar from '../components/SeekBar';
 import {
   KalturaPlayer,
   KalturaPlayerAPI,
@@ -27,16 +26,14 @@ import {
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
 } from 'react-native-kaltura-player';
-import { 
-  NativeModules, 
-  NativeEventEmitter
-} from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 import {
   PlayerEvents,
   AdEvents,
   AnalyticsEvents,
 } from 'react-native-kaltura-player';
 import { showToast, hideToast } from '../components/ScreenMessage';
+import { PlayerUI } from '../components/PlayerUI';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -90,6 +87,14 @@ export default class App extends React.Component<any, any> {
     console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
     console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
+    if (this.props.playerType == 'basic') {
+      playerType = PLAYER_TYPE.BASIC;
+    } else if (this.props.playerType == 'ovp') {
+      playerType = PLAYER_TYPE.OVP;
+    } else {
+      playerType = PLAYER_TYPE.OTT;
+    }
+
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
     var options = this.props.incomingJson.initOptions;
     var asset = this.props.incomingJson.mediaAsset;
@@ -97,6 +102,7 @@ export default class App extends React.Component<any, any> {
 
     setupKalturaPlayer(
       this.player,
+      playerType,
       JSON.stringify(options),
       JSON.stringify(asset),
       mediaId,
@@ -320,22 +326,13 @@ export default class App extends React.Component<any, any> {
   };
 
   render() {
-    if (this.props.playerType == 'basic') {
-      playerType = PLAYER_TYPE.BASIC;
-    } else if (this.props.playerType == 'ovp') {
-      playerType = PLAYER_TYPE.OVP;
-    } else {
-      playerType = PLAYER_TYPE.OTT;
-    }
-
     // console.log("IN render Playertype is this.props.playerTyp : " + this.props.playerType);
     // console.log("IN render Playertype is: " + playerType);
 
     return (
       <RootSiblingParent>
         <ScrollView>
-          <Text style={styles.blue_center}>Kaltura Player Demo</Text>
-
+        
           <View
             style={[
               styles.flex_container,
@@ -379,18 +376,14 @@ export default class App extends React.Component<any, any> {
             )}
           </View>
 
-          <KalturaPlayer
-            style={styles.center}
+          <PlayerUI
             playerType={playerType}
-          ></KalturaPlayer>
-
-          <SeekBar
             isAdPlaying={this.state.isAdPlaying}
             position={this.state.currentPosition}
             duration={this.state.totalDuration}
             onSeekBarScrubbed={this.onSeekBarScrubbed}
             onSeekBarScrubbing={this.onSeekBarScrubbing}
-          ></SeekBar>
+          ></PlayerUI>
 
           <View style={styles.row}>
             <TouchableOpacity
@@ -460,13 +453,14 @@ export default class App extends React.Component<any, any> {
 
 async function setupKalturaPlayer(
   player: KalturaPlayerAPI,
+  playerType: PLAYER_TYPE,
   options: String,
   mediaAsset: String,
   mediaId: String, // PlaybackUrl
   partnerId: number = 0
 ) {
   try {
-    const playerCreated = await player.setup(partnerId, options);
+    const playerCreated = await player.setup(playerType, options, partnerId);
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
 
     player.addListeners();
