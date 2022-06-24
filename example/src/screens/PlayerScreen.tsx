@@ -67,6 +67,7 @@ export default class App extends React.Component<any, any> {
 
       // Seekbar Props default States
       isAdPlaying: false,
+      isContentPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
     };
@@ -122,16 +123,13 @@ export default class App extends React.Component<any, any> {
     playerType = null;
   }
 
-  doPause = () => {
-    this.player.pause();
-  };
-
-  getPlayerCurrentPosition = () => {
+  getPlayerCurrentPosition(): any {
     this.player
       .getCurrentPosition()
-      .then((value: any) =>
+      .then((value: any) => {
         console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`)
-      );
+        return value;
+      });
   };
 
   checkIfPlayerIsPlaying = () => {
@@ -146,13 +144,41 @@ export default class App extends React.Component<any, any> {
     this.player.isLive().then((value: any) => console.log(`isLive ${value}`));
   };
 
-  doPlay = () => {
-    this.player.play();
+  playPauseIconPressed = () => {
+    if (this.state.isContentPlaying) {
+      this.player.pause();
+    } else {
+      this.player.play();
+    }
   };
 
-  doReplay = () => {
-    this.player.replay();
+  replayButtonPressed = () => {
+    if (this.state.isContentPlaying) {
+      this.player.replay();
+    }
   };
+
+  muteUnmuteButtonPressed = (isPlayerMute: boolean) => {
+    console.log("muteUnmuteButtonPressed pressed isPlayerMute: " + isPlayerMute);
+    if (this.state.isContentPlaying) {
+      if (isPlayerMute) {
+        this.player.setVolume(0);
+      } else {
+        this.player.setVolume(1);
+      }
+    }
+  }
+
+  seekButtonPressed = (isSeekForward: boolean) => {
+    //console.log(`seekButtonPressed ${isSeekForward}  this.state.currentPosition is ${this.state.currentPosition}`);
+    if (this.state.isContentPlaying) {
+      if (isSeekForward) {
+        this.player.seekTo((this.state.currentPosition + 10));
+      } else {
+        this.player.seekTo((this.state.currentPosition - 10));
+      }
+    }
+  }
 
   changePlaybackRate = (rate: number) => {
     this.player.setPlaybackRate(rate);
@@ -233,6 +259,28 @@ export default class App extends React.Component<any, any> {
       }
     });
 
+    playerEventEmitter.addListener(PlayerEvents.PLAY, () => {
+      console.log('PlayerEvent PLAY');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isContentPlaying: true,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.PAUSE, () => {
+      console.log('PlayerEvent PAUSE');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isContentPlaying: false,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.VOLUME_CHANGED, (payload) => {
+      console.log(`PlayerEvent VOLUME_CHANGED ${payload.volume}`);
+    });
+
     playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
       console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
     });
@@ -284,6 +332,7 @@ export default class App extends React.Component<any, any> {
       if (this._isMounted) {
         this.setState(() => ({
           isAdPlaying: true,
+          isContentPlaying: false,
         }));
       }
     });
@@ -293,6 +342,7 @@ export default class App extends React.Component<any, any> {
       if (this._isMounted) {
         this.setState(() => ({
           isAdPlaying: false,
+          isContentPlaying: true,
         }));
       }
     });
@@ -382,27 +432,15 @@ export default class App extends React.Component<any, any> {
             duration={this.state.totalDuration}
             onSeekBarScrubbed={this.onSeekBarScrubbed}
             onSeekBarScrubbing={this.onSeekBarScrubbing}
+            isContentPlaying={this.state.isContentPlaying}
+            playPauseIconPressed={this.playPauseIconPressed}
+            replayButtonPressed={this.replayButtonPressed}
+            muteUnmuteButtonPressed={this.muteUnmuteButtonPressed}
+            seekButtonPressed={this.seekButtonPressed}
           ></PlayerUI>
 
           <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doPlay();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Play Media</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doPause();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Pause Media</Text>
-            </TouchableOpacity>
-
+          
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => {
@@ -414,14 +452,6 @@ export default class App extends React.Component<any, any> {
           </View>
 
           <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doReplay();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Replay Media</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.button]}

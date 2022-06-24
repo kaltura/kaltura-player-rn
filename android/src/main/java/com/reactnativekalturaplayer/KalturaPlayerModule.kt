@@ -147,7 +147,7 @@ class KalturaPlayerModule(
     @ReactMethod
     fun setVolume(volume: Float) {
         log.d("setVolume: $volume")
-        if (volume > 0f) {
+        if (volume >= 0f) {
             kalturaPlayerRN.setVolume(volume);
         } else {
             log.d("Invalid Volume which is $volume");
