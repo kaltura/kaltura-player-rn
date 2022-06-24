@@ -23,6 +23,7 @@ export class PlayerUI extends React.Component<any, any> {
 
   isPlayerMute = false;
   isSeekedForward = false;
+  isLandscapeMode = false;
 
   constructor(props: any) {
     super(props);
@@ -38,6 +39,7 @@ export class PlayerUI extends React.Component<any, any> {
       replayButtonPressed: props.replayButtonPressed,
       muteUnmuteButtonPressed: props.muteUnmuteButtonPressed,
       seekButtonPressed:props.seekButtonPressed,
+      changeOrientation:props.changeOrientation,
     };
 
     console.log(`Props are: ${this.props.playerType}`);
@@ -217,7 +219,13 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              showToast("Not functional right now.")
+              if (this.isLandscapeMode) {
+                this.isLandscapeMode = false;
+              } else {
+                this.isLandscapeMode = true;
+              }
+              
+              this.state.changeOrientation(this.isLandscapeMode);
             }}
           >
             <Image

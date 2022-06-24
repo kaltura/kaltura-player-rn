@@ -34,6 +34,8 @@ import {
 } from 'react-native-kaltura-player';
 import { showToast, hideToast } from '../components/ScreenMessage';
 import { PlayerUI } from '../components/PlayerUI';
+import { Navigation } from 'react-native-navigation';
+import { PLAYER_SCREEN } from '../../index';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -178,6 +180,17 @@ export default class App extends React.Component<any, any> {
         this.player.seekTo((this.state.currentPosition - 10));
       }
     }
+  }
+
+  // Only works for Android. for iOS this does not work.
+  // TODO: Need to find the solution for iOS
+  changeOrientation(isLandscape: boolean) {
+    console.log("changeOrientation isLandscape: " + isLandscape);
+    Navigation.mergeOptions(PLAYER_SCREEN, {
+      layout: {
+        orientation: [isLandscape ? 'landscape' : 'portrait'],
+      },
+    });
   }
 
   changePlaybackRate = (rate: number) => {
@@ -437,6 +450,7 @@ export default class App extends React.Component<any, any> {
             replayButtonPressed={this.replayButtonPressed}
             muteUnmuteButtonPressed={this.muteUnmuteButtonPressed}
             seekButtonPressed={this.seekButtonPressed}
+            changeOrientation={this.changeOrientation}
           ></PlayerUI>
 
           <View style={styles.row}>
