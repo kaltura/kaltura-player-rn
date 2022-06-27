@@ -20,7 +20,6 @@ const iconWidth = 40;
 
 // TODO: Add the default Props feature.
 export class PlayerUI extends React.Component<any, any> {
-
   isPlayerMute = false;
   isSeekedForward = false;
   isLandscapeMode = false;
@@ -28,7 +27,6 @@ export class PlayerUI extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      playerType: props.playerType,
       isAdPlaying: props.isAdPlaying,
       isContentPlaying: props.isContentPlaying,
       position: props.position,
@@ -38,20 +36,12 @@ export class PlayerUI extends React.Component<any, any> {
       playPauseIconPressed: props.playPauseIconPressed,
       replayButtonPressed: props.replayButtonPressed,
       muteUnmuteButtonPressed: props.muteUnmuteButtonPressed,
-      seekButtonPressed:props.seekButtonPressed,
-      changeOrientation:props.changeOrientation,
+      seekButtonPressed: props.seekButtonPressed,
+      changeOrientation: props.changeOrientation,
     };
-
-    console.log(`Props are: ${this.props.playerType}`);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.playerType !== prevProps.playerType) {
-      this.setState(() => ({
-        playerType: this.props.playerType,
-      }));
-    }
-
     if (this.props.isAdPlaying !== prevProps.isAdPlaying) {
       this.setState(() => ({
         isAdPlaying: this.props.isAdPlaying,
@@ -104,10 +94,7 @@ export class PlayerUI extends React.Component<any, any> {
   render() {
     return (
       <View style={styles.root}>
-        <KalturaPlayer
-          style={styles.playerView}
-          playerType={this.state.playerType}
-        ></KalturaPlayer>
+        <KalturaPlayer style={styles.playerView}></KalturaPlayer>
 
         <SeekBar
           style={styles.seekbar}
@@ -147,9 +134,9 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              if (this.state.isAdPlaying) { 
-                showToast("Action not allowed when Ad is playing")
-                return; 
+              if (this.state.isAdPlaying) {
+                showToast('Action not allowed when Ad is playing');
+                return;
               }
               this.state.playPauseIconPressed();
             }}
@@ -164,9 +151,9 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              if (this.state.isAdPlaying) { 
-                showToast("Action not allowed when Ad is playing")
-                return; 
+              if (this.state.isAdPlaying) {
+                showToast('Action not allowed when Ad is playing');
+                return;
               }
               this.state.replayButtonPressed();
             }}
@@ -181,9 +168,9 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              if (this.state.isAdPlaying) { 
-                showToast("Action not allowed when Ad is playing")
-                return; 
+              if (this.state.isAdPlaying) {
+                showToast('Action not allowed when Ad is playing');
+                return;
               }
 
               this.isSeekedForward = false;
@@ -200,9 +187,9 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              if (this.state.isAdPlaying) { 
-                showToast("Action not allowed when Ad is playing")
-                return; 
+              if (this.state.isAdPlaying) {
+                showToast('Action not allowed when Ad is playing');
+                return;
               }
 
               this.isSeekedForward = true;
@@ -224,7 +211,7 @@ export class PlayerUI extends React.Component<any, any> {
               } else {
                 this.isLandscapeMode = true;
               }
-              
+
               this.state.changeOrientation(this.isLandscapeMode);
             }}
           >
@@ -238,9 +225,9 @@ export class PlayerUI extends React.Component<any, any> {
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => {
-              if (this.state.isAdPlaying) { 
-                showToast("Action not allowed when Ad is playing")
-                return; 
+              if (this.state.isAdPlaying) {
+                showToast('Action not allowed when Ad is playing');
+                return;
               }
 
               if (this.isPlayerMute) {
@@ -258,7 +245,6 @@ export class PlayerUI extends React.Component<any, any> {
               style={{ flex: 1, width: iconHeight, height: iconWidth }}
             />
           </TouchableOpacity>
-
         </View>
       </View>
     );

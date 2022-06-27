@@ -36,6 +36,7 @@ import { showToast, hideToast } from '../components/ScreenMessage';
 import { PlayerUI } from '../components/PlayerUI';
 import { Navigation } from 'react-native-navigation';
 import { PLAYER_SCREEN } from '../../index';
+import { ActivitySpinner } from '../components/ActivitySpinner';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -72,6 +73,7 @@ export default class App extends React.Component<any, any> {
       isContentPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
+      isShowing: false,
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -126,13 +128,11 @@ export default class App extends React.Component<any, any> {
   }
 
   getPlayerCurrentPosition(): any {
-    this.player
-      .getCurrentPosition()
-      .then((value: any) => {
-        console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`)
-        return value;
-      });
-  };
+    this.player.getCurrentPosition().then((value: any) => {
+      console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`);
+      return value;
+    });
+  }
 
   checkIfPlayerIsPlaying = () => {
     this.player
@@ -161,7 +161,9 @@ export default class App extends React.Component<any, any> {
   };
 
   muteUnmuteButtonPressed = (isPlayerMute: boolean) => {
-    console.log("muteUnmuteButtonPressed pressed isPlayerMute: " + isPlayerMute);
+    console.log(
+      'muteUnmuteButtonPressed pressed isPlayerMute: ' + isPlayerMute
+    );
     if (this.state.isContentPlaying) {
       if (isPlayerMute) {
         this.player.setVolume(0);
@@ -169,23 +171,23 @@ export default class App extends React.Component<any, any> {
         this.player.setVolume(1);
       }
     }
-  }
+  };
 
   seekButtonPressed = (isSeekForward: boolean) => {
     //console.log(`seekButtonPressed ${isSeekForward}  this.state.currentPosition is ${this.state.currentPosition}`);
     if (this.state.isContentPlaying) {
       if (isSeekForward) {
-        this.player.seekTo((this.state.currentPosition + 10));
+        this.player.seekTo(this.state.currentPosition + 10);
       } else {
-        this.player.seekTo((this.state.currentPosition - 10));
+        this.player.seekTo(this.state.currentPosition - 10);
       }
     }
-  }
+  };
 
   // Only works for Android. for iOS this does not work.
   // TODO: Need to find the solution for iOS
   changeOrientation(isLandscape: boolean) {
-    console.log("changeOrientation isLandscape: " + isLandscape);
+    console.log('changeOrientation isLandscape: ' + isLandscape);
     Navigation.mergeOptions(PLAYER_SCREEN, {
       layout: {
         orientation: [isLandscape ? 'landscape' : 'portrait'],
@@ -386,6 +388,40 @@ export default class App extends React.Component<any, any> {
     playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
       //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
     });
+
+    playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
+      console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
+      if (
+        this._isMounted && !this.state.isAdPlaying &&
+        (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
+      ) {
+        this.setState(() => ({
+          isShowing: true,
+        }));
+      } else {
+        this.setState(() => ({
+          isShowing: false,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_BUFFER_START, () => {
+      console.log('AdEvent AD_BUFFER_START');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isShowing: true,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_BUFFER_END, () => {
+      console.log('AdEvent AD_BUFFER_END');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isShowing: false,
+        }));
+      }
+    });
   };
 
   render() {
@@ -438,23 +474,25 @@ export default class App extends React.Component<any, any> {
             )}
           </View>
 
-          <PlayerUI
-            playerType={playerType}
-            isAdPlaying={this.state.isAdPlaying}
-            position={this.state.currentPosition}
-            duration={this.state.totalDuration}
-            onSeekBarScrubbed={this.onSeekBarScrubbed}
-            onSeekBarScrubbing={this.onSeekBarScrubbing}
-            isContentPlaying={this.state.isContentPlaying}
-            playPauseIconPressed={this.playPauseIconPressed}
-            replayButtonPressed={this.replayButtonPressed}
-            muteUnmuteButtonPressed={this.muteUnmuteButtonPressed}
-            seekButtonPressed={this.seekButtonPressed}
-            changeOrientation={this.changeOrientation}
-          ></PlayerUI>
+          <View style={styles.playerViewRoot}>
+            <PlayerUI
+              isAdPlaying={this.state.isAdPlaying}
+              position={this.state.currentPosition}
+              duration={this.state.totalDuration}
+              onSeekBarScrubbed={this.onSeekBarScrubbed}
+              onSeekBarScrubbing={this.onSeekBarScrubbing}
+              isContentPlaying={this.state.isContentPlaying}
+              playPauseIconPressed={this.playPauseIconPressed}
+              replayButtonPressed={this.replayButtonPressed}
+              muteUnmuteButtonPressed={this.muteUnmuteButtonPressed}
+              seekButtonPressed={this.seekButtonPressed}
+              changeOrientation={this.changeOrientation}
+            ></PlayerUI>
+
+            <ActivitySpinner isShowing={this.state.isShowing} />
+          </View>
 
           <View style={styles.row}>
-          
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => {
@@ -466,7 +504,6 @@ export default class App extends React.Component<any, any> {
           </View>
 
           <View style={styles.row}>
-
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => {
@@ -564,6 +601,12 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     minWidth: '20%',
     textAlign: 'center',
+  },
+  playerViewRoot: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

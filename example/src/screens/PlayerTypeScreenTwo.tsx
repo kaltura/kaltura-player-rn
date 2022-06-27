@@ -7,7 +7,7 @@ import playerTestJson from '../test/PlayerTest.json';
 
 export default class PlayerTypeScreenTwo extends PureComponent {
   state = {
-      playerType: this.props.playerType,
+    playerType: this.props.playerType,
   };
   names: string[] = Object.getOwnPropertyNames(
     playerTestJson[this.state.playerType]
@@ -44,7 +44,7 @@ export default class PlayerTypeScreenTwo extends PureComponent {
             )}
           />
         ) : (
-          <Text> No Player Type found.</Text>
+          <Text>No Player details found for this PlayerType.</Text>
         )}
       </View>
     );
@@ -65,7 +65,7 @@ function openPlayerTypeDetails(props, title: string) {
       id: PLAYER_TYPE_DETAILS,
       passProps: {
         clickedItem: title,
-        playerType: props.playerType
+        playerType: props.playerType,
       },
       options: {
         topBar: {
