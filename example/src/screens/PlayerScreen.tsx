@@ -37,6 +37,7 @@ import { PlayerUI } from '../components/PlayerUI';
 import { Navigation } from 'react-native-navigation';
 import { PLAYER_SCREEN } from '../../index';
 import { ActivitySpinner } from '../components/ActivitySpinner';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -196,6 +197,9 @@ export default class App extends React.Component<any, any> {
   }
 
   changePlaybackRate = (rate: number) => {
+    if (this.state.isAdPlaying) {
+      showToast("Playrate can not be changed when Ad is playing");
+    }
     this.player.setPlaybackRate(rate);
   };
 
@@ -208,6 +212,9 @@ export default class App extends React.Component<any, any> {
   };
 
   onTrackChangeListener = (trackId: string) => {
+    if (this.state.isAdPlaying) {
+      showToast("Track can not be changed when Ad is playing");
+    }
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
   };
@@ -391,17 +398,19 @@ export default class App extends React.Component<any, any> {
 
     playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
       console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
-      if (
-        this._isMounted && !this.state.isAdPlaying &&
-        (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
-      ) {
-        this.setState(() => ({
-          isShowing: true,
-        }));
-      } else {
-        this.setState(() => ({
-          isShowing: false,
-        }));
+      if (this._isMounted) {
+        if (
+          !this.state.isAdPlaying &&
+          (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
+        ) {
+          this.setState(() => ({
+            isShowing: true,
+          }));
+        } else {
+          this.setState(() => ({
+            isShowing: false,
+          }));
+        }
       }
     });
 
@@ -492,27 +501,26 @@ export default class App extends React.Component<any, any> {
             <ActivitySpinner isShowing={this.state.isShowing} />
           </View>
 
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.changePlaybackRate(2.0);
-              }}
-            >
-              <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
-            </TouchableOpacity>
-          </View>
+          <Dropdown
+            style={styles.dropdown}
+            selectedTextStyle={styles.selectedTextStyle}
+            iconStyle={styles.iconStyle}
+            maxHeight={200}
+            data={playrates}
+            valueField="rate"
+            labelField="name"
+            placeholder="Playrate"
+            onChange={(playrates) => {
+              console.log(
+                'Selected Playback rate is: ' + playrates.rate
+              );
+              {
+                this.changePlaybackRate(playrates.rate);
+              }
+            }}
+          />
 
           <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.changePlaybackRate(0.5);
-              }}
-            >
-              <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
-            </TouchableOpacity>
-
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => {
@@ -553,6 +561,25 @@ async function setupKalturaPlayer(
     throw err;
   }
 }
+
+const playrates = [
+  {
+    name: 'Rate 0.5',
+    rate: 0.5,
+  },
+  {
+    name: 'Rate 1.0',
+    rate: 1.0,
+  },
+  {
+    name: 'Rate 1.5',
+    rate: 1.5,
+  },
+  {
+    name: 'Rate 2.0',
+    rate: 2.0,
+  },
+];
 
 const styles = StyleSheet.create({
   container: {
@@ -607,6 +634,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  dropdown: {
+    margin: 5,
+    height: 30,
+    width: 140,
+    backgroundColor: '#EEEEEE',
+    borderRadius: 210,
+    paddingHorizontal: 8,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
   },
 });
 

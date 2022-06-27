@@ -22,7 +22,7 @@ export class ActivitySpinner extends Component<any, any> {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" animating={this.state.isShowing} />
+        <ActivityIndicator color = "blue" size="large" animating={this.state.isShowing} />
       </View>
     );
   }

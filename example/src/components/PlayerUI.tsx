@@ -41,7 +41,7 @@ export class PlayerUI extends React.Component<any, any> {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     if (this.props.isAdPlaying !== prevProps.isAdPlaying) {
       this.setState(() => ({
         isAdPlaying: this.props.isAdPlaying,
@@ -96,155 +96,155 @@ export class PlayerUI extends React.Component<any, any> {
       <View style={styles.root}>
         <KalturaPlayer style={styles.playerView}></KalturaPlayer>
 
-        <SeekBar
-          style={styles.seekbar}
-          isAdPlaying={this.state.isAdPlaying}
-          position={this.state.position}
-          duration={this.state.duration}
-          onSeekBarScrubbed={this.onSeekBarScrubbed}
-          onSeekBarScrubbing={this.onSeekBarScrubbing}
-        ></SeekBar>
+        <View style={styles.controlsView}>
+          <SeekBar
+            isAdPlaying={this.state.isAdPlaying}
+            position={this.state.position}
+            duration={this.state.duration}
+            onSeekBarScrubbed={this.onSeekBarScrubbed}
+            onSeekBarScrubbing={this.onSeekBarScrubbing}
+          ></SeekBar>
 
-        <View
-          style={[
-            styles.flex_container,
-            {
+          <View
+            style={[
+              styles.flex_container,
+              {
+                flexDirection: 'row',
+              },
+            ]}
+          >
+            <Text style={{ flex: 1 }}>
+              {convertToHHMMSS(this.state.position)}
+            </Text>
+
+            <Text>{convertToHHMMSS(this.state.duration)}</Text>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+              height: 60,
+              alignItems: 'center',
               flexDirection: 'row',
-            },
-          ]}
-        >
-          <Text style={{ flex: 1 }}>
-            {convertToHHMMSS(this.state.position)}
-          </Text>
-
-          <Text>{convertToHHMMSS(this.state.duration)}</Text>
-        </View>
-
-        <View
-          style={{
-            flex: 1,
-            width: '100%',
-            height: 60,
-            padding: 10,
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.state.isAdPlaying) {
-                showToast('Action not allowed when Ad is playing');
-                return;
-              }
-              this.state.playPauseIconPressed();
+              justifyContent: 'space-between',
             }}
           >
-            <Image
-              source={this.state.isContentPlaying ? iconPause : iconPlay}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.state.isAdPlaying) {
+                  showToast('Action not allowed when Ad is playing');
+                  return;
+                }
+                this.state.playPauseIconPressed();
+              }}
+            >
+              <Image
+                source={this.state.isContentPlaying ? iconPause : iconPlay}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.state.isAdPlaying) {
-                showToast('Action not allowed when Ad is playing');
-                return;
-              }
-              this.state.replayButtonPressed();
-            }}
-          >
-            <Image
-              source={iconReplay}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.state.isAdPlaying) {
+                  showToast('Action not allowed when Ad is playing');
+                  return;
+                }
+                this.state.replayButtonPressed();
+              }}
+            >
+              <Image
+                source={iconReplay}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.state.isAdPlaying) {
-                showToast('Action not allowed when Ad is playing');
-                return;
-              }
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.state.isAdPlaying) {
+                  showToast('Action not allowed when Ad is playing');
+                  return;
+                }
 
-              this.isSeekedForward = false;
-              this.state.seekButtonPressed(this.isSeekedForward);
-            }}
-          >
-            <Image
-              source={iconSeekBack}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+                this.isSeekedForward = false;
+                this.state.seekButtonPressed(this.isSeekedForward);
+              }}
+            >
+              <Image
+                source={iconSeekBack}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.state.isAdPlaying) {
-                showToast('Action not allowed when Ad is playing');
-                return;
-              }
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.state.isAdPlaying) {
+                  showToast('Action not allowed when Ad is playing');
+                  return;
+                }
 
-              this.isSeekedForward = true;
-              this.state.seekButtonPressed(this.isSeekedForward);
-            }}
-          >
-            <Image
-              source={iconSeekFrwd}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+                this.isSeekedForward = true;
+                this.state.seekButtonPressed(this.isSeekedForward);
+              }}
+            >
+              <Image
+                source={iconSeekFrwd}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.isLandscapeMode) {
-                this.isLandscapeMode = false;
-              } else {
-                this.isLandscapeMode = true;
-              }
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.isLandscapeMode) {
+                  this.isLandscapeMode = false;
+                } else {
+                  this.isLandscapeMode = true;
+                }
 
-              this.state.changeOrientation(this.isLandscapeMode);
-            }}
-          >
-            <Image
-              source={iconFullScreen}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+                this.state.changeOrientation(this.isLandscapeMode);
+              }}
+            >
+              <Image
+                source={iconFullScreen}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => {
-              if (this.state.isAdPlaying) {
-                showToast('Action not allowed when Ad is playing');
-                return;
-              }
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                if (this.state.isAdPlaying) {
+                  showToast('Action not allowed when Ad is playing');
+                  return;
+                }
 
-              if (this.isPlayerMute) {
-                this.isPlayerMute = false;
-              } else {
-                this.isPlayerMute = true;
-              }
+                if (this.isPlayerMute) {
+                  this.isPlayerMute = false;
+                } else {
+                  this.isPlayerMute = true;
+                }
 
-              this.state.muteUnmuteButtonPressed(this.isPlayerMute);
-            }}
-          >
-            <Image
-              source={this.isPlayerMute ? iconUnmute : iconMute}
-              resizeMode="contain"
-              style={{ flex: 1, width: iconHeight, height: iconWidth }}
-            />
-          </TouchableOpacity>
+                this.state.muteUnmuteButtonPressed(this.isPlayerMute);
+              }}
+            >
+              <Image
+                source={this.isPlayerMute ? iconUnmute : iconMute}
+                resizeMode="contain"
+                style={{ flex: 1, width: iconHeight, height: iconWidth }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -257,12 +257,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   playerView: {
-    padding: 100,
     height: 300,
     alignItems: 'center',
   },
-  seekbar: {
-    marginTop: -300,
+  controlsView: {
+    height: 100,
+    width:"100%"
   },
   flex_container: {
     flexWrap: 'wrap',
