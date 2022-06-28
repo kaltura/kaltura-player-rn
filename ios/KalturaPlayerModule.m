@@ -21,6 +21,9 @@ RCT_EXTERN_METHOD(setUpPlayer:(nonnull NSString *)type
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId
+                  mediaAsset:(nonnull NSString *)mediaAsset)
+
 RCT_EXTERN_METHOD(onApplicationResumed)
 
 @end

@@ -43,8 +43,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     
     var bridge: RCTBridge!
     var playerType: PlayerType = .basic
-    var initOptions: RNKPInitOptions?
-    var kalturaPlayerViewManager: KalturaPlayerViewManager?
+    var kalturaPlayerRN: KalturaPlayerRN?
     
     static func moduleName() -> String! {
         return "KalturaPlayerModule"
@@ -66,7 +65,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     
     @objc
     func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
-                     resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+                     resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         
         guard let options = initOptions, !options.isEmpty else {
             let error = NSError(domain: "", code: 200, userInfo: nil)
@@ -75,40 +74,59 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         }
         
         let data = Data(options.utf8)
+        let initOptions: RNKPInitOptions
         do {
-            self.initOptions = try JSONDecoder().decode(RNKPInitOptions.self, from: data)
+            initOptions = try JSONDecoder().decode(RNKPInitOptions.self, from: data)
         } catch let error as NSError {
             reject("ERROR_SETUPPLAYER", "The initOptions could not be parsed.", error)
             return
         }
         
-        print(self.initOptions)
+        //TODO: Remove print
+        print(initOptions)
         
         self.playerType = getPlayerType(from: type)
         
-//        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
-//                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
-//            let error = NSError(domain: "", code: 200, userInfo: nil)
-//            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
-//            return
-//        }
-//
-//        self.kalturaPlayerViewManager = playerViewManager
-
-//        let playerType = playerViewManager.kalturaPlayerRNView.playerType
-        
         switch self.playerType {
         case .basic:
-            break
-            
+            self.kalturaPlayerRN = BasicKalturaPlayerRN(withOptions: initOptions)
         case .ott:
-            break
+            self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions)
         case .ovp:
-            break
+            self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions)
         }
         
-        resolve("sucess")
+        // Connect the player view
+        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
+                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
+            let error = NSError(domain: "", code: 200, userInfo: nil)
+            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
+            return
+        }
+        
+        DispatchQueue.main.async {
+        self.kalturaPlayerRN?.connectView(playerViewManager.kalturaPlayerRNView.kalturaPlayerView)
+        }
+        
+        resolve("Sucess")
     }
+    
+    @objc
+    func load(assetId: String?, mediaAsset: String?) {
+        guard let kalturaPlayerRN = kalturaPlayerRN else {
+            return
+        }
+        
+        guard let assetId = assetId, !assetId.isEmpty , let mediaAsset = mediaAsset, !mediaAsset.isEmpty else {
+            return
+        }
+        
+        kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset)
+    }
+    
+}
+
+extension KalturaPlayerModule {
     
     @objc
     func onApplicationResumed() {

@@ -5,15 +5,20 @@
 //  Created by Nilit Danan on 17/05/2022.
 //
 
-import KalturaPlayer
-import PlayKitProviders
-import PlayKit
 import Foundation
+import KalturaPlayer
 
 class KalturaPlayerRNView : UIView {
     
+    let kalturaPlayerView: KalturaPlayerView = KalturaPlayerView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        kalturaPlayerView.frame = frame
+        kalturaPlayerView.contentMode = .scaleAspectFit
+        kalturaPlayerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        self.addSubview(kalturaPlayerView)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -30,6 +35,7 @@ class KalturaPlayerRNView : UIView {
     
     
     // MARK: -
+    
     
     
 //    // TODO: Fix all the '!'
@@ -104,31 +110,31 @@ class KalturaPlayerRNView : UIView {
 
 // MARK: - Helpers
 
-extension KalturaPlayerRNView {
-    
-    func getAssetType(str: String) -> AssetType {
-        if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetType.media }
-        if (str.caseInsensitiveCompare("recording") == ComparisonResult.orderedSame) { return AssetType.recording }
-        if (str.caseInsensitiveCompare("epg") == ComparisonResult.orderedSame) { return AssetType.epg }
-        
-        return AssetType.unset
-    }
-    
-    func getAssetReferenceType(str: String) -> AssetReferenceType {
-        if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetReferenceType.media }
-        if (str.caseInsensitiveCompare("epgInternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgInternal }
-        if (str.caseInsensitiveCompare("epgExternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgExternal }
-        if (str.caseInsensitiveCompare("npvr") == ComparisonResult.orderedSame) { return AssetReferenceType.npvr }
-        
-        return AssetReferenceType.unset
-    }
-    
-    func getPlaybackContextType(str: String) -> PlaybackContextType {
-        if (str.caseInsensitiveCompare("playback") == ComparisonResult.orderedSame) { return PlaybackContextType.playback }
-        if (str.caseInsensitiveCompare("catchup") == ComparisonResult.orderedSame) { return PlaybackContextType.catchup }
-        if (str.caseInsensitiveCompare("trailer") == ComparisonResult.orderedSame) { return PlaybackContextType.trailer }
-        if (str.caseInsensitiveCompare("startOver") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
-        
-        return PlaybackContextType.unset
-    }
-}
+//extension KalturaPlayerRNView {
+//    
+//    func getAssetType(str: String) -> AssetType {
+//        if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetType.media }
+//        if (str.caseInsensitiveCompare("recording") == ComparisonResult.orderedSame) { return AssetType.recording }
+//        if (str.caseInsensitiveCompare("epg") == ComparisonResult.orderedSame) { return AssetType.epg }
+//        
+//        return AssetType.unset
+//    }
+//    
+//    func getAssetReferenceType(str: String) -> AssetReferenceType {
+//        if (str.caseInsensitiveCompare("media") == ComparisonResult.orderedSame) { return AssetReferenceType.media }
+//        if (str.caseInsensitiveCompare("epgInternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgInternal }
+//        if (str.caseInsensitiveCompare("epgExternal") == ComparisonResult.orderedSame) { return AssetReferenceType.epgExternal }
+//        if (str.caseInsensitiveCompare("npvr") == ComparisonResult.orderedSame) { return AssetReferenceType.npvr }
+//        
+//        return AssetReferenceType.unset
+//    }
+//    
+//    func getPlaybackContextType(str: String) -> PlaybackContextType {
+//        if (str.caseInsensitiveCompare("playback") == ComparisonResult.orderedSame) { return PlaybackContextType.playback }
+//        if (str.caseInsensitiveCompare("catchup") == ComparisonResult.orderedSame) { return PlaybackContextType.catchup }
+//        if (str.caseInsensitiveCompare("trailer") == ComparisonResult.orderedSame) { return PlaybackContextType.trailer }
+//        if (str.caseInsensitiveCompare("startOver") == ComparisonResult.orderedSame) { return PlaybackContextType.startOver }
+//        
+//        return PlaybackContextType.unset
+//    }
+//}

@@ -6,3 +6,12 @@
 //
 
 import Foundation
+
+class OTTKalturaPlayerRN: KalturaPlayerRN {
+    
+    override init(withOptions initOptions: RNKPInitOptions) {
+        super.init(withOptions: initOptions)
+        
+        
+    }
+}
