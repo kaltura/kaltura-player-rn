@@ -112,7 +112,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     }
     
     @objc
-    func load(assetId: String?, mediaAsset: String?) {
+    func load(_ assetId: String?, mediaAsset: String?) {
         guard let kalturaPlayerRN = kalturaPlayerRN else {
             return
         }
@@ -121,9 +121,10 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             return
         }
         
-        kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset)
+        DispatchQueue.main.async {
+            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset)
+        }
     }
-    
 }
 
 extension KalturaPlayerModule {
@@ -132,7 +133,6 @@ extension KalturaPlayerModule {
     func onApplicationResumed() {
         
     }
-    
 }
 
 extension KalturaPlayerModule {
