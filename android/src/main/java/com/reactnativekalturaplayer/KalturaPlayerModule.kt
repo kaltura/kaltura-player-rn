@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.kaltura.playkit.PKLog
+import com.kaltura.tvplayer.KalturaPlayer
 
 class KalturaPlayerModule(
     reactApplicationContext: ReactApplicationContext,
@@ -32,9 +33,9 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
-    fun setUpPlayer(partnerId: Int = 0, initOptions: String?, promise: Promise) {
+    fun setUpPlayer(playerType: String, partnerId: Int = 0, initOptions: String?, promise: Promise) {
         log.d("setPartnerId: $partnerId")
-        kalturaPlayerRN.createPlayerInstance(partnerId, initOptions, promise)
+        kalturaPlayerRN.createPlayerInstance(getKalturaPlayerType(playerType), partnerId, initOptions, promise)
     }
 
     @ReactMethod
@@ -146,7 +147,7 @@ class KalturaPlayerModule(
     @ReactMethod
     fun setVolume(volume: Float) {
         log.d("setVolume: $volume")
-        if (volume > 0f) {
+        if (volume >= 0f) {
             kalturaPlayerRN.setVolume(volume);
         } else {
             log.d("Invalid Volume which is $volume");
@@ -234,5 +235,15 @@ class KalturaPlayerModule(
         if (TextUtils.isEmpty(arg)) {
             throw IllegalArgumentException("$methodName argument is invalid for ", Throwable("$arg is invalid"))
         }
+    }
+
+    @NonNull
+    private fun getKalturaPlayerType(playerType: String): KalturaPlayer.Type {
+        if (TextUtils.equals(playerType, KalturaPlayer.Type.basic.name)) {
+            return KalturaPlayer.Type.basic
+        } else if (TextUtils.equals(playerType, KalturaPlayer.Type.ovp.name)) {
+            return KalturaPlayer.Type.ovp
+        }
+        return KalturaPlayer.Type.ott
     }
 }

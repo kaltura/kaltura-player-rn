@@ -57,7 +57,7 @@ export default class PlayerTypeDetails extends PureComponent {
             onItemClick={handleItemClick}
           />
         ) : (
-          <Text> No Player Details Type found.</Text>
+          <Text> There is no defined Player.</Text>
         )}
       </View>
     );

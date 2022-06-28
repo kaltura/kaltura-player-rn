@@ -88,13 +88,18 @@ export class KalturaPlayerAPI {
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
-  static setup = async (playerType: string, id: number = 0, options: string) => {
+  static setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0) => {
+    if (playerType == null) {
+      console.error(`Invalid playerType = ${playerType}`);
+      return;
+    }
+
     if (!options) {
       console.error(`setup, invalid options = ${options}`);
       return;
     }
     console.log('Setting up the Player');
-    return await setupKalturaPlayer(playerType, id, options);
+    return await setupKalturaPlayer(playerType, options, id);
   };
 
   /**
@@ -397,10 +402,10 @@ export class KalturaPlayerAPI {
   };
 }
 
-async function setupKalturaPlayer(type: string, id: number, options: string) {
+async function setupKalturaPlayer(playerType: PLAYER_TYPE, options: string, id: number) {
   try {
     const kalturaPlayerSetup = await KalturaPlayerModule.setUpPlayer(
-      type,
+      playerType,
       id,
       options
     );

@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import TrackList from '../components/TrackList';
-import SeekBar from '../components/SeekBar';
 import {
   KalturaPlayer,
   KalturaPlayerAPI,
@@ -27,16 +26,18 @@ import {
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
 } from 'react-native-kaltura-player';
-import { 
-  NativeModules, 
-  NativeEventEmitter
-} from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 import {
   PlayerEvents,
   AdEvents,
   AnalyticsEvents,
 } from 'react-native-kaltura-player';
 import { showToast, hideToast } from '../components/ScreenMessage';
+import { PlayerUI } from '../components/PlayerUI';
+import { Navigation } from 'react-native-navigation';
+import { PLAYER_SCREEN } from '../../index';
+import { ActivitySpinner } from '../components/ActivitySpinner';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -70,8 +71,10 @@ export default class App extends React.Component<any, any> {
 
       // Seekbar Props default States
       isAdPlaying: false,
+      isContentPlaying: false,
       currentPosition: 0,
       totalDuration: 0,
+      isShowing: false,
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -89,6 +92,14 @@ export default class App extends React.Component<any, any> {
     this.subscribeToAppLifecyle();
     console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
     console.log(`PlayerScreen playertype: ${this.props.playerType}`);
+
+    if (this.props.playerType == 'basic') {
+      playerType = PLAYER_TYPE.BASIC;
+    } else if (this.props.playerType == 'ovp') {
+      playerType = PLAYER_TYPE.OVP;
+    } else {
+      playerType = PLAYER_TYPE.OTT;
+    }
 
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
     var options = this.props.incomingJson.initOptions;
@@ -117,17 +128,12 @@ export default class App extends React.Component<any, any> {
     playerType = null;
   }
 
-  doPause = () => {
-    this.player.pause();
-  };
-
-  getPlayerCurrentPosition = () => {
-    this.player
-      .getCurrentPosition()
-      .then((value: any) =>
-        console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`)
-      );
-  };
+  getPlayerCurrentPosition(): any {
+    this.player.getCurrentPosition().then((value: any) => {
+      console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`);
+      return value;
+    });
+  }
 
   checkIfPlayerIsPlaying = () => {
     this.player
@@ -141,15 +147,59 @@ export default class App extends React.Component<any, any> {
     this.player.isLive().then((value: any) => console.log(`isLive ${value}`));
   };
 
-  doPlay = () => {
-    this.player.play();
+  playPauseIconPressed = () => {
+    if (this.state.isContentPlaying) {
+      this.player.pause();
+    } else {
+      this.player.play();
+    }
   };
 
-  doReplay = () => {
-    this.player.replay();
+  replayButtonPressed = () => {
+    if (this.state.isContentPlaying) {
+      this.player.replay();
+    }
   };
+
+  muteUnmuteButtonPressed = (isPlayerMute: boolean) => {
+    console.log(
+      'muteUnmuteButtonPressed pressed isPlayerMute: ' + isPlayerMute
+    );
+    if (this.state.isContentPlaying) {
+      if (isPlayerMute) {
+        this.player.setVolume(0);
+      } else {
+        this.player.setVolume(1);
+      }
+    }
+  };
+
+  seekButtonPressed = (isSeekForward: boolean) => {
+    //console.log(`seekButtonPressed ${isSeekForward}  this.state.currentPosition is ${this.state.currentPosition}`);
+    if (this.state.isContentPlaying) {
+      if (isSeekForward) {
+        this.player.seekTo(this.state.currentPosition + 10);
+      } else {
+        this.player.seekTo(this.state.currentPosition - 10);
+      }
+    }
+  };
+
+  // Only works for Android. for iOS this does not work.
+  // TODO: Need to find the solution for iOS
+  changeOrientation(isLandscape: boolean) {
+    console.log('changeOrientation isLandscape: ' + isLandscape);
+    Navigation.mergeOptions(PLAYER_SCREEN, {
+      layout: {
+        orientation: [isLandscape ? 'landscape' : 'portrait'],
+      },
+    });
+  }
 
   changePlaybackRate = (rate: number) => {
+    if (this.state.isAdPlaying) {
+      showToast("Playrate can not be changed when Ad is playing");
+    }
     this.player.setPlaybackRate(rate);
   };
 
@@ -162,6 +212,9 @@ export default class App extends React.Component<any, any> {
   };
 
   onTrackChangeListener = (trackId: string) => {
+    if (this.state.isAdPlaying) {
+      showToast("Track can not be changed when Ad is playing");
+    }
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
   };
@@ -228,6 +281,28 @@ export default class App extends React.Component<any, any> {
       }
     });
 
+    playerEventEmitter.addListener(PlayerEvents.PLAY, () => {
+      console.log('PlayerEvent PLAY');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isContentPlaying: true,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.PAUSE, () => {
+      console.log('PlayerEvent PAUSE');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isContentPlaying: false,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(PlayerEvents.VOLUME_CHANGED, (payload) => {
+      console.log(`PlayerEvent VOLUME_CHANGED ${payload.volume}`);
+    });
+
     playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
       console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
     });
@@ -279,6 +354,7 @@ export default class App extends React.Component<any, any> {
       if (this._isMounted) {
         this.setState(() => ({
           isAdPlaying: true,
+          isContentPlaying: false,
         }));
       }
     });
@@ -288,6 +364,7 @@ export default class App extends React.Component<any, any> {
       if (this._isMounted) {
         this.setState(() => ({
           isAdPlaying: false,
+          isContentPlaying: true,
         }));
       }
     });
@@ -318,25 +395,51 @@ export default class App extends React.Component<any, any> {
     playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
       //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
     });
+
+    playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
+      console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
+      if (this._isMounted) {
+        if (
+          !this.state.isAdPlaying &&
+          (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
+        ) {
+          this.setState(() => ({
+            isShowing: true,
+          }));
+        } else {
+          this.setState(() => ({
+            isShowing: false,
+          }));
+        }
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_BUFFER_START, () => {
+      console.log('AdEvent AD_BUFFER_START');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isShowing: true,
+        }));
+      }
+    });
+
+    playerEventEmitter.addListener(AdEvents.AD_BUFFER_END, () => {
+      console.log('AdEvent AD_BUFFER_END');
+      if (this._isMounted) {
+        this.setState(() => ({
+          isShowing: false,
+        }));
+      }
+    });
   };
 
   render() {
-    if (this.props.playerType == 'basic') {
-      playerType = PLAYER_TYPE.BASIC;
-    } else if (this.props.playerType == 'ovp') {
-      playerType = PLAYER_TYPE.OVP;
-    } else {
-      playerType = PLAYER_TYPE.OTT;
-    }
-
     // console.log("IN render Playertype is this.props.playerTyp : " + this.props.playerType);
     // console.log("IN render Playertype is: " + playerType);
 
     return (
       <RootSiblingParent>
         <ScrollView>
-          <Text style={styles.blue_center}>Kaltura Player Demo</Text>
-
           <View
             style={[
               styles.flex_container,
@@ -380,66 +483,44 @@ export default class App extends React.Component<any, any> {
             )}
           </View>
 
-          <KalturaPlayer
-            style={styles.center}
-          ></KalturaPlayer>
+          <View style={styles.playerViewRoot}>
+            <PlayerUI
+              isAdPlaying={this.state.isAdPlaying}
+              position={this.state.currentPosition}
+              duration={this.state.totalDuration}
+              onSeekBarScrubbed={this.onSeekBarScrubbed}
+              onSeekBarScrubbing={this.onSeekBarScrubbing}
+              isContentPlaying={this.state.isContentPlaying}
+              playPauseIconPressed={this.playPauseIconPressed}
+              replayButtonPressed={this.replayButtonPressed}
+              muteUnmuteButtonPressed={this.muteUnmuteButtonPressed}
+              seekButtonPressed={this.seekButtonPressed}
+              changeOrientation={this.changeOrientation}
+            ></PlayerUI>
 
-          <SeekBar
-            isAdPlaying={this.state.isAdPlaying}
-            position={this.state.currentPosition}
-            duration={this.state.totalDuration}
-            onSeekBarScrubbed={this.onSeekBarScrubbed}
-            onSeekBarScrubbing={this.onSeekBarScrubbing}
-          ></SeekBar>
-
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doPlay();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Play Media</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doPause();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Pause Media</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.changePlaybackRate(2.0);
-              }}
-            >
-              <Text style={[styles.bigWhite]}>PlaybackRate 2.0</Text>
-            </TouchableOpacity>
+            <ActivitySpinner isShowing={this.state.isShowing} />
           </View>
 
+          <Dropdown
+            style={styles.dropdown}
+            selectedTextStyle={styles.selectedTextStyle}
+            iconStyle={styles.iconStyle}
+            maxHeight={200}
+            data={playrates}
+            valueField="rate"
+            labelField="name"
+            placeholder="Playrate"
+            onChange={(playrates) => {
+              console.log(
+                'Selected Playback rate is: ' + playrates.rate
+              );
+              {
+                this.changePlaybackRate(playrates.rate);
+              }
+            }}
+          />
+
           <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.doReplay();
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Replay Media</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.changePlaybackRate(0.5);
-              }}
-            >
-              <Text style={[styles.bigWhite]}>PlaybackRate 0.5</Text>
-            </TouchableOpacity>
-
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => {
@@ -460,23 +541,45 @@ export default class App extends React.Component<any, any> {
 
 async function setupKalturaPlayer(
   player: KalturaPlayerAPI,
-  playerType: String,
+  playerType: PLAYER_TYPE,
   options: String,
   mediaAsset: String,
   mediaId: String, // PlaybackUrl
   partnerId: number = 0
 ) {
   try {
-    const playerCreated = await player.setup(playerType, partnerId, options);
+    const playerCreated = await player.setup(playerType, options, partnerId);
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
-
-    player.addListeners();
-    player.loadMedia(mediaId, mediaAsset);
+    if (playerCreated != null) {
+      player.addListeners();
+      player.loadMedia(mediaId, mediaAsset);
+    } else {
+      console.error('Player is not created.');
+    }
   } catch (err) {
     console.log(err);
     throw err;
   }
 }
+
+const playrates = [
+  {
+    name: 'Rate 0.5',
+    rate: 0.5,
+  },
+  {
+    name: 'Rate 1.0',
+    rate: 1.0,
+  },
+  {
+    name: 'Rate 1.5',
+    rate: 1.5,
+  },
+  {
+    name: 'Rate 2.0',
+    rate: 2.0,
+  },
+];
 
 const styles = StyleSheet.create({
   container: {
@@ -525,6 +628,28 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     minWidth: '20%',
     textAlign: 'center',
+  },
+  playerViewRoot: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dropdown: {
+    margin: 5,
+    height: 30,
+    width: 140,
+    backgroundColor: '#EEEEEE',
+    borderRadius: 210,
+    paddingHorizontal: 8,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
   },
 });
 

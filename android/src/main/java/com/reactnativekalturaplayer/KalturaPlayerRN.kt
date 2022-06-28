@@ -68,8 +68,8 @@ class KalturaPlayerRN(
         return playerType as KalturaPlayer.Type
     }
 
-    fun createPlayerInstance(partnerId: Int, initOptions: String?, promise: Promise) {
-        playerType = kalturaPlayerRNView.playerType
+    fun createPlayerInstance(playerType: KalturaPlayer.Type, partnerId: Int, initOptions: String?, promise: Promise) {
+        this.playerType = playerType
 
         log.d("createPlayerInstance PartnerId: $partnerId initOptions : $initOptions playerType: ${this.getPlayerType()}")
 

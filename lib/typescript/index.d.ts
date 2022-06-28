@@ -30,7 +30,7 @@ export declare class KalturaPlayerAPI {
      * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
      * for the mediaId or the entryId)
      */
-    static setup: (playerType: string, id: number | undefined, options: string) => Promise<any>;
+    static setup: (playerType: PLAYER_TYPE, options: string, id?: number) => Promise<any>;
     /**
      * Load the media with the given
      *
