@@ -198,9 +198,16 @@ export default class App extends React.Component<any, any> {
 
   changePlaybackRate = (rate: number) => {
     if (this.state.isAdPlaying) {
-      showToast("Playrate can not be changed when Ad is playing");
+      showToast('Playrate can not be changed when Ad is playing');
     }
     this.player.setPlaybackRate(rate);
+  };
+
+  changeSubtitleStyling = () => {
+    if (this.state.isAdPlaying) {
+      showToast('Subtitle Styling can not be changed when Ad is playing');
+    }
+    this.player.updateSubtitleStyle(JSON.stringify(updatedSubtitleStyling));
   };
 
   changeMedia = (assetId: string, mediaAsset: string) => {
@@ -213,7 +220,7 @@ export default class App extends React.Component<any, any> {
 
   onTrackChangeListener = (trackId: string) => {
     if (this.state.isAdPlaying) {
-      showToast("Track can not be changed when Ad is playing");
+      showToast('Track can not be changed when Ad is playing');
     }
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
@@ -511,28 +518,25 @@ export default class App extends React.Component<any, any> {
             labelField="name"
             placeholder="Playrate"
             onChange={(playrates) => {
-              console.log(
-                'Selected Playback rate is: ' + playrates.rate
-              );
+              console.log('Selected Playback rate is: ' + playrates.rate);
               {
                 this.changePlaybackRate(playrates.rate);
               }
             }}
           />
 
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                this.changeMedia(
-                  playbackUrlChangeMedia,
-                  JSON.stringify(basicMediaAsset)
-                );
-              }}
-            >
-              <Text style={[styles.bigWhite]}>Change Media</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => {
+              // this.changeMedia(
+              //   playbackUrlChangeMedia,
+              //   JSON.stringify(basicMediaAsset)
+              // );
+              this.changeSubtitleStyling();
+            }}
+          >
+            <Text style={[styles.bigWhite]}>Change Subtitle Styling</Text>
+          </TouchableOpacity>
         </ScrollView>
       </RootSiblingParent>
     );
