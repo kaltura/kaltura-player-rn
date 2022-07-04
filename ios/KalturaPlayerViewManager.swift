@@ -1,13 +1,10 @@
-import KalturaPlayer
-//import PlayKit
-//import PlayKitProviders
+
 
 
 
 @objc(KalturaPlayerViewManager)
 class KalturaPlayerViewManager: RCTViewManager {
     var kalturaPlayerRNView: KalturaPlayerRNView!
-//    var kalturaPlayer: KalturaOTTPlayer?
 
     override func view() -> (KalturaPlayerRNView) {
         kalturaPlayerRNView = KalturaPlayerRNView()
@@ -36,19 +33,7 @@ class KalturaPlayerViewManager: RCTViewManager {
 //    }
     
     
-//    @objc func setup(_ partnerId: Int64, options: NSDictionary) {
-//        DispatchQueue.main.async {
-//            self.player = KalturaPlayerRNView()
-//            self.kalturaPlayer = self.player.setup(partnerId: partnerId, options: options)
-//            self.observeAllEvents()
-//        }
-//    }
-//
-//    @objc func load(_ assetId: String, options: NSDictionary) {
-//        DispatchQueue.main.async {
-//            self.player.load(assetId: assetId, options: options)
-//        }
-//    }
+
 //
 //    @objc func play() {
 //        DispatchQueue.main.async {

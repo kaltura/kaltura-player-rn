@@ -24,6 +24,9 @@ RCT_EXTERN_METHOD(setUpPlayer:(nonnull NSString *)type
 RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId
                   mediaAsset:(nonnull NSString *)mediaAsset)
 
+RCT_EXTERN_METHOD(addKalturaPlayerListeners)
+RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
+
 RCT_EXTERN_METHOD(onApplicationResumed)
 
 @end

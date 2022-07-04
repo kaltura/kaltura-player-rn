@@ -4,7 +4,7 @@
 @interface RCT_EXTERN_MODULE(KalturaPlayerViewManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(style, NSDictionary)
-RCT_EXPORT_VIEW_PROPERTY(playerType, NSString)
+//RCT_EXPORT_VIEW_PROPERTY(playerType, NSString)
 //RCT_EXPORT_VIEW_PROPERTY(partnerId, NSNumber)
 //RCT_EXPORT_VIEW_PROPERTY(playerInitOptions, NSString)
 //RCT_EXPORT_VIEW_PROPERTY(assetId, NSString)

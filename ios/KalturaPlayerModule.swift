@@ -29,12 +29,11 @@ class KalturaPlayerEvents: RCTEventEmitter {
         hasListener = false
     }
 
-    override func supportedEvents() -> [String]! {
-        return [
-            "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
-            "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "drmInitialized"
-        ]
+    override func supportedEvents() -> [String] {
+        let playerEvents: [String] = KalturaPlayerRNEvents.allCases.map { $0.rawValue }
+        // If We don't return all supported Events in the lib it crashes!
+        let currentlyUnsupportedEvents = ["volumeChanged", "loadedTimeRanges", "drmInitialized", "contentPauseRequested", "contentResumeRequested", "loaded", "adProgress", "cuepointsChanged", "adBufferStart", "adBufferEnd", "playbackRateChanged"]
+        return playerEvents + currentlyUnsupportedEvents
     }
 }
 
@@ -53,19 +52,16 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     // Will enable to see the object in the JS console.
     // You can return any kind of data, but keep in mind that this data is static, computed on build.
     // This means that if you change this data on runtime, you won’t get the updated values.
-    @objc
-    func constantsToExport() -> [AnyHashable : Any]! {
+    @objc func constantsToExport() -> [AnyHashable : Any]! {
         return [:]
     }
     
-    @objc
-    static func requiresMainQueueSetup() -> Bool {
+    @objc static func requiresMainQueueSetup() -> Bool {
         return true
     }
     
-    @objc
-    func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
-                     resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+    @objc func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
+                           resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         
         guard let options = initOptions, !options.isEmpty else {
             let error = NSError(domain: "", code: 200, userInfo: nil)
@@ -111,8 +107,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         resolve("Sucess")
     }
     
-    @objc
-    func load(_ assetId: String?, mediaAsset: String?) {
+    @objc func load(_ assetId: String?, mediaAsset: String?) {
         guard let kalturaPlayerRN = kalturaPlayerRN else {
             return
         }
@@ -129,9 +124,8 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
 
 extension KalturaPlayerModule {
     
-    @objc
-    func onApplicationResumed() {
-        
+    @objc func onApplicationResumed() {
+        // TODO: onApplicationResumed
     }
 }
 
@@ -150,5 +144,16 @@ extension KalturaPlayerModule {
         }
         
         return .basic
+    }
+}
+
+extension KalturaPlayerModule {
+    
+    @objc func addKalturaPlayerListeners() {
+        kalturaPlayerRN?.observeAllEvents()
+    }
+    
+    @objc func removeKalturaPlayerListeners() {
+        kalturaPlayerRN?.removeObservationForAllEvents()
     }
 }

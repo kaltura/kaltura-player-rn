@@ -7,16 +7,17 @@
 
 import Foundation
 import KalturaPlayer
-
-protocol KalturaPlayerRNProtocol {
-    func connectView(_ view: KalturaPlayerView)
-    func load(assetId: String, mediaAsset: String)
-}
+import PlayKit
+import PlayKitProviders
 
 /** Do not create an instance of this class.
     Create one of it's subclasses: BasicKalturaPlayerRN / OTTKalturaPlayerRN / OVPKalturaPlayerRN
  **/
-class KalturaPlayerRN: NSObject, KalturaPlayerRNProtocol {
+class KalturaPlayerRN: NSObject {
+    
+    var kalturaPlayer: KalturaPlayer? {
+        return nil
+    }
     
     private(set) var initOptions: RNKPInitOptions
     private(set) var playerOptions: PlayerOptions
@@ -24,7 +25,7 @@ class KalturaPlayerRN: NSObject, KalturaPlayerRNProtocol {
     /** Do not create an instance of this class.
         Create one of it's subclasses: BasicKalturaPlayerRN / OTTKalturaPlayerRN / OVPKalturaPlayerRN
      **/
-    init(withOptions initOptions: RNKPInitOptions) {
+    internal init(withOptions initOptions: RNKPInitOptions) {
         self.initOptions = initOptions
         self.playerOptions = KalturaPlayerRN.fetchPlayerOptions(initOptions)
         super.init()
@@ -49,15 +50,288 @@ class KalturaPlayerRN: NSObject, KalturaPlayerRNProtocol {
         
         return playerOptions
     }
-    
-    
-    
-    
-    func connectView(_ view: KalturaPlayerView) {
-        // Shouldn't get here! Should be implemented in sub class.
-    }
 
+// MARK: - Subclass implementations
+    
     func load(assetId: String, mediaAsset: String) {
         // Shouldn't get here! Should be implemented in sub class.
+        fatalError("Subclasses need to implement the `load` method.")
+    }
+}
+
+// MARK: - Common implementations
+
+extension KalturaPlayerRN {
+    
+    func connectView(_ view: KalturaPlayerView) {
+        kalturaPlayer?.view = view
+    }
+    
+    func observeAllEvents() {
+        
+        observePlayerEvents()
+        
+        
+        // iOS doesn't have connectionAcquired
+        
+        // iOS doesn't have videoFramesDropped
+        
+        // iOS doesn't have outputBufferCountUpdate
+        
+        // iOS doesn't have bytesLoaded
+        
+        // iOS has that Android doesn't have: "loadedTimeRanges",  "errorLog", "playbackStalled"
+        
+        // TODO: Add adEvents
+        
+//        kalturaPlayer.addObserver(self, event: OttEvent.bookmarkError) { event in
+//            KalturaPlayerEvents.emitter.sendEvent(withName: "bookmarkError", body: event.data)
+//        }
+//        kalturaPlayer.addObserver(self, event: OttEvent.concurrency) { event in
+//            KalturaPlayerEvents.emitter.sendEvent(withName: "concurrencyError", body: event.data)
+//        }
+    }
+    
+    func removeObservationForAllEvents() {
+        guard let kalturaPlayer = self.kalturaPlayer else { return }
+        
+        kalturaPlayer.removeObserver(self, events: PlayKit.PlayerEvent.allEventTypes)
+    }
+}
+
+extension KalturaPlayerRN {
+    
+    private func observePlayerEvents() {
+        guard let kalturaPlayer = self.kalturaPlayer else { return }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.canPlay) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.canPlay.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playing) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playing.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.play) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.play.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.pause) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.pause.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.ended) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.ended.rawValue, body: []) //event.data)
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stopped) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stopped.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.durationChanged) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.durationChanged.rawValue, body: ["duration": event.duration])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playheadUpdate) { event in
+            let currentTime = event.currentTime?.doubleValue ?? 0
+            var bufferedTime = kalturaPlayer.bufferedTime
+
+            if (bufferedTime < currentTime) {
+                bufferedTime = currentTime
+            }
+
+            if (kalturaPlayer.isLive()) {
+                let currentProgramTime = kalturaPlayer.currentProgramTime
+                let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
+                let currentProgramTimeDouble = ((currentProgramTimeEpochSeconds ?? 0) as Double) * 1000
+
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
+                    "position": currentTime,
+                    "bufferPosition": bufferedTime,
+                    "currentProgramTime": currentProgramTimeDouble
+                    // TODO: currentLiveOffset
+                ])
+            } else {
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
+                    "position": currentTime,
+                    "bufferPosition": bufferedTime
+                ])
+            }
+            // TODO: Different from Android, need to verify.
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.loadedTimeRanges) { event in
+            var timeRanges = [] as Array
+            let eventTimeRanges = event.timeRanges ?? []
+            for range in eventTimeRanges {
+                timeRanges.append([
+                    "start": range.start,
+                    "end": range.end,
+                    "duration": range.duration
+                ])
+            }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedTimeRanges.rawValue, body: [
+                "timeRanges": timeRanges
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stateChanged) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stateChanged.rawValue, body: ["newState": event.newState.description])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.tracksAvailable) { event in
+            var audioTracks = [] as Array
+            let selectedAudioTrackId = kalturaPlayer.currentAudioTrack
+            let eventAudioTracks = event.tracks?.audioTracks ?? []
+            for track in eventAudioTracks {
+                audioTracks.append([
+                    "id": track.id,
+                    "label": track.title,
+                    "language": track.language ?? "",
+                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "isSelected": selectedAudioTrackId == track.id
+                ])
+            }
+
+            var textTracks = [] as Array
+            let selectedTextTrackId = kalturaPlayer.currentTextTrack;
+            let eventTextTracks = event.tracks?.textTracks ?? []
+            for track in eventTextTracks {
+                textTracks.append([
+                    "id": track.id,
+                    "label": track.title,
+                    "language": track.language ?? "",
+                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "isSelected": selectedTextTrackId == track.id
+                ])
+            }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.tracksAvailable.rawValue, body: [
+                "audio": audioTracks,
+                "text": textTracks,
+                "video": [],
+                "image": []
+            ])
+            
+            // TODO: Different from Android, need to verify.
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.loadedMetadata) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedMetadata.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.replay) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.replay.rawValue, body: [])
+        }
+        
+        // iOS doesn't have volumeChanged
+        
+        // iOS doesn't have surfaceAspectRationSizeModeChanged
+        
+        // iOS doesn't have subtitlesStyleChanged
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.videoTrackChanged) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.videoTrackChanged.rawValue, body: ["bitrate": event.bitrate])
+            // iOS doesn't send the track, we only have the bitrate.
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
+            guard let audioTrack = event.selectedTrack else { return }
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.audioTrackChanged.rawValue, body: [
+                "id": audioTrack.id,
+                "label": audioTrack.title,
+                "language": audioTrack.language ?? "",
+                "isSelected": true
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
+            guard let textTrack = event.selectedTrack else { return }
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.textTrackChanged.rawValue, body: [
+                "id": textTrack.id,
+                "label": textTrack.title,
+                "language": textTrack.language ?? "",
+                "isSelected": true
+            ])
+        }
+        
+        // iOS doesn't have imageTrackChanged
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackInfo) { event in
+            guard let playbackInfo = event.playbackInfo else { return }
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackInfoUpdated.rawValue, body: [
+                "bitrate": playbackInfo.bitrate,
+                "indicatedBitrate": playbackInfo.indicatedBitrate,
+                "observedBitrate": playbackInfo.observedBitrate,
+                "averageVideoBitrate": playbackInfo.averageVideoBitrate,
+                "averageAudioBitrate": playbackInfo.averageAudioBitrate,
+                "uri": playbackInfo.uri ?? ""
+            ])
+            
+            // TODO: Different from Android, need to verify.
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.seeking) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeking.rawValue, body: [
+                "targetPosition": event.targetSeekPosition
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.seeked) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeked.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.error) { event in
+            let errorMessage = event.error?.localizedDescription
+            var errorCause: String? = (event.error?.localizedFailureReason)
+
+            var errorCode = ""
+            var errorType = ""
+            switch (event.error?.code) {
+                case 7001:
+                    errorCode = "7007"
+                    errorType = "LOAD_ERROR"
+                    break;
+                case 7003:
+                    errorCode = "7000"
+                    errorType = "SOURCE_ERROR"
+                   break;
+                default:
+                    errorCode = "7002"
+                    errorType = "UNEXPECTED"
+                   break;
+            }
+
+            if (errorCause == nil || errorCause?.count == 0) {
+                errorCause = errorMessage
+            }
+
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.error.rawValue, body: [
+                "errorType": errorType,
+                "errorCode": errorCode,
+                "errorSeverity": "Fatal",
+                "errorMessage": errorMessage,
+                "errorCause": errorCause
+            ])
+            
+            // TODO: Need to verify
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.timedMetadata) { event in
+            guard let metadata = event.timedMetadata else { return }
+            
+            // TODO: Need to define what to send.
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.sourceSelected.rawValue, body: event.mediaSource)
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackRate) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackRateChanged.rawValue, body: event.palybackRate)
+        }
+        
+        // iOS has in addition errorLog and playbackStalled
     }
 }

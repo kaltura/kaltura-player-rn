@@ -11,7 +11,11 @@ import PlayKit
 
 class BasicKalturaPlayerRN: KalturaPlayerRN {
     
-    var kalturaBasicPlayer: KalturaBasicPlayer?
+    override var kalturaPlayer: KalturaPlayer? {
+        return kalturaBasicPlayer
+    }
+    
+    private var kalturaBasicPlayer: KalturaBasicPlayer! // Created upon init
     
     override init(withOptions initOptions: RNKPInitOptions) {
         super.init(withOptions: initOptions)
@@ -20,12 +24,7 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         self.kalturaBasicPlayer = KalturaBasicPlayer(options: self.playerOptions)
     }
     
-    override func connectView(_ view: KalturaPlayerView) {
-        kalturaBasicPlayer?.view = view
-    }
-    
     override func load(assetId: String, mediaAsset: String) {
-        guard let kalturaPlayer = kalturaBasicPlayer else { return }
         guard let contentUrl = URL(string: assetId) else { return }
         guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else { return }
         
@@ -34,16 +33,16 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
             mediaOptions.startTime = startPosition
         }
         
-        kalturaPlayer.setupMediaEntry(id: basicMediaAsset.id ?? basicMediaAsset.name ?? assetId,
-                                      contentUrl: contentUrl,
-                                      drmData: nil,
-                                      mediaFormat: mediaFormat(basicMediaAsset.mediaFormat ?? ""),
-                                      mediaType: mediaType(basicMediaAsset.mediaEntryType ?? ""),
-                                      mediaOptions: mediaOptions)
+        kalturaBasicPlayer.setupMediaEntry(id: basicMediaAsset.id ?? basicMediaAsset.name ?? assetId,
+                                           contentUrl: contentUrl,
+                                           drmData: nil,
+                                           mediaFormat: mediaFormat(basicMediaAsset.mediaFormat ?? ""),
+                                           mediaType: mediaType(basicMediaAsset.mediaEntryType ?? ""),
+                                           mediaOptions: mediaOptions)
         
         // If the autoPlay and preload was set to false, prepare will not be called automatically
         if initOptions.autoplay == false && initOptions.preload == false {
-            kalturaPlayer.prepare()
+            kalturaBasicPlayer.prepare()
         }
     }
 }
