@@ -124,13 +124,6 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
 
 extension KalturaPlayerModule {
     
-    @objc func onApplicationResumed() {
-        // TODO: onApplicationResumed
-    }
-}
-
-extension KalturaPlayerModule {
-    
     enum PlayerType: String {
         case basic
         case ovp
@@ -155,5 +148,51 @@ extension KalturaPlayerModule {
     
     @objc func removeKalturaPlayerListeners() {
         kalturaPlayerRN?.removeObservationForAllEvents()
+    }
+}
+
+extension KalturaPlayerModule {
+    
+    @objc func onApplicationResumed() {
+        // TODO: onApplicationResumed
+    }
+}
+
+extension KalturaPlayerModule {
+    
+    @objc func play() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.play()
+        }
+    }
+    
+    @objc func pause() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.pause()
+        }
+    }
+    
+    @objc func replay() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.replay()
+        }
+    }
+    
+    @objc func seekTo(_ position: TimeInterval) {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.seek(to: position)
+        }
+    }
+    
+    @objc func stop() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.stop()
+        }
+    }
+    
+    @objc func destroy() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.destroy()
+        }
     }
 }

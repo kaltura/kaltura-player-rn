@@ -29,4 +29,11 @@ RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
 
 RCT_EXTERN_METHOD(onApplicationResumed)
 
+RCT_EXTERN_METHOD(play)
+RCT_EXTERN_METHOD(pause)
+RCT_EXTERN_METHOD(replay)
+RCT_EXTERN_METHOD(seekTo:(nonnull double)position)
+RCT_EXTERN_METHOD(stop)
+RCT_EXTERN_METHOD(destroy)
+
 @end
