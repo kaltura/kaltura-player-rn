@@ -2,6 +2,7 @@ import KalturaPlayer
 import PlayKit
 import PlayKitProviders
 import PlayKitYoubora
+import PlayKitBroadpeak
 
 @objc(KalturaPlayerEvents)
 class KalturaPlayerEvents: RCTEventEmitter {
@@ -417,6 +418,10 @@ class KalturaPlayerRNView : UIView {
         if let youboraParams = plugins["youbora"] as? Dictionary<String, Any> {
             let youboraConfig = AnalyticsConfig(params:youboraParams)
             pluginConfigs[YouboraPlugin.pluginName] = youboraConfig
+        }
+        if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
+            let broadpeakConfig = BroadpeakConfig()
+            pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
         }
         if (!pluginConfigs.isEmpty){
             return PluginConfig(config: pluginConfigs)
