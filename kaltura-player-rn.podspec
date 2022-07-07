@@ -20,5 +20,4 @@ Pod::Spec.new do |s|
   s.dependency "KalturaPlayer/OTT"
   s.dependency "PlayKitYoubora"
   s.dependency "PlayKitBroadpeak"
-  s.dependency "AFNetworking"
 end
