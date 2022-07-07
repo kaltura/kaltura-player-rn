@@ -421,6 +421,11 @@ class KalturaPlayerRNView : UIView {
         }
         if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
             let broadpeakConfig = BroadpeakConfig()
+            broadpeakConfig.analyticsAddress = broadpeakParams["analyticsAddress"] as! String
+            broadpeakConfig.broadpeakDomainNames = broadpeakParams["broadpeakDomainNames"] as! String
+            broadpeakConfig.nanoCDNHost = broadpeakParams["nanoCDNHost"] as! String
+            broadpeakConfig.uuid = broadpeakParams["uuid"] as! String
+            
             pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
         }
         if (!pluginConfigs.isEmpty){
