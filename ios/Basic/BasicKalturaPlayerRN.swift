@@ -28,16 +28,13 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         guard let contentUrl = URL(string: assetId) else { return }
         guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else { return }
         
-        let mediaOptions = MediaOptions()
-        if let startPosition = basicMediaAsset.startPosition {
-            mediaOptions.startTime = startPosition
-        }
+        let mediaOptions = basicMediaAsset.getMediaOptions()
         
         kalturaBasicPlayer.setupMediaEntry(id: basicMediaAsset.id ?? basicMediaAsset.name ?? assetId,
                                            contentUrl: contentUrl,
                                            drmData: nil,
-                                           mediaFormat: mediaFormat(basicMediaAsset.mediaFormat ?? ""),
-                                           mediaType: mediaType(basicMediaAsset.mediaEntryType ?? ""),
+                                           mediaFormat: PKMediaSource.MediaFormat(string: basicMediaAsset.mediaFormat ?? ""),
+                                           mediaType: MediaType(string: basicMediaAsset.mediaEntryType ?? ""),
                                            mediaOptions: mediaOptions)
         
         // If the autoPlay and preload was set to false, prepare will not be called automatically
@@ -49,7 +46,7 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
 
 extension BasicKalturaPlayerRN {
     
-    func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
+    private func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
         let data = Data(mediaAsset.utf8)
         let mediaAsset: BasicMediaAsset?
         do {
@@ -59,34 +56,6 @@ extension BasicKalturaPlayerRN {
             return nil
         }
         return mediaAsset
-    }
-    
-    func mediaFormat(_ format: String) -> PKMediaSource.MediaFormat {
-        switch format.lowercased() {
-        case "hls":
-            return PKMediaSource.MediaFormat.hls
-        case "wvm":
-            return PKMediaSource.MediaFormat.wvm
-        case "mp4":
-            return PKMediaSource.MediaFormat.mp4
-        case "mp3":
-            return PKMediaSource.MediaFormat.mp3
-        default:
-            return PKMediaSource.MediaFormat.unknown
-        }
-    }
-    
-    func mediaType(_ type: String) -> MediaType {
-        switch type.lowercased() {
-        case "dvrlive":
-            return MediaType.dvrLive
-        case "live":
-            return MediaType.live
-        case "vod":
-            return MediaType.vod
-        default:
-            return .unknown
-        }
     }
 }
 

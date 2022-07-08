@@ -175,5 +175,34 @@
        ] 
     }
   },
-  "ott": {}
+  "ott": {
+    "vod": {
+      "hls": [
+        {
+          "id": "548576",
+          "partnerId": 3009,
+          "mediaId": "548576",
+          "mediaAsset": {
+            "initialVolume": 1.0,
+            "format": "Mobile_Main",
+            "assetType": "media",
+            "networkProtocol": "http",
+            "playbackContextType": "playback",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "serverUrl": "https://rest-us.ott.kaltura.com/v4_5/api_v3/",
+            "autoplay": true,
+            "preload": true,
+            "shouldPlayImmediately": true,
+            "networkSettings": {
+              "autoBuffer": true,
+              "preferredForwardBufferDuration": 30000,
+              "automaticallyWaitsToMinimizeStalling": true
+            }
+          }
+        }
+      ]
+    }
+  }
 }

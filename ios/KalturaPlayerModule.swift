@@ -87,7 +87,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         case .basic:
             self.kalturaPlayerRN = BasicKalturaPlayerRN(withOptions: initOptions)
         case .ott:
-            self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions)
+            self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
         case .ovp:
             self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions)
         }
@@ -107,6 +107,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         resolve("Sucess")
     }
     
+    // TODO: Need to fix load to return the error
     @objc func load(_ assetId: String?, mediaAsset: String?) {
         guard let kalturaPlayerRN = kalturaPlayerRN else {
             return
