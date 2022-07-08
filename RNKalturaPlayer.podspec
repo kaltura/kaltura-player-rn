@@ -17,4 +17,5 @@ Pod::Spec.new do |s|
 
   s.dependency "React-Core"
   s.dependency "KalturaPlayer/OTT"
+  s.dependency "KalturaPlayer/OVP"
 end

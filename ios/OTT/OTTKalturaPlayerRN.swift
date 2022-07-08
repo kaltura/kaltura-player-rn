@@ -17,8 +17,8 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
     private var kalturaOTTPlayer: KalturaOTTPlayer! // Created upon init
     private let defaultServerURL = "https://rest-us.ott.kaltura.com/v4_5/api_v3/"
     
-    convenience init(withOptions initOptions: RNKPInitOptions, partnerId: Int) {
-        self.init(withOptions: initOptions)
+    init(withOptions initOptions: RNKPInitOptions, partnerId: Int) {
+        super.init(withOptions: initOptions)
         
         var serverURL: String = initOptions.serverUrl ?? ""
         if serverURL.isEmpty == true {
@@ -26,6 +26,7 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
             serverURL = defaultServerURL
         }
         
+        // TODO: Need to get the referrer in the initOptions and pass it in the setup.
         KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL)
         kalturaOTTPlayer = KalturaOTTPlayer(options: playerOptions)
     }

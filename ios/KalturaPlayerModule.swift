@@ -89,7 +89,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         case .ott:
             self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
         case .ovp:
-            self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions)
+            self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
         }
         
         // Connect the player view

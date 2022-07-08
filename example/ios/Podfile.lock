@@ -16,29 +16,33 @@ PODS:
     - KalturaNetKit/Core (= 1.5.1)
   - KalturaNetKit/Core (1.5.1):
     - SwiftyJSON (= 5.0.0)
-  - KalturaPlayer/Core (4.6.0):
+  - KalturaPlayer/Core (4.7.0):
     - KalturaPlayer/Interceptor
-  - KalturaPlayer/Interceptor (4.6.0):
-    - PlayKit (~> 3.25)
-  - KalturaPlayer/OTT (4.6.0):
+  - KalturaPlayer/Interceptor (4.7.0):
+    - PlayKit (~> 3.26)
+  - KalturaPlayer/OTT (4.7.0):
     - KalturaPlayer/Core
-    - PlayKitKava (~> 1.8)
-    - PlayKitProviders (~> 1.16)
+    - PlayKitKava (~> 1.10)
+    - PlayKitProviders (~> 1.17)
+  - KalturaPlayer/OVP (4.7.0):
+    - KalturaPlayer/Core
+    - PlayKitKava (~> 1.10)
+    - PlayKitProviders (~> 1.17)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PlayKit (3.25.1):
-    - PlayKit/Core (= 3.25.1)
-  - PlayKit/AnalyticsCommon (3.25.1):
+  - PlayKit (3.26.0):
+    - PlayKit/Core (= 3.26.0)
+  - PlayKit/AnalyticsCommon (3.26.0):
     - PlayKit/Core
-  - PlayKit/Core (3.25.1):
+  - PlayKit/Core (3.26.0):
     - KalturaNetKit (~> 1.5.1)
     - PlayKitUtils (~> 0.5)
     - SwiftyJSON (= 5.0.0)
     - XCGLogger (= 7.0.0)
-  - PlayKitKava (1.9.0):
+  - PlayKitKava (1.10.0):
     - PlayKit/AnalyticsCommon (~> 3.21)
-  - PlayKitProviders (1.16.0):
+  - PlayKitProviders (1.17.0):
     - KalturaNetKit (~> 1.5)
     - PlayKit/AnalyticsCommon (~> 3.24)
     - PlayKitUtils (~> 0.5)
@@ -322,6 +326,7 @@ PODS:
     - React-RCTText
   - RNKalturaPlayer (0.1.0):
     - KalturaPlayer/OTT
+    - KalturaPlayer/OVP
     - React-Core
   - SwiftyJSON (5.0.0)
   - SwiftyXMLParser (5.0.0)
@@ -460,11 +465,11 @@ SPEC CHECKSUMS:
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   HMSegmentedControl: 34c1f54d822d8308e7b24f5d901ec674dfa31352
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
-  KalturaPlayer: c3aa7843491d137e301ac0f56eb5a82faa580ed9
+  KalturaPlayer: 142068b026ccef5d4e00e01e4084485506f18726
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PlayKit: 7e0ee7b12343f0e3b5990956f17a2571866c9379
-  PlayKitKava: 4e6d9330ce90a9d2af2ac722c53907350b7e4524
-  PlayKitProviders: 6937c5a40c18f50e0e1b7899d124c2140c19702b
+  PlayKit: 7114592aa6a64be7b1eead84c1ea2bea952db5c8
+  PlayKitKava: c5b863ecd9b741fcae8b104654249093bbfb3ea9
+  PlayKitProviders: 895e93705749223ac58d7b07a5b5a0857cc02ffb
   PlayKitUtils: 8edb43515c8b91d9aa9a47ae8b5af1e7dd58f6f3
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b
@@ -492,7 +497,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   ReactNativeNavigation: d82a136212f3a581e256b181e5703aa2f79ecba4
-  RNKalturaPlayer: b32af9986905fdc948e2684e14ff9098de9c3847
+  RNKalturaPlayer: 9bd0e1de20ab2116c44e0ab2e5270877c891d858
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   SwiftyXMLParser: 5ebb8793192f403fa8cc691045143906122a7a75
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab

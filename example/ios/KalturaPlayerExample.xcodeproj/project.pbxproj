@@ -137,12 +137,12 @@
 			sourceTree = "<group>";
 		};
 		AD61535523494255A1DC9E01 /* Resources */ = {
-			isa = "PBXGroup";
+			isa = PBXGroup;
 			children = (
 			);
 			name = Resources;
-			sourceTree = "<group>";
 			path = "";
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -312,12 +312,14 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-KalturaPlayerExample/Pods-KalturaPlayerExample-resources.sh",
 				"${PODS_ROOT}/KalturaPlayer/Sources/OTT/KPOTTDMSConfigModel.xcdatamodeld",
+				"${PODS_ROOT}/KalturaPlayer/Sources/OVP/KPOVPConfigModel.xcdatamodeld",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 				"${PODS_ROOT}/XCGLogger/.swift-version",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/KPOTTDMSConfigModel.momd",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/KPOVPConfigModel.momd",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/.swift-version",
 			);
