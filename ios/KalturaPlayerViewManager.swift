@@ -416,11 +416,11 @@ class KalturaPlayerRNView : UIView {
     func getPluginsConfigs(plugins: Dictionary<String, Any>)-> PluginConfig?{
         var pluginConfigs: [String: Any] = [:]
         if let youboraParams = plugins["youbora"] as? Dictionary<String, Any> {
-            let youboraConfig = AnalyticsConfig(params:youboraParams)
+            let youboraConfig = AnalyticsConfig(params: youboraParams)
             pluginConfigs[YouboraPlugin.pluginName] = youboraConfig
         }
         if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
-            let broadpeakConfig = getBroadpeakConfig(broadpeakParams:broadpeakParams)
+            let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
             pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
         } 
         }
