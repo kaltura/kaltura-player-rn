@@ -1,5 +1,6 @@
 package com.reactnativekalturaplayer
 
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
@@ -1066,26 +1067,62 @@ class KalturaPlayerRN(
     @Nullable
     private fun getParsedSubtitleStyleSettings(subtitleStyling: SubtitleStyling?): SubtitleStyleSettings? {
         var subtitleStyleSettings: SubtitleStyleSettings? = null
-        subtitleStyling?.let {
-            subtitleStyleSettings = SubtitleStyleSettings(subtitleStyling.subtitleStyleName)
-                .setBackgroundColor(subtitleStyling.getStringToColor(subtitleStyling.subtitleBackgroundColor))
-                .setTextColor(subtitleStyling.getStringToColor(subtitleStyling.subtitleTextColor))
-                .setWindowColor(subtitleStyling.getStringToColor(subtitleStyling.subtitleWindowColor))
-                .setEdgeColor(subtitleStyling.getStringToColor(subtitleStyling.subtitleEdgeColor))
-                .setTextSizeFraction(subtitleStyling.getSubtitleTextSizeFraction())
-                .setTypeface(subtitleStyling.getSubtitleStyleTypeface())
-                .setEdgeType(subtitleStyling.getSubtitleEdgeType())
+        subtitleStyling?.let { sbtStyling ->
 
-            val pkSubtitlePosition = PKSubtitlePosition(subtitleStyling.overrideInlineCueConfig)
-            if (subtitleStyling.horizontalPositionPercentage == null && subtitleStyling.verticalPositionPercentage != null) {
-                pkSubtitlePosition.setVerticalPosition(subtitleStyling.verticalPositionPercentage!!)
-            } else if (subtitleStyling.horizontalPositionPercentage != null &&
-                subtitleStyling.verticalPositionPercentage != null
-            ) {
+            var textColor: Int? = sbtStyling.getStringToColor(sbtStyling.subtitleTextColor)
+            var backgroundColor: Int? = sbtStyling.getStringToColor(sbtStyling.subtitleBackgroundColor)
+
+            sbtStyling.subtitleBackgroundColor?.let {
+                if (TextUtils.isEmpty(sbtStyling.subtitleTextColor)){
+                    sbtStyling.getStringToColor(it)?.let { bgColor ->
+                        textColor = if (sbtStyling.isDarkColor(bgColor)) {
+                            Color.WHITE
+                        } else {
+                            Color.BLACK
+                        }
+                    }
+                }
+            }
+
+            sbtStyling.subtitleTextColor?.let {
+                if (TextUtils.isEmpty(sbtStyling.subtitleBackgroundColor)){
+                    sbtStyling.getStringToColor(it)?.let { txtColor ->
+                        backgroundColor = if (sbtStyling.isDarkColor(txtColor)) {
+                            Color.WHITE
+                        } else {
+                            Color.BLACK
+                        }
+                    }
+                }
+            }
+
+            subtitleStyleSettings = SubtitleStyleSettings(sbtStyling.subtitleStyleName)
+                .setBackgroundColor(backgroundColor ?: Color.BLACK)
+                .setTextColor(textColor ?: Color.WHITE)
+                .setTextSizeFraction(sbtStyling.getSubtitleTextSizeFraction())
+                .setTypeface(sbtStyling.getSubtitleStyleTypeface())
+                .setEdgeType(sbtStyling.getSubtitleEdgeType())
+
+            sbtStyling.subtitleWindowColor?.let {
+                sbtStyling.getStringToColor(it)?.let { windowColor ->
+                    subtitleStyleSettings?.setWindowColor(windowColor)
+                }
+            }
+
+            sbtStyling.subtitleEdgeColor?.let {
+                sbtStyling.getStringToColor(it)?.let { edgeColor ->
+                    subtitleStyleSettings?.setEdgeColor(edgeColor)
+                }
+            }
+
+            val pkSubtitlePosition = PKSubtitlePosition(sbtStyling.overrideInlineCueConfig)
+            if (sbtStyling.horizontalPositionPercentage == null && sbtStyling.verticalPositionPercentage != null) {
+                pkSubtitlePosition.setVerticalPosition(sbtStyling.verticalPositionPercentage!!)
+            } else if (sbtStyling.horizontalPositionPercentage != null && sbtStyling.verticalPositionPercentage != null) {
                 pkSubtitlePosition.setPosition(
-                    subtitleStyling.horizontalPositionPercentage!!,
-                    subtitleStyling.verticalPositionPercentage!!,
-                    subtitleStyling.getHorizontalAlignment()
+                    sbtStyling.horizontalPositionPercentage!!,
+                    sbtStyling.verticalPositionPercentage!!,
+                    sbtStyling.getHorizontalAlignment()
                 )
             }
 

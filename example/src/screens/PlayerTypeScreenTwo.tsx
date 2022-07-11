@@ -1,6 +1,12 @@
 import { PLAYER_TYPE_DETAILS } from '../../index';
 import React, { PureComponent } from 'react';
-import { FlatList, View, Text, StyleSheet } from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Navigation } from 'react-native-navigation';
 
 import playerTestJson from '../test/PlayerTest.json';
@@ -35,12 +41,11 @@ export default class PlayerTypeScreenTwo extends PureComponent {
             data={this.names}
             ItemSeparatorComponent={this.renderSeparator}
             renderItem={({ item }) => (
-              <Text
-                style={styles.item}
+              <TouchableOpacity
                 onPress={itemOnClick.bind(this, item, this.props)}
               >
-                {item}
-              </Text>
+                <Text style={styles.item}>{item}</Text>
+              </TouchableOpacity>
             )}
           />
         ) : (

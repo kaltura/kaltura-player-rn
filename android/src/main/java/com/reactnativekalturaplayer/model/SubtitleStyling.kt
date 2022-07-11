@@ -2,6 +2,9 @@ package com.reactnativekalturaplayer.model
 
 import android.graphics.Color
 import android.text.Layout
+import android.text.TextUtils
+import androidx.annotation.Nullable
+import androidx.core.graphics.ColorUtils
 import com.kaltura.playkit.player.SubtitleStyleSettings
 
 class SubtitleStyling {
@@ -18,11 +21,12 @@ class SubtitleStyling {
     var horizontalPositionPercentage: Int? = null
     private var horizontalAlignment: String? = null
 
-    fun getStringToColor(color: String?): Int {
-        return if (color != null) {
+    @Nullable
+    fun getStringToColor(color: String?): Int? {
+        return if (!TextUtils.isEmpty(color)) {
             Color.parseColor(color)
         } else {
-            Color.WHITE
+            null
         }
     }
 
@@ -60,5 +64,9 @@ class SubtitleStyling {
             }
         }
         return Layout.Alignment.ALIGN_CENTER
+    }
+
+    fun isDarkColor(color: Int): Boolean {
+        return ColorUtils.calculateLuminance(color) < 0.5
     }
 }
