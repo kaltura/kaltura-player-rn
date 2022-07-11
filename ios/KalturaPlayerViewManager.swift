@@ -422,7 +422,6 @@ class KalturaPlayerRNView : UIView {
         if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
             let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
             pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
-        } 
         }
         if (!pluginConfigs.isEmpty){
             return PluginConfig(config: pluginConfigs)
