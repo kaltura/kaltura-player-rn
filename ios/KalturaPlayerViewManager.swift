@@ -25,7 +25,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
         return [
             "KPlayerEvent", "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
             "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate", "concurrencyError", "bookmarkError"
+            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate", "loadMediaFailed", "bookmarkError"
         ]
     }
 }
@@ -299,7 +299,12 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "bookmarkError", body: event.data)
         }
         self.kalturaPlayer.addObserver(self, event: OttEvent.concurrency) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "concurrencyError", body: event.data)
+            KalturaPlayerEvents.emitter.sendEvent(withName: "loadMediaFailed", body: [
+                "code": "ConcurrencyLimitation",
+                "message": "Concurrency limitation",
+                "name": "OTTError",
+                "type": "loadMediaFailed"
+            ])
         }
     }
 }
