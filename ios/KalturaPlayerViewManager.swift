@@ -25,7 +25,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
         return [
             "KPlayerEvent", "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
             "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate", "concurrencyError"
+            "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate", "concurrencyError", "bookmarkError"
         ]
     }
 }
