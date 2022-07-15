@@ -154,6 +154,10 @@ extension KalturaPlayerModule {
 
 extension KalturaPlayerModule {
     
+    @objc func onApplicationPaused() {
+        // TODO: onApplicationPaused
+    }
+    
     @objc func onApplicationResumed() {
         // TODO: onApplicationResumed
     }
@@ -185,6 +189,12 @@ extension KalturaPlayerModule {
         }
     }
     
+    @objc func seekToLiveDefaultPosition() {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.seekToLiveEdge()
+        }
+    }
+    
     @objc func stop() {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.stop()
@@ -194,6 +204,25 @@ extension KalturaPlayerModule {
     @objc func destroy() {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.destroy()
+        }
+    }
+    
+    @objc func changeTrack(_ trackId: String?) {
+        guard let trackId = trackId, !trackId.isEmpty else { return }
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.selectTrack(trackId: trackId)
+        }
+    }
+    
+    @objc func changePlaybackRate(_ playbackRate: Float) {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.rate = playbackRate
+        }
+    }
+    
+    @objc func setVolume(_ volume: Float) {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.kalturaPlayer?.volume = volume
         }
     }
 }

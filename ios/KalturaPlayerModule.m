@@ -27,13 +27,18 @@ RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId
 RCT_EXTERN_METHOD(addKalturaPlayerListeners)
 RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
 
+RCT_EXTERN_METHOD(onApplicationPaused)
 RCT_EXTERN_METHOD(onApplicationResumed)
 
 RCT_EXTERN_METHOD(play)
 RCT_EXTERN_METHOD(pause)
 RCT_EXTERN_METHOD(replay)
 RCT_EXTERN_METHOD(seekTo:(nonnull double)position)
+RCT_EXTERN_METHOD(seekToLiveDefaultPosition)
 RCT_EXTERN_METHOD(stop)
 RCT_EXTERN_METHOD(destroy)
+RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
+RCT_EXTERN_METHOD(changePlaybackRate:(nonnull float)playbackRate)
+RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
 
 @end
