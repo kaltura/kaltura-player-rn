@@ -528,14 +528,13 @@ export default class App extends React.Component<any, any> {
           <TouchableOpacity
             style={[styles.button]}
             onPress={() => {
-              // this.changeMedia(
-              //   playbackUrlChangeMedia,
-              //   JSON.stringify(basicMediaAsset)
-              // );
-              this.changeSubtitleStyling();
+              this.changeMedia(
+                playbackUrlChangeMedia,
+                JSON.stringify(basicMediaAsset)
+              );
             }}
           >
-            <Text style={[styles.bigWhite]}>Change Subtitle Styling</Text>
+            <Text style={[styles.bigWhite]}>Change Media</Text>
           </TouchableOpacity>
         </ScrollView>
       </RootSiblingParent>

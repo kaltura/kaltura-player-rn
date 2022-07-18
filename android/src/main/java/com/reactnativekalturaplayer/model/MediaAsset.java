@@ -2,6 +2,7 @@ package com.reactnativekalturaplayer.model;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
 import com.kaltura.playkit.providers.api.phoenix.APIDefines;
 import com.kaltura.playkit.providers.ott.OTTMediaAsset;
 import com.kaltura.playkit.providers.ott.PhoenixMediaProvider;
@@ -20,10 +21,11 @@ public class MediaAsset {
 
     // OTT Params
     private String format;    // ott
-    private String fileId;    // ott
+    private String fileId;    // ott //TODO: FIX it with List of fileIds
     private String assetType; // ott
     private String playbackContextType; // ott
     private String assetReferenceType;  // ott
+    @SerializedName(value = "protocol", alternate = {"networkProtocol"})
     private String protocol;            // ott
     private String urlType; // ott
     private String streamerType; // ott

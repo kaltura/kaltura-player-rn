@@ -6,17 +6,15 @@ export default function TrackList(props) {
   let trackType = props.trackType;
   let labelFieldName = 'bitrate';
 
-  let updatedTrackList = [];
   let incomingTrackList = props.trackList;
 
   if (trackType === 'video') {
-    updatedTrackList = incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
+    incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
     labelFieldName = 'bitrate';
   } else if (trackType === 'audio') {
-    updatedTrackList = incomingTrackList;
+    incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
     labelFieldName = 'language';
   } else if (trackType === 'text') {
-    updatedTrackList = incomingTrackList;
     labelFieldName = 'label';
   }
 
@@ -26,7 +24,7 @@ export default function TrackList(props) {
       selectedTextStyle={styles.selectedTextStyle}
       iconStyle={styles.iconStyle}
       maxHeight={200}
-      data={props.trackList}
+      data={incomingTrackList}
       valueField="id"
       labelField={labelFieldName}
       placeholder={props.title}

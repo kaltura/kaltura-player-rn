@@ -124,7 +124,7 @@ export class KalturaPlayerAPI {
       `Loading the media. assetId is: ${id} and media asset is: ${asset}`
     );
 
-    KalturaPlayerModule.load(id, asset);
+    KalturaPlayerModule.load(id, asset); 
   };
 
   /**

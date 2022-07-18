@@ -23,11 +23,12 @@
               "connectTimeoutMs": 8000
             },
             "subtitleStyling": {
-              "subtitleTextColor": "#fcd3cf",
-              "overrideInlineCueConfig": true,
-              "verticalPositionPercentage": 20,
-              "horizontalPositionPercentage": 20,
-              "horizontalAlignment": "ALIGN_OPPOSITE"
+              "subtitleTextColor": "#ffdb26",
+              "subtitleBackgroundColor": "#00000000",
+              "subtitleWindowColor": "#00000000",
+              "subtitleEdgeColor": "#00000000",
+              "subtitleTextSizeFraction": "SUBTITLE_FRACTION_100",
+              "subtitleEdgeType": "EDGE_TYPE_DROP_SHADOW"
             },
             "allowCrossProtocolRedirect": true,
             "allowFairPlayOnExternalScreens": true,
@@ -35,11 +36,6 @@
             "aspectRatioResizeMode": "fit",
             "handleAudioFocus": true,
             "plugins": {
-              "ima": {
-                "adTagUrl": "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=",
-                "alwaysStartWithPreroll": true,
-                "enableDebugMode": false
-              },
               "youbora": {
                 "accountCode": "kalturatest",
                 "username": "gourav_rn",
