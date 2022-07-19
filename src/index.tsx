@@ -45,12 +45,10 @@ var debugLogs = false;
 
 interface KalturaPlayerProps {
   style: ViewStyle;
-  playerType: PLAYER_TYPE;
 }
 
 export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   nativeComponentRef: any;
-  playerType: PLAYER_TYPE | undefined;
 
   static propTypes: {
     style: object;
@@ -139,7 +137,7 @@ export class KalturaPlayerAPI {
    * Add the listners for the Kaltura Player
    */
   static addListeners = () => {
-    printConsoleLog('Calling Native Prop addListeners()');
+    printConsoleLog('Calling Native method addListeners()');
     KalturaPlayerModule.addKalturaPlayerListeners();
   };
 
@@ -147,7 +145,7 @@ export class KalturaPlayerAPI {
    * Add the listners for the Kaltura Player
    */
   static removeListeners = () => {
-    printConsoleLog('Calling Native Prop removeListeners()');
+    printConsoleLog('Calling Native method removeListeners()');
     KalturaPlayerModule.removeKalturaPlayerListeners();
   };
 
@@ -155,7 +153,7 @@ export class KalturaPlayerAPI {
    * Should be called when the application is in background
    */
   static onApplicationPaused = () => {
-    printConsoleLog('Calling Native Prop onApplicationPaused()');
+    printConsoleLog('Calling Native method onApplicationPaused()');
     KalturaPlayerModule.onApplicationPaused();
   };
 
@@ -164,7 +162,7 @@ export class KalturaPlayerAPI {
    * foreground
    */
   static onApplicationResumed = () => {
-    printConsoleLog('Calling Native Prop onApplicationResumed()');
+    printConsoleLog('Calling Native method onApplicationResumed()');
     KalturaPlayerModule.onApplicationResumed();
   };
 
@@ -197,7 +195,7 @@ export class KalturaPlayerAPI {
    * Play the player if it is not playing
    */
   static play = () => {
-    printConsoleLog('Calling Native Prop play()');
+    printConsoleLog('Calling Native method play()');
     KalturaPlayerModule.play();
   };
 
@@ -205,7 +203,7 @@ export class KalturaPlayerAPI {
    * Pause the player if it is playing
    */
   static pause = () => {
-    printConsoleLog('Calling Native Prop pause()');
+    printConsoleLog('Calling Native method pause()');
     KalturaPlayerModule.pause();
   };
 
@@ -213,7 +211,7 @@ export class KalturaPlayerAPI {
    * Stops the player to the initial state
    */
   static stop = () => {
-    printConsoleLog('Calling Native Prop stop()');
+    printConsoleLog('Calling Native method stop()');
     KalturaPlayerModule.stop();
   };
 
@@ -221,7 +219,7 @@ export class KalturaPlayerAPI {
    * Destroy the Kaltura Player instance
    */
   static destroy = () => {
-    printConsoleLog('Calling Native Prop destroy()');
+    printConsoleLog('Calling Native method destroy()');
     KalturaPlayerModule.destroy();
   };
 
@@ -229,7 +227,7 @@ export class KalturaPlayerAPI {
    * Replays the media from the beginning
    */
   static replay = () => {
-    printConsoleLog('Calling Native Prop replay()');
+    printConsoleLog('Calling Native method replay()');
     KalturaPlayerModule.replay();
   };
 
@@ -238,7 +236,7 @@ export class KalturaPlayerAPI {
    * @param position in miliseconds (Ms)
    */
   static seekTo = (position: number) => {
-    printConsoleLog(`Calling Native Prop seekTo() position is: ${position}`);
+    printConsoleLog(`Calling Native method seekTo() position is: ${position}`);
     KalturaPlayerModule.seekTo(position);
   };
 
@@ -251,7 +249,7 @@ export class KalturaPlayerAPI {
       printConsoleLog(`trackId is invalid which is: ${trackId}`, LogType.ERROR);
       return;
     }
-    printConsoleLog('Calling Native Prop changeTrack()');
+    printConsoleLog('Calling Native method changeTrack()');
     KalturaPlayerModule.changeTrack(trackId);
   };
 
@@ -260,7 +258,7 @@ export class KalturaPlayerAPI {
    * @param rate Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)
    */
   static setPlaybackRate = (rate: number) => {
-    printConsoleLog(`Calling Native Prop setPlaybackRate() rate is: ${rate}`);
+    printConsoleLog(`Calling Native method setPlaybackRate() rate is: ${rate}`);
     KalturaPlayerModule.changePlaybackRate(rate);
   };
 
@@ -273,7 +271,7 @@ export class KalturaPlayerAPI {
    * @param vol - volume to set.
    */
   static setVolume = (vol: number) => {
-    printConsoleLog('Calling Native Prop setVolume()');
+    printConsoleLog('Calling Native method setVolume()');
     KalturaPlayerModule.setVolume(vol);
   };
 
@@ -284,7 +282,7 @@ export class KalturaPlayerAPI {
    * @param isAutoPlay media should be autoplayed at the start or not
    */
   static setAutoPlay = (isAutoPlay: boolean) => {
-    printConsoleLog('Calling Native Prop setAutoPlay()');
+    printConsoleLog('Calling Native method setAutoPlay()');
     KalturaPlayerModule.setAutoplay(isAutoPlay);
   };
 
@@ -298,7 +296,7 @@ export class KalturaPlayerAPI {
       printConsoleLog('KS is invalid which is: ' + KS, LogType.ERROR);
       return;
     }
-    printConsoleLog('Calling Native Prop setKS()');
+    printConsoleLog('Calling Native method setKS()');
     KalturaPlayerModule.setKS(KS);
   };
 
@@ -307,7 +305,7 @@ export class KalturaPlayerAPI {
    * @param index
    */
   //static setZIndex = (index: number) => {
-  //  printConsoleLog('Calling Native Prop setZIndex()');
+  //  printConsoleLog('Calling Native method setZIndex()');
   //};
 
   /**
@@ -315,7 +313,7 @@ export class KalturaPlayerAPI {
    * Seek player to Live Default Position.
    */
   static seekToLiveDefaultPosition = () => {
-    printConsoleLog('Calling Native Prop seekToLiveDefaultPosition()');
+    printConsoleLog('Calling Native method seekToLiveDefaultPosition()');
     KalturaPlayerModule.seekToLiveDefaultPosition();
   };
 
@@ -330,7 +328,7 @@ export class KalturaPlayerAPI {
       );
       return;
     }
-    printConsoleLog('Calling Native Prop updateSubtitleStyle()');
+    printConsoleLog('Calling Native method updateSubtitleStyle()');
     KalturaPlayerModule.updateSubtitleStyle(subtitleStyle);
   };
 
@@ -338,7 +336,7 @@ export class KalturaPlayerAPI {
    * Update the Resize Mode
    */
   static updateResizeMode = (mode: PLAYER_RESIZE_MODES) => {
-    printConsoleLog('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
+    printConsoleLog('Calling Native method updateSurfaceAspectRatioResizeMode()');
     KalturaPlayerModule.updateResizeMode(mode);
   };
 
@@ -353,7 +351,7 @@ export class KalturaPlayerAPI {
       );
       return;
     }
-    printConsoleLog('Calling Native Prop updateABRSettings()');
+    printConsoleLog('Calling Native method updateABRSettings()');
     KalturaPlayerModule.updateAbrSettings(abrSettings);
   };
 
@@ -361,7 +359,7 @@ export class KalturaPlayerAPI {
    * Reset the ABR Settings
    */
   static resetAbrSettings = () => {
-    printConsoleLog('Calling Native Prop resetABRSettings()');
+    printConsoleLog('Calling Native method resetABRSettings()');
     KalturaPlayerModule.resetAbrSettings();
   };
 
@@ -377,7 +375,7 @@ export class KalturaPlayerAPI {
       );
       return;
     }
-    printConsoleLog('Calling Native Prop updateLowLatencyConfig()');
+    printConsoleLog('Calling Native method updateLowLatencyConfig()');
     KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
   };
 
@@ -386,7 +384,7 @@ export class KalturaPlayerAPI {
    * Only for Live Media
    */
   static resetLowLatencyConfig = () => {
-    printConsoleLog('Calling Native Prop resetLowLatencyConfig()');
+    printConsoleLog('Calling Native method resetLowLatencyConfig()');
     KalturaPlayerModule.resetLlConfig();
   };
 
@@ -395,7 +393,7 @@ export class KalturaPlayerAPI {
    * @returns string: Position of the player or {@link POSITION_UNSET}
    */
   static getCurrentPosition = async () => {
-    printConsoleLog('Calling Native Prop getCurrentPosition()');
+    printConsoleLog('Calling Native method getCurrentPosition()');
     return await getCurrentPosition();
   };
 
@@ -404,7 +402,7 @@ export class KalturaPlayerAPI {
    * @returns boolean
    */
   static isPlaying = async () => {
-    printConsoleLog('Calling Native Prop isPlaying');
+    printConsoleLog('Calling Native method isPlaying');
     return await isPlaying();
   };
 
@@ -413,7 +411,7 @@ export class KalturaPlayerAPI {
    * @returns boolean
    */
   static isLive = async () => {
-    printConsoleLog('Calling Native Prop isLive');
+    printConsoleLog('Calling Native method isLive');
     return await isLive();
   };
 
