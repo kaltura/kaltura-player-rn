@@ -547,7 +547,7 @@ async function setupKalturaPlayer(
   playerType: PLAYER_TYPE,
   options: String,
   mediaAsset: String,
-  mediaId: String, // PlaybackUrl
+  mediaId: String, // PlaybackUrl or EntryId (OVP) or MediaId (OTT)
   partnerId: number = 0
 ) {
   try {
@@ -555,7 +555,8 @@ async function setupKalturaPlayer(
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
     if (playerCreated != null) {
       player.addListeners();
-      player.loadMedia(mediaId, mediaAsset);
+      const mediaLoaded = await player.loadMedia(mediaId, mediaAsset);
+      console.log(`mediaLoaded => ${mediaLoaded}`);
     } else {
       console.error('Player is not created.');
     }

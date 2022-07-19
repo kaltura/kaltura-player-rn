@@ -41,6 +41,7 @@ const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
 const { KalturaPlayerModule } = NativeModules;
 
 const POSITION_UNSET: number = -1;
+var debugLogs = false;
 
 interface KalturaPlayerProps {
   style: ViewStyle;
@@ -56,11 +57,11 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
   };
 
   componentDidMount() {
-    console.log('componentDidMount from Library.');
+    printConsoleLog('componentDidMount from Library.');
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount from Library');
+    printConsoleLog('componentWillUnmount from Library');
   }
 
   render() {
@@ -88,17 +89,21 @@ export class KalturaPlayerAPI {
    * should be always greater than 0 and should be valid otherwise, we will not be able to featch the details
    * for the mediaId or the entryId)
    */
-  static setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0) => {
+  static setup = async (
+    playerType: PLAYER_TYPE,
+    options: string,
+    id: number = 0
+  ) => {
     if (playerType == null) {
-      console.error(`Invalid playerType = ${playerType}`);
+      printConsoleLog(`Invalid playerType = ${playerType}`, LogType.ERROR);
       return;
     }
 
     if (!options) {
-      console.error(`setup, invalid options = ${options}`);
+      printConsoleLog(`setup, invalid options = ${options}`, LogType.ERROR);
       return;
     }
-    console.log('Setting up the Player');
+    printConsoleLog('Setting up the Player');
     return await setupKalturaPlayer(playerType, options, id);
   };
 
@@ -114,24 +119,27 @@ export class KalturaPlayerAPI {
    * EntryId for Kaltura OVP Player
    * @param asset Media Asset JSON String
    */
-  static loadMedia = (id: string, asset: string) => {
+  static loadMedia = async (id: string, asset: string) => {
     if (!id || !asset) {
-      console.error(`loadMedia, invalid id = ${id} or asset = ${asset}`);
+      printConsoleLog(
+        `loadMedia, invalid id = ${id} or asset = ${asset}`,
+        LogType.ERROR
+      );
       return;
     }
 
-    console.log(
+    printConsoleLog(
       `Loading the media. assetId is: ${id} and media asset is: ${asset}`
     );
 
-    KalturaPlayerModule.load(id, asset); 
+    return await loadMediaKalturaPlayer(id, asset);
   };
 
   /**
    * Add the listners for the Kaltura Player
    */
   static addListeners = () => {
-    console.log('Calling Native Prop addListeners()');
+    printConsoleLog('Calling Native Prop addListeners()');
     KalturaPlayerModule.addKalturaPlayerListeners();
   };
 
@@ -139,7 +147,7 @@ export class KalturaPlayerAPI {
    * Add the listners for the Kaltura Player
    */
   static removeListeners = () => {
-    console.log('Calling Native Prop removeListeners()');
+    printConsoleLog('Calling Native Prop removeListeners()');
     KalturaPlayerModule.removeKalturaPlayerListeners();
   };
 
@@ -147,7 +155,7 @@ export class KalturaPlayerAPI {
    * Should be called when the application is in background
    */
   static onApplicationPaused = () => {
-    console.log('Calling Native Prop onApplicationPaused()');
+    printConsoleLog('Calling Native Prop onApplicationPaused()');
     KalturaPlayerModule.onApplicationPaused();
   };
 
@@ -156,7 +164,7 @@ export class KalturaPlayerAPI {
    * foreground
    */
   static onApplicationResumed = () => {
-    console.log('Calling Native Prop onApplicationResumed()');
+    printConsoleLog('Calling Native Prop onApplicationResumed()');
     KalturaPlayerModule.onApplicationResumed();
   };
 
@@ -168,8 +176,9 @@ export class KalturaPlayerAPI {
    */
   static updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
     if (pluginName == null || !config) {
-      console.error(
-        `updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`
+      printConsoleLog(
+        `updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`,
+        LogType.ERROR
       );
       return;
     }
@@ -179,7 +188,7 @@ export class KalturaPlayerAPI {
       pluginConfig: config,
     };
     const stringifiedJson = JSON.stringify(pluginJson);
-    console.log(`Updated Plugin is: ${stringifiedJson}`);
+    printConsoleLog(`Updated Plugin is: ${stringifiedJson}`);
 
     KalturaPlayerModule.updatePluginConfigs(stringifiedJson);
   };
@@ -188,7 +197,7 @@ export class KalturaPlayerAPI {
    * Play the player if it is not playing
    */
   static play = () => {
-    console.log('Calling Native Prop play()');
+    printConsoleLog('Calling Native Prop play()');
     KalturaPlayerModule.play();
   };
 
@@ -196,7 +205,7 @@ export class KalturaPlayerAPI {
    * Pause the player if it is playing
    */
   static pause = () => {
-    console.log('Calling Native Prop pause()');
+    printConsoleLog('Calling Native Prop pause()');
     KalturaPlayerModule.pause();
   };
 
@@ -204,7 +213,7 @@ export class KalturaPlayerAPI {
    * Stops the player to the initial state
    */
   static stop = () => {
-    console.log('Calling Native Prop stop()');
+    printConsoleLog('Calling Native Prop stop()');
     KalturaPlayerModule.stop();
   };
 
@@ -212,7 +221,7 @@ export class KalturaPlayerAPI {
    * Destroy the Kaltura Player instance
    */
   static destroy = () => {
-    console.log('Calling Native Prop destroy()');
+    printConsoleLog('Calling Native Prop destroy()');
     KalturaPlayerModule.destroy();
   };
 
@@ -220,7 +229,7 @@ export class KalturaPlayerAPI {
    * Replays the media from the beginning
    */
   static replay = () => {
-    console.log('Calling Native Prop replay()');
+    printConsoleLog('Calling Native Prop replay()');
     KalturaPlayerModule.replay();
   };
 
@@ -229,7 +238,7 @@ export class KalturaPlayerAPI {
    * @param position in miliseconds (Ms)
    */
   static seekTo = (position: number) => {
-    console.log(`Calling Native Prop seekTo() position is: ${position}`);
+    printConsoleLog(`Calling Native Prop seekTo() position is: ${position}`);
     KalturaPlayerModule.seekTo(position);
   };
 
@@ -239,10 +248,10 @@ export class KalturaPlayerAPI {
    */
   static changeTrack = (trackId: string) => {
     if (!trackId) {
-      console.error(`trackId is invalid which is: ${trackId}`);
+      printConsoleLog(`trackId is invalid which is: ${trackId}`, LogType.ERROR);
       return;
     }
-    console.log('Calling Native Prop changeTrack()');
+    printConsoleLog('Calling Native Prop changeTrack()');
     KalturaPlayerModule.changeTrack(trackId);
   };
 
@@ -251,7 +260,7 @@ export class KalturaPlayerAPI {
    * @param rate Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)
    */
   static setPlaybackRate = (rate: number) => {
-    console.log(`Calling Native Prop setPlaybackRate() rate is: ${rate}`);
+    printConsoleLog(`Calling Native Prop setPlaybackRate() rate is: ${rate}`);
     KalturaPlayerModule.changePlaybackRate(rate);
   };
 
@@ -264,7 +273,7 @@ export class KalturaPlayerAPI {
    * @param vol - volume to set.
    */
   static setVolume = (vol: number) => {
-    console.log('Calling Native Prop setVolume()');
+    printConsoleLog('Calling Native Prop setVolume()');
     KalturaPlayerModule.setVolume(vol);
   };
 
@@ -275,7 +284,7 @@ export class KalturaPlayerAPI {
    * @param isAutoPlay media should be autoplayed at the start or not
    */
   static setAutoPlay = (isAutoPlay: boolean) => {
-    console.log('Calling Native Prop setAutoPlay()');
+    printConsoleLog('Calling Native Prop setAutoPlay()');
     KalturaPlayerModule.setAutoplay(isAutoPlay);
   };
 
@@ -286,10 +295,10 @@ export class KalturaPlayerAPI {
    */
   static setKS = (KS: string) => {
     if (!KS) {
-      console.error('KS is invalid which is: ' + KS);
+      printConsoleLog('KS is invalid which is: ' + KS, LogType.ERROR);
       return;
     }
-    console.log('Calling Native Prop setKS()');
+    printConsoleLog('Calling Native Prop setKS()');
     KalturaPlayerModule.setKS(KS);
   };
 
@@ -298,7 +307,7 @@ export class KalturaPlayerAPI {
    * @param index
    */
   //static setZIndex = (index: number) => {
-  //  console.log('Calling Native Prop setZIndex()');
+  //  printConsoleLog('Calling Native Prop setZIndex()');
   //};
 
   /**
@@ -306,7 +315,7 @@ export class KalturaPlayerAPI {
    * Seek player to Live Default Position.
    */
   static seekToLiveDefaultPosition = () => {
-    console.log('Calling Native Prop seekToLiveDefaultPosition()');
+    printConsoleLog('Calling Native Prop seekToLiveDefaultPosition()');
     KalturaPlayerModule.seekToLiveDefaultPosition();
   };
 
@@ -315,10 +324,13 @@ export class KalturaPlayerAPI {
    */
   static updateSubtitleStyle = (subtitleStyle: string) => {
     if (!subtitleStyle) {
-      console.error(`subtitleStyle is invalid which is: ${subtitleStyle}`);
+      printConsoleLog(
+        `subtitleStyle is invalid which is: ${subtitleStyle}`,
+        LogType.ERROR
+      );
       return;
     }
-    console.log('Calling Native Prop updateSubtitleStyle()');
+    printConsoleLog('Calling Native Prop updateSubtitleStyle()');
     KalturaPlayerModule.updateSubtitleStyle(subtitleStyle);
   };
 
@@ -326,7 +338,7 @@ export class KalturaPlayerAPI {
    * Update the Resize Mode
    */
   static updateResizeMode = (mode: PLAYER_RESIZE_MODES) => {
-    console.log('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
+    printConsoleLog('Calling Native Prop updateSurfaceAspectRatioResizeMode()');
     KalturaPlayerModule.updateResizeMode(mode);
   };
 
@@ -335,10 +347,13 @@ export class KalturaPlayerAPI {
    */
   static updateAbrSettings = (abrSettings: string) => {
     if (!abrSettings) {
-      console.error(`abrSettings is invalid which is: ${abrSettings}`);
+      printConsoleLog(
+        `abrSettings is invalid which is: ${abrSettings}`,
+        LogType.ERROR
+      );
       return;
     }
-    console.log('Calling Native Prop updateABRSettings()');
+    printConsoleLog('Calling Native Prop updateABRSettings()');
     KalturaPlayerModule.updateAbrSettings(abrSettings);
   };
 
@@ -346,7 +361,7 @@ export class KalturaPlayerAPI {
    * Reset the ABR Settings
    */
   static resetAbrSettings = () => {
-    console.log('Calling Native Prop resetABRSettings()');
+    printConsoleLog('Calling Native Prop resetABRSettings()');
     KalturaPlayerModule.resetAbrSettings();
   };
 
@@ -356,12 +371,13 @@ export class KalturaPlayerAPI {
    */
   static updateLowLatencyConfig = (lowLatencyConfig: string) => {
     if (!lowLatencyConfig) {
-      console.error(
-        `lowLatencyConfig is invalid which is: ${lowLatencyConfig}`
+      printConsoleLog(
+        `lowLatencyConfig is invalid which is: ${lowLatencyConfig}`,
+        LogType.ERROR
       );
       return;
     }
-    console.log('Calling Native Prop updateLowLatencyConfig()');
+    printConsoleLog('Calling Native Prop updateLowLatencyConfig()');
     KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
   };
 
@@ -370,7 +386,7 @@ export class KalturaPlayerAPI {
    * Only for Live Media
    */
   static resetLowLatencyConfig = () => {
-    console.log('Calling Native Prop resetLowLatencyConfig()');
+    printConsoleLog('Calling Native Prop resetLowLatencyConfig()');
     KalturaPlayerModule.resetLlConfig();
   };
 
@@ -379,7 +395,7 @@ export class KalturaPlayerAPI {
    * @returns string: Position of the player or {@link POSITION_UNSET}
    */
   static getCurrentPosition = async () => {
-    console.log('Calling Native Prop getCurrentPosition()');
+    printConsoleLog('Calling Native Prop getCurrentPosition()');
     return await getCurrentPosition();
   };
 
@@ -388,7 +404,7 @@ export class KalturaPlayerAPI {
    * @returns boolean
    */
   static isPlaying = async () => {
-    console.log('Calling Native Prop isPlaying');
+    printConsoleLog('Calling Native Prop isPlaying');
     return await isPlaying();
   };
 
@@ -397,33 +413,61 @@ export class KalturaPlayerAPI {
    * @returns boolean
    */
   static isLive = async () => {
-    console.log('Calling Native Prop isLive');
+    printConsoleLog('Calling Native Prop isLive');
     return await isLive();
+  };
+
+  static enableDebugLogs = (enabled: boolean) => {
+    if (enabled == null) {
+      return;
+    }
+    debugLogs = enabled;
   };
 }
 
-async function setupKalturaPlayer(playerType: PLAYER_TYPE, options: string, id: number) {
+async function setupKalturaPlayer(
+  playerType: PLAYER_TYPE,
+  options: string,
+  id: number
+) {
   try {
     const kalturaPlayerSetup = await KalturaPlayerModule.setUpPlayer(
       playerType,
       id,
       options
     );
-    console.log(`Player is created: ${kalturaPlayerSetup}`);
+    printConsoleLog(`Player is created: ${kalturaPlayerSetup}`);
     return kalturaPlayerSetup;
-  } catch (e) {
-    console.error(`Exception: ${e}`);
-    return false;
+  } catch (exception) {
+    printConsoleLog(
+      `setupKalturaPlayer Exception: ${exception}`,
+      LogType.ERROR
+    );
+    return exception;
+  }
+}
+
+async function loadMediaKalturaPlayer(id: string, asset: string) {
+  try {
+    const loadMedia = KalturaPlayerModule.load(id, asset);
+    printConsoleLog(`Media Loaded ${loadMedia}`);
+    return loadMedia;
+  } catch (exception) {
+    printConsoleLog(
+      `loadMediaKalturaPlayer Exception: ${exception}`,
+      LogType.ERROR
+    );
+    return exception;
   }
 }
 
 async function getCurrentPosition() {
   try {
     const currentPosition = await KalturaPlayerModule.getCurrentPosition();
-    console.log(`Current Position: ${currentPosition}`);
+    printConsoleLog(`Current Position: ${currentPosition}`);
     return currentPosition;
-  } catch (e) {
-    console.error(`Exception: ${e}`);
+  } catch (exception) {
+    printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
     return POSITION_UNSET;
   }
 }
@@ -431,10 +475,10 @@ async function getCurrentPosition() {
 async function isPlaying() {
   try {
     const isPlayerPlaying = await KalturaPlayerModule.isPlaying();
-    console.log(`isPlayerPlaying ${isPlayerPlaying}`);
+    printConsoleLog(`isPlayerPlaying ${isPlayerPlaying}`);
     return isPlayerPlaying;
-  } catch (e) {
-    console.error(`Exception: ${e}`);
+  } catch (exception) {
+    printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
     return false;
   }
 }
@@ -442,10 +486,38 @@ async function isPlaying() {
 async function isLive() {
   try {
     const isPlayerLive = await KalturaPlayerModule.isLive();
-    console.log(`isPlayerLive ${isPlayerLive}`);
+    printConsoleLog(`isPlayerLive ${isPlayerLive}`);
     return isPlayerLive;
-  } catch (e) {
-    console.error(`Exception: ${e}`);
+  } catch (exception) {
+    printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
     return false;
   }
+}
+
+function printConsoleLog(message: String, logType: LogType = LogType.LOG) {
+  if (debugLogs) {
+    switch (logType) {
+      case LogType.LOG: {
+        console.log(message);
+        break;
+      }
+      case LogType.WARN: {
+        console.warn(message);
+        break;
+      }
+      case LogType.ERROR: {
+        console.error(message);
+        break;
+      }
+      default: {
+        console.log(message);
+      }
+    }
+  }
+}
+
+enum LogType {
+  LOG,
+  WARN,
+  ERROR,
 }

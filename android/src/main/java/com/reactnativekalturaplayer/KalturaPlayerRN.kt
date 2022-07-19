@@ -81,10 +81,14 @@ class KalturaPlayerRN(
                 (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp)) {
                 createKalturaOttOvpPlayer(partnerId, initOptions, promise)
             } else {
-                log.e("Player can not be created. playerType is ${getPlayerType()} and partnerId is $partnerId")
+                val message = "Player can not be created. playerType is ${getPlayerType()} and partnerId is $partnerId"
+                log.e(message)
+                sendCallbackToJS(promise, message, true)
             }
         } else {
-            log.e("PartnerId: $partnerId is not valid ")
+            val message = "PartnerId: $partnerId is not valid"
+            log.e(message)
+            sendCallbackToJS(promise, message, true)
         }
     }
 
@@ -556,7 +560,10 @@ class KalturaPlayerRN(
             InitOptions::class.java
         )
         if (initOptionsModel == null || TextUtils.isEmpty(initOptionsModel.serverUrl) || getPlayerType() == KalturaPlayer.Type.basic) {
-            // TODO : write log message
+            val message = "Failed to create Player initOptionsModel : $initOptionsModel \n" +
+                    "ServerURL: ${initOptionsModel?.serverUrl}"
+            log.e(message)
+            sendCallbackToJS(promise, message, true)
             return
         }
 
@@ -598,19 +605,28 @@ class KalturaPlayerRN(
         }
     }
 
-    fun load(assetId: String?, mediaAssetJson: String?) {
+    /**
+     * Load the Basic, OVP, OTT media to the player.
+     * In case of error, it sends the Error JSON in promise
+     * otherwise sends back the PKMediaEntry JSON in promise
+     */
+    fun load(assetId: String?, mediaAssetJson: String?, promise: Promise) {
         log.d(
             "load assetId: " + assetId +
                     "\n player type: " + getPlayerType() +
                     "\n , mediaAssetJson:" + mediaAssetJson
         )
         if (player == null) {
-            log.e("Player instance is null while loading the media. Hence returning.")
+            val message = "Player instance is null while loading the media. Hence returning."
+            log.e(message)
+            sendCallbackToJS(promise, message, true)
             return
         }
 
         if (TextUtils.isEmpty(assetId) || TextUtils.isEmpty(mediaAssetJson)) {
-            log.e("assetId $assetId or mediaAssetJson $mediaAssetJson is invalid")
+            val message = "assetId $assetId or mediaAssetJson $mediaAssetJson is invalid"
+            log.e(message)
+            sendCallbackToJS(promise, message, true)
             return
         }
 
@@ -620,17 +636,22 @@ class KalturaPlayerRN(
                 BasicMediaAsset::class.java
             )
             if (basicMediaAsset == null || basicMediaAsset.mediaFormat == null) {
-                log.e("Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $basicMediaAsset")
+                val message = "Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $basicMediaAsset"
+                log.e(message)
+                sendCallbackToJS(promise, message, true)
                 return
             }
             val mediaEntry = createMediaEntry(assetId, basicMediaAsset)
             runOnUiThread {
                 player?.setMedia(mediaEntry, basicMediaAsset.startPosition)
+                sendCallbackToJS(promise, gson.toJson(mediaEntry))
             }
         } else if (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp) {
             val mediaAsset = getParsedJson(mediaAssetJson, MediaAsset::class.java)
             if (mediaAsset == null || player == null) {
-                log.e("Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $mediaAsset")
+                val message = "Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $mediaAsset"
+                log.e(message)
+                sendCallbackToJS(promise, message, true)
                 return
             }
             if (getPlayerType() == KalturaPlayer.Type.ott) {
@@ -639,16 +660,18 @@ class KalturaPlayerRN(
                     player?.loadMedia(ottMediaOptions) { _: MediaOptions?, entry: PKMediaEntry, error: ErrorElement? ->
                         if (error != null) {
                             log.e("ott media load error: " + error.name + " " + error.code + " " + error.message)
-                            sendPlayerEvent(
-                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
-                                gson.toJson(error)
-                            )
+                            sendCallbackToJS(promise, gson.toJson(error), true)
+//                            sendPlayerEvent(
+//                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
+//                                gson.toJson(error)
+//                            )
                         } else {
                             log.d("ott media load success name = " + entry.name + " initialVolume = " + mediaAsset.initialVolume)
-                            sendPlayerEvent(
-                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
-                                gson.toJson(entry)
-                            )
+                            sendCallbackToJS(promise, gson.toJson(entry))
+//                            sendPlayerEvent(
+//                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
+//                                gson.toJson(entry)
+//                            )
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
@@ -662,16 +685,18 @@ class KalturaPlayerRN(
                     player?.loadMedia(ovpMediaOptions) { _: MediaOptions?, entry: PKMediaEntry, error: ErrorElement? ->
                         if (error != null) {
                             log.e("ovp media load error: " + error.name + " " + error.code + " " + error.message)
-                            sendPlayerEvent(
-                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
-                                gson.toJson(error)
-                            )
+                            sendCallbackToJS(promise, gson.toJson(error), true)
+//                            sendPlayerEvent(
+//                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
+//                                gson.toJson(error)
+//                            )
                         } else {
                             log.d("ovp media load success name = " + entry.name + " initialVolume = " + mediaAsset.initialVolume)
-                            sendPlayerEvent(
-                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
-                                gson.toJson(entry)
-                            )
+                            sendCallbackToJS(promise, gson.toJson(gson.toJson(entry)))
+//                            sendPlayerEvent(
+//                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
+//                                gson.toJson(entry)
+//                            )
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
@@ -680,7 +705,9 @@ class KalturaPlayerRN(
                 }
             }
         } else {
-            log.e("No Player type defined hence can not load the media. PlayerType ${getPlayerType()}")
+            val message = "No Player type defined hence can not load the media. PlayerType ${getPlayerType()}"
+            log.e(message)
+            sendCallbackToJS(promise, message, true)
         }
     }
 
@@ -953,25 +980,30 @@ class KalturaPlayerRN(
     }
 
     /**
-     * NOOP
+     * Prepare JSON for the Error
      */
     private fun getErrorJson(error: PKError): String? {
-        val errorCause =
-            if ((error.exception != null)) error.exception!!.cause.toString() + "" else ""
         val errorJson = JsonObject()
+
+        val errorCause = if ((error.exception != null)) error.exception?.cause.toString() + "" else ""
         errorJson.addProperty("errorType", error.errorType.name)
-        if (error.errorType is PKPlayerErrorType) {
-            errorJson.addProperty(
-                "errorCode",
-                (error.errorType as PKPlayerErrorType).errorCode.toString()
-            )
-        } else if (error.errorType is PKAdErrorType) {
-            errorJson.addProperty(
-                "errorCode",
-                (error.errorType as PKAdErrorType).errorCode.toString()
-            )
-        } else {
-            errorJson.addProperty("errorCode", PKPlayerErrorType.UNEXPECTED.errorCode.toString())
+
+        when (error.errorType) {
+            is PKPlayerErrorType -> {
+                errorJson.addProperty(
+                    "errorCode",
+                    (error.errorType as PKPlayerErrorType).errorCode.toString()
+                )
+            }
+            is PKAdErrorType -> {
+                errorJson.addProperty(
+                    "errorCode",
+                    (error.errorType as PKAdErrorType).errorCode.toString()
+                )
+            }
+            else -> {
+                errorJson.addProperty("errorCode", PKPlayerErrorType.UNEXPECTED.errorCode.toString())
+            }
         }
         errorJson.addProperty("errorSeverity", error.severity.name)
         errorJson.addProperty("errorMessage", error.message)
@@ -1155,15 +1187,17 @@ class KalturaPlayerRN(
      */
     private fun sendCallbackToJS(promise: Promise, args: Any, isError: Boolean = false, throwable: Throwable? = null) {
         log.d("sendCallbackToJS $args" )
-        if (isError && throwable != null) {
-            promise.reject(args.toString(), throwable)
+        if (isError) {
+            promise.reject(throwable ?: Throwable(args.toString()))
         } else {
             promise.resolve(args)
         }
     }
 
     private fun createUiHandler() {
-        mainHandler = Handler(Looper.getMainLooper())
+        if (mainHandler == null) {
+            mainHandler = Handler(Looper.getMainLooper())
+        }
     }
 
     private fun addLifeCycleEventListener(context: ReactApplicationContext) {
@@ -1344,7 +1378,7 @@ class KalturaPlayerRN(
         player?.addListener<PlayerEvent.Error>(context, PlayerEvent.error,
             PKEvent.Listener { event: PlayerEvent.Error ->
                 if (event.error.isFatal) {
-                    sendPlayerEvent(KalturaPlayerEvents.ERROR, gson.toJson(event.error))
+                    sendPlayerEvent(KalturaPlayerEvents.ERROR, getErrorJson(event.error))
                 }
             })
         player?.addListener<PlayerEvent.MetadataAvailable>(context, PlayerEvent.metadataAvailable,

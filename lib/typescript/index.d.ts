@@ -43,7 +43,7 @@ export declare class KalturaPlayerAPI {
      * EntryId for Kaltura OVP Player
      * @param asset Media Asset JSON String
      */
-    static loadMedia: (id: string, asset: string) => void;
+    static loadMedia: (id: string, asset: string) => Promise<any>;
     /**
      * Add the listners for the Kaltura Player
      */

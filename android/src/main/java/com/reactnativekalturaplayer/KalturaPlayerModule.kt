@@ -39,14 +39,14 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
-    fun load(assetId: String?, mediaAsset: String?) {
+    fun load(assetId: String?, mediaAsset: String?, promise: Promise) {
         log.d(
             "load assetId: " + assetId +
                     "\n , mediaAssetJson:" + mediaAsset
         )
         checkArguments(this::load.name, assetId)
         checkArguments(this::load.name, mediaAsset)
-        kalturaPlayerRN.load(assetId, mediaAsset)
+        kalturaPlayerRN.load(assetId, mediaAsset, promise)
     }
 
     @ReactMethod
