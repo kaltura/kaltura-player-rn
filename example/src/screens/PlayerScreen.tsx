@@ -38,12 +38,15 @@ import { Navigation } from 'react-native-navigation';
 import { PLAYER_SCREEN } from '../../index';
 import { ActivitySpinner } from '../components/ActivitySpinner';
 import { Dropdown } from 'react-native-element-dropdown';
+import type { EmitterSubscription } from 'react-native';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
 
-var playerType: PLAYER_TYPE = null;
+let playerType: PLAYER_TYPE = null;
 let networkUnsubscribe: NetInfoSubscription | null = null;
+
+let eventsSubscriptionList: Array<EmitterSubscription> = [];
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
@@ -106,6 +109,8 @@ export default class App extends React.Component<any, any> {
     var asset = this.props.incomingJson.mediaAsset;
     var mediaId = this.props.incomingJson.mediaId;
 
+    this.player.enableDebugLogs(true);
+
     setupKalturaPlayer(
       this.player,
       playerType,
@@ -117,8 +122,8 @@ export default class App extends React.Component<any, any> {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount from App.');
     this._isMounted = false;
+    this.removePlayerListeners();
     if (networkUnsubscribe != null) {
       networkUnsubscribe();
     }
@@ -126,6 +131,7 @@ export default class App extends React.Component<any, any> {
     this.appStateSubscription.remove();
     this.player.destroy();
     playerType = null;
+    console.log('componentWillUnmount from App.');
   }
 
   getPlayerCurrentPosition(): any {
@@ -257,6 +263,15 @@ export default class App extends React.Component<any, any> {
     );
   };
 
+  removePlayerListeners = () => {
+    if (eventsSubscriptionList.length > 0) {
+      eventsSubscriptionList.forEach((event) => {
+        console.log(`removing player subscription ${event}`);
+        event.remove();
+      });
+    }
+  };
+
   /**
    * Add the Kaltura Player listeners to
    * add the Player, Ad and other Analytics
@@ -265,179 +280,241 @@ export default class App extends React.Component<any, any> {
    * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
-    playerEventEmitter.addListener(PlayerEvents.DURATION_CHANGE, (payload) => {
-      console.log(
-        'PlayerEvent DURATION_CHANGE : ' +
-          (payload.duration != null
-            ? payload.duration
-            : ' Empty duration change')
-      );
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.DURATION_CHANGE,
+        (payload) => {
+          console.log(
+            'PlayerEvent DURATION_CHANGE : ' +
+              (payload.duration != null
+                ? payload.duration
+                : ' Empty duration change')
+          );
 
-      if (payload.duration != null) {
-        this.contentDuration = payload.duration;
-      }
-    });
+          if (payload.duration != null) {
+            this.contentDuration = payload.duration;
+          }
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.PLAYHEAD_UPDATED, (payload) => {
-      //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
-      if (this._isMounted && !this.isSliderSeeking && !this.state.isAdPlaying) {
-        this.setState(() => ({
-          currentPosition: payload.position,
-          totalDuration: this.contentDuration,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.PLAYHEAD_UPDATED,
+        (payload) => {
+          //console.log('PlayerEvent PLAYHEAD_UPDATED position : ' + payload.position + ' bufferPosition: ' + payload.bufferPosition);
+          if (
+            this._isMounted &&
+            !this.isSliderSeeking &&
+            !this.state.isAdPlaying
+          ) {
+            this.setState(() => ({
+              currentPosition: payload.position,
+              totalDuration: this.contentDuration,
+            }));
+          }
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.PLAY, () => {
-      console.log('PlayerEvent PLAY');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isContentPlaying: true,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.PLAY, () => {
+        console.log('PlayerEvent PLAY');
+        if (this._isMounted) {
+          this.setState(() => ({
+            isContentPlaying: true,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.PAUSE, () => {
-      console.log('PlayerEvent PAUSE');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isContentPlaying: false,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.PAUSE, () => {
+        console.log('PlayerEvent PAUSE');
+        if (this._isMounted) {
+          this.setState(() => ({
+            isContentPlaying: false,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.VOLUME_CHANGED, (payload) => {
-      console.log(`PlayerEvent VOLUME_CHANGED ${payload.volume}`);
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.VOLUME_CHANGED, (payload) => {
+        console.log(`PlayerEvent VOLUME_CHANGED ${payload.volume}`);
+      })
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
-      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.LOAD_TIME_RANGES,
+        (payload) => {
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
-      console.log('PlayerEvent ERROR : ' + payload.message);
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
+        console.log('PlayerEvent ERROR : ' + payload.message);
+      })
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.TRACKS_AVAILABLE, (payload) => {
-      console.log('PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload));
-      const videoTracks = payload.video;
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.TRACKS_AVAILABLE,
+        (payload) => {
+          console.log(
+            'PlayerEvent TRACKS_AVAILABLE : ' + JSON.stringify(payload)
+          );
+          const videoTracks = payload.video;
 
-      if (this._isMounted && videoTracks.length > 0) {
-        this.setState(() => ({
-          videoTitle: 'Video Tracks',
-          videoTrackList: videoTracks,
-        }));
-      }
+          if (this._isMounted && videoTracks.length > 0) {
+            this.setState(() => ({
+              videoTitle: 'Video Tracks',
+              videoTrackList: videoTracks,
+            }));
+          }
 
-      const audioTracks = payload.audio;
+          const audioTracks = payload.audio;
 
-      if (this._isMounted && audioTracks.length > 0) {
-        this.setState(() => ({
-          audioTitle: 'Audio Tracks',
-          audioTrackList: audioTracks,
-        }));
-      }
+          if (this._isMounted && audioTracks.length > 0) {
+            this.setState(() => ({
+              audioTitle: 'Audio Tracks',
+              audioTrackList: audioTracks,
+            }));
+          }
 
-      const textTracks = payload.text;
+          const textTracks = payload.text;
 
-      if (this._isMounted && textTracks.length > 0) {
-        this.setState(() => ({
-          textTitle: 'Text Tracks',
-          textTrackList: textTracks,
-        }));
-      }
-    });
+          if (this._isMounted && textTracks.length > 0) {
+            this.setState(() => ({
+              textTitle: 'Text Tracks',
+              textTrackList: textTracks,
+            }));
+          }
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.DRM_INITIALIZED, (payload) => {
-      console.log('PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload));
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.DRM_INITIALIZED,
+        (payload) => {
+          console.log(
+            'PlayerEvent DRM_INITIALIZED : ' + JSON.stringify(payload)
+          );
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.LOAD_TIME_RANGES, (payload) => {
-      console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.LOAD_TIME_RANGES,
+        (payload) => {
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+        }
+      )
+    );
 
-    playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
-      console.log('AdEvent CONTENT_PAUSE_REQUESTED');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isAdPlaying: true,
-          isContentPlaying: false,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.CONTENT_PAUSE_REQUESTED, (_) => {
+        console.log('AdEvent CONTENT_PAUSE_REQUESTED');
+        if (this._isMounted) {
+          this.setState(() => ({
+            isAdPlaying: true,
+            isContentPlaying: false,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
-      console.log('AdEvent CONTENT_RESUME_REQUESTED');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isAdPlaying: false,
-          isContentPlaying: true,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.CONTENT_RESUME_REQUESTED, (_) => {
+        console.log('AdEvent CONTENT_RESUME_REQUESTED');
+        if (this._isMounted) {
+          this.setState(() => ({
+            isAdPlaying: false,
+            isContentPlaying: true,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
-      console.log(
-        'AdEvents LOADED : ' +
-          (payload.adDuration != null
-            ? payload.adDuration
-            : ' Empty Ad duration')
-      );
-      if (this._isMounted && payload.adDuration != null) {
-        this.setState(() => ({
-          totalDuration: payload.adDuration / 1000,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
+        console.log(
+          'AdEvents LOADED : ' +
+            (payload.adDuration != null
+              ? payload.adDuration
+              : ' Empty Ad duration')
+        );
+        if (this._isMounted && payload.adDuration != null) {
+          this.setState(() => ({
+            totalDuration: payload.adDuration / 1000,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
-      //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
-      if (this._isMounted && payload.currentAdPosition != null) {
-        this.setState(() => ({
-          currentPosition: payload.currentAdPosition,
-        }));
-      }
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
+        //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
+        if (this._isMounted && payload.currentAdPosition != null) {
+          this.setState(() => ({
+            currentPosition: payload.currentAdPosition,
+          }));
+        }
+      })
+    );
 
-    playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
-      //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
-    });
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
+        //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
+      })
+    );
 
-    playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
-      console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
-      if (this._isMounted) {
-        if (
-          !this.state.isAdPlaying &&
-          (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
-        ) {
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
+        console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
+        if (this._isMounted) {
+          if (
+            !this.state.isAdPlaying &&
+            (payload.newState === 'LOADING' || payload.newState === 'BUFFERING')
+          ) {
+            this.setState(() => ({
+              isShowing: true,
+            }));
+          } else {
+            this.setState(() => ({
+              isShowing: false,
+            }));
+          }
+        }
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.AD_BUFFER_START, () => {
+        console.log('AdEvent AD_BUFFER_START');
+        if (this._isMounted) {
           this.setState(() => ({
             isShowing: true,
           }));
-        } else {
+        }
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.AD_BUFFER_END, () => {
+        console.log('AdEvent AD_BUFFER_END');
+        if (this._isMounted) {
           this.setState(() => ({
             isShowing: false,
           }));
         }
-      }
-    });
-
-    playerEventEmitter.addListener(AdEvents.AD_BUFFER_START, () => {
-      console.log('AdEvent AD_BUFFER_START');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isShowing: true,
-        }));
-      }
-    });
-
-    playerEventEmitter.addListener(AdEvents.AD_BUFFER_END, () => {
-      console.log('AdEvent AD_BUFFER_END');
-      if (this._isMounted) {
-        this.setState(() => ({
-          isShowing: false,
-        }));
-      }
-    });
+      })
+    );
   };
 
   render() {

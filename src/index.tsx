@@ -417,6 +417,12 @@ export class KalturaPlayerAPI {
     return await isLive();
   };
 
+  /**
+   * Enable the console logs for the JS bridge
+   * By default it is disabled.
+   * @param enabled enable the debug logs
+   * @returns if `enabled` is `null` then don't do anything
+   */
   static enableDebugLogs = (enabled: boolean) => {
     if (enabled == null) {
       return;

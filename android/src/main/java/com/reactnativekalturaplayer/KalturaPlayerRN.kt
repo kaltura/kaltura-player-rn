@@ -1217,7 +1217,7 @@ class KalturaPlayerRN(
     }
 
     override fun onHostDestroy() {
-        destroy()
+        // This should also be controlled by the RN FE apps
     }
 
     fun removeKalturaPlayerListeners() {
@@ -1663,6 +1663,7 @@ class KalturaPlayerRN(
      * @param payloadString payload JSON data
      */
     private fun sendPlayerEvent(eventName: String, payloadString: String?) {
+        log.v("sendPlayerEvent to JS $eventName")
         val eventPayloadMap = convertStringToWritableMap(payloadString)
         if (eventPayloadMap == null) {
             log.e("Event payload is null hence returning event is: $eventName")

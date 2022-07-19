@@ -220,6 +220,7 @@ class KalturaPlayerModule(
 
     @ReactMethod
     fun removeKalturaPlayerListeners() {
+        log.d("removeKalturaPlayerListeners")
         kalturaPlayerRN.removeKalturaPlayerListeners()
     }
 
