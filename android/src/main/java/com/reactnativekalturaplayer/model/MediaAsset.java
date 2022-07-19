@@ -11,6 +11,7 @@ import com.kaltura.tvplayer.OTTMediaOptions;
 import com.kaltura.tvplayer.OVPMediaOptions;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,8 +21,8 @@ public class MediaAsset {
     private String ks;        // ovp or ott
 
     // OTT Params
-    private String format;    // ott
-    private String fileId;    // ott //TODO: FIX it with List of fileIds
+    private List<String> format;    // ott
+    private List<String> fileId;    // ott //TODO: FIX it with List of fileIds
     private String assetType; // ott
     private String playbackContextType; // ott
     private String assetReferenceType;  // ott
@@ -43,11 +44,11 @@ public class MediaAsset {
         return ks;
     }
 
-    private String getFormat() {
+    private List<String> getFormat() {
         return format;
     }
 
-    private String getFileId() {
+    private List<String> getFileId() {
         return fileId;
     }
 
@@ -196,11 +197,11 @@ public class MediaAsset {
         ottMediaAsset.setUrlType(getUrlType());
         ottMediaAsset.setStreamerType(getStreamerType());
         ottMediaAsset.setAdapterData(getAdapterData());
-        if (format != null) {
-            ottMediaAsset.setFormats(Collections.singletonList(format));
+        if (format != null && !format.isEmpty()) {
+            ottMediaAsset.setFormats(format);
         }
-        if (fileId != null) {
-            ottMediaAsset.setMediaFileIds(Collections.singletonList(fileId));
+        if (fileId != null && !fileId.isEmpty()) {
+            ottMediaAsset.setMediaFileIds(fileId);
         }
         OTTMediaOptions ottMediaOptions = new OTTMediaOptions(ottMediaAsset);
         ottMediaOptions.startPosition = startPosition;

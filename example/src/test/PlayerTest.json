@@ -183,7 +183,7 @@
           "mediaId": "548576",
           "mediaAsset": {
             "initialVolume": 1.0,
-            "format": "Mobile_Main",
+            "format": ["Mobile_Main"],
             "assetType": "media",
             "networkProtocol": "http",
             "playbackContextType": "playback",
