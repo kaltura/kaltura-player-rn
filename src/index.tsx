@@ -455,7 +455,7 @@ async function setupKalturaPlayer(
 
 async function loadMediaKalturaPlayer(id: string, asset: string) {
   try {
-    const loadMedia = KalturaPlayerModule.load(id, asset);
+    const loadMedia = await KalturaPlayerModule.load(id, asset);
     printConsoleLog(`Media Loaded ${loadMedia}`);
     return loadMedia;
   } catch (exception) {

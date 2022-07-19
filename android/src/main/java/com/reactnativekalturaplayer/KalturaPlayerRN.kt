@@ -657,7 +657,7 @@ class KalturaPlayerRN(
             if (getPlayerType() == KalturaPlayer.Type.ott) {
                 runOnUiThread {
                     val ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player?.ks)
-                    player?.loadMedia(ottMediaOptions) { _: MediaOptions?, entry: PKMediaEntry, error: ErrorElement? ->
+                    player?.loadMedia(ottMediaOptions) { _: MediaOptions?, entry: PKMediaEntry?, error: ErrorElement? ->
                         if (error != null) {
                             log.e("ott media load error: " + error.name + " " + error.code + " " + error.message)
                             sendCallbackToJS(promise, gson.toJson(error), true)
@@ -666,7 +666,7 @@ class KalturaPlayerRN(
 //                                gson.toJson(error)
 //                            )
                         } else {
-                            log.d("ott media load success name = " + entry.name + " initialVolume = " + mediaAsset.initialVolume)
+                            log.d("ott media load success name = " + entry?.name + " initialVolume = " + mediaAsset.initialVolume)
                             sendCallbackToJS(promise, gson.toJson(entry))
 //                            sendPlayerEvent(
 //                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
@@ -682,7 +682,7 @@ class KalturaPlayerRN(
                 runOnUiThread {
                     val ovpMediaOptions = mediaAsset.buildOvpMediaOptions(assetId, "", player?.ks)
 
-                    player?.loadMedia(ovpMediaOptions) { _: MediaOptions?, entry: PKMediaEntry, error: ErrorElement? ->
+                    player?.loadMedia(ovpMediaOptions) { _: MediaOptions?, entry: PKMediaEntry?, error: ErrorElement? ->
                         if (error != null) {
                             log.e("ovp media load error: " + error.name + " " + error.code + " " + error.message)
                             sendCallbackToJS(promise, gson.toJson(error), true)
@@ -691,7 +691,7 @@ class KalturaPlayerRN(
 //                                gson.toJson(error)
 //                            )
                         } else {
-                            log.d("ovp media load success name = " + entry.name + " initialVolume = " + mediaAsset.initialVolume)
+                            log.d("ovp media load success name = " + entry?.name + " initialVolume = " + mediaAsset.initialVolume)
                             sendCallbackToJS(promise, gson.toJson(gson.toJson(entry)))
 //                            sendPlayerEvent(
 //                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
@@ -1186,7 +1186,7 @@ class KalturaPlayerRN(
      * args does not support Long
      */
     private fun sendCallbackToJS(promise: Promise, args: Any, isError: Boolean = false, throwable: Throwable? = null) {
-        log.d("sendCallbackToJS $args" )
+        log.d("sendCallbackToJS $args")
         if (isError) {
             promise.reject(throwable ?: Throwable(args.toString()))
         } else {

@@ -217,11 +217,13 @@ export default class App extends React.Component<any, any> {
   };
 
   changeMedia = (assetId: string, mediaAsset: string) => {
-    this.player.updatePluginConfig(
-      PLAYER_PLUGIN.YOUBORA,
-      getUpdatedYouboraConfig
-    );
-    this.player.loadMedia(assetId, mediaAsset);
+      this.player.updatePluginConfig(
+        PLAYER_PLUGIN.YOUBORA,
+        getUpdatedYouboraConfig
+      );
+      this.player.loadMedia(assetId, mediaAsset).catch((error: any) => {
+        console.log(`Media Load Error ${error}`);
+      });
   };
 
   onTrackChangeListener = (trackId: string) => {
@@ -356,7 +358,13 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
-        console.log('PlayerEvent ERROR : ' + payload.message);
+        console.error('PlayerEvent ERROR : ' + JSON.stringify(payload));
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(PlayerEvents.SOURCE_SELECTED, (payload) => {
+        console.log('PlayerEvent SOURCE_SELECTED : ' + JSON.stringify(payload));
       })
     );
 
@@ -632,8 +640,8 @@ async function setupKalturaPlayer(
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
     if (playerCreated != null) {
       player.addListeners();
-      const mediaLoaded = await player.loadMedia(mediaId, mediaAsset);
-      console.log(`mediaLoaded => ${mediaLoaded}`);
+      player.loadMedia(mediaId, mediaAsset)
+      .then((response: any) => console.log(`mediaLoaded => ${response}`))
     } else {
       console.error('Player is not created.');
     }
