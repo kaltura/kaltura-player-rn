@@ -7,11 +7,9 @@ import { PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN,
 export { PlayerEvents, AdEvents, AnalyticsEvents, PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, WAKEMODE, SUBTITLE_STYLE, SUBTITLE_PREFERENCE, VIDEO_CODEC, AUDIO_CODEC, VR_INTERACTION_MODE, };
 interface KalturaPlayerProps {
     style: ViewStyle;
-    playerType: PLAYER_TYPE;
 }
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     nativeComponentRef: any;
-    playerType: PLAYER_TYPE | undefined;
     static propTypes: {
         style: object;
     };
@@ -175,4 +173,11 @@ export declare class KalturaPlayerAPI {
      * @returns boolean
      */
     static isLive: () => Promise<any>;
+    /**
+     * Enable the console logs for the JS bridge
+     * By default it is disabled.
+     * @param enabled enable the debug logs
+     * @returns if `enabled` is `null` then don't do anything
+     */
+    static enableDebugLogs: (enabled: boolean) => void;
 }
