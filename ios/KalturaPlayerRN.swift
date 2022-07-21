@@ -14,6 +14,7 @@ public enum KalturaPlayerRNError: PKError {
     case setupFailed(message: String)
     case loadMediaFailed(message: String)
     case retrieveCurrentPositionFailed
+    case retrieveIsPlayingFailed
     
     public static let domain = "com.kaltura.player.rn.error"
     public static let errorMessageKey = "message"
@@ -23,17 +24,20 @@ public enum KalturaPlayerRNError: PKError {
         case .setupFailed: return 9000
         case .loadMediaFailed: return 9001
         case .retrieveCurrentPositionFailed: return 9002
+        case .retrieveIsPlayingFailed: return 9003
         }
     }
     
     public var errorDescription: String {
         switch self {
         case .setupFailed(let message):
-            return "The Setup could not be completed. \(message)"
+            return "The setup could not be completed. \(message)"
         case .loadMediaFailed(let message):
             return "Loading the media failed. \(message)"
         case .retrieveCurrentPositionFailed:
-            return "Retrieving the current position Failed."
+            return "Retrieving the current position failed."
+        case .retrieveIsPlayingFailed:
+            return "Retrieving whether the player is playing or not failed."
         }
     }
     

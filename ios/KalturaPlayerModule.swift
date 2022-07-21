@@ -256,7 +256,19 @@ extension KalturaPlayerModule {
             } else {
                 let error = KalturaPlayerRNError.retrieveCurrentPositionFailed.asNSError
                 let message = error.localizedDescription
-                reject("ERROR_getCurrentPosition", message, error)
+                reject("ERROR_GETCURRENTPOSITION", message, error)
+            }
+        }
+    }
+    
+    @objc func isPlaying(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            if let isPlaying = self?.kalturaPlayerRN?.kalturaPlayer?.isPlaying {
+                resolve(isPlaying)
+            } else {
+                let error = KalturaPlayerRNError.retrieveIsPlayingFailed.asNSError
+                let message = error.localizedDescription
+                reject("ERROR_ISPLAYING", message, error)
             }
         }
     }
