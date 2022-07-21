@@ -30,19 +30,28 @@ class OVPKalturaPlayerRN: KalturaPlayerRN {
         kalturaOVPPlayer = KalturaOVPPlayer(options: playerOptions)
     }
     
-    override func load(assetId: String, mediaAsset: String) {
-        guard let ovpMediaAsset = parseOVPMediaAsset(mediaAsset) else { return }
+    override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
+        guard let ovpMediaAsset = parseOVPMediaAsset(mediaAsset) else {
+            let message = "Parsing the OVPMediaAsset failed."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
         
         let mediaOptions = ovpMediaAsset.getMediaOptions()
         mediaOptions.entryId = assetId
         
         kalturaOVPPlayer.loadMedia(options: mediaOptions) { [weak self] error in
-            if error != nil {
-                PKLog.debug("Load media faild with error: \(String(describing: error?.localizedDescription))")
+            if let error = error {
+                let message = error.localizedDescription
+                let kpRNError = KalturaPlayerRNError.loadMediaFailed(message: message)
+                PKLog.debug("Load media failed with error: \(message)")
+                callback(kpRNError)
             } else {
                 if self?.initOptions.autoplay == false && self?.initOptions.preload == false {
                     self?.kalturaOVPPlayer.prepare()
                 }
+                callback(nil)
             }
         }
     }

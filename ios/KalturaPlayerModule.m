@@ -22,7 +22,9 @@ RCT_EXTERN_METHOD(setUpPlayer:(nonnull NSString *)type
                   rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId
-                  mediaAsset:(nonnull NSString *)mediaAsset)
+                  mediaAsset:(nonnull NSString *)mediaAsset
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(addKalturaPlayerListeners)
 RCT_EXTERN_METHOD(removeKalturaPlayerListeners)

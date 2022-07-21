@@ -24,9 +24,19 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         self.kalturaBasicPlayer = KalturaBasicPlayer(options: self.playerOptions)
     }
     
-    override func load(assetId: String, mediaAsset: String) {
-        guard let contentUrl = URL(string: assetId) else { return }
-        guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else { return }
+    override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
+        guard let contentUrl = URL(string: assetId) else {
+            let message = "The content URL is not valid."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
+        guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else {
+            let message = "Parsing the Media Asset failed."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
         
         let mediaOptions = basicMediaAsset.getMediaOptions()
         
@@ -41,6 +51,8 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         if initOptions.autoplay == false && initOptions.preload == false {
             kalturaBasicPlayer.prepare()
         }
+        
+        callback(nil)
     }
 }
 

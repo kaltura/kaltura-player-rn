@@ -10,6 +10,40 @@ import KalturaPlayer
 import PlayKit
 import PlayKitProviders
 
+public enum KalturaPlayerRNError: PKError {
+    case setupFailed(message: String)
+    case loadMediaFailed(message: String)
+    
+    public static let domain = "com.kaltura.player.rn.error"
+    public static let errorMessageKey = "message"
+    
+    public var code: Int {
+        switch self {
+        case .setupFailed: return 9000
+        case .loadMediaFailed: return 9001
+        }
+    }
+    
+    public var errorDescription: String {
+        switch self {
+        case .setupFailed(let message):
+            return "The Setup could not be completed. \(message)"
+        case .loadMediaFailed(let message):
+            return "Loading the media failed. \(message)"
+        }
+    }
+    
+    public var userInfo: [String : Any] {
+        switch self {
+        case .setupFailed(let message):
+            return [KalturaPlayerRNError.errorMessageKey: message]
+        case .loadMediaFailed(let message):
+            return [KalturaPlayerRNError.errorMessageKey: message]
+        }
+    }
+}
+
+
 /** Do not create an instance of this class.
     Create one of it's subclasses: BasicKalturaPlayerRN / OTTKalturaPlayerRN / OVPKalturaPlayerRN
  **/
@@ -53,7 +87,7 @@ class KalturaPlayerRN: NSObject {
 
 // MARK: - Subclass implementations
     
-    func load(assetId: String, mediaAsset: String) {
+    func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
         // Shouldn't get here! Should be implemented in sub class.
         fatalError("Subclasses need to implement the `load` method.")
     }

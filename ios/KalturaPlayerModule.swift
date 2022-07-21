@@ -64,8 +64,9 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
                            resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         
         guard let options = initOptions, !options.isEmpty else {
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("ERROR_SETUPPLAYER", "The initOptions can not be empty.", error)
+            let message = "The initOptions can not be empty."
+            let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
+            reject("ERROR_SETUPPLAYER", message, error)
             return
         }
         
@@ -74,7 +75,9 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         do {
             initOptions = try JSONDecoder().decode(RNKPInitOptions.self, from: data)
         } catch let error as NSError {
-            reject("ERROR_SETUPPLAYER", "The initOptions could not be parsed.", error)
+            let message = "The initOptions could not be parsed. \(error.localizedDescription)"
+            let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
+            reject("ERROR_SETUPPLAYER", message, error)
             return
         }
         
@@ -95,8 +98,9 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         // Connect the player view
         guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
                 let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
-            let error = NSError(domain: "", code: 200, userInfo: nil)
-            reject("ERROR_SETUPPLAYER", "The KalturaPlayerViewManager was not yet initialised.", error)
+            let message = "The KalturaPlayerViewManager was not yet initialised."
+            let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
+            reject("ERROR_SETUPPLAYER", message, error)
             return
         }
         
@@ -107,18 +111,34 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         resolve("Sucess")
     }
     
-    // TODO: Need to fix load to return the error
-    @objc func load(_ assetId: String?, mediaAsset: String?) {
+    @objc func load(_ assetId: String?, mediaAsset: String?,
+                    resolver resolve: @escaping RCTPromiseResolveBlock,
+                    rejecter reject: @escaping RCTPromiseRejectBlock) {
+        
         guard let kalturaPlayerRN = kalturaPlayerRN else {
+            let message = "The KalturaPlayerRN is nil."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message).asNSError
+            reject("ERROR_LOADMEDIA", message, error)
             return
         }
         
         guard let assetId = assetId, !assetId.isEmpty , let mediaAsset = mediaAsset, !mediaAsset.isEmpty else {
+            let message = "The assetId and/or mediaAsset is empty."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message).asNSError
+            reject("ERROR_LOADMEDIA", message, error)
             return
         }
         
         DispatchQueue.main.async {
-            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset)
+            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset) { error in
+                if let kpRNError = error {
+                    let message = kpRNError.userInfo[KalturaPlayerRNError.errorMessageKey] as? String
+                    let nsError = kpRNError.asNSError
+                    reject("ERROR_LOADMEDIA", message, nsError)
+                } else {
+                    resolve("Sucess")
+                }
+            }
         }
     }
 }
