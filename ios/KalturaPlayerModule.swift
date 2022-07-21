@@ -246,3 +246,18 @@ extension KalturaPlayerModule {
         }
     }
 }
+
+extension KalturaPlayerModule {
+    
+    @objc func getCurrentPosition(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            if let currentTime = self?.kalturaPlayerRN?.kalturaPlayer?.currentTime {
+                resolve(currentTime)
+            } else {
+                let error = KalturaPlayerRNError.retrieveCurrentPositionFailed.asNSError
+                let message = error.localizedDescription
+                reject("ERROR_getCurrentPosition", message, error)
+            }
+        }
+    }
+}

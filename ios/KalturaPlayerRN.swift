@@ -13,6 +13,7 @@ import PlayKitProviders
 public enum KalturaPlayerRNError: PKError {
     case setupFailed(message: String)
     case loadMediaFailed(message: String)
+    case retrieveCurrentPositionFailed
     
     public static let domain = "com.kaltura.player.rn.error"
     public static let errorMessageKey = "message"
@@ -21,6 +22,7 @@ public enum KalturaPlayerRNError: PKError {
         switch self {
         case .setupFailed: return 9000
         case .loadMediaFailed: return 9001
+        case .retrieveCurrentPositionFailed: return 9002
         }
     }
     
@@ -30,6 +32,8 @@ public enum KalturaPlayerRNError: PKError {
             return "The Setup could not be completed. \(message)"
         case .loadMediaFailed(let message):
             return "Loading the media failed. \(message)"
+        case .retrieveCurrentPositionFailed:
+            return "Retrieving the current position Failed."
         }
     }
     
@@ -39,6 +43,8 @@ public enum KalturaPlayerRNError: PKError {
             return [KalturaPlayerRNError.errorMessageKey: message]
         case .loadMediaFailed(let message):
             return [KalturaPlayerRNError.errorMessageKey: message]
+        default:
+            return [String: Any]()
         }
     }
 }
