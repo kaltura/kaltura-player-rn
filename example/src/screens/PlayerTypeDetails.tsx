@@ -20,10 +20,14 @@ export default class PlayerTypeDetails extends PureComponent {
     this.handleInnerItemClick = this.handleInnerItemClick.bind(this);
   }
 
-  handleInnerItemClick({ innerIndex, item, itemIndex }) {
+  handleInnerItemClick({ innerItemIndex, item, itemIndex }) {
+    // console.warn(`item is: ${JSON.stringify(item)}`);
+    // console.warn(`innerIndex is: ${innerItemIndex}`);
+    // console.warn(`itemIndex is: ${itemIndex}`);
+
     var categoryName = item['categoryName'];
-    var subId = item['subCategory'][0]['id'];
-    var subName = item['subCategory'][0]['name'];
+    var subId = item['subCategory'][innerItemIndex]['id'];
+    var subName = item['subCategory'][innerItemIndex]['name'];
 
     console.log('handleInnerItemClick Category Name: ' + categoryName);
     console.log('handleInnerItemClick sub category Id' + subId);
@@ -55,7 +59,9 @@ export default class PlayerTypeDetails extends PureComponent {
             data={parsedJsonData}
             onInnerItemClick={this.handleInnerItemClick}
             onItemClick={handleItemClick}
-            innerItemContainerStyle = {styles.innerItem}
+            renderItemSeparator={true}
+            renderInnerItemSeparator={true}
+            innerItemContainerStyle={styles.innerItem}
           />
         ) : (
           <Text> There is no defined Player.</Text>
@@ -113,7 +119,7 @@ function parseJSONData(playerType: string, clickedItem: string): ListData[] {
     });
   });
 
-  console.log(`categoryJsonArray is ${categoryJsonArray}`);
+  console.log(`categoryJsonArray is ${JSON.stringify(categoryJsonArray)}`);
   return categoryJsonArray;
 }
 
@@ -149,6 +155,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'whitesmoke',
   },
   innerItem: {
-    minHeight: 40
-  }
+    minHeight: 40,
+  },
 });
