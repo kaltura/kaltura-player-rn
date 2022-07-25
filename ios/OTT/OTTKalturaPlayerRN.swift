@@ -31,20 +31,28 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
         kalturaOTTPlayer = KalturaOTTPlayer(options: playerOptions)
     }
     
-    // TODO: Need to fix load to return the error
-    override func load(assetId: String, mediaAsset: String) {
-        guard let ottMediaAsset = parseOTTMediaAsset(mediaAsset) else { return }
+    override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
+        guard let ottMediaAsset = parseOTTMediaAsset(mediaAsset) else {
+            let message = "Parsing the OTTMediaAsset failed."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
         
         let mediaOptions = ottMediaAsset.getMediaOptions()
         mediaOptions.assetId = assetId
         
         kalturaOTTPlayer.loadMedia(options: mediaOptions) { [weak self] error in
-            if error != nil {
-                PKLog.debug("Load media faild with error: \(String(describing: error?.localizedDescription))")
+            if let error = error {
+                let message = error.localizedDescription
+                let kpRNError = KalturaPlayerRNError.loadMediaFailed(message: message)
+                PKLog.debug("Load media failed with error: \(message)")
+                callback(kpRNError)
             } else {
                 if self?.initOptions.autoplay == false && self?.initOptions.preload == false {
                     self?.kalturaOTTPlayer.prepare()
                 }
+                callback(nil)
             }
         }
     }

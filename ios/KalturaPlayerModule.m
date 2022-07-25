@@ -22,7 +22,9 @@ RCT_EXTERN_METHOD(setUpPlayer:(nonnull NSString *)type
                   rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId
-                  mediaAsset:(nonnull NSString *)mediaAsset)
+                  mediaAsset:(nonnull NSString *)mediaAsset
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(addKalturaPlayerListeners)
 RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
@@ -40,5 +42,10 @@ RCT_EXTERN_METHOD(destroy)
 RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
 RCT_EXTERN_METHOD(changePlaybackRate:(nonnull float)playbackRate)
 RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
+
+RCT_EXTERN_METHOD(getCurrentPosition:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(isPlaying:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 
 @end
