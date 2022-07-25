@@ -661,17 +661,10 @@ class KalturaPlayerRN(
                         if (error != null) {
                             log.e("ott media load error: " + error.name + " " + error.code + " " + error.message)
                             sendCallbackToJS(promise, gson.toJson(error), true)
-//                            sendPlayerEvent(
-//                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
-//                                gson.toJson(error)
-//                            )
                         } else {
                             log.d("ott media load success name = " + entry?.name + " initialVolume = " + mediaAsset.initialVolume)
                             sendCallbackToJS(promise, gson.toJson(entry))
-//                            sendPlayerEvent(
-//                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
-//                                gson.toJson(entry)
-//                            )
+
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
@@ -686,17 +679,9 @@ class KalturaPlayerRN(
                         if (error != null) {
                             log.e("ovp media load error: " + error.name + " " + error.code + " " + error.message)
                             sendCallbackToJS(promise, gson.toJson(error), true)
-//                            sendPlayerEvent(
-//                                KalturaPlayerEvents.LOAD_MEDIA_FAILED,
-//                                gson.toJson(error)
-//                            )
                         } else {
                             log.d("ovp media load success name = " + entry?.name + " initialVolume = " + mediaAsset.initialVolume)
                             sendCallbackToJS(promise, gson.toJson(gson.toJson(entry)))
-//                            sendPlayerEvent(
-//                                KalturaPlayerEvents.LOAD_MEDIA_SUCCESS,
-//                                gson.toJson(entry)
-//                            )
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }

@@ -3,8 +3,6 @@ package com.reactnativekalturaplayer.events
 class KalturaPlayerEvents {
 
     companion object {
-        const val LOAD_MEDIA_FAILED = "loadMediaFailed"
-        const val LOAD_MEDIA_SUCCESS = "loadMediaSuccess"
         const val STATE_CHANGED = "stateChanged"
         const val CAN_PLAY = "canPlay" // Sent when enough data is available that the media can be played; at least for a couple of frames. This corresponds to the HAVE_ENOUGH_DATA readyState.
         const val DURATION_CHANGE = "durationChanged" //  The metadata has loaded or changed; indicating a change in duration of the media. This is sent; for example; when the media has loaded enough that the duration is known.
