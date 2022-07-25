@@ -55,6 +55,7 @@ export default class PlayerTypeDetails extends PureComponent {
             data={parsedJsonData}
             onInnerItemClick={this.handleInnerItemClick}
             onItemClick={handleItemClick}
+            innerItemContainerStyle = {styles.innerItem}
           />
         ) : (
           <Text> There is no defined Player.</Text>
@@ -147,4 +148,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'whitesmoke',
   },
+  innerItem: {
+    minHeight: 40
+  }
 });

@@ -272,4 +272,16 @@ extension KalturaPlayerModule {
             }
         }
     }
+    
+    @objc func isLive(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            if let isLive = self?.kalturaPlayerRN?.kalturaPlayer?.isLive() {
+                resolve(isLive)
+            } else {
+                let error = KalturaPlayerRNError.retrieveIsLiveFailed.asNSError
+                let message = error.localizedDescription
+                reject("ERROR_ISPLAYING", message, error)
+            }
+        }
+    }
 }
