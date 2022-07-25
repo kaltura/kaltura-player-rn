@@ -99,6 +99,22 @@
               }
             }
           }
+        },
+        {
+          "id": "Live_with_DVR",
+          "partnerId": 0,
+          "mediaId": "http://cdntesting.qa.mkaltura.com/p/1091/sp/109100/playManifest/entryId/0_nwkp7jtx/protocol/http/format/applehttp/flavorIds/0_iju7j519,0_98mlrldo,0_5hts3h5r,0_n6n76xp9/a.m3u8",
+          "mediaAsset": {
+            "id": "0_nwkp7jtx",
+            "name": "0_nwkp7jtx",
+            "mediaEntryType": "dvrLive",
+            "mediaFormat": "hls"
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "shouldPlayImmediately": true
+          }
         }
       ],
       "dash": [],

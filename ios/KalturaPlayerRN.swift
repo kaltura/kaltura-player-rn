@@ -15,6 +15,7 @@ public enum KalturaPlayerRNError: PKError {
     case loadMediaFailed(message: String)
     case retrieveCurrentPositionFailed
     case retrieveIsPlayingFailed
+    case retrieveIsLiveFailed
     
     public static let domain = "com.kaltura.player.rn.error"
     public static let errorMessageKey = "message"
@@ -25,6 +26,7 @@ public enum KalturaPlayerRNError: PKError {
         case .loadMediaFailed: return 9001
         case .retrieveCurrentPositionFailed: return 9002
         case .retrieveIsPlayingFailed: return 9003
+        case .retrieveIsLiveFailed: return 9004
         }
     }
     
@@ -38,6 +40,8 @@ public enum KalturaPlayerRNError: PKError {
             return "Retrieving the current position failed."
         case .retrieveIsPlayingFailed:
             return "Retrieving whether the player is playing or not failed."
+        case .retrieveIsLiveFailed:
+            return "Retrieving whether the media is a live content or not failed."
         }
     }
     
