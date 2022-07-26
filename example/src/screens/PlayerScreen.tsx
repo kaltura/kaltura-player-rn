@@ -2,6 +2,7 @@ import React from 'react';
 import NetInfo, { NetInfoSubscription } from '@react-native-community/netinfo';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import {
+  Platform,
   AppState,
   StyleSheet,
   View,
@@ -42,6 +43,9 @@ import type { EmitterSubscription } from 'react-native';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
+
+const platform_android = 'android';
+const platform_ios = 'ios';
 
 let playerType: PLAYER_TYPE = null;
 let networkUnsubscribe: NetInfoSubscription | null = null;
@@ -217,13 +221,13 @@ export default class App extends React.Component<any, any> {
   };
 
   changeMedia = (assetId: string, mediaAsset: string) => {
-      this.player.updatePluginConfig(
-        PLAYER_PLUGIN.YOUBORA,
-        getUpdatedYouboraConfig
-      );
-      this.player.loadMedia(assetId, mediaAsset).catch((error: any) => {
-        console.log(`Media Load Error ${error}`);
-      });
+    this.player.updatePluginConfig(
+      PLAYER_PLUGIN.YOUBORA,
+      getUpdatedYouboraConfig
+    );
+    this.player.loadMedia(assetId, mediaAsset).catch((error: any) => {
+      console.log(`Media Load Error ${error}`);
+    });
   };
 
   onTrackChangeListener = (trackId: string) => {
@@ -363,9 +367,29 @@ export default class App extends React.Component<any, any> {
     );
 
     eventsSubscriptionList.push(
-      playerEventEmitter.addListener(PlayerEvents.SOURCE_SELECTED, (payload) => {
-        console.log('PlayerEvent SOURCE_SELECTED : ' + JSON.stringify(payload));
-      })
+      playerEventEmitter.addListener(
+        PlayerEvents.SOURCE_SELECTED,
+        (payload) => {
+          console.log(
+            'PlayerEvent SOURCE_SELECTED : ' + JSON.stringify(payload)
+          );
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.PLAYBACK_INFO_UPDATED,
+        (payload) => {
+          if (Platform.OS == platform_android) {
+            console.log(
+              'PlayerEvent PLAYBACK_INFO_UPDATED : ' + JSON.stringify(payload)
+            );
+          } else if (Platform.OS == platform_ios) {
+            //TODO: for iOS
+          }
+        }
+      )
     );
 
     eventsSubscriptionList.push(
@@ -640,8 +664,9 @@ async function setupKalturaPlayer(
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
     if (playerCreated != null) {
       player.addListeners();
-      player.loadMedia(mediaId, mediaAsset)
-      .then((response: any) => console.log(`mediaLoaded => ${response}`))
+      player
+        .loadMedia(mediaId, mediaAsset)
+        .then((response: any) => console.log(`mediaLoaded => ${response}`));
     } else {
       console.error('Player is not created.');
     }

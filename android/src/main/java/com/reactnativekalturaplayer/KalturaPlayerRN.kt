@@ -55,6 +55,7 @@ class KalturaPlayerRN(
     private var playerViewAdded = false
     private val YOUBORA_ACCOUNT_CODE = "accountCode"
     private var mainHandler: Handler? = null
+    private val JSON_KEY_ANDROID: String = "android"
 
     private fun runOnUiThread(runnable: Runnable) {
         mainHandler?.post(runnable)
@@ -1345,7 +1346,7 @@ class KalturaPlayerRN(
             PKEvent.Listener { event: PlayerEvent.PlaybackInfoUpdated ->
                 sendPlayerEvent(
                     KalturaPlayerEvents.PLAYBACK_INFO_UPDATED,
-                    gson.toJson(event.playbackInfo)
+                    createJSONForEventPayload(JSON_KEY_ANDROID, gson.toJson(event.playbackInfo))
                 )
             })
         player?.addListener<PlayerEvent.Seeking>(context, PlayerEvent.seeking,

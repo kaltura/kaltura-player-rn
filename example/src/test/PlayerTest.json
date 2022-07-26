@@ -99,7 +99,16 @@
               }
             }
           }
-        },
+        }
+      ],
+      "dash": [],
+      "mp4": []
+    },
+    "drm": {
+      "dash": []
+    },
+    "live": {
+      "hls": [
         {
           "id": "Live_with_DVR",
           "partnerId": 0,
@@ -116,12 +125,7 @@
             "shouldPlayImmediately": true
           }
         }
-      ],
-      "dash": [],
-      "mp4": []
-    },
-    "drm": {
-      "dash": []
+      ]
     }
   },
   "ovp": {
