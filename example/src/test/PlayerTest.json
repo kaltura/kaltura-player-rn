@@ -1,5 +1,37 @@
 {
   "basic": {
+    "vr-360": {
+      "hls": [
+        {
+          "id": "360_playback",
+          "partnerId": 0,
+          "mediaId": "http://cdntesting.qa.mkaltura.com/p/1091/sp/109100/playManifest/entryId/0_dod3wrta/protocol/http/format/applehttp/flavorIds/0_oiojktat,0_waq7odit,0_h1xpafjp,0_cdgdir4l/a.m3u8",
+          "mediaAsset": {
+            "id": "basicId",
+            "name": "basicName",
+            "duration": 120,
+            "mediaEntryType": "Vod",
+            "mediaFormat": "hls",
+            "startPosition": 0,
+            "isVRMediaType": true
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "allowCrossProtocolRedirect": true,
+            "allowFairPlayOnExternalScreens": true,
+            "shouldPlayImmediately": true,
+            "handleAudioFocus": true,
+            "vrSettings": {
+              "vrModeEnabled": true,
+              "zoomWithPinchEnabled": false,
+              "flingEnabled": true,
+              "interactionMode": "MotionWithTouch"
+            }
+          }
+        }
+      ]
+    },
     "vod": {
       "hls": [
         {

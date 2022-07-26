@@ -95,8 +95,9 @@ export default class App extends React.Component<any, any> {
 
   componentDidMount() {
     console.log('componentDidMount from App.');
+    
     this._isMounted = true;
-    this.subscribeToAppLifecyle();
+  
     console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
     console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
@@ -113,6 +114,12 @@ export default class App extends React.Component<any, any> {
     var asset = this.props.incomingJson.mediaAsset;
     var mediaId = this.props.incomingJson.mediaId;
 
+    if (!mediaId || (playerType !== PLAYER_TYPE.BASIC && partnerId <= 0)) {
+      console.error(`Invalid MediaId: ${mediaId} or partnerId ${partnerId}`);
+      return;
+    }
+
+    this.subscribeToAppLifecyle();
     this.player.enableDebugLogs(true);
 
     setupKalturaPlayer(
@@ -132,7 +139,9 @@ export default class App extends React.Component<any, any> {
       networkUnsubscribe();
     }
     this.player.removeListeners();
-    this.appStateSubscription.remove();
+    if (this.appStateSubscription != null) {
+      this.appStateSubscription.remove();
+    }
     this.player.destroy();
     playerType = null;
     console.log('componentWillUnmount from App.');
@@ -664,7 +673,8 @@ export default class App extends React.Component<any, any> {
             }}
           />
 
-          <TouchableOpacity
+          { // TODO: Implement proper change media using test JSON
+          /* <TouchableOpacity
             style={[styles.button]}
             onPress={() => {
               this.changeMedia(
@@ -674,7 +684,7 @@ export default class App extends React.Component<any, any> {
             }}
           >
             <Text style={[styles.bigWhite]}>Change Media</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ScrollView>
       </RootSiblingParent>
     );
