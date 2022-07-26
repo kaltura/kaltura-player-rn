@@ -6,6 +6,8 @@ import { ExpandableListView } from 'react-native-expandable-listview';
 import playerTestJson from '../test/PlayerTest.json';
 import { PLAYER_SCREEN } from '../../index';
 
+const noMediaAvailable: string = 'No Media Available';
+
 export default class PlayerTypeDetails extends PureComponent {
   constructor(props: any) {
     super(props);
@@ -35,6 +37,11 @@ export default class PlayerTypeDetails extends PureComponent {
     console.log(
       'handleInnerItemClick this.state.playerType ' + this.state.playerType
     );
+
+    if (!isMediaAvailable(subId, subName)) {
+      console.log('No Media Available for this');
+      return;
+    }
 
     let listData =
       playerTestJson[this.state.playerType][this.state.clickedItem][
@@ -69,6 +76,16 @@ export default class PlayerTypeDetails extends PureComponent {
       </View>
     );
   }
+}
+
+function isMediaAvailable(
+  subCategoryId: Number,
+  subCategoryName: string
+): boolean {
+  if (subCategoryId == 0 && subCategoryName === noMediaAvailable) {
+    return false;
+  }
+  return true;
 }
 
 function handleItemClick({ index }) {
@@ -107,7 +124,7 @@ function parseJSONData(playerType: string, clickedItem: string): ListData[] {
     if (subCategoryJsonArray.length == 0) {
       var subCategoryJson = {
         id: 0,
-        name: 'No Media Available',
+        name: noMediaAvailable,
       };
       subCategoryJsonArray.push(subCategoryJson);
     }
