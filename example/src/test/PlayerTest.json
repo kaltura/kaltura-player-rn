@@ -125,6 +125,24 @@
             "shouldPlayImmediately": true
           }
         }
+      ],
+      "dash": [
+        {
+          "id": "metadata_event_dashif_media",
+          "partnerId": 0,
+          "mediaId": "https://livesim.dashif.org/livesim/scte35_2/testpic_2s/Manifest.mpd",
+          "mediaAsset": {
+            "id": "0_nwkp7jtx",
+            "name": "0_nwkp7jtx",
+            "mediaEntryType": "live",
+            "mediaFormat": "dash"
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "shouldPlayImmediately": true
+          }
+        }
       ]
     }
   },

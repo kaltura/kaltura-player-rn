@@ -394,6 +394,36 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(
+        PlayerEvents.METADATA_AVAILABLE,
+        (payload) => {
+          if (Platform.OS == platform_android) {
+            console.log(
+              'PlayerEvent METADATA_AVAILABLE : ' + JSON.stringify(payload)
+            );
+          } else if (Platform.OS == platform_ios) {
+            //TODO: for iOS
+          }
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.EVENT_STREAM_CHANGED,
+        (payload) => {
+          if (Platform.OS == platform_android) {
+            console.log(
+              'PlayerEvent EVENT_STREAM_CHANGED : ' + JSON.stringify(payload)
+            );
+          } else if (Platform.OS == platform_ios) {
+            //TODO: for iOS
+          }
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
         PlayerEvents.TRACKS_AVAILABLE,
         (payload) => {
           console.log(
