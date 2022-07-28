@@ -10,7 +10,7 @@ env:
 
 jobs:
 
-  react-native & android:
+  react-native and Android:
     runs-on: ubuntu-latest
 
     strategy:
@@ -40,7 +40,7 @@ jobs:
     - name: Android native build
       run: cd android && chmod +x ./gradlew && ./gradlew build --no-daemon
 
-  ios:
+  iOS:
     runs-on: macos-latest
 
     steps:
