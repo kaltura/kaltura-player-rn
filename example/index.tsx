@@ -15,7 +15,7 @@ Navigation.registerComponent(PLAYER_TYPE_SCREEN_TWO, () => PlayerTypeScreenTwo);
 Navigation.registerComponent(PLAYER_TYPE_DETAILS, () => PlayerTypeDetails);
 Navigation.registerComponent(PLAYER_SCREEN, () => PlayerScreen);
 
-Navigation.events().registerAppLaunchedListener(() => {
+Navigation.events().registerAppLaunchedListener(async () => {
    Navigation.setRoot({
      root: {
        stack: {

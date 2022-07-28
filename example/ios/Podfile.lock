@@ -246,7 +246,7 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-netinfo (9.0.0):
+  - react-native-netinfo (9.3.0):
     - React-Core
   - React-perflogger (0.66.4)
   - React-RCTActionSheet (0.66.4):
@@ -313,13 +313,13 @@ PODS:
     - React-jsi (= 0.66.4)
     - React-logger (= 0.66.4)
     - React-perflogger (= 0.66.4)
-  - ReactNativeNavigation (7.28.0):
+  - ReactNativeNavigation (7.28.1):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.28.0)
-  - ReactNativeNavigation/Core (7.28.0):
+    - ReactNativeNavigation/Core (= 7.28.1)
+  - ReactNativeNavigation/Core (7.28.1):
     - HMSegmentedControl
     - React-Core
     - React-RCTImage
@@ -483,7 +483,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-netinfo: 5b664b2945a8f02102b296f0f812bddd6827ed9c
+  react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
   React-RCTAnimation: 743e88b55ac62511ae5c2e22803d4f503f2a3a13
@@ -496,7 +496,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: e3ffca672dd3772536cb844274094b0e2c31b187
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
-  ReactNativeNavigation: d82a136212f3a581e256b181e5703aa2f79ecba4
+  ReactNativeNavigation: 61f7647c8f1fae7bdc93ad98910c83eb18d24748
   RNKalturaPlayer: 9bd0e1de20ab2116c44e0ab2e5270877c891d858
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   SwiftyXMLParser: 5ebb8793192f403fa8cc691045143906122a7a75
