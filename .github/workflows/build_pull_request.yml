@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [ "develop" ]
 
+env:
+  BROADPEAK_USERNAME: ${{ secrets.BROADPEAK_USERNAME }}
+  BROADPEAK_PASSWORD: ${{ secrets.BROADPEAK_PASSWORD }}
+
 jobs:
 
   react-native:
