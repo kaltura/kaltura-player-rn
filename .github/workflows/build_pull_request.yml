@@ -10,7 +10,7 @@ env:
 
 jobs:
 
-  react-native and Android:
+  react-native_and_android:
     runs-on: ubuntu-latest
 
     strategy:
