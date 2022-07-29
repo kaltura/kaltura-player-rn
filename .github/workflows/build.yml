@@ -1,4 +1,4 @@
-name: build_pull_request CI
+name: build CI
 
 on:
   push:
