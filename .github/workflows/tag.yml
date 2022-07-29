@@ -1,0 +1,35 @@
+name: tag CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag_version:
+        description: 'Tag Version'
+        required: true
+        type: string
+      release_sha_version:
+        description: 'SHA'
+        required: true
+        type: string
+  
+jobs:
+  create_tag:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Print Tag version
+      run: |
+        echo "Tag Version: $TAG"
+      env: 
+        TAG: ${{ inputs.release_tag_version }}
+    - name: Setup Github Config
+      run: | 
+        git config user.name "Github Actions Bot KLTR"
+        git config user.email "<>"
+    - name: Create tag
+      run: |
+        git tag ${{ inputs.release_tag_version }} ${{ inputs.release_sha_version }}
+        git push origin ${{ inputs.release_tag_version }}
