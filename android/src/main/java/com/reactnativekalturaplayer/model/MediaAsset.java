@@ -22,7 +22,7 @@ public class MediaAsset {
 
     // OTT Params
     private List<String> format;    // ott
-    private List<String> fileId;    // ott //TODO: FIX it with List of fileIds
+    private List<String> fileId;    // ott
     private String assetType; // ott
     private String playbackContextType; // ott
     private String assetReferenceType;  // ott

@@ -22,7 +22,7 @@ export enum MEDIA_ENTRY_TYPE {
 export enum DRM_SCHEME {
   WIDEVINE_CENC = 'WidevineCENC',
   PLAYREADY_CENC = 'PlayReadyCENC',
-  WIDEVINE_CENC_CLASSIC = 'WidevineClassic',
+  WIDEVINE_CLASSIC = 'WidevineClassic',
   PLAYREADY_CLASSIC = 'PlayReadyClassic',
 }
 
