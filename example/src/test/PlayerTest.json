@@ -187,7 +187,7 @@
           "mediaId": "1_w9zx2eti",
           "mediaAsset": {
             "initialVolume": 1.0,
-            "format": "Mobile_Main",
+            "format": ["Mobile_Main"],
             "assetType": "media",
             "protocol": "http",
             "playbackContextType": "playback",
