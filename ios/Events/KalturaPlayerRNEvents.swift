@@ -7,8 +7,6 @@
 
 enum KalturaPlayerRNEvents: String, CaseIterable {
     
-//    case loadMediaFailed
-//    case loadMediaSuccess
     case stateChanged
     /** Sent when enough data is available that the media can be played; at least for a couple of frames. This corresponds to the HAVE_ENOUGH_DATA readyState.
      **/
