@@ -255,10 +255,10 @@ var initOptions = {
 |`seekToLiveDefaultPosition()`     | ✅     |  ✅    |    Seek player to Live Default Position. _Only for Live Media._      |
 |`updateSubtitleStyle(subtitleStyle: string)()`     | ✅     |  ✅    | Update the existing subtitle styling  |        
 |`updateResizeMode(mode: PLAYER_RESIZE_MODES)()`     | ✅     |  ✅    |  Update the Resize Mode  |      
-|`updateAbrSettings(abrSettings: string)()`     | ✅     |  ❌    |  Update the ABR Settings  |      
-|`resetAbrSettings()`     | ✅     |  ❌    |    Reset the ABR Settings      |
-|`updateLowLatencyConfig(lowLatencyConfig: string)()`     | ✅     |  ❌    |  Update the Low Latency Config. _Only for Live Media_    |    
-|`resetLowLatencyConfig()`     | ✅     |  ❌    |    Reset the Low Latency Config. _Only for Live Media_      |
+|`updateAbrSettings(abrSettings: string)()`     | ❌     |   ✅   |  Update the ABR Settings  |      
+|`resetAbrSettings()`     |  ❌   |   ✅    |    Reset the ABR Settings      |
+|`updateLowLatencyConfig(lowLatencyConfig: string)()`     | ❌     |   ✅   |  Update the Low Latency Config. _Only for Live Media_    |    
+|`resetLowLatencyConfig()`     |  ❌    |  ✅    |    Reset the Low Latency Config. _Only for Live Media_      |
 |`getCurrentPosition()`     | ✅     |  ✅    |    **Async** function. Getter for the current playback position. Returns `string` Position of the player or -1.     |
 |`isPlaying()`     | ✅     |  ✅    |   **Async** function. Checks if Player is currently playing or not. Returns `boolean`.     |
 |`isLive()`     | ✅     |  ✅    |    **Async** function. Checks if the stream is Live or Not. Returns `boolean`.     |
