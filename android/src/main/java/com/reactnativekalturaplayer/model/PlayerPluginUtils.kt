@@ -2,8 +2,6 @@ package com.reactnativekalturaplayer.model
 
 import com.google.gson.JsonObject
 import com.kaltura.playkit.PKPlugin
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakPlugin
 import com.kaltura.playkit.plugins.ima.IMAConfig
 import com.kaltura.playkit.plugins.ima.IMAPlugin
 import com.kaltura.playkit.plugins.imadai.IMADAIConfig
@@ -14,6 +12,8 @@ import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsPlugin
 import com.kaltura.playkit.plugins.youbora.YouboraPlugin
 import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 class RegisteredPlugins {
     var ima: JsonObject? = null
@@ -35,7 +35,7 @@ enum class PlayerPlugins {
     broadpeak
 }
 
-fun getPluginFactory(pluginName: PlayerPlugins) : PKPlugin.Factory {
+fun getPluginFactory(pluginName: PlayerPlugins) : PKPlugin.Factory? {
     when (pluginName) {
         PlayerPlugins.ima -> {
             return IMAPlugin.factory
@@ -53,12 +53,17 @@ fun getPluginFactory(pluginName: PlayerPlugins) : PKPlugin.Factory {
             return PhoenixAnalyticsPlugin.factory
         }
         PlayerPlugins.broadpeak -> {
-            return BroadpeakPlugin.factory
+            val factoryField = getBroadpeakFactory();
+            return if (factoryField != null && PKPlugin.Factory::class.java.isAssignableFrom(factoryField.type)) {
+                PKPlugin.Factory::class.java.cast(factoryField.get(null))
+            } else {
+                null
+            }
         }
     }
 }
 
-fun getPluginClass(pluginName: PlayerPlugins): Class<*> {
+fun getPluginConfig(pluginName: PlayerPlugins): Class<*>? {
     when (pluginName) {
         PlayerPlugins.ima -> {
             return IMAConfig::class.java
@@ -76,7 +81,31 @@ fun getPluginClass(pluginName: PlayerPlugins): Class<*> {
             return PhoenixAnalyticsConfig::class.java
         }
         PlayerPlugins.broadpeak -> {
-            return BroadpeakConfig::class.java
+            return getBroadpeakConfig()
         }
     }
+}
+
+fun getBroadpeakFactory(): Field? {
+    try {
+        val broadpeakPlugin = Class.forName("com.kaltura.playkit.plugins.broadpeak.BroadpeakPlugin")
+        val factoryField = broadpeakPlugin.getField("factory")
+        if (!Modifier.isStatic(factoryField.modifiers)) {
+            return null
+        }
+        return factoryField
+    } catch (classNotFoundException: ClassNotFoundException) {
+
+    }
+    return null
+}
+
+fun getBroadpeakConfig(): Class<*>? {
+    try {
+        val broadpeakConfig = Class.forName("com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig")
+        return broadpeakConfig
+    } catch (classNotFoundException: ClassNotFoundException) {
+
+    }
+    return null
 }

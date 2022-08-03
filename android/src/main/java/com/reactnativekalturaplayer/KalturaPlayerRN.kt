@@ -20,8 +20,6 @@ import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
 import com.kaltura.playkit.plugins.ads.AdCuePoints
 import com.kaltura.playkit.plugins.ads.AdEvent
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent
 import com.kaltura.playkit.plugins.ima.IMAConfig
 import com.kaltura.playkit.plugins.imadai.IMADAIConfig
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
@@ -295,9 +293,10 @@ class KalturaPlayerRN(
                     updatePlugin(PlayerPlugins.ottAnalytics, phoenixAnalyticsConfig)
                 }
             } else if (TextUtils.equals(pluginName, PlayerPlugins.broadpeak.name)) {
+                val broadpeakConfigClass = getBroadpeakConfig()
                 val broadpeakConfig = getParsedJson(
                     pluginConfigs.pluginConfig.toString(),
-                    BroadpeakConfig::class.java
+                    broadpeakConfigClass
                 )
                 if (broadpeakConfig != null) {
                     updatePlugin(PlayerPlugins.broadpeak, broadpeakConfig)
@@ -1040,22 +1039,31 @@ class KalturaPlayerRN(
         pluginConfigs: PKPluginConfigs?,
         pluginConfigJson: JsonObject?
     ) {
-        PlayKitManager.registerPlugins(context, getPluginFactory(pluginName))
+
+        val pluginFactoryClass = getPluginFactory(pluginName)
+        val pluginConfigClass = getPluginConfig(pluginName)
+
+        if (pluginFactoryClass == null || pluginConfigClass == null) {
+            log.e("Invalid Plugin factory $pluginFactoryClass or plugin config $pluginConfigClass")
+            return;
+        }
+
+        PlayKitManager.registerPlugins(context, pluginFactoryClass)
         if (pluginConfigJson == null || pluginConfigJson.size() == 0) {
-            log.w("Plugins' config Json is not valid hence returning" + getPluginClass(pluginName))
+            log.w("Plugins' config Json is not valid hence returning $pluginConfigClass")
             return
         }
         val strPluginJson = pluginConfigJson.toString()
         if (pluginConfigs != null && !TextUtils.isEmpty(strPluginJson)) {
-            val pluginConfig = getParsedJson(strPluginJson, getPluginClass(pluginName))
-            if (pluginConfig != null) {
-                pluginConfigs.setPluginConfig(getPluginFactory(pluginName).name, pluginConfig)
+            val parsedPluginConfig = getParsedJson(strPluginJson, pluginConfigClass)
+            if (parsedPluginConfig != null) {
+                pluginConfigs.setPluginConfig(pluginFactoryClass.name, parsedPluginConfig)
             } else {
-                log.e("Invalid configuration for " + getPluginClass(pluginName).simpleName)
+                log.e("Invalid configuration for " + pluginConfigClass.simpleName)
             }
         } else {
             log.e(
-                ("Can not create the plugin " + getPluginClass(pluginName).simpleName + " \n " +
+                ("Can not create the plugin " + pluginConfigClass.simpleName + " \n " +
                         "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson)
             )
         }
@@ -1069,9 +1077,11 @@ class KalturaPlayerRN(
      */
     private fun updatePlugin(pluginName: PlayerPlugins, updatePluginConfig: Any?) {
         val pluginFactory = getPluginFactory(pluginName)
-        if ((player != null) && (updatePluginConfig != null) && !TextUtils.isEmpty(pluginFactory.name)) {
+        if ((player != null) && (updatePluginConfig != null) && !TextUtils.isEmpty(pluginFactory?.name)) {
             runOnUiThread {
-                player?.updatePluginConfig(pluginFactory.name, updatePluginConfig)
+                pluginFactory?.let {
+                    player?.updatePluginConfig(it.name, updatePluginConfig)
+                }
             }
         }
     }
@@ -1152,11 +1162,17 @@ class KalturaPlayerRN(
     }
 
     @Nullable
-    private fun <T> getParsedJson(parsableJson: String?, parsingClass: Class<T>): T? {
+    private fun <T> getParsedJson(parsableJson: String?, parsingClass: Class<T>?): T? {
         if (TextUtils.isEmpty(parsableJson)) {
-            log.e("getParsedJson parsable Json is empty.")
+            log.d("getParsedJson parsable Json is empty.")
             return null
         }
+
+        if (parsingClass == null) {
+            log.d("parsingClass is null.")
+            return null
+        }
+
         try {
             return gson.fromJson(parsableJson, parsingClass)
         } catch (exception: JsonSyntaxException) {
@@ -1615,14 +1631,14 @@ class KalturaPlayerRN(
                         " }")
             )
         }
-        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
-            sendPlayerEvent(
-                "broadpeakError", ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-                        ", \"errorType\": \"" + event.type + "\" " +
-                        " }")
-            )
-        }
+//        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
+//            sendPlayerEvent(
+//                "broadpeakError", ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+//                        ", \"errorCode\": \"" + event.errorCode + "\" " +
+//                        ", \"errorType\": \"" + event.type + "\" " +
+//                        " }")
+//            )
+//        }
 
         log.d("Player listeners are added.")
     }
