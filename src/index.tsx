@@ -23,10 +23,37 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
 
   componentDidMount() {
     const supportedEvents = [
-      "canPlay", "durationChanged", "stopped", "ended", "loadedMetadata", "play", "pause", "playing", "seeking", "seeked", "replay",
-      "tracksAvailable", "textTrackChanged", "audioTrackChanged", "videoTrackChanged", "playbackInfo", "stateChanged",
-      "timedMetadata", "sourceSelected", "loadedTimeRanges", "playheadUpdate", "error", "errorLog", "playbackStalled", "playbackRate", "timeUpdate", "loadMediaFailed", "bookmarkError"
-    ];
+      "canPlay",
+      "durationChanged",
+      "stopped",
+      "ended",
+      "loadedMetadata",
+      "play",
+      "pause",
+      "playing",
+      "seeking",
+      "seeked",
+      "replay",
+      "tracksAvailable",
+      "textTrackChanged",
+      "audioTrackChanged",
+      "videoTrackChanged",
+      "playbackInfo",
+      "stateChanged",
+      "timedMetadata",
+      "sourceSelected",
+      "loadedTimeRanges",
+      "playheadUpdate",
+      "error",
+      "errorLog",
+      "playbackStalled",
+      "playbackRate",
+      "timeUpdate",
+      "bookmarkError",
+      "loadMediaFailed",
+      "loadMediaSuccess",
+    ]
+    
     supportedEvents.forEach(type => {
       this.eventListeners.push(KalturaPlayerEmitter.addListener(type, (event: any) => {
         KalturaPlayerEmitter.emit('KPlayerEvent', { type, ...event })
