@@ -235,9 +235,10 @@ extension KalturaPlayerRN {
             for track in eventAudioTracks {
                 audioTracks.append([
                     "id": track.id,
-                    "label": track.title,
+                    "bitrate": -1,
                     "language": track.language ?? "",
-                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "label": track.title,
+                    "channelCount": -1,
                     "isSelected": selectedAudioTrackId == track.id
                 ])
             }
@@ -248,9 +249,8 @@ extension KalturaPlayerRN {
             for track in eventTextTracks {
                 textTracks.append([
                     "id": track.id,
-                    "label": track.title,
                     "language": track.language ?? "",
-                    "isAdaptive": false, // Audio and text tracks are never adaptive. Video tracks don't exist in HLS/AVPlayer.
+                    "label": track.title,
                     "isSelected": selectedTextTrackId == track.id
                 ])
             }
