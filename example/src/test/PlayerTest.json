@@ -280,36 +280,7 @@
         }
       ],
       "dash": [
-        {
-          "id": "KUX-Media",
-          "partnerId": 3200,
-          "mediaId": "1001112",
-          "mediaAsset": {
-            "ks": "djJ8MzIwMHwWXFpTE3mF7JjTzJg0Rnb3InuQdnFKRHIn7gcS_3OvY7HLrQmEGBA0dgqirc_EcF8uw8I4Ib7JI8SHKaAMA2wr6O6vn4tOCElOdbZqV43-bUhTol5AphC3pvMn36hQQUq8q6YP8TgEpELLScS3Klc47_-aPoo7LEf2OvTnkSABRomj6Q5qMPzHA5wbB_Scm89LzOgFe8KGVvizhCZUbJ1uJC_o7E0Ueknf295ugCnG71EdFzeHe8zJc42DrUae1ciKicxHV8eZsIOy85D716qDRI_iI3_AU9ZoVjyt8-hSzgAst9yvCzGjIVGmx3_-m4m04uxfL88t07YsawGO9o7OeDoeXAAOTTahO__chapWOMZN7p5vCfbP8aIyglGDwEbDtsNAj4kEIRgixEdnV6EvohucriS2WPb3bzBaYdKBlGSSaaSF7nLdogg_Qs88CZu4CHCSau3VVixfvcGCA3o2RBpw38KxfdwBHcZo3jjwmPwocx43Xyao9AAiYzL537I=",
-            "initialVolume": 1.0,
-            "format": ["DASH_WV"],
-            "assetType": "media",
-            "networkProtocol": "https",
-            "playbackContextType": "playback",
-            "urlType": "DIRECT",
-            "streamerType": "mpegdash",
-            "startPosition": 0
-          },
-          "initOptions": {
-            "serverUrl": "https://3200.frp1.ott.kaltura.com/api_v3/",
-            "autoplay": true,
-            "preload": true,
-            "shouldPlayImmediately": true,
-            "plugins": {
-              "broadpeak": {
-                "analyticsAddress": "https://analytics.kaltura.com/api_v3/index.php",
-                "nanoCDNHost": "",
-                "broadpeakDomainNames": "*",
-                "uuid": ""
-              }
-            }
-          }
-        }
+        
       ]
     }
   }
