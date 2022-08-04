@@ -326,6 +326,14 @@ class KalturaPlayerViewManager: RCTViewManager {
         self.kalturaPlayer.addObserver(self, event: OttEvent.bookmarkError) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "bookmarkError", body: event.data)
         }
+        self.kalturaPlayer.addObserver(self, event: OttEvent.concurrency) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: "loadMediaFailed", body: [
+                "code": "ConcurrencyLimitation",
+                "message": "Concurrency limitation",
+                "name": "OTTError",
+                "type": "loadMediaFailed"
+            ])
+        }
     }
 }
 
@@ -404,8 +412,8 @@ class KalturaPlayerRNView : UIView {
             if (error != nil) {
                 print("Error in loadMedia: %@", error!)
                 KalturaPlayerEvents.emitter.sendEvent(withName: "loadMediaFailed", body: [
-                    "code": "ConcurrencyLimitation",
-                    "message": "Concurrency limitation",
+                    "code": error?.code ?? "ConcurrencyLimitation",
+                    "message": error?.localizedDescription ?? "Concurrency limitation",
                     "name": "OTTError",
                     "type": "loadMediaFailed"
                 ])
@@ -413,7 +421,7 @@ class KalturaPlayerRNView : UIView {
                 KalturaPlayerEvents.emitter.sendEvent(withName: "loadMediaSuccess", body: [
                     "payload": [
                         "id": assetId,
-                        "type": "loadMediaFailed"
+                        "type": "loadMediaSuccess"
                     ]
                 ])
             }
