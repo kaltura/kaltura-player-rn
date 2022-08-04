@@ -53,7 +53,8 @@ class KalturaPlayerEvents: RCTEventEmitter {
             "timeUpdate",
             "bookmarkError",
             "loadMediaFailed",
-            "loadMediaSuccess"
+            "loadMediaSuccess",
+            "concurrencyError",
         ]
     }
 }
@@ -327,11 +328,11 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "bookmarkError", body: event.data)
         }
         self.kalturaPlayer.addObserver(self, event: OttEvent.concurrency) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "loadMediaFailed", body: [
+            KalturaPlayerEvents.emitter.sendEvent(withName: "concurrencyError", body: [
                 "code": "ConcurrencyLimitation",
                 "message": "Concurrency limitation",
                 "name": "OTTError",
-                "type": "loadMediaFailed"
+                "type": "concurrencyError"
             ])
         }
     }
