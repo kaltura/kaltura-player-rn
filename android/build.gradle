@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-import groovy.json.JsonSlurper
+//import groovy.json.JsonSlurper
 
 buildscript {
   ext.kotlin_version = '1.5.20'
@@ -21,15 +21,15 @@ buildscript {
   // Create an easy to use function
   ext.getVersionFromNpm = {
     //  Read and parse package.json file from project root
-    def inputFile = new File("$projectDir/../bpkConfig.json")
-    println("inputFile bpkConfig.exists() " + inputFile.exists())
-    if (inputFile.exists()) {
-      def packageJson = new JsonSlurper().parseText(inputFile.text)
-      bpk_username = packageJson["userName"]
-      bpk_password = packageJson["password"]
-      println("bpk_username: " + bpk_username)
-      println("bpk_password: " + bpk_password)
-    }
+//    def inputFile = new File("$projectDir/../bpkConfig.json")
+//    println("inputFile bpkConfig.exists() " + inputFile.exists())
+//    if (inputFile.exists()) {
+//      def packageJson = new JsonSlurper().parseText(inputFile.text)
+//      bpk_username = packageJson["userName"]
+//      bpk_password = packageJson["password"]
+//      println("bpk_username: " + bpk_username)
+//      println("bpk_password: " + bpk_password)
+//    }
   }
   getVersionFromNpm()
 }
@@ -53,13 +53,11 @@ dependencies {
 
   implementation "com.kaltura.player:tvplayer:$kalturaPlayerVersion"
 
-  implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
-  implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
   implementation "com.kaltura.playkit:vrplugin:$kalturaPlayerVersion"
 
   if (bpk_username && bpk_password) {
     println("hasBroadpeak bpk_username in dependencies " + bpk_username)
-    implementation "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"
+
   }
 //  api project(":tvplayer")
 //  implementation project(":ima")
