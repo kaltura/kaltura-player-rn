@@ -1,0 +1,63 @@
+name: build CI
+
+on:
+  push:
+  
+  pull_request:
+    branches: [ "develop", "main" ]
+
+env:
+  BROADPEAK_USERNAME: ${{ secrets.BROADPEAK_USERNAME }}
+  BROADPEAK_PASSWORD: ${{ secrets.BROADPEAK_PASSWORD }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  react-native_and_android:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - name: Checkout repo and clone to CI workspace for RN
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+
+    - name: Install package Manager
+      run: yarn install --frozen-lockfile
+
+    - name: Setup JDK 11
+      uses: actions/setup-java@v3
+      with: 
+        java-version: '11'
+        distribution: 'adopt'
+        cache: 'gradle'
+
+    - name: Android native build
+      run: cd android && chmod +x ./gradlew && ./gradlew build --no-daemon
+
+  iOS:
+    runs-on: macos-latest
+
+    steps:
+
+    - name: Checkout repo and clone to CI workspace for iOS
+      uses: actions/checkout@v3
+
+    - name: iOS native build and updating CocoaPods repo
+      run: cd ios && pod repo update
+
+    #- name: iOS Pod linting
+    #  run: cd ios && pod lib lint --fail-fast --verbose
+      
+      

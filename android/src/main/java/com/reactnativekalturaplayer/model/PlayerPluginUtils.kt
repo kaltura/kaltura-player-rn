@@ -1,19 +1,14 @@
 package com.reactnativekalturaplayer.model
 
+import androidx.annotation.Nullable
 import com.google.gson.JsonObject
 import com.kaltura.playkit.PKPlugin
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakPlugin
-import com.kaltura.playkit.plugins.ima.IMAConfig
-import com.kaltura.playkit.plugins.ima.IMAPlugin
-import com.kaltura.playkit.plugins.imadai.IMADAIConfig
-import com.kaltura.playkit.plugins.imadai.IMADAIPlugin
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsPlugin
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsPlugin
-import com.kaltura.playkit.plugins.youbora.YouboraPlugin
-import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 class RegisteredPlugins {
     var ima: JsonObject? = null
@@ -26,57 +21,91 @@ class RegisteredPlugins {
 
 data class UpdatePluginConfigJson(val pluginName: String?, val pluginConfig: Any?)
 
-enum class PlayerPlugins {
-    ima,
-    imadai,
-    youbora,
-    kava,
-    ottAnalytics,
-    broadpeak
+enum class PlayerPluginClass(val className: String) {
+    ima("com.kaltura.playkit.plugins.ima.IMAPlugin"),
+    imadai("com.kaltura.playkit.plugins.imadai.IMADAIPlugin"),
+    youbora("com.kaltura.playkit.plugins.youbora.YouboraPlugin"),
+    kava("com.kaltura.playkit.plugins.kava.KavaAnalyticsPlugin"),
+    ottAnalytics("com.kaltura.playkit.plugins.ott.PhoenixAnalyticsPlugin"),
+    broadpeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakPlugin")
 }
 
-fun getPluginFactory(pluginName: PlayerPlugins) : PKPlugin.Factory {
+enum class PlayerPluginConfigs(val className: String) {
+    ima("com.kaltura.playkit.plugins.ima.IMAConfig"),
+    imadai("com.kaltura.playkit.plugins.imadai.IMADAIConfig"),
+    youbora("com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig"),
+    kava("com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig"),
+    ottAnalytics("com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig"),
+    broadpeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig")
+}
+
+@Nullable
+fun getPluginFactory(pluginName: PlayerPluginClass) : PKPlugin.Factory? {
     when (pluginName) {
-        PlayerPlugins.ima -> {
-            return IMAPlugin.factory
-        }
-        PlayerPlugins.imadai -> {
-            return IMADAIPlugin.factory
-        }
-        PlayerPlugins.youbora -> {
-            return YouboraPlugin.factory
-        }
-        PlayerPlugins.kava -> {
+        PlayerPluginClass.kava -> {
             return KavaAnalyticsPlugin.factory
         }
-        PlayerPlugins.ottAnalytics -> {
+        PlayerPluginClass.ottAnalytics -> {
             return PhoenixAnalyticsPlugin.factory
         }
-        PlayerPlugins.broadpeak -> {
-            return BroadpeakPlugin.factory
+        else -> {
+            val factoryField = getPluginFactory(pluginName.className)
+            return if (factoryField != null && PKPlugin.Factory::class.java.isAssignableFrom(factoryField.type)) {
+                PKPlugin.Factory::class.java.cast(factoryField.get(null))
+            } else {
+                null
+            }
         }
     }
 }
 
-fun getPluginClass(pluginName: PlayerPlugins): Class<*> {
-    when (pluginName) {
-        PlayerPlugins.ima -> {
-            return IMAConfig::class.java
+@Nullable
+fun getPluginConfig(pluginName: PlayerPluginClass): Class<*>? {
+    val pluginConfig = PlayerPluginConfigs.valueOf(pluginName.name)
+    if (pluginConfig == null) {
+        return null
+    }
+
+    return when (pluginConfig) {
+        PlayerPluginConfigs.kava -> {
+            KavaAnalyticsConfig::class.java
         }
-        PlayerPlugins.imadai -> {
-            return IMADAIConfig::class.java
+        PlayerPluginConfigs.ottAnalytics -> {
+            PhoenixAnalyticsConfig::class.java
         }
-        PlayerPlugins.youbora -> {
-            return YouboraConfig::class.java
-        }
-        PlayerPlugins.kava -> {
-            return KavaAnalyticsConfig::class.java
-        }
-        PlayerPlugins.ottAnalytics -> {
-            return PhoenixAnalyticsConfig::class.java
-        }
-        PlayerPlugins.broadpeak -> {
-            return BroadpeakConfig::class.java
+        else -> {
+            getPluginConfig(pluginConfig.className)
         }
     }
+}
+
+@Nullable
+private fun getPluginFactory(className: String): Field? {
+    try {
+        val pluginClass = Class.forName(className)
+        val factoryField = pluginClass.getField("factory")
+        if (!Modifier.isStatic(factoryField.modifiers)) {
+            return null
+        }
+        return factoryField
+    } catch (classNotFoundException: ClassNotFoundException) {
+    } catch (noSuchFieldException: NoSuchFieldException) {
+    } catch (illegalAccessException: IllegalAccessException) {
+    } catch (classCastException: ClassCastException) {
+    } catch (runTimeException: RuntimeException) {
+    }
+    return null
+}
+
+@Nullable
+private fun getPluginConfig(className: String): Class<*>? {
+    try {
+        return Class.forName(className)
+    } catch (classNotFoundException: ClassNotFoundException) {
+    } catch (noSuchFieldException: NoSuchFieldException) {
+    } catch (illegalAccessException: IllegalAccessException) {
+    } catch (classCastException: ClassCastException) {
+    } catch (runTimeException: RuntimeException) {
+    }
+    return null
 }

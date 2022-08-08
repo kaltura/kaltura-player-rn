@@ -207,7 +207,11 @@ dependencies {
         implementation jscFlavor
     }
 
+    def kalturaPlayerVersion = '4.23.0'
     implementation project(':reactnativekalturaplayer')
+    implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
+    implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
+    implementation "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"
 }
 
 // Run this once to be able to run the application with BUCK

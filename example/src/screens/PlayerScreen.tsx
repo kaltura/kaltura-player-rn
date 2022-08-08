@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  Text,
+  Text, 
   TouchableOpacity,
 } from 'react-native';
 import TrackList from '../components/TrackList';

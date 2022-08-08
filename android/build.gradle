@@ -1,8 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+//import groovy.json.JsonSlurper
 
 buildscript {
   ext.kotlin_version = '1.5.20'
+  ext.bpk_username = null
+  ext.bpk_password = null
+
   repositories {
     google()
     mavenCentral()
@@ -13,6 +17,21 @@ buildscript {
     classpath 'com.android.tools.build:gradle:7.0.3'
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
+
+  // Create an easy to use function
+  ext.getVersionFromNpm = {
+    //  Read and parse package.json file from project root
+//    def inputFile = new File("$projectDir/../bpkConfig.json")
+//    println("inputFile bpkConfig.exists() " + inputFile.exists())
+//    if (inputFile.exists()) {
+//      def packageJson = new JsonSlurper().parseText(inputFile.text)
+//      bpk_username = packageJson["userName"]
+//      bpk_password = packageJson["password"]
+//      println("bpk_username: " + bpk_username)
+//      println("bpk_password: " + bpk_password)
+//    }
+  }
+  getVersionFromNpm()
 }
 
 android {
@@ -25,7 +44,7 @@ android {
     versionName "1.0"
   }
 }
-
+// func () { echo var is set to \"$1\"; echo valsasd is set to ${broadpeakConfig};}; func
 dependencies {
 
   implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -34,11 +53,12 @@ dependencies {
 
   implementation "com.kaltura.player:tvplayer:$kalturaPlayerVersion"
 
-  implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
-  implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
   implementation "com.kaltura.playkit:vrplugin:$kalturaPlayerVersion"
-  implementation "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"
 
+  if (bpk_username && bpk_password) {
+    println("hasBroadpeak bpk_username in dependencies " + bpk_username)
+
+  }
 //  api project(":tvplayer")
 //  implementation project(":ima")
 //  implementation project(":youbora")
@@ -49,7 +69,6 @@ dependencies {
 
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"  // From node_modules
-
   debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
     exclude group:'com.facebook.fbjni'
   }
@@ -68,16 +87,22 @@ dependencies {
 allprojects {
   repositories {
     google()
+
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url  "https://npaw.jfrog.io/artifactory/youbora/" }
-    maven {
-      credentials {
-        username System.getenv("BROADPEAK_USERNAME")
-        password System.getenv("BROADPEAK_PASSWORD")
+
+    if (bpk_username && bpk_password) {
+      println("hasBroadpeak bpk_username in repositories " + bpk_username)
+      maven {
+        credentials {
+          username bpk_username
+          password bpk_password
+        }
+        url "https://delivery-platform.broadpeak.tv/android/repository/smartlib"
       }
-      url "https://delivery-platform.broadpeak.tv/android/repository/smartlib"
     }
+
     maven {
       // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
       url("$rootDir/../node_modules/react-native/android")

@@ -13,24 +13,17 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.kaltura.netkit.utils.ErrorElement
-import com.kaltura.netkit.utils.NKLog
 import com.kaltura.playkit.*
 import com.kaltura.playkit.ads.PKAdErrorType
 import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
 import com.kaltura.playkit.plugins.ads.AdCuePoints
 import com.kaltura.playkit.plugins.ads.AdEvent
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig
-import com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent
-import com.kaltura.playkit.plugins.ima.IMAConfig
-import com.kaltura.playkit.plugins.imadai.IMADAIConfig
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsEvent
-import com.kaltura.playkit.plugins.youbora.pluginconfig.YouboraConfig
 import com.kaltura.playkit.utils.Consts
 import com.kaltura.tvplayer.*
-import com.npaw.youbora.lib6.YouboraLog
 import com.reactnativekalturaplayer.events.KalturaPlayerAdEvents
 import com.reactnativekalturaplayer.events.KalturaPlayerAnalyticsEvents
 import com.reactnativekalturaplayer.events.KalturaPlayerEvents
@@ -39,7 +32,6 @@ import com.reactnativekalturaplayer.model.tracks.TracksInfo
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 class KalturaPlayerRN(
     private val context: ReactApplicationContext,
@@ -254,53 +246,31 @@ class KalturaPlayerRN(
 
         if (pluginConfigs != null && !TextUtils.isEmpty(pluginConfigs.pluginName) && pluginConfigs.pluginConfig != null) {
             val pluginName = pluginConfigs.pluginName
-            if (TextUtils.equals(pluginName, PlayerPlugins.ima.name)) {
-                val imaConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    IMAConfig::class.java
-                )
-                if (imaConfig != null) {
-                    updatePlugin(PlayerPlugins.ima, imaConfig)
-                }
-            } else if (TextUtils.equals(pluginName, PlayerPlugins.imadai.name)) {
-                val imadaiConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    IMADAIConfig::class.java
-                )
-                if (imadaiConfig != null) {
-                    updatePlugin(PlayerPlugins.imadai, imadaiConfig)
-                }
-            } else if (TextUtils.equals(pluginName, PlayerPlugins.youbora.name)) {
-                val youboraConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    YouboraConfig::class.java
-                )
-                if (youboraConfig != null) {
-                    updatePlugin(PlayerPlugins.youbora, youboraConfig)
-                }
-            } else if (TextUtils.equals(pluginName, PlayerPlugins.kava.name)) {
+            if (TextUtils.equals(pluginName, PlayerPluginClass.kava.name)) {
                 val kavaAnalyticsConfig = getParsedJson(
                     pluginConfigs.pluginConfig.toString(),
                     KavaAnalyticsConfig::class.java
                 )
                 if (kavaAnalyticsConfig != null) {
-                    updatePlugin(PlayerPlugins.kava, kavaAnalyticsConfig)
+                    updatePlugin(PlayerPluginClass.kava, kavaAnalyticsConfig)
                 }
-            } else if (TextUtils.equals(pluginName, PlayerPlugins.ottAnalytics.name)) {
+            } else if (TextUtils.equals(pluginName, PlayerPluginClass.ottAnalytics.name)) {
                 val phoenixAnalyticsConfig = getParsedJson(
                     pluginConfigs.pluginConfig.toString(),
                     PhoenixAnalyticsConfig::class.java
                 )
                 if (phoenixAnalyticsConfig != null) {
-                    updatePlugin(PlayerPlugins.ottAnalytics, phoenixAnalyticsConfig)
+                    updatePlugin(PlayerPluginClass.ottAnalytics, phoenixAnalyticsConfig)
                 }
-            } else if (TextUtils.equals(pluginName, PlayerPlugins.broadpeak.name)) {
-                val broadpeakConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    BroadpeakConfig::class.java
-                )
-                if (broadpeakConfig != null) {
-                    updatePlugin(PlayerPlugins.broadpeak, broadpeakConfig)
+            } else if (pluginName?.let { PlayerPluginClass.valueOf(it) } != null) {
+                val configClass = getPluginConfig(PlayerPluginClass.valueOf(pluginName))
+                val parsedConfigObject = getParsedJson(pluginConfigs.pluginConfig.toString(), configClass)
+                if (parsedConfigObject != null) {
+                    updatePlugin(PlayerPluginClass.valueOf(pluginName), parsedConfigObject)
+                } else {
+                    log.e("Plugin config or Plugin Name is not valid. " +
+                            "ConfigClass $configClass and parsedConfigObject $parsedConfigObject" +
+                            "and pluginName is $pluginName")
                 }
             } else {
                 log.w("No Plugin can be registered PluginName is: $pluginName")
@@ -549,49 +519,49 @@ class KalturaPlayerRN(
     // TODO: NOT ADDED YET AS PROPS
     //NOOP
     fun setLogLevel(logLevel: String) {
-        var logLevel = logLevel
-        log.d("setLogLevel: $logLevel")
-        if (TextUtils.isEmpty(logLevel)) {
-            return
-        }
-        logLevel = logLevel.uppercase(Locale.getDefault())
-        when (logLevel) {
-            "VERBOSE" -> {
-                PKLog.setGlobalLevel(PKLog.Level.verbose)
-                NKLog.setGlobalLevel(NKLog.Level.verbose)
-                YouboraLog.setDebugLevel(YouboraLog.Level.VERBOSE)
-            }
-            "DEBUG" -> {
-                PKLog.setGlobalLevel(PKLog.Level.debug)
-                NKLog.setGlobalLevel(NKLog.Level.debug)
-                YouboraLog.setDebugLevel(YouboraLog.Level.DEBUG)
-            }
-            "WARN" -> {
-                PKLog.setGlobalLevel(PKLog.Level.warn)
-                NKLog.setGlobalLevel(NKLog.Level.warn)
-                YouboraLog.setDebugLevel(YouboraLog.Level.WARNING)
-            }
-            "INFO" -> {
-                PKLog.setGlobalLevel(PKLog.Level.info)
-                NKLog.setGlobalLevel(NKLog.Level.info)
-                YouboraLog.setDebugLevel(YouboraLog.Level.NOTICE)
-            }
-            "ERROR" -> {
-                PKLog.setGlobalLevel(PKLog.Level.error)
-                NKLog.setGlobalLevel(NKLog.Level.error)
-                YouboraLog.setDebugLevel(YouboraLog.Level.ERROR)
-            }
-            "OFF" -> {
-                PKLog.setGlobalLevel(PKLog.Level.off)
-                NKLog.setGlobalLevel(NKLog.Level.off)
-                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
-            }
-            else -> {
-                PKLog.setGlobalLevel(PKLog.Level.off)
-                NKLog.setGlobalLevel(NKLog.Level.off)
-                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
-            }
-        }
+//        var logLevel = logLevel
+//        log.d("setLogLevel: $logLevel")
+//        if (TextUtils.isEmpty(logLevel)) {
+//            return
+//        }
+//        logLevel = logLevel.uppercase(Locale.getDefault())
+//        when (logLevel) {
+//            "VERBOSE" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.verbose)
+//                NKLog.setGlobalLevel(NKLog.Level.verbose)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.VERBOSE)
+//            }
+//            "DEBUG" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.debug)
+//                NKLog.setGlobalLevel(NKLog.Level.debug)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.DEBUG)
+//            }
+//            "WARN" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.warn)
+//                NKLog.setGlobalLevel(NKLog.Level.warn)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.WARNING)
+//            }
+//            "INFO" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.info)
+//                NKLog.setGlobalLevel(NKLog.Level.info)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.NOTICE)
+//            }
+//            "ERROR" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.error)
+//                NKLog.setGlobalLevel(NKLog.Level.error)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.ERROR)
+//            }
+//            "OFF" -> {
+//                PKLog.setGlobalLevel(PKLog.Level.off)
+//                NKLog.setGlobalLevel(NKLog.Level.off)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
+//            }
+//            else -> {
+//                PKLog.setGlobalLevel(PKLog.Level.off)
+//                NKLog.setGlobalLevel(NKLog.Level.off)
+//                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
+//            }
+//        }
     }
 
     /**
@@ -810,34 +780,34 @@ class KalturaPlayerRN(
         val pkPluginConfigs = PKPluginConfigs()
         if (initOptions.plugins != null) {
             if (initOptions.plugins.ima != null) {
-                createPlugin(PlayerPlugins.ima, pkPluginConfigs, initOptions.plugins.ima)
+                createPlugin(PlayerPluginClass.ima, pkPluginConfigs, initOptions.plugins.ima)
             }
             if (initOptions.plugins.imadai != null) {
-                createPlugin(PlayerPlugins.imadai, pkPluginConfigs, initOptions.plugins.imadai)
+                createPlugin(PlayerPluginClass.imadai, pkPluginConfigs, initOptions.plugins.imadai)
             }
             if (initOptions.plugins.youbora != null) {
                 val youboraConfigJson = initOptions.plugins.youbora
                 if (youboraConfigJson!!.has(youboraAccountCode) && youboraConfigJson[youboraAccountCode] != null) {
                     createPlugin(
-                        PlayerPlugins.youbora,
+                        PlayerPluginClass.youbora,
                         pkPluginConfigs,
                         initOptions.plugins.youbora
                     )
                 }
             }
             if (initOptions.plugins.kava != null) {
-                createPlugin(PlayerPlugins.kava, pkPluginConfigs, initOptions.plugins.kava)
+                createPlugin(PlayerPluginClass.kava, pkPluginConfigs, initOptions.plugins.kava)
             }
             if (initOptions.plugins.ottAnalytics != null) {
                 createPlugin(
-                    PlayerPlugins.ottAnalytics,
+                    PlayerPluginClass.ottAnalytics,
                     pkPluginConfigs,
                     initOptions.plugins.ottAnalytics
                 )
             }
             if (initOptions.plugins.broadpeak != null) {
                 createPlugin(
-                    PlayerPlugins.broadpeak,
+                    PlayerPluginClass.broadpeak,
                     pkPluginConfigs,
                     initOptions.plugins.broadpeak
                 )
@@ -1036,26 +1006,38 @@ class KalturaPlayerRN(
      * @param pluginConfigJson plugin configuration json
      */
     private fun createPlugin(
-        pluginName: PlayerPlugins,
+        pluginName: PlayerPluginClass,
         pluginConfigs: PKPluginConfigs?,
         pluginConfigJson: JsonObject?
     ) {
-        PlayKitManager.registerPlugins(context, getPluginFactory(pluginName))
+
+        val pluginFactoryClass = getPluginFactory(pluginName)
+        val pluginConfigClass = getPluginConfig(pluginName)
+
+        if (pluginFactoryClass == null || pluginConfigClass == null) {
+            log.e("Invalid Plugin factory $pluginFactoryClass or plugin config $pluginConfigClass")
+            return;
+        }
+
         if (pluginConfigJson == null || pluginConfigJson.size() == 0) {
-            log.w("Plugins' config Json is not valid hence returning" + getPluginClass(pluginName))
+            log.w("Plugins' config Json is not valid hence returning $pluginConfigClass")
             return
         }
+
+        PlayKitManager.registerPlugins(context, pluginFactoryClass)
+
         val strPluginJson = pluginConfigJson.toString()
+
         if (pluginConfigs != null && !TextUtils.isEmpty(strPluginJson)) {
-            val pluginConfig = getParsedJson(strPluginJson, getPluginClass(pluginName))
-            if (pluginConfig != null) {
-                pluginConfigs.setPluginConfig(getPluginFactory(pluginName).name, pluginConfig)
+            val parsedPluginConfig = getParsedJson(strPluginJson, pluginConfigClass)
+            if (parsedPluginConfig != null) {
+                pluginConfigs.setPluginConfig(pluginFactoryClass.name, parsedPluginConfig)
             } else {
-                log.e("Invalid configuration for " + getPluginClass(pluginName).simpleName)
+                log.e("Invalid configuration for " + pluginConfigClass.simpleName)
             }
         } else {
             log.e(
-                ("Can not create the plugin " + getPluginClass(pluginName).simpleName + " \n " +
+                ("Can not create the plugin " + pluginConfigClass.simpleName + " \n " +
                         "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson)
             )
         }
@@ -1067,11 +1049,13 @@ class KalturaPlayerRN(
      * @param pluginName `PlayerPlugins` enum
      * @param updatePluginConfig updated plugin configuration json
      */
-    private fun updatePlugin(pluginName: PlayerPlugins, updatePluginConfig: Any?) {
+    private fun updatePlugin(pluginName: PlayerPluginClass, updatePluginConfig: Any?) {
         val pluginFactory = getPluginFactory(pluginName)
-        if ((player != null) && (updatePluginConfig != null) && !TextUtils.isEmpty(pluginFactory.name)) {
+        if ((player != null) && (updatePluginConfig != null) && !TextUtils.isEmpty(pluginFactory?.name)) {
             runOnUiThread {
-                player?.updatePluginConfig(pluginFactory.name, updatePluginConfig)
+                pluginFactory?.let {
+                    player?.updatePluginConfig(it.name, updatePluginConfig)
+                }
             }
         }
     }
@@ -1152,11 +1136,17 @@ class KalturaPlayerRN(
     }
 
     @Nullable
-    private fun <T> getParsedJson(parsableJson: String?, parsingClass: Class<T>): T? {
+    private fun <T> getParsedJson(parsableJson: String?, parsingClass: Class<T>?): T? {
         if (TextUtils.isEmpty(parsableJson)) {
-            log.e("getParsedJson parsable Json is empty.")
+            log.d("getParsedJson parsable Json is empty.")
             return null
         }
+
+        if (parsingClass == null) {
+            log.d("parsingClass is null.")
+            return null
+        }
+
         try {
             return gson.fromJson(parsableJson, parsingClass)
         } catch (exception: JsonSyntaxException) {
@@ -1615,14 +1605,14 @@ class KalturaPlayerRN(
                         " }")
             )
         }
-        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
-            sendPlayerEvent(
-                "broadpeakError", ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-                        ", \"errorType\": \"" + event.type + "\" " +
-                        " }")
-            )
-        }
+//        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
+//            sendPlayerEvent(
+//                "broadpeakError", ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+//                        ", \"errorCode\": \"" + event.errorCode + "\" " +
+//                        ", \"errorType\": \"" + event.type + "\" " +
+//                        " }")
+//            )
+//        }
 
         log.d("Player listeners are added.")
     }
