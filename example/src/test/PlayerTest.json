@@ -178,6 +178,61 @@
           }
         }
       ]
+    },
+    "IMADAI": {
+      "vod": [
+        {
+          "id": "hls_basic_playback",
+          "partnerId": 0,
+          "mediaId": "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8",
+          "mediaAsset": {
+            "id": "basicId",
+            "name": "basicName",
+            "duration": 120,
+            "mediaEntryType": "Vod",
+            "mediaFormat": "hls",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "plugins": {
+              "imaDAI": {
+                "assetTitle": "VOD - Tears of Steel",
+                "contentSourceId": "2528370",
+                "videoId": "tears-of-steel",
+                "alwaysStartWithPreroll": true
+              }
+            }
+          }
+        }
+      ],
+      "live": [
+        {
+          "id": "hls_basic_playback",
+          "partnerId": 0,
+          "mediaId": "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8",
+          "mediaAsset": {
+            "id": "basicId",
+            "name": "basicName",
+            "duration": 120,
+            "mediaEntryType": "Vod",
+            "mediaFormat": "hls",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "plugins": {
+              "imaDAI": {
+                "assetTitle": "Live Video - Big Buck Bunny",
+                "assetKey": "sN_IYUG8STe1ZzhIIE_ksA",
+                "alwaysStartWithPreroll": false
+              }
+            }
+          }
+        }
+      ]
     }
   },
   "ovp": {
@@ -273,9 +328,17 @@
             },
             "plugins": {
               "ima": {
-                "adTagUrl": "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=",
+                "adTagUrl": "https://kaltura.github.io/playkit-admanager-samples/vast/pod-inline-someskip.xml",
                 "alwaysStartWithPreroll": true,
                 "enableDebugMode": false
+              },
+              "youbora": {
+                "params": {
+                  "accountCode": "kalturatest",
+                  "user": {
+                    "email": "nilit.danan@kaltura.com"
+                  }
+                }
               }
             }
           }
