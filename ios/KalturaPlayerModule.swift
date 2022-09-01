@@ -61,7 +61,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     }
     
     @objc func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
-                           resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
+                           resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         
         guard let options = initOptions, !options.isEmpty else {
             let message = "The initOptions can not be empty."
@@ -86,29 +86,29 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         
         self.playerType = getPlayerType(from: type)
         
-        switch self.playerType {
-        case .basic:
-            self.kalturaPlayerRN = BasicKalturaPlayerRN(withOptions: initOptions)
-        case .ott:
-            self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
-        case .ovp:
-            self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
-        }
-        
-        // Connect the player view
-        guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
-                let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
-            let message = "The KalturaPlayerViewManager was not yet initialised."
-            let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
-            reject("ERROR_SETUPPLAYER", message, error)
-            return
-        }
-        
         DispatchQueue.main.async {
-        self.kalturaPlayerRN?.connectView(playerViewManager.kalturaPlayerRNView.kalturaPlayerView)
+            switch self.playerType {
+            case .basic:
+                self.kalturaPlayerRN = BasicKalturaPlayerRN(withOptions: initOptions)
+            case .ott:
+                self.kalturaPlayerRN = OTTKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
+            case .ovp:
+                self.kalturaPlayerRN = OVPKalturaPlayerRN(withOptions: initOptions, partnerId: partnerId)
+            }
+            
+            // Connect the player view
+            guard self.bridge.moduleIsInitialized(KalturaPlayerViewManager.self),
+                    let playerViewManager = self.bridge.module(for: KalturaPlayerViewManager.self) as? KalturaPlayerViewManager else {
+                let message = "The KalturaPlayerViewManager was not yet initialised."
+                let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
+                reject("ERROR_SETUPPLAYER", message, error)
+                return
+            }
+            
+            self.kalturaPlayerRN?.connectView(playerViewManager.kalturaPlayerRNView.kalturaPlayerView)
+            
+            resolve("Sucess")
         }
-        
-        resolve("Sucess")
     }
     
     @objc func load(_ assetId: String?, mediaAsset: String?,
