@@ -70,6 +70,3 @@ extension BasicKalturaPlayerRN {
         return mediaAsset
     }
 }
-
-
-

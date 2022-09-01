@@ -90,7 +90,11 @@ class KalturaPlayerRN: NSObject {
             playerOptions.autoPlay = autoPlay
         }
         
-//TODO:        initOptions.pluginConfig // Need to add
+        if let plugins = initOptions.plugins {
+            if let pluginConfigs = RNKPKnownPlugins.configs(plugins) {
+                playerOptions.pluginConfig = pluginConfigs
+            }
+        }
         
         if let ks = initOptions.ks {
             playerOptions.ks = ks

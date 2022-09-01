@@ -112,7 +112,7 @@ export declare class KalturaPlayerAPI {
     static setVolume: (vol: number) => void;
     /**
      * Set the media to play automatically at the start (load)
-     * if false, user will have to click on UI play button
+     * if `false`, user will have to click on UI play button
      *
      * @param isAutoPlay media should be autoplayed at the start or not
      */

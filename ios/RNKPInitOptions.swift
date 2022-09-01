@@ -9,7 +9,7 @@ import Foundation
 import PlayKit
 //import PlayKitYoubora
 
-struct RNKPInitOptions: Codable {
+struct RNKPInitOptions: Decodable {
     let serverUrl: String?
     let autoplay: Bool?
     let preload: Bool?
@@ -51,23 +51,21 @@ struct RNKPInitOptions: Codable {
     let allowFairPlayOnExternalScreens: Bool?
     let shouldPlayImmediately: Bool?
     let handleAudioFocus: Bool?
-    
-    
 }
 
-struct RequestConfig: Codable {
+struct RequestConfig: Decodable {
     let crossProtocolRedirectEnabled: Bool?
     let readTimeoutMs: Double?
     let connectTimeoutMs: Double?
 }
 
-struct NetworkSettings: Codable {
+struct NetworkSettings: Decodable {
     let autoBuffer: Bool?
     let preferredForwardBufferDuration: Double?
     let automaticallyWaitsToMinimizeStalling: Bool?
 }
 
-struct MulticastSettings: Codable {
+struct MulticastSettings: Decodable {
     let useExoDefaultSettings: Bool?
     let maxPacketSize: Double?
     let socketTimeoutMillis: Double?
@@ -75,31 +73,93 @@ struct MulticastSettings: Codable {
     let firstSampleTimestampUs: Double?
 }
 
-struct MediaEntryCacheConfig: Codable {
+struct MediaEntryCacheConfig: Decodable {
     let allowMediaEntryCaching: Bool?
     let maxMediaEntryCacheSize: Double?
     let timeoutMs: Double?
 }
 
-struct ABRSettings: Codable {
+struct ABRSettings: Decodable {
     let minVideoBitrate: Double?
     let maxVideoBitrate: Double?
 }
 
-struct TrackSelection: Codable {
+struct TrackSelection: Decodable {
     let textMode: String?
     let textLanguage: String?
     let audioMode: String?
     let audioLanguage: String?
 }
 
-struct Plugins: Codable {
+// MARK: -
+
+struct Plugins: Decodable {
     let ima: IMA?
-//    let youbora: YouboraConfig?
+    let imadai: IMADAI? // Needs FEC-12531 & FEC-12532
+    let youbora: Youbora?
 }
 
-struct IMA: Codable {
+// MARK: -
+
+struct IMA: Decodable, Loopable {
+    // IMAAdsRequest
     let adTagUrl: String?
-    let alwaysStartWithPreroll: Bool?
+    let adsResponse: String?
+    let vastLoadTimeout: Double?
+    
+    // IMASettings
+    let ppid: String?
+    let language: String?
+    let maxRedirects: Int?
+    let playerType: String?
+    let playerVersion: String?
     let enableDebugMode: Bool?
+
+    let alwaysStartWithPreroll: Bool?
+}
+
+// MARK: -
+
+struct IMADAI: Decodable, Loopable {
+    // Media Data
+//    let streamType: PKIMADAIStreamType = .vod // We will need to fix it inside IMADAI to decide this via the data sent.
+    let assetTitle: String?
+    let assetKey: String? // Needed for Live
+    let apiKey: String?
+    let contentSourceId: String? // Needed for VOD
+    let videoId: String? // Needed for VOD
+    let licenseUrl: String?
+    
+    // IMASettings
+    let ppid: String?
+    let language: String?
+    let maxRedirects: Int?
+    let enableBackgroundPlayback: Bool?
+    let autoPlayAdBreaks: Bool?
+    let disableNowPlayingInfo: Bool?
+    let playerType: String?
+    let playerVersion: String?
+    let enableDebugMode: Bool?
+    
+    let alwaysStartWithPreroll: Bool?
+    
+    let adAttribution: Bool?
+    let adCountDown: Bool?
+    let disablePersonalizedAds: Bool? // adTagParameters.put("npa", 1);
+    let enableAgeRestriction: Bool? // adTagParameters.put("tfua", 1);
+}
+
+// MARK: -
+
+struct Youbora: Decodable, Loopable {
+    let params: [String: Any]?
+    
+    enum CodingKeys: String, CodingKey {
+        case params
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.params = try values.decode([String: Any].self, forKey: .params)
+    }
 }

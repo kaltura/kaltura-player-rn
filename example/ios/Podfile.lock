@@ -11,35 +11,40 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.66.4)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - GoogleAds-IMA-iOS-SDK (3.14.4)
   - HMSegmentedControl (1.5.6)
   - KalturaNetKit (1.5.1):
     - KalturaNetKit/Core (= 1.5.1)
   - KalturaNetKit/Core (1.5.1):
     - SwiftyJSON (= 5.0.0)
-  - KalturaPlayer/Core (4.7.0):
+  - KalturaPlayer/Core (4.7.1):
     - KalturaPlayer/Interceptor
-  - KalturaPlayer/Interceptor (4.7.0):
+  - KalturaPlayer/Interceptor (4.7.1):
     - PlayKit (~> 3.26)
-  - KalturaPlayer/OTT (4.7.0):
+  - KalturaPlayer/OTT (4.7.1):
     - KalturaPlayer/Core
     - PlayKitKava (~> 1.10)
     - PlayKitProviders (~> 1.17)
-  - KalturaPlayer/OVP (4.7.0):
+  - KalturaPlayer/OVP (4.7.1):
     - KalturaPlayer/Core
     - PlayKitKava (~> 1.10)
     - PlayKitProviders (~> 1.17)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PlayKit (3.26.0):
-    - PlayKit/Core (= 3.26.0)
-  - PlayKit/AnalyticsCommon (3.26.0):
+  - PlayKit (3.26.0.0000):
+    - PlayKit/Core (= 3.26.0.0000)
+  - PlayKit/AnalyticsCommon (3.26.0.0000):
     - PlayKit/Core
-  - PlayKit/Core (3.26.0):
+  - PlayKit/Core (3.26.0.0000):
     - KalturaNetKit (~> 1.5.1)
     - PlayKitUtils (~> 0.5)
     - SwiftyJSON (= 5.0.0)
     - XCGLogger (= 7.0.0)
+  - PlayKit_IMA (1.11.1):
+    - GoogleAds-IMA-iOS-SDK (= 3.14.4)
+    - GoogleAds-IMA-tvOS-SDK (= 4.4.2)
+    - PlayKit (~> 3.22)
   - PlayKitKava (1.10.0):
     - PlayKit/AnalyticsCommon (~> 3.21)
   - PlayKitProviders (1.17.0):
@@ -48,6 +53,9 @@ PODS:
     - PlayKitUtils (~> 0.5)
     - SwiftyXMLParser (= 5.0.0)
   - PlayKitUtils (0.5.0)
+  - PlayKitYoubora (1.14.0):
+    - PlayKit/AnalyticsCommon (~> 3.22)
+    - YouboraLib (= 6.6.22)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -335,6 +343,7 @@ PODS:
   - XCGLogger/Core (7.0.0):
     - ObjcExceptionBridging
   - Yoga (1.14.0)
+  - YouboraLib (6.6.22)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -342,6 +351,9 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - PlayKit (from `https://github.com/kaltura/playkit-ios.git`, branch `develop`)
+  - PlayKit_IMA
+  - PlayKitYoubora
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -370,23 +382,26 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
-  - RNKalturaPlayer (from `../..`)
+  - RNKalturaPlayer (from `../node_modules/react-native-kaltura-player`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   trunk:
     - fmt
+    - GoogleAds-IMA-iOS-SDK
     - HMSegmentedControl
     - KalturaNetKit
     - KalturaPlayer
     - ObjcExceptionBridging
-    - PlayKit
+    - PlayKit_IMA
     - PlayKitKava
     - PlayKitProviders
     - PlayKitUtils
+    - PlayKitYoubora
     - SwiftyJSON
     - SwiftyXMLParser
     - XCGLogger
+    - YouboraLib
 
 EXTERNAL SOURCES:
   boost:
@@ -399,6 +414,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  PlayKit:
+    :branch: develop
+    :git: https://github.com/kaltura/playkit-ios.git
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -452,9 +470,14 @@ EXTERNAL SOURCES:
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
   RNKalturaPlayer:
-    :path: "../.."
+    :path: "../node_modules/react-native-kaltura-player"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
+
+CHECKOUT OPTIONS:
+  PlayKit:
+    :commit: 2c17598e6d768465a6b71b942d0938e56f62cdcb
+    :git: https://github.com/kaltura/playkit-ios.git
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -463,14 +486,17 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
+  GoogleAds-IMA-iOS-SDK: c190284044e9a28b3e7422ba9886db015c71a84f
   HMSegmentedControl: 34c1f54d822d8308e7b24f5d901ec674dfa31352
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
-  KalturaPlayer: 142068b026ccef5d4e00e01e4084485506f18726
+  KalturaPlayer: 435142f2caece2b29841dacd6478b3adc2cde79f
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PlayKit: 7114592aa6a64be7b1eead84c1ea2bea952db5c8
+  PlayKit: 5498c2375ea5277da9618d1dca9dc5e8b8dab6ea
+  PlayKit_IMA: 69bae480bcdbc4fb9e554d517c41e8aa8d64619f
   PlayKitKava: c5b863ecd9b741fcae8b104654249093bbfb3ea9
   PlayKitProviders: 895e93705749223ac58d7b07a5b5a0857cc02ffb
   PlayKitUtils: 8edb43515c8b91d9aa9a47ae8b5af1e7dd58f6f3
+  PlayKitYoubora: fec4686d6edc6a1f858f31ab2584071904d58276
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b
   RCTTypeSafety: c475a7059eb77935fa53d2c17db299893f057d5d
@@ -502,7 +528,8 @@ SPEC CHECKSUMS:
   SwiftyXMLParser: 5ebb8793192f403fa8cc691045143906122a7a75
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
+  YouboraLib: fc65b030ac93499f8beb3f5daa10deb3879fb2d2
 
-PODFILE CHECKSUM: 2b92e490881b11c2e20edffc1a75f9cc52eae0c9
+PODFILE CHECKSUM: b0d406aec2d88bae937ba9388cf2286f023120d4
 
 COCOAPODS: 1.11.3
