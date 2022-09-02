@@ -10,6 +10,7 @@ import androidx.annotation.Nullable
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.kaltura.netkit.utils.ErrorElement
@@ -787,12 +788,19 @@ class KalturaPlayerRN(
             }
             if (initOptions.plugins.youbora != null) {
                 val youboraConfigJson = initOptions.plugins.youbora
-                if (youboraConfigJson!!.has(youboraAccountCode) && youboraConfigJson[youboraAccountCode] != null) {
-                    createPlugin(
-                        PlayerPluginClass.youbora,
-                        pkPluginConfigs,
-                        initOptions.plugins.youbora
-                    )
+                youboraConfigJson?.let {
+                    // This key is only for youbora Android, in iOS they have it inside `AnalyticsConfig` which is Youbora Config
+                    val youboraSpecialKey = "params"
+                    if (it.has(youboraSpecialKey) && it.get(youboraSpecialKey) != null) {
+                        val youboraJson: JsonObject = it.getAsJsonObject(youboraSpecialKey)
+                        if (youboraJson.has(youboraAccountCode) && youboraJson[youboraAccountCode] != null) {
+                            createPlugin(
+                                PlayerPluginClass.youbora,
+                                pkPluginConfigs,
+                                initOptions.plugins.youbora
+                            )
+                        }
+                    }
                 }
             }
             if (initOptions.plugins.kava != null) {
