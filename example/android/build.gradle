@@ -5,8 +5,8 @@ buildscript {
     ext {
         RNNKotlinVersion = kotlin_version
         minSdkVersion = 21
-        compileSdkVersion = 31
-        targetSdkVersion = 30
+        compileSdkVersion = 32
+        targetSdkVersion = 32
         androidXCore = "1.8.0"
     }
     repositories {
