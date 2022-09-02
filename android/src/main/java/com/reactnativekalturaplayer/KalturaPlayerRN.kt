@@ -447,8 +447,8 @@ class KalturaPlayerRN(
         }
     }
 
-    fun updateLlConfig(pkLowLatencyConfig: String?) {
-        log.d("updateLlConfig")
+    fun updateLLConfig(pkLowLatencyConfig: String?) {
+        log.d("updateLLConfig")
         if (!TextUtils.isEmpty(pkLowLatencyConfig)) {
             val config = getParsedJson(
                 pkLowLatencyConfig,
@@ -462,8 +462,8 @@ class KalturaPlayerRN(
         }
     }
 
-    fun resetLlConfig() {
-        log.d("resetLlConfig")
+    fun resetLLConfig() {
+        log.d("resetLLConfig")
         runOnUiThread {
             player?.updatePKLowLatencyConfig(PKLowLatencyConfig.UNSET)
         }
