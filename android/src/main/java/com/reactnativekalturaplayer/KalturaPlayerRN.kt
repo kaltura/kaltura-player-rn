@@ -447,8 +447,8 @@ class KalturaPlayerRN(
         }
     }
 
-    fun updateLlConfig(pkLowLatencyConfig: String?) {
-        log.d("updateLlConfig")
+    fun updateLLConfig(pkLowLatencyConfig: String?) {
+        log.d("updateLLConfig")
         if (!TextUtils.isEmpty(pkLowLatencyConfig)) {
             val config = getParsedJson(
                 pkLowLatencyConfig,
@@ -462,8 +462,8 @@ class KalturaPlayerRN(
         }
     }
 
-    fun resetLlConfig() {
-        log.d("resetLlConfig")
+    fun resetLLConfig() {
+        log.d("resetLLConfig")
         runOnUiThread {
             player?.updatePKLowLatencyConfig(PKLowLatencyConfig.UNSET)
         }
@@ -787,12 +787,19 @@ class KalturaPlayerRN(
             }
             if (initOptions.plugins.youbora != null) {
                 val youboraConfigJson = initOptions.plugins.youbora
-                if (youboraConfigJson!!.has(youboraAccountCode) && youboraConfigJson[youboraAccountCode] != null) {
-                    createPlugin(
-                        PlayerPluginClass.youbora,
-                        pkPluginConfigs,
-                        initOptions.plugins.youbora
-                    )
+                youboraConfigJson?.let {
+                    // This key is only for youbora Android, in iOS they have it inside `AnalyticsConfig` which is Youbora Config
+                    val youboraSpecialKey = "params"
+                    if (it.has(youboraSpecialKey) && it.get(youboraSpecialKey) != null) {
+                        val youboraJson: JsonObject = it.getAsJsonObject(youboraSpecialKey)
+                        if (youboraJson.has(youboraAccountCode) && youboraJson[youboraAccountCode] != null) {
+                            createPlugin(
+                                PlayerPluginClass.youbora,
+                                pkPluginConfigs,
+                                initOptions.plugins.youbora
+                            )
+                        }
+                    }
                 }
             }
             if (initOptions.plugins.kava != null) {

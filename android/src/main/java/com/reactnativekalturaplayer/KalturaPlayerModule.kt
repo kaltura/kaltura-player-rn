@@ -188,16 +188,16 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
-    fun updateLlConfig(pkLowLatencyConfig: String?) {
-        log.d("updateLlConfig")
-        checkArguments(this::updateLlConfig.name, pkLowLatencyConfig)
-        kalturaPlayerRN.updateLlConfig(pkLowLatencyConfig)
+    fun updateLLConfig(pkLowLatencyConfig: String?) {
+        log.d("updateLLConfig")
+        checkArguments(this::updateLLConfig.name, pkLowLatencyConfig)
+        kalturaPlayerRN.updateLLConfig(pkLowLatencyConfig)
     }
 
     @ReactMethod
-    fun resetLlConfig() {
-        log.d("resetLlConfig")
-        kalturaPlayerRN.resetLlConfig()
+    fun resetLLConfig() {
+        log.d("resetLLConfig")
+        kalturaPlayerRN.resetLLConfig()
     }
 
     @ReactMethod

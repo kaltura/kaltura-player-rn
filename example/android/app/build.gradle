@@ -208,7 +208,7 @@ dependencies {
     }
 
     def kalturaPlayerVersion = '4.23.0'
-    implementation project(':reactnativekalturaplayer')
+    //implementation project(':reactnativekalturaplayer')
     implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
     implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
     implementation "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"

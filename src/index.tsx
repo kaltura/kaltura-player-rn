@@ -376,7 +376,7 @@ export class KalturaPlayerAPI {
       return;
     }
     printConsoleLog('Calling Native method updateLowLatencyConfig()');
-    KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
+    KalturaPlayerModule.updateLLConfig(lowLatencyConfig);
   };
 
   /**
@@ -385,7 +385,7 @@ export class KalturaPlayerAPI {
    */
   static resetLowLatencyConfig = () => {
     printConsoleLog('Calling Native method resetLowLatencyConfig()');
-    KalturaPlayerModule.resetLlConfig();
+    KalturaPlayerModule.resetLLConfig();
   };
 
   /**
