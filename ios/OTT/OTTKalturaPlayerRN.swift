@@ -27,7 +27,7 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
         }
         
         // TODO: Need to get the referrer in the initOptions and pass it in the setup.
-        KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL)
+        KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL, referrer: initOptions.referrer)
         kalturaOTTPlayer = KalturaOTTPlayer(options: playerOptions)
     }
     
