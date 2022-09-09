@@ -109,15 +109,17 @@ class KalturaPlayerRN: NSObject {
             kalturaPlayer?.settings.network.preferredPeakBitRate =  maxVideoBitrate
         }
         
-        if let autoBuffer = initOptions.networkSettings?.autoBuffer {
+        guard let networkSettings = initOptions.networkSettings else { return }
+        
+        if let autoBuffer = networkSettings.autoBuffer {
             kalturaPlayer?.settings.network.autoBuffer = autoBuffer
         }
         
-        if let automaticallyWaitsToMinimizeStalling = initOptions.networkSettings?.automaticallyWaitsToMinimizeStalling {
+        if let automaticallyWaitsToMinimizeStalling = networkSettings.automaticallyWaitsToMinimizeStalling {
             kalturaPlayer?.settings.network.automaticallyWaitsToMinimizeStalling = automaticallyWaitsToMinimizeStalling
         }
         
-        if let preferredForwardBufferDuration = initOptions.networkSettings?.preferredForwardBufferDuration {
+        if let preferredForwardBufferDuration = networkSettings.preferredForwardBufferDuration {
             kalturaPlayer?.settings.network.preferredForwardBufferDuration = preferredForwardBufferDuration
         }
     }
@@ -128,9 +130,41 @@ class KalturaPlayerRN: NSObject {
         }
     }
     
+    private func updateTrackSelectionSettings() {
+        guard let trackSelection = initOptions.trackSelection else { return }
+        
+        if let textMode = trackSelection.textMode {
+            kalturaPlayer?.settings.trackSelection.textSelectionMode = getTrackSelectionMode(textMode)
+        }
+        
+        if let textLanguage = trackSelection.textLanguage {
+            kalturaPlayer?.settings.trackSelection.textSelectionLanguage = textLanguage
+        }
+        
+        if let audioMode = trackSelection.audioMode {
+            kalturaPlayer?.settings.trackSelection.audioSelectionMode = getTrackSelectionMode(audioMode)
+        }
+        
+        if let audioLanguage = trackSelection.audioLanguage {
+            kalturaPlayer?.settings.trackSelection.audioSelectionLanguage = audioLanguage
+        }
+    }
+    
+    private func getTrackSelectionMode(_ mode: String) -> TrackSelectionMode {
+        switch mode.lowercased() {
+        case "auto":
+            return TrackSelectionMode.auto
+        case "selection":
+            return TrackSelectionMode.selection
+        default:
+            return TrackSelectionMode.off
+        }
+    }
+    
     func updateSettings() {
         updateNetworkSetting()
         updateLowLatencySettings()
+        updateTrackSelectionSettings()
     }
 
 // MARK: - Subclass implementations
