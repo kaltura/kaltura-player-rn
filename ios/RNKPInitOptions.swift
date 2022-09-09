@@ -43,7 +43,7 @@ struct TrackSelection: Decodable {
 }
 
 struct PKLowLatencyConfig: Decodable {
-    let targetOffsetMs: Int?
+    let targetOffsetMs: UInt?
 }
 
 struct SubtitleStyling: Decodable {

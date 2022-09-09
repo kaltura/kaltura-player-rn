@@ -102,6 +102,36 @@ class KalturaPlayerRN: NSObject {
         
         return playerOptions
     }
+    
+    private func updateNetworkSetting() {
+        // ABRSettings, in iOS it's inside NetworkSettings.
+        if let maxVideoBitrate = initOptions.abrSettings?.maxVideoBitrate {
+            kalturaPlayer?.settings.network.preferredPeakBitRate =  maxVideoBitrate
+        }
+        
+        if let autoBuffer = initOptions.networkSettings?.autoBuffer {
+            kalturaPlayer?.settings.network.autoBuffer = autoBuffer
+        }
+        
+        if let automaticallyWaitsToMinimizeStalling = initOptions.networkSettings?.automaticallyWaitsToMinimizeStalling {
+            kalturaPlayer?.settings.network.automaticallyWaitsToMinimizeStalling = automaticallyWaitsToMinimizeStalling
+        }
+        
+        if let preferredForwardBufferDuration = initOptions.networkSettings?.preferredForwardBufferDuration {
+            kalturaPlayer?.settings.network.preferredForwardBufferDuration = preferredForwardBufferDuration
+        }
+    }
+    
+    private func updateLowLatencySettings () {
+        if let targetOffsetMs = initOptions.lowLatencyConfig?.targetOffsetMs {
+            kalturaPlayer?.settings.lowLatency.targetOffsetMs = targetOffsetMs
+        }
+    }
+    
+    func updateSettings() {
+        updateNetworkSetting()
+        updateLowLatencySettings()
+    }
 
 // MARK: - Subclass implementations
     

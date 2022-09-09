@@ -21,6 +21,7 @@ class OVPKalturaPlayerRN: KalturaPlayerRN {
         
         KalturaOVPPlayer.setup(partnerId: Int64(partnerId), serverURL: initOptions.serverUrl, referrer: initOptions.referrer)
         kalturaOVPPlayer = KalturaOVPPlayer(options: playerOptions)
+        updateSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
