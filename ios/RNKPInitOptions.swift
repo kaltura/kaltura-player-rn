@@ -7,81 +7,32 @@
 
 import Foundation
 import PlayKit
-//import PlayKitYoubora
 
 struct RNKPInitOptions: Decodable {
     let serverUrl: String?
     let autoplay: Bool?
     let preload: Bool?
     let plugins: Plugins?
-    let requestConfig: RequestConfig?
-    let allowCrossProtocolRedirect: Bool?
-//    let warmupUrls: [String]?
     let ks: String?
     let referrer: String?
     let abrSettings: ABRSettings?
     let networkSettings: NetworkSettings?
     let trackSelection: TrackSelection?
-//    let preferredMediaFormat: PKMediaFormat?
-//    let lowLatencyConfig: PKLowLatencyConfig?
-//    let allowClearLead: Bool?
-//    let enableDecoderFallback: Bool?
-//    let secureSurface: Bool?
-//    let adAutoPlayOnResume: Bool?
-//    let isVideoViewHidden: Bool?
-//    let forceSinglePlayerEngine: Bool?
-//    let aspectRatioResizeMode: PKAspectRatioResizeMode?
-//    let isTunneledAudioPlayback: Bool?
-//    let handleAudioBecomingNoisyEnabled: Bool?
-//    let handleAudioFocus: Bool?
-//    let maxVideoSize: PKMaxVideoSize?
-//    let maxVideoBitrate: Int?
-//    let maxAudioBitrate: Int?
-//    let maxAudioChannelCount: Int?
-    let multicastSettings: MulticastSettings?
-    let mediaEntryCacheConfig: MediaEntryCacheConfig?
-//    let subtitleStyling: SubtitleStyling?
-//    let wakeMode: PKWakeMode?
-//    let subtitlePreference: PKSubtitlePreference?
-//    let videoCodecSettings: VideoCodecSettings?
-//    let audioCodecSettings: AudioCodecSettings?
-//    let loadControlBuffers: LoadControlBuffers?
-//    let vrSettings: VRSettings?
-    
-    let allowFairPlayOnExternalScreens: Bool?
-    let shouldPlayImmediately: Bool?
-    let handleAudioFocus: Bool?
-}
-
-struct RequestConfig: Decodable {
-    let crossProtocolRedirectEnabled: Bool?
-    let readTimeoutMs: Double?
-    let connectTimeoutMs: Double?
-}
-
-struct NetworkSettings: Decodable {
-    let autoBuffer: Bool?
-    let preferredForwardBufferDuration: Double?
-    let automaticallyWaitsToMinimizeStalling: Bool?
-}
-
-struct MulticastSettings: Decodable {
-    let useExoDefaultSettings: Bool?
-    let maxPacketSize: Double?
-    let socketTimeoutMillis: Double?
-    let extractorMode: String?
-    let firstSampleTimestampUs: Double?
-}
-
-struct MediaEntryCacheConfig: Decodable {
-    let allowMediaEntryCaching: Bool?
-    let maxMediaEntryCacheSize: Double?
-    let timeoutMs: Double?
+    let lowLatencyConfig: PKLowLatencyConfig?
+    let aspectRatioResizeMode: String? // Translate to the contentMode in the PlayerView. Available options are fit/fill/zoom.
+    let subtitleStyling: SubtitleStyling?
+    let vrSettings: VRSettings?
 }
 
 struct ABRSettings: Decodable {
-    let minVideoBitrate: Double?
-    let maxVideoBitrate: Double?
+    let maxVideoBitrate: Double? // preferredPeakBitRate in PKNetworkSettings
+}
+
+// PKNetworkSettings
+struct NetworkSettings: Decodable {
+    let autoBuffer: Bool?
+    let preferredForwardBufferDuration: Double? // from iOS 10.0
+    let automaticallyWaitsToMinimizeStalling: Bool? // from iOS 10.0, tvOS 10.0
 }
 
 struct TrackSelection: Decodable {
@@ -89,6 +40,18 @@ struct TrackSelection: Decodable {
     let textLanguage: String?
     let audioMode: String?
     let audioLanguage: String?
+}
+
+struct PKLowLatencyConfig: Decodable {
+    let targetOffsetMs: UInt?
+}
+
+struct SubtitleStyling: Decodable {
+    
+}
+
+struct VRSettings: Decodable {
+    let vrModeEnabled: Bool?
 }
 
 // MARK: -

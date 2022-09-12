@@ -54,6 +54,12 @@
               "readTimeoutMs": 8000,
               "connectTimeoutMs": 8000
             },
+            "trackSelection": {
+              "textMode": "selection",
+              "textLanguage": "fr",
+              "audioMode": "AUTO",
+              "audioLanguage": "fr"
+            },
             "subtitleStyling": {
               "subtitleTextColor": "#ffdb26",
               "subtitleBackgroundColor": "#00000000",
