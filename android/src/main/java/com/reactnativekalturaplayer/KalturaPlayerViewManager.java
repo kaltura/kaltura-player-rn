@@ -11,7 +11,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
 
    private PKLog log = PKLog.get(KalturaPlayerViewManager.class.getSimpleName());
    private static final String PLAYER_CLASS = "KalturaPlayerView";
-   private final KalturaPlayerRNView kalturaPlayerRNView;
+   private KalturaPlayerRNView kalturaPlayerRNView;
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       kalturaPlayerRNView = new KalturaPlayerRNView(reactContext);
@@ -34,6 +34,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       // Cleanup player resources
       super.onDropViewInstance(view);
       //view.destroy();
+      kalturaPlayerRNView = null;
       log.d("onDropViewInstance");
    }
 
