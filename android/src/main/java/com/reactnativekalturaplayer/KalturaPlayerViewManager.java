@@ -34,7 +34,6 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
       // Cleanup player resources
       super.onDropViewInstance(view);
       //view.destroy();
-      kalturaPlayerRNView = null;
       log.d("onDropViewInstance");
    }
 

@@ -50,6 +50,18 @@ class KalturaPlayerModule(
     }
 
     @ReactMethod
+    fun addPlayerView() {
+        log.d("addPlayerView")
+        kalturaPlayerRN.addPlayerView()
+    }
+
+    @ReactMethod
+    fun removePlayerView() {
+        log.d("removePlayerView")
+        kalturaPlayerRN.removePlayerView()
+    }
+
+    @ReactMethod
     fun onApplicationPaused() {
         log.d("onApplicationPaused")
         kalturaPlayerRN.onApplicationPaused()

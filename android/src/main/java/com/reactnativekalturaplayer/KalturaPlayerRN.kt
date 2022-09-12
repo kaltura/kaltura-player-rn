@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -218,6 +219,34 @@ class KalturaPlayerRN(
             sendCallbackToJS(promise, true)
             initDrm(context)
             addPlayerViewToRNView(player)
+        }
+    }
+
+    fun addPlayerView() {
+        if (playerViewAdded) {
+            log.d("Player view is already added")
+            return
+        } else {
+            player?.let {
+                runOnUiThread {
+                    log.d("addPlayerView")
+                    addPlayerViewToRNView(it)
+                }
+            }
+        }
+    }
+
+    fun removePlayerView() {
+        runOnUiThread {
+            player?.let {
+                if (playerViewAdded) {
+                    log.d("removePlayerView")
+                    it.playerView?.parent?.let { parentView ->
+                        (parentView as ViewGroup).removeAllViews() // Remove all view in order to remove views attached to the player
+                        playerViewAdded = false
+                    }
+                }
+            }
         }
     }
 

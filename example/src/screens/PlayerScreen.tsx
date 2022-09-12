@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  Text, 
+  Text,
   TouchableOpacity,
 } from 'react-native';
 import TrackList from '../components/TrackList';
@@ -51,6 +51,8 @@ let playerType: PLAYER_TYPE = null;
 let networkUnsubscribe: NetInfoSubscription | null = null;
 
 let eventsSubscriptionList: Array<EmitterSubscription> = [];
+const BTN_REMOVE_VIEW_TXT = "Remove PlayerView";
+const BTN_ADD_VIEW_TXT = "Add PlayerView";
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
@@ -82,6 +84,8 @@ export default class App extends React.Component<any, any> {
       currentPosition: 0,
       totalDuration: 0,
       isShowing: false,
+      isPlayerViewVisible: true,
+      btnTextPlayerView: BTN_REMOVE_VIEW_TXT
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -95,9 +99,9 @@ export default class App extends React.Component<any, any> {
 
   componentDidMount() {
     console.log('componentDidMount from App.');
-    
+
     this._isMounted = true;
-  
+
     console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
     console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
@@ -285,6 +289,18 @@ export default class App extends React.Component<any, any> {
         event.remove();
       });
     }
+  };
+
+  addRemovePlayerView = () => {
+    if (this.state.isPlayerViewVisible) {
+      this.player.removePlayerView();
+    } else {
+      this.player.addPlayerView();
+    }
+    this.setState(() => ({
+      isPlayerViewVisible: !this.state.isPlayerViewVisible,
+      btnTextPlayerView: ((this.state.isPlayerViewVisible === false) ? BTN_REMOVE_VIEW_TXT : BTN_ADD_VIEW_TXT)
+    }));
   };
 
   /**
@@ -673,17 +689,13 @@ export default class App extends React.Component<any, any> {
             }}
           />
 
-          { // TODO: Implement proper change media using test JSON
-          /* <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.button]}
             onPress={() => {
-              this.changeMedia(
-                playbackUrlChangeMedia,
-                JSON.stringify(basicMediaAsset)
-              );
+              this.addRemovePlayerView();
             }}
           >
-            <Text style={[styles.bigWhite]}>Change Media</Text>
+            <Text style={[styles.bigWhite]}>{this.state.btnTextPlayerView}</Text>
           </TouchableOpacity> */}
         </ScrollView>
       </RootSiblingParent>
