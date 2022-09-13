@@ -107,3 +107,9 @@ export enum VR_INTERACTION_MODE {
   CARD_BOARD_MOTION = 'CardboardMotion',
   CARD_BOARD_MOTION_WITH_TOUCH = 'CardboardMotionWithTouch',
 }
+
+export enum TRACK_SELECTION_MODE {
+  OFF = 'OFF',
+  AUTO = 'AUTO',
+  SELECTION = 'SELECTION'
+}

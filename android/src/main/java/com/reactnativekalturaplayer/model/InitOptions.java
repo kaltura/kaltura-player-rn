@@ -43,8 +43,6 @@ public class InitOptions {
     public Boolean isTunneledAudioPlayback;
     public Boolean handleAudioBecomingNoisyEnabled;
     public Boolean handleAudioFocus;
-    public PKMaxVideoSize maxVideoSize;
-    public Integer maxVideoBitrate;
     public Integer maxAudioBitrate;
     public Integer maxAudioChannelCount;
     public MulticastSettings multicastSettings;

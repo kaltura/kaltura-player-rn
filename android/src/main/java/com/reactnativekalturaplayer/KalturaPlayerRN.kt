@@ -716,8 +716,6 @@ class KalturaPlayerRN(
         playerInitOptions.setTunneledAudioPlayback(initOptionsModel.isTunneledAudioPlayback)
         playerInitOptions.setMaxAudioBitrate(initOptionsModel.maxAudioBitrate)
         playerInitOptions.setMaxAudioChannelCount(initOptionsModel.maxAudioChannelCount)
-        playerInitOptions.setMaxVideoBitrate(initOptionsModel.maxVideoBitrate)
-        playerInitOptions.setMaxVideoSize(initOptionsModel.maxVideoSize)
         playerInitOptions.setHandleAudioBecomingNoisy(initOptionsModel.handleAudioBecomingNoisyEnabled)
         playerInitOptions.setHandleAudioFocus(initOptionsModel.handleAudioFocus)
         playerInitOptions.setMulticastSettings(initOptionsModel.multicastSettings)
