@@ -58,7 +58,7 @@ struct VRSettings: Decodable {
 
 struct Plugins: Decodable {
     let ima: IMA?
-    let imadai: IMADAI? // Needs FEC-12531 & FEC-12532
+    let imadai: IMADAI?
     let youbora: Youbora?
 }
 
@@ -85,7 +85,6 @@ struct IMA: Decodable, Loopable {
 
 struct IMADAI: Decodable, Loopable {
     // Media Data
-//    let streamType: PKIMADAIStreamType = .vod // We will need to fix it inside IMADAI to decide this via the data sent.
     let assetTitle: String?
     let assetKey: String? // Needed for Live
     let apiKey: String?
