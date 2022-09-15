@@ -43,6 +43,16 @@ export declare class KalturaPlayerAPI {
      */
     static loadMedia: (id: string, asset: string) => Promise<any>;
     /**
+     * Adds the Native Player View to the Player if not attached
+     * Ideally this API should be called after calling {@link removePlayerView}
+     */
+    static addPlayerView: () => void;
+    /**
+     * Removes the Native Player View from the Player if it is attached
+     * Ideally this API should be called after calling {@link addPlayerView}
+     */
+    static removePlayerView: () => void;
+    /**
      * Add the listners for the Kaltura Player
      */
     static addListeners: () => void;

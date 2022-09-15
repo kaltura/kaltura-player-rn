@@ -11,15 +11,15 @@ class RNKPKnownPlugins {
     
     enum PKPlugins: CaseIterable {
         case IMA
-//        case IMADAI // Needs FEC-12531 & FEC-12532
+        case IMADAI
         case Youbora
     
         private func className() -> String {
             switch self {
             case .IMA:
                 return "PlayKit_IMA.IMAPlugin"
-//            case .IMADAI:
-//                return "PlayKit_IMA.IMADAIPlugin"
+            case .IMADAI:
+                return "PlayKit_IMA.IMADAIPlugin"
             case .Youbora:
                 return "PlayKitYoubora.YouboraPlugin"
             }
@@ -29,8 +29,8 @@ class RNKPKnownPlugins {
             switch self {
             case .IMA:
                 return "PlayKit_IMA.IMAConfig"
-//            case .IMADAI:
-//                return "PlayKit_IMA.IMADAIConfig"
+            case .IMADAI:
+                return "PlayKit_IMA.IMADAIConfig"
             case .Youbora:
                 return "PlayKit.AnalyticsConfig"
             }
@@ -55,10 +55,10 @@ class RNKPKnownPlugins {
                 if let ima = plugins.ima {
                     loopablePlugin = ima
                 }
-//            case .IMADAI:
-//                if let imaDAI = plugins.imaDAI {
-//                    loopablePlugin = imaDAI
-//                }
+            case .IMADAI:
+                if let imaDAI = plugins.imadai {
+                    loopablePlugin = imaDAI
+                }
             case .Youbora:
                 if let youbora = plugins.youbora {
                     loopablePlugin = youbora

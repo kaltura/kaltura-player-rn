@@ -55,7 +55,7 @@
               "connectTimeoutMs": 8000
             },
             "trackSelection": {
-              "textMode": "selection",
+              "textMode": "SELECTION",
               "textLanguage": "fr",
               "audioMode": "AUTO",
               "audioLanguage": "fr"
@@ -203,7 +203,7 @@
             "autoplay": true,
             "preload": true,
             "plugins": {
-              "imaDAI": {
+              "imadai": {
                 "assetTitle": "VOD - Tears of Steel",
                 "contentSourceId": "2528370",
                 "videoId": "tears-of-steel",
@@ -230,7 +230,7 @@
             "autoplay": true,
             "preload": true,
             "plugins": {
-              "imaDAI": {
+              "imadai": {
                 "assetTitle": "Live Video - Big Buck Bunny",
                 "assetKey": "sN_IYUG8STe1ZzhIIE_ksA",
                 "alwaysStartWithPreroll": false
