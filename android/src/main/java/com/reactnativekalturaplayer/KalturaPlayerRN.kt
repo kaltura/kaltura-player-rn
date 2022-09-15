@@ -788,11 +788,17 @@ class KalturaPlayerRN(
             }
             playerInitOptions.setAudioCodecSettings(audioCodecSettings)
         }
-        if (initOptionsModel.loadControlBuffers != null) {
-            playerInitOptions.setLoadControlBuffers(initOptionsModel.loadControlBuffers)
+        initOptionsModel.loadControlBuffers?.let {
+            playerInitOptions.setLoadControlBuffers(it)
         }
-        if (initOptionsModel.vrSettings != null) {
-            playerInitOptions.setVRSettings(initOptionsModel.vrSettings)
+        initOptionsModel.vrSettings?.let {
+            playerInitOptions.setVRSettings(it)
+        }
+        initOptionsModel.contentRequestAdapter?.let {
+            playerInitOptions.setContentRequestAdapter(it)
+        }
+        initOptionsModel.licenseRequestAdapter?.let {
+            playerInitOptions.setLicenseRequestAdapter(it)
         }
     }
 

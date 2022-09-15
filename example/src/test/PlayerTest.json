@@ -239,6 +239,30 @@
           }
         }
       ]
+    },
+    "UDP_Test": {
+      "udpLocalMedia": [
+        {
+          "id": "udp_test",
+          "partnerId": 0,
+          "mediaId": "udp://@239.0.0.1:1024",
+          "mediaAsset": {
+            "id": "udpId",
+            "name": "UdpName",
+            "duration": 120,
+            "mediaEntryType": "Vod",
+            "mediaFormat": "udp",
+            "startPosition": 0
+          },
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "multicastSettings": {
+              "useExoDefaultSettings": true
+            }
+          }
+        }
+      ]
     }
   },
   "ovp": {
