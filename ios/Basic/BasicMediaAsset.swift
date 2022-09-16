@@ -18,8 +18,7 @@ struct BasicMediaAsset: Codable {
     var duration: Double?
     var mediaEntryType: String?
     var mediaFormat: String?
-    // TODO: Add drmData
-//    var drmData: [DRMParams]?
+    var drmData: DRMParams?
     
     func getMediaOptions() -> MediaOptions {
         let mediaOptions = MediaOptions()
@@ -33,6 +32,12 @@ struct BasicMediaAsset: Codable {
         
         return mediaOptions
     }
+}
+
+struct DRMParams: Codable {
+    var scheme: String?
+    var licenseUri: String?
+    var base64EncodedCertificate: String?
 }
 
 extension PKMediaSource.MediaFormat {
@@ -61,6 +66,23 @@ extension MediaType {
             self = .live
         case "vod":
             self = .vod
+        default:
+            self = .unknown
+        }
+    }
+}
+
+extension Scheme {
+    init(string: String) {
+        switch string.lowercased() {
+        case "widevinecenc":
+            self = .widevineCenc
+        case "playreadycenc":
+            self = .playreadyCenc
+        case "widevineclassic":
+            self = .widevineClassic
+        case "fairplay":
+            self = .fairplay
         default:
             self = .unknown
         }

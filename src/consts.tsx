@@ -1,7 +1,7 @@
 export enum PLAYER_TYPE {
   OVP = 'ovp',
   OTT = 'ott',
-  BASIC = 'basic',
+  BASIC = 'basic'
 }
 
 export enum MEDIA_FORMAT {
@@ -10,13 +10,13 @@ export enum MEDIA_FORMAT {
   WVM = 'wvm',
   MP4 = 'mp4',
   MP3 = 'mp3',
-  UDP = 'udp',
+  UDP = 'udp'
 }
 
 export enum MEDIA_ENTRY_TYPE {
   VOD = 'Vod',
   LIVE = 'Live',
-  DVRLIVE = 'DvrLive',
+  DVRLIVE = 'DvrLive'
 }
 
 export enum DRM_SCHEME {
@@ -24,6 +24,7 @@ export enum DRM_SCHEME {
   PLAYREADY_CENC = 'PlayReadyCENC',
   WIDEVINE_CLASSIC = 'WidevineClassic',
   PLAYREADY_CLASSIC = 'PlayReadyClassic',
+  FAIRPLAY = 'FairPlay'
 }
 
 export enum PLAYER_PLUGIN {
@@ -32,7 +33,7 @@ export enum PLAYER_PLUGIN {
   YOUBORA = 'youbora',
   KAVA = 'kava',
   OTT_ANALYTICS = 'ottAnalytics',
-  BROADPEAK = 'broadpeak',
+  BROADPEAK = 'broadpeak'
 }
 
 export enum PLAYER_RESIZE_MODES {
@@ -40,13 +41,13 @@ export enum PLAYER_RESIZE_MODES {
   FIXED_WIDTH = 'fixedWidth',
   FIXED_HEIGHT = 'fixedHeight',
   FILL = 'fill',
-  ZOOM = 'zoom',
+  ZOOM = 'zoom'
 }
 
 export enum WAKEMODE {
   NONE = 'NONE',
   LOCAL = 'LOCAL',
-  NETWORK = 'NETWORK',
+  NETWORK = 'NETWORK'
 }
 
 /**
@@ -76,13 +77,13 @@ export enum SUBTITLE_STYLE {
   TYPEFACE_STYLE_BOLD_ITALIC = 'BOLD_ITALIC',
   HORIZONTAL_ALIGNMENT_NORMAL = 'ALIGN_NORMAL',
   HORIZONTAL_ALIGNMENT_CENTER = 'ALIGN_CENTER',
-  HORIZONTAL_ALIGNMENT_OPPOSITE = 'ALIGN_OPPOSITE',
+  HORIZONTAL_ALIGNMENT_OPPOSITE = 'ALIGN_OPPOSITE'
 }
 
 export enum SUBTITLE_PREFERENCE {
   OFF = 'OFF',
   INTERNAL = 'INTERNAL',
-  EXTERNAL = 'EXTERNAL',
+  EXTERNAL = 'EXTERNAL'
 }
 
 export enum VIDEO_CODEC {
@@ -90,14 +91,14 @@ export enum VIDEO_CODEC {
   AV1 = 'AV1',
   VP9 = 'VP9',
   VP8 = 'VP8',
-  AVC = 'AVC',
+  AVC = 'AVC'
 }
 
 export enum AUDIO_CODEC {
   AAC = 'AAC',
   AC3 = 'AC3',
   E_AC3 = 'E_AC3',
-  OPUS = 'OPUS',
+  OPUS = 'OPUS'
 }
 
 export enum VR_INTERACTION_MODE {
@@ -105,13 +106,13 @@ export enum VR_INTERACTION_MODE {
   TOUCH = 'Touch',
   MOTION_WITH_TOUCH = 'MotionWithTouch',
   CARD_BOARD_MOTION = 'CardboardMotion',
-  CARD_BOARD_MOTION_WITH_TOUCH = 'CardboardMotionWithTouch',
+  CARD_BOARD_MOTION_WITH_TOUCH = 'CardboardMotionWithTouch'
 }
 
 export enum TRACK_SELECTION_MODE {
   OFF = 'OFF',
   AUTO = 'AUTO',
-  SELECTION = 'SELECTION',
+  SELECTION = 'SELECTION'
 }
 
 export enum KALTURA_STREAMER_TYPE {
@@ -120,42 +121,42 @@ export enum KALTURA_STREAMER_TYPE {
   URL = 'url',
   SMOTH_STREAMING = 'smothstreaming',
   MULTICAST = 'multicast',
-  NONE = 'none',
+  NONE = 'none'
 }
 
 export enum KALTURA_URL_TYPE {
   PLAYMANIFEST = 'PLAYMANIFEST',
-  DIRECT = 'DIRECT',
+  DIRECT = 'DIRECT'
 }
 
 export enum KALTURA_PLAYBACK_CONTEXT_TYPE {
   TRAILER = 'TRAILER',
   CATCHUP = 'CATCHUP',
   START_OVER = 'START_OVER',
-  PLAYBACK = 'PLAYBACK',
+  PLAYBACK = 'PLAYBACK'
 }
 
 export enum KALTURA_ASSET_TYPE {
   MEDIA = 'media',
   EPG = 'epg',
-  RECORDING = 'recording',
+  RECORDING = 'recording'
 }
 
 export enum KALTURA_LIVE_STREAMING_TYPE {
   CATCHUP = 'catchup',
   START_OVER = 'startOver',
-  TRICK_PLAY = 'trickPlay',
+  TRICK_PLAY = 'trickPlay'
 }
 
 export enum KALTURA_ASSET_REFERENCE_TYPE {
   MEDIA = 'media',
   INTERNAL_EPG = 'epg_internal',
   EXTERNAL_EPG = 'epg_external',
-  NPVR = 'npvr',
+  NPVR = 'npvr'
 }
 
 export enum MULTICAST_EXTRACTOR_MODE {
   MODE_MULTI_PMT = 'MODE_MULTI_PMT',
   MODE_SINGLE_PMT = 'MODE_SINGLE_PMT',
-  MODE_HLS = 'MODE_HLS',
+  MODE_HLS = 'MODE_HLS'
 }
