@@ -15,6 +15,7 @@ like Youbora.
 - [Player Setup](./docs/player-setup.md)
 - [Player APIs](./docs/player-apis.md)
 - [Player Plugins](./docs/player-plugins.md)
+- [Player Events](./docs/player-events.md)
 - [Example App](./docs/example-app.md)
 
 ## Contributing
