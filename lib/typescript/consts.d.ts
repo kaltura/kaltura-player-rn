@@ -20,7 +20,8 @@ export declare enum DRM_SCHEME {
     WIDEVINE_CENC = "WidevineCENC",
     PLAYREADY_CENC = "PlayReadyCENC",
     WIDEVINE_CLASSIC = "WidevineClassic",
-    PLAYREADY_CLASSIC = "PlayReadyClassic"
+    PLAYREADY_CLASSIC = "PlayReadyClassic",
+    FAIRPLAY = "FairPlay"
 }
 export declare enum PLAYER_PLUGIN {
     IMA = "ima",
