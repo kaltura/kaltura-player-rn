@@ -85,43 +85,57 @@ class KalturaPlayerViewManager: RCTViewManager {
 
     @objc func play() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.play()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.play()
+            }
         }
     }
 
     @objc func pause() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.pause()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.pause()
+            }
         }
     }
 
     @objc func replay() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.replay()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.replay()
+            }
         }
     }
 
     @objc func stop() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.stop()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.stop()
+            }
         }
     }
 
     @objc func setVolume(_ volume: Float) {
         DispatchQueue.main.async {
-            self.kalturaPlayer.volume = volume
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.volume = volume
+            }
         }
     }
 
     @objc func seekTo(_ to: TimeInterval) {
         DispatchQueue.main.async {
-            self.kalturaPlayer.seek(to: to)
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.seek(to: to)
+            }
         }
     }
 
     @objc func setPlayerVisibility(_ isVisible: Bool) {
         DispatchQueue.main.async {
-            self.kalturaPlayer!.view?.isHidden = !isVisible;
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.view?.isHidden = !isVisible;
+            }
         }
     }
 
@@ -135,25 +149,33 @@ class KalturaPlayerViewManager: RCTViewManager {
         DispatchQueue.main.async {
             let options = PlayerOptions()
             options.autoPlay = value
-            self.kalturaPlayer.updatePlayerOptions(options)
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.updatePlayerOptions(options)
+            }
         }
     }
 
     @objc func changeTrack(_ trackId: String) {
         DispatchQueue.main.async {
-            self.kalturaPlayer.selectTrack(trackId: trackId)
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.selectTrack(trackId: trackId)
+            }
         }
     }
 
     @objc func prepare() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.prepare()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.prepare()
+            }
         }
     }
 
     @objc func destroy() {
         DispatchQueue.main.async {
-            self.kalturaPlayer.destroy()
+            if self.kalturaPlayer != nil {
+                self.kalturaPlayer.destroy()
+            }
         }
     }
 
