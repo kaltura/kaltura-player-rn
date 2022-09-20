@@ -94,13 +94,13 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 * `urlType` *String* - [Check Constants](#Constants) for URLType.
 * `streamerType` *String* - [Check Constants](#Constants) for StreamerType.
 * `adapterData` *JSONObject* - Additional Adapter data suppied in config for our BE.
-  
-  ```json
- "other":"other",
-  "metaData": {
+    ```json
+    "other":"other",
+    "metaData": {
     "key": "value"
-  } 
- ```
+   } 
+   ```
+ 
 * `referrer` *String* - Optional. Referer string.
 * `redirectFromEntryId` *Boolean* - Default is `true`. **Only for OVP BE users**
 * `useApiCaptions` *Boolean* - Default is `false`. **Only for OVP BE users**
@@ -181,7 +181,8 @@ export enum PLAYER_TYPE {
 ```
 
 
-- **MEDIA_FORMAT** Supports Playback formats.
+- **MEDIA_FORMAT** <br>
+  Supports Playback formats.
 
 ```js
 export enum MEDIA_FORMAT {
@@ -195,7 +196,8 @@ export enum MEDIA_FORMAT {
 
 ```
 
-- **MEDIA_ ENTRY_TYPE** Type of the media VOD, Live or DvrLive.
+- **MEDIA_ ENTRY_TYPE** <br>
+  Type of the media VOD, Live or DvrLive.
 
 ```js
 export enum MEDIA_ENTRY_TYPE {
@@ -206,7 +208,8 @@ export enum MEDIA_ENTRY_TYPE {
 
 ```
 
-- **DRM_SCHEME** DRM Type WidevineCENC, Fairplay, Playready etc.
+- **DRM_SCHEME** <br>
+  DRM Type WidevineCENC, Fairplay, Playready etc.
 
 ```js
 export enum DRM_SCHEME {
@@ -219,7 +222,8 @@ export enum DRM_SCHEME {
 
 ```
 
-- **PLAYER_PLUGIN** Player Plugins like IMA for Ads, Youbora for Analytics etc.
+- **PLAYER_PLUGIN** <br>
+  Player Plugins like IMA for Ads, Youbora for Analytics etc.
 
 ```js
 export enum PLAYER_PLUGIN {
@@ -232,7 +236,8 @@ export enum PLAYER_PLUGIN {
 }
 ```
 
-- **KALTURA_ STREAMER_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ STREAMER_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_STREAMER_TYPE {
@@ -246,7 +251,8 @@ export enum KALTURA_STREAMER_TYPE {
 
 ```
 
-- **KALTURA_ URL_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ URL_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_URL_TYPE {
@@ -256,7 +262,8 @@ export enum KALTURA_URL_TYPE {
 
 ```
 
-- **KALTURA_ PLAYBACK_ CONTEXT_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ PLAYBACK_ CONTEXT_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_PLAYBACK_CONTEXT_TYPE {
@@ -267,7 +274,8 @@ export enum KALTURA_PLAYBACK_CONTEXT_TYPE {
 }
 ```
 
-- **KALTURA_ ASSET_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ ASSET_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_ASSET_TYPE {
@@ -278,7 +286,8 @@ export enum KALTURA_ASSET_TYPE {
 
 ``` 
 
-- **KALTURA_ LIVE_ STREAMING_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ LIVE_ STREAMING_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_LIVE_STREAMING_TYPE {
@@ -288,7 +297,8 @@ export enum KALTURA_LIVE_STREAMING_TYPE {
 }
 ```
 
-- **KALTURA_ ASSET_ REFERENCE_TYPE** ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
+- **KALTURA_ ASSET_ REFERENCE_TYPE** <br>
+  ONLY FOR THE KALTURA BE CUSTOMERS. This constant is helpful for the BE request.
 
 ```js
 export enum KALTURA_ASSET_REFERENCE_TYPE {
