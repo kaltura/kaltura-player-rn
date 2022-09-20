@@ -11,7 +11,7 @@ public class KalturaPlayerViewManager extends ViewGroupManager<KalturaPlayerRNVi
 
    private PKLog log = PKLog.get(KalturaPlayerViewManager.class.getSimpleName());
    private static final String PLAYER_CLASS = "KalturaPlayerView";
-   private final KalturaPlayerRNView kalturaPlayerRNView;
+   private KalturaPlayerRNView kalturaPlayerRNView;
 
    public KalturaPlayerViewManager(ReactApplicationContext reactContext) {
       kalturaPlayerRNView = new KalturaPlayerRNView(reactContext);

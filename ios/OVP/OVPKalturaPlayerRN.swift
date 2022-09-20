@@ -19,15 +19,9 @@ class OVPKalturaPlayerRN: KalturaPlayerRN {
     init(withOptions initOptions: RNKPInitOptions, partnerId: Int) {
         super.init(withOptions: initOptions)
         
-        // TODO: Need to get the referrer in the initOptions and pass it in the setup.
-        let serverURL: String = initOptions.serverUrl ?? ""
-        if serverURL.isEmpty == true {
-            KalturaOVPPlayer.setup(partnerId: Int64(partnerId))
-        } else {
-            KalturaOVPPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL)
-        }
-        
+        KalturaOVPPlayer.setup(partnerId: Int64(partnerId), serverURL: initOptions.serverUrl, referrer: initOptions.referrer)
         kalturaOVPPlayer = KalturaOVPPlayer(options: playerOptions)
+        updateSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {

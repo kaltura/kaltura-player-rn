@@ -26,9 +26,6 @@ public class MainApplication extends NavigationApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for KalturaPlayerExample:
-          // packages.add(new MyReactNativePackage());
-          packages.add(new KalturaPlayerPackage());
           return packages;
         }
 

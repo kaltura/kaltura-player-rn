@@ -134,6 +134,24 @@ export class KalturaPlayerAPI {
   };
 
   /**
+   * Adds the Native Player View to the Player if not attached
+   * Ideally this API should be called after calling {@link removePlayerView}
+   */
+  static addPlayerView = () => {
+    printConsoleLog('Calling Native method addPlayerView()');
+    KalturaPlayerModule.addPlayerView();
+  };
+
+  /**
+   * Removes the Native Player View from the Player if it is attached
+   * Ideally this API should be called after calling {@link addPlayerView}
+   */
+  static removePlayerView = () => {
+    printConsoleLog('Calling Native method removePlayerView()');
+    KalturaPlayerModule.removePlayerView();
+  };
+
+  /**
    * Add the listners for the Kaltura Player
    */
   static addListeners = () => {
@@ -376,7 +394,7 @@ export class KalturaPlayerAPI {
       return;
     }
     printConsoleLog('Calling Native method updateLowLatencyConfig()');
-    KalturaPlayerModule.updateLlConfig(lowLatencyConfig);
+    KalturaPlayerModule.updateLLConfig(lowLatencyConfig);
   };
 
   /**
@@ -385,7 +403,7 @@ export class KalturaPlayerAPI {
    */
   static resetLowLatencyConfig = () => {
     printConsoleLog('Calling Native method resetLowLatencyConfig()');
-    KalturaPlayerModule.resetLlConfig();
+    KalturaPlayerModule.resetLLConfig();
   };
 
   /**

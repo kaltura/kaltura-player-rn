@@ -3682,9 +3682,8 @@ react-native-expandable-listview@^1.3.1:
     react-native-svg "^12.1.0"
     typescript "*"
 
-"react-native-kaltura-player@github:kaltura/kaltura-player-rn#rn-kaltura-player-with-methods":
+"react-native-kaltura-player@file:..":
   version "0.1.0"
-  resolved "https://codeload.github.com/kaltura/kaltura-player-rn/tar.gz/9d675fb6480ae2e65da0cfb88d80bea1ab88f3ed"
   dependencies:
     prop-types "^15.8.1"
     react "17.0.2"

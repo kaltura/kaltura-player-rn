@@ -2,6 +2,7 @@ package com.reactnativekalturaplayer.model
 
 import androidx.annotation.Nullable
 import com.google.gson.JsonObject
+import com.kaltura.playkit.PKLog
 import com.kaltura.playkit.PKPlugin
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsPlugin
@@ -38,6 +39,8 @@ enum class PlayerPluginConfigs(val className: String) {
     ottAnalytics("com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig"),
     broadpeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig")
 }
+
+val pkLog: PKLog = PKLog.get("PlayerPluginUtils")
 
 @Nullable
 fun getPluginFactory(pluginName: PlayerPluginClass) : PKPlugin.Factory? {
@@ -89,10 +92,15 @@ private fun getPluginFactory(className: String): Field? {
         }
         return factoryField
     } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getPluginFactory classNotFoundException $className not found ")
     } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getPluginFactory noSuchFieldException $className not found ")
     } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getPluginFactory illegalAccessException $className not found ")
     } catch (classCastException: ClassCastException) {
+        pkLog.v("getPluginFactory classCastException $className not found ")
     } catch (runTimeException: RuntimeException) {
+        pkLog.v("getPluginFactory runTimeException $className not found ")
     }
     return null
 }
@@ -102,10 +110,15 @@ private fun getPluginConfig(className: String): Class<*>? {
     try {
         return Class.forName(className)
     } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getPluginConfig classNotFoundException $className not found ")
     } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getPluginConfig noSuchFieldException $className not found ")
     } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getPluginConfig illegalAccessException $className not found ")
     } catch (classCastException: ClassCastException) {
+        pkLog.v("getPluginConfig classCastException $className not found ")
     } catch (runTimeException: RuntimeException) {
+        pkLog.v("getPluginConfig runTimeException $className not found ")
     }
     return null
 }

@@ -19,8 +19,9 @@ export declare enum MEDIA_ENTRY_TYPE {
 export declare enum DRM_SCHEME {
     WIDEVINE_CENC = "WidevineCENC",
     PLAYREADY_CENC = "PlayReadyCENC",
-    WIDEVINE_CENC_CLASSIC = "WidevineClassic",
-    PLAYREADY_CLASSIC = "PlayReadyClassic"
+    WIDEVINE_CLASSIC = "WidevineClassic",
+    PLAYREADY_CLASSIC = "PlayReadyClassic",
+    FAIRPLAY = "FairPlay"
 }
 export declare enum PLAYER_PLUGIN {
     IMA = "ima",
@@ -95,4 +96,48 @@ export declare enum VR_INTERACTION_MODE {
     MOTION_WITH_TOUCH = "MotionWithTouch",
     CARD_BOARD_MOTION = "CardboardMotion",
     CARD_BOARD_MOTION_WITH_TOUCH = "CardboardMotionWithTouch"
+}
+export declare enum TRACK_SELECTION_MODE {
+    OFF = "OFF",
+    AUTO = "AUTO",
+    SELECTION = "SELECTION"
+}
+export declare enum KALTURA_STREAMER_TYPE {
+    APPLE_HTTP = "applehttp",
+    MPEG_DASH = "mpegdash",
+    URL = "url",
+    SMOTH_STREAMING = "smothstreaming",
+    MULTICAST = "multicast",
+    NONE = "none"
+}
+export declare enum KALTURA_URL_TYPE {
+    PLAYMANIFEST = "PLAYMANIFEST",
+    DIRECT = "DIRECT"
+}
+export declare enum KALTURA_PLAYBACK_CONTEXT_TYPE {
+    TRAILER = "TRAILER",
+    CATCHUP = "CATCHUP",
+    START_OVER = "START_OVER",
+    PLAYBACK = "PLAYBACK"
+}
+export declare enum KALTURA_ASSET_TYPE {
+    MEDIA = "media",
+    EPG = "epg",
+    RECORDING = "recording"
+}
+export declare enum KALTURA_LIVE_STREAMING_TYPE {
+    CATCHUP = "catchup",
+    START_OVER = "startOver",
+    TRICK_PLAY = "trickPlay"
+}
+export declare enum KALTURA_ASSET_REFERENCE_TYPE {
+    MEDIA = "media",
+    INTERNAL_EPG = "epg_internal",
+    EXTERNAL_EPG = "epg_external",
+    NPVR = "npvr"
+}
+export declare enum MULTICAST_EXTRACTOR_MODE {
+    MODE_MULTI_PMT = "MODE_MULTI_PMT",
+    MODE_SINGLE_PMT = "MODE_SINGLE_PMT",
+    MODE_HLS = "MODE_HLS"
 }

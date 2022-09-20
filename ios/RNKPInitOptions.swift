@@ -7,99 +7,121 @@
 
 import Foundation
 import PlayKit
-//import PlayKitYoubora
 
-struct RNKPInitOptions: Codable {
+struct RNKPInitOptions: Decodable {
     let serverUrl: String?
     let autoplay: Bool?
     let preload: Bool?
     let plugins: Plugins?
-    let requestConfig: RequestConfig?
-    let allowCrossProtocolRedirect: Bool?
-//    let warmupUrls: [String]?
     let ks: String?
     let referrer: String?
     let abrSettings: ABRSettings?
     let networkSettings: NetworkSettings?
     let trackSelection: TrackSelection?
-//    let preferredMediaFormat: PKMediaFormat?
-//    let lowLatencyConfig: PKLowLatencyConfig?
-//    let allowClearLead: Bool?
-//    let enableDecoderFallback: Bool?
-//    let secureSurface: Bool?
-//    let adAutoPlayOnResume: Bool?
-//    let isVideoViewHidden: Bool?
-//    let forceSinglePlayerEngine: Bool?
-//    let aspectRatioResizeMode: PKAspectRatioResizeMode?
-//    let isTunneledAudioPlayback: Bool?
-//    let handleAudioBecomingNoisyEnabled: Bool?
-//    let handleAudioFocus: Bool?
-//    let maxVideoSize: PKMaxVideoSize?
-//    let maxVideoBitrate: Int?
-//    let maxAudioBitrate: Int?
-//    let maxAudioChannelCount: Int?
-    let multicastSettings: MulticastSettings?
-    let mediaEntryCacheConfig: MediaEntryCacheConfig?
-//    let subtitleStyling: SubtitleStyling?
-//    let wakeMode: PKWakeMode?
-//    let subtitlePreference: PKSubtitlePreference?
-//    let videoCodecSettings: VideoCodecSettings?
-//    let audioCodecSettings: AudioCodecSettings?
-//    let loadControlBuffers: LoadControlBuffers?
-//    let vrSettings: VRSettings?
-    
-    let allowFairPlayOnExternalScreens: Bool?
-    let shouldPlayImmediately: Bool?
-    let handleAudioFocus: Bool?
-    
-    
+    let lowLatencyConfig: PKLowLatencyConfig?
+    let aspectRatioResizeMode: String? // Translate to the contentMode in the PlayerView. Available options are fit/fill/zoom.
+    let subtitleStyling: SubtitleStyling?
+    let vrSettings: VRSettings?
 }
 
-struct RequestConfig: Codable {
-    let crossProtocolRedirectEnabled: Bool?
-    let readTimeoutMs: Double?
-    let connectTimeoutMs: Double?
+struct ABRSettings: Decodable {
+    let maxVideoBitrate: Double? // preferredPeakBitRate in PKNetworkSettings
 }
 
-struct NetworkSettings: Codable {
+// PKNetworkSettings
+struct NetworkSettings: Decodable {
     let autoBuffer: Bool?
-    let preferredForwardBufferDuration: Double?
-    let automaticallyWaitsToMinimizeStalling: Bool?
+    let preferredForwardBufferDuration: Double? // from iOS 10.0
+    let automaticallyWaitsToMinimizeStalling: Bool? // from iOS 10.0, tvOS 10.0
 }
 
-struct MulticastSettings: Codable {
-    let useExoDefaultSettings: Bool?
-    let maxPacketSize: Double?
-    let socketTimeoutMillis: Double?
-    let extractorMode: String?
-    let firstSampleTimestampUs: Double?
-}
-
-struct MediaEntryCacheConfig: Codable {
-    let allowMediaEntryCaching: Bool?
-    let maxMediaEntryCacheSize: Double?
-    let timeoutMs: Double?
-}
-
-struct ABRSettings: Codable {
-    let minVideoBitrate: Double?
-    let maxVideoBitrate: Double?
-}
-
-struct TrackSelection: Codable {
+struct TrackSelection: Decodable {
     let textMode: String?
     let textLanguage: String?
     let audioMode: String?
     let audioLanguage: String?
 }
 
-struct Plugins: Codable {
-    let ima: IMA?
-//    let youbora: YouboraConfig?
+struct PKLowLatencyConfig: Decodable {
+    let targetOffsetMs: UInt?
 }
 
-struct IMA: Codable {
+struct SubtitleStyling: Decodable {
+    
+}
+
+struct VRSettings: Decodable {
+    let vrModeEnabled: Bool?
+}
+
+// MARK: -
+
+struct Plugins: Decodable {
+    let ima: IMA?
+    let imadai: IMADAI?
+    let youbora: Youbora?
+}
+
+// MARK: -
+
+struct IMA: Decodable, Loopable {
+    // IMAAdsRequest
     let adTagUrl: String?
-    let alwaysStartWithPreroll: Bool?
+    let adsResponse: String?
+    let vastLoadTimeout: Double?
+    
+    // IMASettings
+    let ppid: String?
+    let language: String?
+    let maxRedirects: Int?
+    let playerType: String?
+    let playerVersion: String?
     let enableDebugMode: Bool?
+
+    let alwaysStartWithPreroll: Bool?
+}
+
+// MARK: -
+
+struct IMADAI: Decodable, Loopable {
+    // Media Data
+    let assetTitle: String?
+    let assetKey: String? // Needed for Live
+    let apiKey: String?
+    let contentSourceId: String? // Needed for VOD
+    let videoId: String? // Needed for VOD
+    let licenseUrl: String?
+    
+    // IMASettings
+    let ppid: String?
+    let language: String?
+    let maxRedirects: Int?
+    let enableBackgroundPlayback: Bool?
+    let autoPlayAdBreaks: Bool?
+    let disableNowPlayingInfo: Bool?
+    let playerType: String?
+    let playerVersion: String?
+    let enableDebugMode: Bool?
+    
+    let alwaysStartWithPreroll: Bool?
+    
+    let adAttribution: Bool?
+    let adCountDown: Bool?
+    let disablePersonalizedAds: Bool? // adTagParameters.put("npa", 1);
+    let enableAgeRestriction: Bool? // adTagParameters.put("tfua", 1);
+}
+
+// MARK: -
+
+struct Youbora: Decodable, Loopable {
+    let params: [String: Any]?
+    
+    enum CodingKeys: String, CodingKey {
+        case params
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.params = try values.decode([String: Any].self, forKey: .params)
+    }
 }

@@ -26,9 +26,9 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
             serverURL = defaultServerURL
         }
         
-        // TODO: Need to get the referrer in the initOptions and pass it in the setup.
-        KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL)
+        KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL, referrer: initOptions.referrer)
         kalturaOTTPlayer = KalturaOTTPlayer(options: playerOptions)
+        updateSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {

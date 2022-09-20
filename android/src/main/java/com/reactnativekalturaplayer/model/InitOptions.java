@@ -2,6 +2,7 @@ package com.reactnativekalturaplayer.model;
 
 import com.kaltura.playkit.PKMediaFormat;
 import com.kaltura.playkit.PKRequestConfig;
+import com.kaltura.playkit.PKRequestParams;
 import com.kaltura.playkit.PKSubtitlePreference;
 import com.kaltura.playkit.PKWakeMode;
 import com.kaltura.playkit.player.ABRSettings;
@@ -43,8 +44,6 @@ public class InitOptions {
     public Boolean isTunneledAudioPlayback;
     public Boolean handleAudioBecomingNoisyEnabled;
     public Boolean handleAudioFocus;
-    public PKMaxVideoSize maxVideoSize;
-    public Integer maxVideoBitrate;
     public Integer maxAudioBitrate;
     public Integer maxAudioChannelCount;
     public MulticastSettings multicastSettings;
@@ -56,4 +55,6 @@ public class InitOptions {
     public AudioCodecSettings audioCodecSettings;
     public LoadControlBuffers loadControlBuffers;
     public VRSettings vrSettings;
+    public PKRequestParams.Adapter contentRequestAdapter;
+    public PKRequestParams.Adapter licenseRequestAdapter;
 }

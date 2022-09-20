@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '11.0'
+platform :ios, '13.0'
 
 target 'KalturaPlayerExample' do
   use_frameworks!
@@ -11,8 +11,20 @@ target 'KalturaPlayerExample' do
 
   use_react_native!(:path => config[:reactNativePath])
 
+  # This was added in the package.json file, use it for development.
   pod 'RNKalturaPlayer', :path => '../..'
+
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+
+
+  # Add wanted plugins
+  pod 'PlayKit_IMA', :git => 'https://github.com/kaltura/playkit-ios-ima.git', :branch => 'develop'
+  # Needs FEC-12531 and FEC-12532 fixes, therefore set it to develop and added the above ^
+
+  pod 'PlayKit', :git => 'https://github.com/kaltura/playkit-ios.git', :branch => 'develop'
+  pod 'PlayKitYoubora' # Needs Playkit fix, therefore added the above line ^
+  
+  ###################
 
   # Enables Flipper.
   #

@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -34,8 +35,8 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class KalturaPlayerRN(
-    private val context: ReactApplicationContext,
-    private val kalturaPlayerRNView: KalturaPlayerRNView): LifecycleEventListener {
+        private val context: ReactApplicationContext,
+        private val kalturaPlayerRNView: KalturaPlayerRNView): LifecycleEventListener {
 
     private val log = PKLog.get(KalturaPlayerRN::class.java.simpleName)
 
@@ -59,7 +60,7 @@ class KalturaPlayerRN(
             if (getPlayerType() == KalturaPlayer.Type.basic) {
                 createKalturaBasicPlayer(initOptions, promise)
             } else if (!TextUtils.isEmpty(initOptions) &&
-                (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp)) {
+                    (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp)) {
                 createKalturaOttOvpPlayer(partnerId, initOptions, promise)
             } else {
                 val message = "Player can not be created. playerType is ${getPlayerType()} and partnerId is $partnerId"
@@ -106,8 +107,8 @@ class KalturaPlayerRN(
         kalturaPlayer?.let {
             if (!playerViewAdded) {
                 it.setPlayerView(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
                 )
                 kalturaPlayerRNView.addView(it.playerView)
                 playerViewAdded = true
@@ -146,8 +147,8 @@ class KalturaPlayerRN(
      * @return - the list of sources.
      */
     private fun createMediaSources(
-        url: String?,
-        basicMediaAsset: BasicMediaAsset
+            url: String?,
+            basicMediaAsset: BasicMediaAsset
     ): List<PKMediaSource> {
         log.d("createMediaSources URL is: $url")
         //Create new PKMediaSource instance.
@@ -172,8 +173,8 @@ class KalturaPlayerRN(
     private fun createKalturaOttOvpPlayer(partnerId: Int, playerInitOptionsJson: String?, promise: Promise) {
         log.d("createKalturaOttOvpPlayer:$partnerId, \n initOptions: \n $playerInitOptionsJson")
         val initOptionsModel = getParsedJson(
-            playerInitOptionsJson,
-            InitOptions::class.java
+                playerInitOptionsJson,
+                InitOptions::class.java
         )
         if (initOptionsModel == null || TextUtils.isEmpty(initOptionsModel.serverUrl) || getPlayerType() == KalturaPlayer.Type.basic) {
             val message = "Failed to create Player initOptionsModel : $initOptionsModel \n" +
@@ -196,15 +197,14 @@ class KalturaPlayerRN(
         val playerInitOptions = PlayerInitOptions(partnerId)
         playerInitOptions.setKs(initOptionsModel.ks)
         playerInitOptions.setMediaEntryCacheConfig(initOptionsModel.mediaEntryCacheConfig)
+
         setCommonPlayerInitOptions(playerInitOptions, initOptionsModel)
+
         val pkPluginConfigs = createPluginConfigs(initOptionsModel)
         playerInitOptions.setPluginConfigs(pkPluginConfigs)
 
         createUiHandler()
         addLifeCycleEventListener(context)
-
-        //playerInitOptions.setVideoCodecSettings(appPlayerInitConfig.videoCodecSettings)
-        //playerInitOptions.setAudioCodecSettings(appPlayerInitConfig.audioCodecSettings)
 
         runOnUiThread {
             if (player == null && getPlayerType() == KalturaPlayer.Type.ott) {
@@ -218,6 +218,34 @@ class KalturaPlayerRN(
             sendCallbackToJS(promise, true)
             initDrm(context)
             addPlayerViewToRNView(player)
+        }
+    }
+
+    fun addPlayerView() {
+        if (playerViewAdded) {
+            log.d("Player view is already added")
+            return
+        } else {
+            player?.let {
+                runOnUiThread {
+                    log.d("addPlayerView")
+                    addPlayerViewToRNView(it)
+                }
+            }
+        }
+    }
+
+    fun removePlayerView() {
+        runOnUiThread {
+            player?.let {
+                if (playerViewAdded) {
+                    log.d("removePlayerView")
+                    it.playerView?.parent?.let { parentView ->
+                        (parentView as ViewGroup).removeAllViews() // Remove all view in order to remove views attached to the player
+                        playerViewAdded = false
+                    }
+                }
+            }
         }
     }
 
@@ -248,16 +276,16 @@ class KalturaPlayerRN(
             val pluginName = pluginConfigs.pluginName
             if (TextUtils.equals(pluginName, PlayerPluginClass.kava.name)) {
                 val kavaAnalyticsConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    KavaAnalyticsConfig::class.java
+                        pluginConfigs.pluginConfig.toString(),
+                        KavaAnalyticsConfig::class.java
                 )
                 if (kavaAnalyticsConfig != null) {
                     updatePlugin(PlayerPluginClass.kava, kavaAnalyticsConfig)
                 }
             } else if (TextUtils.equals(pluginName, PlayerPluginClass.ottAnalytics.name)) {
                 val phoenixAnalyticsConfig = getParsedJson(
-                    pluginConfigs.pluginConfig.toString(),
-                    PhoenixAnalyticsConfig::class.java
+                        pluginConfigs.pluginConfig.toString(),
+                        PhoenixAnalyticsConfig::class.java
                 )
                 if (phoenixAnalyticsConfig != null) {
                     updatePlugin(PlayerPluginClass.ottAnalytics, phoenixAnalyticsConfig)
@@ -397,11 +425,11 @@ class KalturaPlayerRN(
         log.d("updateSubtitleStyle")
         if (!TextUtils.isEmpty(subtitleStyleSettings)) {
             val subtitleStyling = getParsedJson(
-                subtitleStyleSettings,
-                SubtitleStyling::class.java
+                    subtitleStyleSettings,
+                    SubtitleStyling::class.java
             )
-            if (subtitleStyling != null) {
-                val style = getParsedSubtitleStyleSettings(subtitleStyling)
+            subtitleStyling?.let {
+                val style = getParsedSubtitleStyleSettings(it)
                 style?.let {
                     runOnUiThread {
                         player?.updateSubtitleStyle(style)
@@ -417,9 +445,9 @@ class KalturaPlayerRN(
             try {
                 runOnUiThread {
                     player?.updateSurfaceAspectRatioResizeMode(
-                        PKAspectRatioResizeMode.valueOf(
-                            resizeMode
-                        )
+                            PKAspectRatioResizeMode.valueOf(
+                                    resizeMode
+                            )
                     )
                 }
             } catch (exception: IllegalArgumentException) {
@@ -447,23 +475,23 @@ class KalturaPlayerRN(
         }
     }
 
-    fun updateLlConfig(pkLowLatencyConfig: String?) {
-        log.d("updateLlConfig")
+    fun updateLLConfig(pkLowLatencyConfig: String?) {
+        log.d("updateLLConfig")
         if (!TextUtils.isEmpty(pkLowLatencyConfig)) {
             val config = getParsedJson(
-                pkLowLatencyConfig,
-                PKLowLatencyConfig::class.java
+                    pkLowLatencyConfig,
+                    PKLowLatencyConfig::class.java
             )
-            if (config != null) {
+            config?.let {
                 runOnUiThread {
-                    player?.updatePKLowLatencyConfig(config)
+                    player?.updatePKLowLatencyConfig(it)
                 }
             }
         }
     }
 
-    fun resetLlConfig() {
-        log.d("resetLlConfig")
+    fun resetLLConfig() {
+        log.d("resetLLConfig")
         runOnUiThread {
             player?.updatePKLowLatencyConfig(PKLowLatencyConfig.UNSET)
         }
@@ -500,14 +528,14 @@ class KalturaPlayerRN(
     //NOOP
     fun requestThumbnailInfo(positionMs: Float) {
         log.d("requestThumbnailInfo:$positionMs")
-        if (player != null) {
+        player?.let {
             runOnUiThread {
-                val thumbnailInfo: ThumbnailInfo = player?.getThumbnailInfo(positionMs.toLong())!!
+                val thumbnailInfo: ThumbnailInfo? = player?.getThumbnailInfo(positionMs.toLong())
                 if (thumbnailInfo != null && positionMs >= 0) {
                     val thumbnailInfoJson =
-                        "{ \"position\": " + positionMs + ", \"thumbnailInfo\": " + gson.toJson(
-                            thumbnailInfo
-                        ) + " }"
+                            "{ \"position\": $positionMs, \"thumbnailInfo\": " + gson.toJson(
+                                    thumbnailInfo
+                            ) + " }"
                     sendPlayerEvent(KalturaPlayerEvents.THUMBNAIL_INFO_RESPONSE, thumbnailInfoJson)
                 } else {
                     log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid")
@@ -571,9 +599,9 @@ class KalturaPlayerRN(
      */
     fun load(assetId: String?, mediaAssetJson: String?, promise: Promise) {
         log.d(
-            "load assetId: " + assetId +
-                    "\n player type: " + getPlayerType() +
-                    "\n , mediaAssetJson:" + mediaAssetJson
+                "load assetId: " + assetId +
+                        "\n player type: " + getPlayerType() +
+                        "\n , mediaAssetJson:" + mediaAssetJson
         )
         if (player == null) {
             val message = "Player instance is null while loading the media. Hence returning."
@@ -591,8 +619,8 @@ class KalturaPlayerRN(
 
         if (getPlayerType() == KalturaPlayer.Type.basic || isBasicPlaybackRequired(mediaAssetJson)) {
             val basicMediaAsset = getParsedJson(
-                mediaAssetJson,
-                BasicMediaAsset::class.java
+                    mediaAssetJson,
+                    BasicMediaAsset::class.java
             )
             if (basicMediaAsset == null || basicMediaAsset.mediaFormat == null) {
                 val message = "Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $basicMediaAsset"
@@ -663,8 +691,8 @@ class KalturaPlayerRN(
      * @param initOptionsModel InitOptions model passed by FE apps
      */
     private fun setCommonPlayerInitOptions(
-        playerInitOptions: PlayerInitOptions,
-        initOptionsModel: InitOptions
+            playerInitOptions: PlayerInitOptions,
+            initOptionsModel: InitOptions
     ) {
         playerInitOptions.setAutoPlay(initOptionsModel.autoplay)
         playerInitOptions.setPreload(initOptionsModel.preload)
@@ -687,28 +715,26 @@ class KalturaPlayerRN(
         playerInitOptions.setTunneledAudioPlayback(initOptionsModel.isTunneledAudioPlayback)
         playerInitOptions.setMaxAudioBitrate(initOptionsModel.maxAudioBitrate)
         playerInitOptions.setMaxAudioChannelCount(initOptionsModel.maxAudioChannelCount)
-        playerInitOptions.setMaxVideoBitrate(initOptionsModel.maxVideoBitrate)
-        playerInitOptions.setMaxVideoSize(initOptionsModel.maxVideoSize)
         playerInitOptions.setHandleAudioBecomingNoisy(initOptionsModel.handleAudioBecomingNoisyEnabled)
         playerInitOptions.setHandleAudioFocus(initOptionsModel.handleAudioFocus)
         playerInitOptions.setMulticastSettings(initOptionsModel.multicastSettings)
         if (initOptionsModel.networkSettings != null && initOptionsModel.networkSettings.preferredForwardBufferDuration > 0) {
             playerInitOptions.setLoadControlBuffers(
-                LoadControlBuffers().setMaxPlayerBufferMs(
-                    initOptionsModel.networkSettings.preferredForwardBufferDuration
-                )
+                    LoadControlBuffers().setMaxPlayerBufferMs(
+                            initOptionsModel.networkSettings.preferredForwardBufferDuration
+                    )
             )
         }
         if ((initOptionsModel.trackSelection != null) && (initOptionsModel.trackSelection.audioLanguage != null) && (initOptionsModel.trackSelection.audioMode != null)) {
             playerInitOptions.setAudioLanguage(
-                initOptionsModel.trackSelection.audioLanguage,
-                initOptionsModel.trackSelection.audioMode
+                    initOptionsModel.trackSelection.audioLanguage,
+                    initOptionsModel.trackSelection.audioMode
             )
         }
         if ((initOptionsModel.trackSelection != null) && (initOptionsModel.trackSelection.textLanguage != null) && (initOptionsModel.trackSelection.textMode != null)) {
             playerInitOptions.setTextLanguage(
-                initOptionsModel.trackSelection.textLanguage,
-                initOptionsModel.trackSelection.textMode
+                    initOptionsModel.trackSelection.textLanguage,
+                    initOptionsModel.trackSelection.textMode
             )
         }
         val subtitleStyleSettings = getParsedSubtitleStyleSettings(initOptionsModel.subtitleStyling)
@@ -725,47 +751,45 @@ class KalturaPlayerRN(
         if (initOptionsModel.subtitlePreference != null && !TextUtils.isEmpty(initOptionsModel.subtitlePreference.toString())) {
             try {
                 playerInitOptions.setSubtitlePreference(
-                    PKSubtitlePreference.valueOf(
-                        initOptionsModel.subtitlePreference.toString()
-                    )
+                        PKSubtitlePreference.valueOf(
+                                initOptionsModel.subtitlePreference.toString()
+                        )
                 )
             } catch (exception: IllegalArgumentException) {
                 log.e("Invalid subtitlePreference passed which is ${initOptionsModel.subtitlePreference}")
             }
         }
-        if (initOptionsModel.videoCodecSettings != null) {
+        initOptionsModel.videoCodecSettings?.let {
             val videoCodecSettings = VideoCodecSettings()
-            videoCodecSettings.allowMixedCodecAdaptiveness =
-                initOptionsModel.videoCodecSettings.allowMixedCodecAdaptiveness
-            videoCodecSettings.isAllowSoftwareDecoder =
-                initOptionsModel.videoCodecSettings.isAllowSoftwareDecoder
-            if (initOptionsModel.videoCodecSettings.codecPriorityList != null &&
-                initOptionsModel.videoCodecSettings.codecPriorityList.isNotEmpty()
-            ) {
-                videoCodecSettings.codecPriorityList =
-                    initOptionsModel.videoCodecSettings.codecPriorityList
+            videoCodecSettings.allowMixedCodecAdaptiveness = it.allowMixedCodecAdaptiveness
+            videoCodecSettings.isAllowSoftwareDecoder = it.isAllowSoftwareDecoder
+            if (it.codecPriorityList != null && it.codecPriorityList.isNotEmpty()) {
+                videoCodecSettings.codecPriorityList = it.codecPriorityList
             }
             playerInitOptions.setVideoCodecSettings(videoCodecSettings)
         }
-        if (initOptionsModel.audioCodecSettings != null) {
+
+        initOptionsModel.audioCodecSettings?.let {
             val audioCodecSettings = AudioCodecSettings()
-            audioCodecSettings.allowMixedCodecs =
-                initOptionsModel.audioCodecSettings.allowMixedCodecs
-            audioCodecSettings.allowMixedBitrates =
-                initOptionsModel.audioCodecSettings.allowMixedBitrates
-            if (initOptionsModel.audioCodecSettings.codecPriorityList != null &&
-                initOptionsModel.audioCodecSettings.codecPriorityList.isNotEmpty()
+            audioCodecSettings.allowMixedCodecs = it.allowMixedCodecs
+            audioCodecSettings.allowMixedBitrates = it.allowMixedBitrates
+            if (it.codecPriorityList != null && it.codecPriorityList.isNotEmpty()
             ) {
-                audioCodecSettings.codecPriorityList =
-                    initOptionsModel.audioCodecSettings.codecPriorityList
+                audioCodecSettings.codecPriorityList = it.codecPriorityList
             }
             playerInitOptions.setAudioCodecSettings(audioCodecSettings)
         }
-        if (initOptionsModel.loadControlBuffers != null) {
-            playerInitOptions.setLoadControlBuffers(initOptionsModel.loadControlBuffers)
+        initOptionsModel.loadControlBuffers?.let {
+            playerInitOptions.setLoadControlBuffers(it)
         }
-        if (initOptionsModel.vrSettings != null) {
-            playerInitOptions.setVRSettings(initOptionsModel.vrSettings)
+        initOptionsModel.vrSettings?.let {
+            playerInitOptions.setVRSettings(it)
+        }
+        initOptionsModel.contentRequestAdapter?.let {
+            playerInitOptions.setContentRequestAdapter(it)
+        }
+        initOptionsModel.licenseRequestAdapter?.let {
+            playerInitOptions.setLicenseRequestAdapter(it)
         }
     }
 
@@ -778,38 +802,42 @@ class KalturaPlayerRN(
     @NonNull
     private fun createPluginConfigs(initOptions: InitOptions): PKPluginConfigs {
         val pkPluginConfigs = PKPluginConfigs()
-        if (initOptions.plugins != null) {
-            if (initOptions.plugins.ima != null) {
-                createPlugin(PlayerPluginClass.ima, pkPluginConfigs, initOptions.plugins.ima)
+        initOptions.plugins?.let { registeredPlugins ->
+            registeredPlugins.ima?.let {
+                createPlugin(PlayerPluginClass.ima, pkPluginConfigs, it)
             }
-            if (initOptions.plugins.imadai != null) {
-                createPlugin(PlayerPluginClass.imadai, pkPluginConfigs, initOptions.plugins.imadai)
+            registeredPlugins.imadai?.let {
+                createPlugin(PlayerPluginClass.imadai, pkPluginConfigs, it)
             }
-            if (initOptions.plugins.youbora != null) {
-                val youboraConfigJson = initOptions.plugins.youbora
-                if (youboraConfigJson!!.has(youboraAccountCode) && youboraConfigJson[youboraAccountCode] != null) {
-                    createPlugin(
-                        PlayerPluginClass.youbora,
-                        pkPluginConfigs,
-                        initOptions.plugins.youbora
-                    )
+            registeredPlugins.youbora?.let {
+                // This key is only for Youbora Android, in iOS they have it inside `AnalyticsConfig` which is Youbora Config
+                val youboraSpecialKey = "params"
+                if (it.has(youboraSpecialKey) && it.get(youboraSpecialKey) != null) {
+                    val youboraJson: JsonObject = it.getAsJsonObject(youboraSpecialKey)
+                    if (youboraJson.has(youboraAccountCode) && youboraJson[youboraAccountCode] != null) {
+                        createPlugin(
+                                PlayerPluginClass.youbora,
+                                pkPluginConfigs,
+                                it
+                        )
+                    }
                 }
             }
-            if (initOptions.plugins.kava != null) {
-                createPlugin(PlayerPluginClass.kava, pkPluginConfigs, initOptions.plugins.kava)
+            registeredPlugins.kava?.let {
+                createPlugin(PlayerPluginClass.kava, pkPluginConfigs, it)
             }
-            if (initOptions.plugins.ottAnalytics != null) {
+            registeredPlugins.ottAnalytics?.let {
                 createPlugin(
-                    PlayerPluginClass.ottAnalytics,
-                    pkPluginConfigs,
-                    initOptions.plugins.ottAnalytics
+                        PlayerPluginClass.ottAnalytics,
+                        pkPluginConfigs,
+                        it
                 )
             }
-            if (initOptions.plugins.broadpeak != null) {
+            registeredPlugins.broadpeak?.let {
                 createPlugin(
-                    PlayerPluginClass.broadpeak,
-                    pkPluginConfigs,
-                    initOptions.plugins.broadpeak
+                        PlayerPluginClass.broadpeak,
+                        pkPluginConfigs,
+                        it
                 )
             }
         }
@@ -839,8 +867,8 @@ class KalturaPlayerRN(
     private fun isBasicPlaybackRequired(basicMediaAsset: String?): Boolean {
         if ((basicMediaAsset != null) && (playerType != null) && (playerType != KalturaPlayer.Type.basic)) {
             val mediaAsset = getParsedJson(
-                basicMediaAsset,
-                BasicMediaAsset::class.java
+                    basicMediaAsset,
+                    BasicMediaAsset::class.java
             )
             return mediaAsset != null && mediaAsset.mediaFormat != null
         }
@@ -860,8 +888,8 @@ class KalturaPlayerRN(
                 log.d("DRM initialized; supported: ${pkDeviceSupportInfo.supportedDrmSchemes} isHardwareDrmSupported = ${pkDeviceSupportInfo.isHardwareDrmSupported}")
                 val gson = Gson()
                 sendPlayerEvent(
-                    KalturaPlayerEvents.DRM_INITIALIZED,
-                    gson.toJson(pkDeviceSupportInfo)
+                        KalturaPlayerEvents.DRM_INITIALIZED,
+                        gson.toJson(pkDeviceSupportInfo)
                 )
             }
         }
@@ -870,61 +898,61 @@ class KalturaPlayerRN(
     @NonNull
     private fun getTracksInfo(pkTracksInfo: PKTracks): TracksInfo {
         val videoTracksInfo: MutableList<com.reactnativekalturaplayer.model.tracks.VideoTrack> =
-            ArrayList()
+                ArrayList()
         val audioTracksInfo: MutableList<com.reactnativekalturaplayer.model.tracks.AudioTrack> =
-            ArrayList()
+                ArrayList()
         val textTracksInfo: MutableList<com.reactnativekalturaplayer.model.tracks.TextTrack> =
-            ArrayList()
+                ArrayList()
         val imageTracksInfo: MutableList<com.reactnativekalturaplayer.model.tracks.ImageTrack> =
-            ArrayList()
+                ArrayList()
         for ((videoTrackIndex, videoTrack: VideoTrack) in pkTracksInfo.videoTracks.withIndex()) {
             videoTracksInfo.add(
-                com.reactnativekalturaplayer.model.tracks.VideoTrack(
-                    videoTrack.uniqueId,
-                    videoTrack.width,
-                    videoTrack.height,
-                    videoTrack.bitrate,
-                    pkTracksInfo.defaultVideoTrackIndex == videoTrackIndex,
-                    videoTrack.isAdaptive
-                )
+                    com.reactnativekalturaplayer.model.tracks.VideoTrack(
+                            videoTrack.uniqueId,
+                            videoTrack.width,
+                            videoTrack.height,
+                            videoTrack.bitrate,
+                            pkTracksInfo.defaultVideoTrackIndex == videoTrackIndex,
+                            videoTrack.isAdaptive
+                    )
             )
         }
         for ((audioTrackIndex, audioTrack: AudioTrack) in pkTracksInfo.audioTracks.withIndex()) {
             audioTracksInfo.add(
-                com.reactnativekalturaplayer.model.tracks.AudioTrack(
-                    audioTrack.uniqueId,
-                    audioTrack.bitrate,
-                    audioTrack.language,
-                    audioTrack.label,
-                    audioTrack.channelCount,
-                    pkTracksInfo.defaultAudioTrackIndex == audioTrackIndex
-                )
+                    com.reactnativekalturaplayer.model.tracks.AudioTrack(
+                            audioTrack.uniqueId,
+                            audioTrack.bitrate,
+                            audioTrack.language,
+                            audioTrack.label,
+                            audioTrack.channelCount,
+                            pkTracksInfo.defaultAudioTrackIndex == audioTrackIndex
+                    )
             )
         }
         for ((textTrackIndex, textTrack: TextTrack) in pkTracksInfo.textTracks.withIndex()) {
             textTracksInfo.add(
-                com.reactnativekalturaplayer.model.tracks.TextTrack(
-                    textTrack.uniqueId,
-                    textTrack.language,
-                    textTrack.label,
-                    pkTracksInfo.defaultTextTrackIndex == textTrackIndex
-                )
+                    com.reactnativekalturaplayer.model.tracks.TextTrack(
+                            textTrack.uniqueId,
+                            textTrack.language,
+                            textTrack.label,
+                            pkTracksInfo.defaultTextTrackIndex == textTrackIndex
+                    )
             )
         }
         for ((imageTrackIndex, imageTrack: ImageTrack) in pkTracksInfo.imageTracks.withIndex()) {
             imageTracksInfo.add(
-                com.reactnativekalturaplayer.model.tracks.ImageTrack(
-                    imageTrack.uniqueId,
-                    imageTrack.label,
-                    imageTrack.bitrate,
-                    imageTrack.width,
-                    imageTrack.height,
-                    imageTrack.cols,
-                    imageTrack.rows,
-                    imageTrack.duration,
-                    imageTrack.url,
-                    imageTrackIndex == 0
-                )
+                    com.reactnativekalturaplayer.model.tracks.ImageTrack(
+                            imageTrack.uniqueId,
+                            imageTrack.label,
+                            imageTrack.bitrate,
+                            imageTrack.width,
+                            imageTrack.height,
+                            imageTrack.cols,
+                            imageTrack.rows,
+                            imageTrack.duration,
+                            imageTrack.url,
+                            imageTrackIndex == 0
+                    )
             )
         }
 
@@ -948,14 +976,14 @@ class KalturaPlayerRN(
         when (error.errorType) {
             is PKPlayerErrorType -> {
                 errorJson.addProperty(
-                    "errorCode",
-                    (error.errorType as PKPlayerErrorType).errorCode.toString()
+                        "errorCode",
+                        (error.errorType as PKPlayerErrorType).errorCode.toString()
                 )
             }
             is PKAdErrorType -> {
                 errorJson.addProperty(
-                    "errorCode",
-                    (error.errorType as PKAdErrorType).errorCode.toString()
+                        "errorCode",
+                        (error.errorType as PKAdErrorType).errorCode.toString()
                 )
             }
             else -> {
@@ -1006,9 +1034,9 @@ class KalturaPlayerRN(
      * @param pluginConfigJson plugin configuration json
      */
     private fun createPlugin(
-        pluginName: PlayerPluginClass,
-        pluginConfigs: PKPluginConfigs?,
-        pluginConfigJson: JsonObject?
+            pluginName: PlayerPluginClass,
+            pluginConfigs: PKPluginConfigs?,
+            pluginConfigJson: JsonObject?
     ) {
 
         val pluginFactoryClass = getPluginFactory(pluginName)
@@ -1037,8 +1065,8 @@ class KalturaPlayerRN(
             }
         } else {
             log.e(
-                ("Can not create the plugin " + pluginConfigClass.simpleName + " \n " +
-                        "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson)
+                    ("Can not create the plugin " + pluginConfigClass.simpleName + " \n " +
+                            "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson)
             )
         }
     }
@@ -1100,11 +1128,11 @@ class KalturaPlayerRN(
             }
 
             subtitleStyleSettings = SubtitleStyleSettings(sbtStyling.subtitleStyleName)
-                .setBackgroundColor(backgroundColor ?: Color.BLACK)
-                .setTextColor(textColor ?: Color.WHITE)
-                .setTextSizeFraction(sbtStyling.getSubtitleTextSizeFraction())
-                .setTypeface(sbtStyling.getSubtitleStyleTypeface())
-                .setEdgeType(sbtStyling.getSubtitleEdgeType())
+                    .setBackgroundColor(backgroundColor ?: Color.BLACK)
+                    .setTextColor(textColor ?: Color.WHITE)
+                    .setTextSizeFraction(sbtStyling.getSubtitleTextSizeFraction())
+                    .setTypeface(sbtStyling.getSubtitleStyleTypeface())
+                    .setEdgeType(sbtStyling.getSubtitleEdgeType())
 
             sbtStyling.subtitleWindowColor?.let {
                 sbtStyling.getStringToColor(it)?.let { windowColor ->
@@ -1119,14 +1147,20 @@ class KalturaPlayerRN(
             }
 
             val pkSubtitlePosition = PKSubtitlePosition(sbtStyling.overrideInlineCueConfig)
-            if (sbtStyling.horizontalPositionPercentage == null && sbtStyling.verticalPositionPercentage != null) {
-                pkSubtitlePosition.setVerticalPosition(sbtStyling.verticalPositionPercentage!!)
-            } else if (sbtStyling.horizontalPositionPercentage != null && sbtStyling.verticalPositionPercentage != null) {
-                pkSubtitlePosition.setPosition(
-                    sbtStyling.horizontalPositionPercentage!!,
-                    sbtStyling.verticalPositionPercentage!!,
-                    sbtStyling.getHorizontalAlignment()
-                )
+            if (sbtStyling.horizontalPositionPercentage == null) {
+                sbtStyling.verticalPositionPercentage?.let {
+                    pkSubtitlePosition.setVerticalPosition(it)
+                }
+            } else {
+                sbtStyling.verticalPositionPercentage?.let { verticalPercentage ->
+                    sbtStyling.horizontalPositionPercentage?.let { horizontalPercentage ->
+                        pkSubtitlePosition.setPosition(
+                                horizontalPercentage,
+                                verticalPercentage,
+                                sbtStyling.getHorizontalAlignment()
+                        )
+                    }
+                }
             }
 
             subtitleStyleSettings?.setSubtitlePosition(pkSubtitlePosition)
@@ -1151,8 +1185,8 @@ class KalturaPlayerRN(
             return gson.fromJson(parsableJson, parsingClass)
         } catch (exception: JsonSyntaxException) {
             log.e(
-                ("JsonSyntaxException while parsing " + parsingClass.simpleName + "\n and the exception is \n" +
-                        exception.message)
+                    ("JsonSyntaxException while parsing " + parsingClass.simpleName + "\n and the exception is \n" +
+                            exception.message)
             )
         }
         return null
@@ -1231,16 +1265,16 @@ class KalturaPlayerRN(
         player?.addListener(context, PlayerEvent.durationChanged) { event: PlayerEvent.DurationChanged ->
             reportedDuration = event.duration
             val durationJson: String = createJSONForEventPayload(
-                "duration",
-                (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                    "duration",
+                    (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
             )
             sendPlayerEvent(KalturaPlayerEvents.DURATION_CHANGE, durationJson)
         }
 
         player?.addListener(context, PlayerEvent.playheadUpdated) { event: PlayerEvent.PlayheadUpdated ->
             var timeUpdatePayload: String =
-                ("\"position\": " + (event.position / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
-                        ", \"bufferPosition\": " + (event.bufferPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT))
+                    ("\"position\": " + (event.position / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
+                            ", \"bufferPosition\": " + (event.bufferPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT))
 
             timeUpdatePayload = if ((player != null) && player?.isLive!! && (player?.currentProgramTime!! > 0)) {
                 ("{ " + timeUpdatePayload +
@@ -1256,12 +1290,12 @@ class KalturaPlayerRN(
             if (reportedDuration != event.duration && event.duration > 0) {
                 reportedDuration = event.duration
                 if ((player != null) && (player?.mediaEntry != null) && (player?.mediaEntry!!
-                        .mediaType != PKMediaEntry.MediaEntryType.Vod) /*|| player.isLive()*/) {
+                                .mediaType != PKMediaEntry.MediaEntryType.Vod) /*|| player.isLive()*/) {
                     sendPlayerEvent(
-                        KalturaPlayerEvents.LOAD_TIME_RANGES,
-                        ("{\"timeRanges\": [ { \"start\": " + 0 +
-                                ", \"end\": " + (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
-                                " } ] }")
+                            KalturaPlayerEvents.LOAD_TIME_RANGES,
+                            ("{\"timeRanges\": [ { \"start\": " + 0 +
+                                    ", \"end\": " + (event.duration / Consts.MILLISECONDS_MULTIPLIER_FLOAT) +
+                                    " } ] }")
                     )
                 }
             }
@@ -1269,15 +1303,15 @@ class KalturaPlayerRN(
 
         player?.addListener(context, PlayerEvent.stateChanged) { event: PlayerEvent.StateChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.STATE_CHANGED,
-                createJSONForEventPayload("newState", event.newState.name)
+                    KalturaPlayerEvents.STATE_CHANGED,
+                    createJSONForEventPayload("newState", event.newState.name)
             )
         }
 
         player?.addListener(context, PlayerEvent.tracksAvailable) { event: PlayerEvent.TracksAvailable ->
             sendPlayerEvent(
-                KalturaPlayerEvents.TRACKS_AVAILABLE,
-                gson.toJson(getTracksInfo(event.tracksInfo))
+                    KalturaPlayerEvents.TRACKS_AVAILABLE,
+                    gson.toJson(getTracksInfo(event.tracksInfo))
             )
         }
         player?.addListener(context, PlayerEvent.loadedMetadata) { _: PKEvent? -> sendPlayerEvent(KalturaPlayerEvents.LOADED_METADATA) }
@@ -1286,72 +1320,72 @@ class KalturaPlayerRN(
 
         player?.addListener(context, PlayerEvent.volumeChanged) { event: PlayerEvent.VolumeChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.VOLUME_CHANGED,
-                createJSONForEventPayload("volume", event.volume)
+                    KalturaPlayerEvents.VOLUME_CHANGED,
+                    createJSONForEventPayload("volume", event.volume)
             )
         }
 
         player?.addListener(context,
-            PlayerEvent.surfaceAspectRationSizeModeChanged) { event: PlayerEvent.SurfaceAspectRationResizeModeChanged ->
+                PlayerEvent.surfaceAspectRationSizeModeChanged) { event: PlayerEvent.SurfaceAspectRationResizeModeChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.ASPECT_RATIO_RESIZE_MODE_CHANGED,
-                createJSONForEventPayload(
-                    "surfaceAspectRationSizeModeChanged",
-                    event.resizeMode.name
-                )
+                    KalturaPlayerEvents.ASPECT_RATIO_RESIZE_MODE_CHANGED,
+                    createJSONForEventPayload(
+                            "surfaceAspectRationSizeModeChanged",
+                            event.resizeMode.name
+                    )
             )
         }
 
         player?.addListener(context,
-            PlayerEvent.subtitlesStyleChanged) { event: PlayerEvent.SubtitlesStyleChanged ->
+                PlayerEvent.subtitlesStyleChanged) { event: PlayerEvent.SubtitlesStyleChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.SUBTITLE_STYLE_CHANGED,
-                createJSONForEventPayload("subtitlesStyleChanged", event.styleName)
+                    KalturaPlayerEvents.SUBTITLE_STYLE_CHANGED,
+                    createJSONForEventPayload("subtitlesStyleChanged", event.styleName)
             )
         }
 
         player?.addListener(context, PlayerEvent.videoTrackChanged) { event: PlayerEvent.VideoTrackChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
-                gson.toJson(event.newTrack)
+                    KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
+                    gson.toJson(event.newTrack)
             )
         }
 
         player?.addListener(context, PlayerEvent.audioTrackChanged) { event: PlayerEvent.AudioTrackChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
-                gson.toJson(event.newTrack)
+                    KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
+                    gson.toJson(event.newTrack)
             )
         }
 
         player?.addListener(context, PlayerEvent.textTrackChanged) { event: PlayerEvent.TextTrackChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.TEXT_TRACK_CHANGED,
-                gson.toJson(event.newTrack)
+                    KalturaPlayerEvents.TEXT_TRACK_CHANGED,
+                    gson.toJson(event.newTrack)
             )
         }
 
         player?.addListener(context, PlayerEvent.imageTrackChanged) { event: PlayerEvent.ImageTrackChanged ->
             sendPlayerEvent(
-                KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
-                gson.toJson(event.newTrack)
+                    KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
+                    gson.toJson(event.newTrack)
             )
         }
         player?.addListener(context,
-            PlayerEvent.playbackInfoUpdated) { event: PlayerEvent.PlaybackInfoUpdated ->
+                PlayerEvent.playbackInfoUpdated) { event: PlayerEvent.PlaybackInfoUpdated ->
             sendPlayerEvent(
-                KalturaPlayerEvents.PLAYBACK_INFO_UPDATED,
-                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.playbackInfo))
+                    KalturaPlayerEvents.PLAYBACK_INFO_UPDATED,
+                    createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.playbackInfo))
             )
         }
 
         player?.addListener(context, PlayerEvent.seeking) { event: PlayerEvent.Seeking ->
             sendPlayerEvent(
-                KalturaPlayerEvents.SEEKING,
-                createJSONForEventPayload(
-                    "targetPosition",
-                    (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
-                )
+                    KalturaPlayerEvents.SEEKING,
+                    createJSONForEventPayload(
+                            "targetPosition",
+                            (event.targetPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                    )
             )
         }
         player?.addListener(context, PlayerEvent.seeked) { _: PKEvent? -> sendPlayerEvent(KalturaPlayerEvents.SEEKED) }
@@ -1365,8 +1399,8 @@ class KalturaPlayerRN(
         player?.addListener(context, PlayerEvent.metadataAvailable) { event: PlayerEvent.MetadataAvailable ->
             if (event.metadataList.isNotEmpty()) {
                 sendPlayerEvent(
-                    KalturaPlayerEvents.METADATA_AVAILABLE,
-                    gson.toJson(event.metadataList)
+                        KalturaPlayerEvents.METADATA_AVAILABLE,
+                        gson.toJson(event.metadataList)
                 )
             }
         }
@@ -1374,8 +1408,8 @@ class KalturaPlayerRN(
         player?.addListener(context, PlayerEvent.eventStreamChanged) { event: PlayerEvent.EventStreamChanged ->
             if (event.eventStreamList.isNotEmpty()) {
                 sendPlayerEvent(
-                    KalturaPlayerEvents.EVENT_STREAM_CHANGED,
-                    gson.toJson(event.eventStreamList)
+                        KalturaPlayerEvents.EVENT_STREAM_CHANGED,
+                        gson.toJson(event.eventStreamList)
                 )
             }
         }
@@ -1386,11 +1420,11 @@ class KalturaPlayerRN(
         }
 
         player?.addListener(context,
-            PlayerEvent.playbackRateChanged) { event: PlayerEvent.PlaybackRateChanged ->
+                PlayerEvent.playbackRateChanged) { event: PlayerEvent.PlaybackRateChanged ->
             if (event.rate > 0) {
                 sendPlayerEvent(
-                    KalturaPlayerEvents.PLAYBACK_RATE_CHANGED,
-                    createJSONForEventPayload("rate", event.rate)
+                        KalturaPlayerEvents.PLAYBACK_RATE_CHANGED,
+                        createJSONForEventPayload("rate", event.rate)
                 )
             }
         }
@@ -1398,70 +1432,70 @@ class KalturaPlayerRN(
         player?.addListener(context, PlayerEvent.connectionAcquired) { event: PlayerEvent.ConnectionAcquired ->
             if (event.uriConnectionAcquiredInfo != null) {
                 sendPlayerEvent(
-                    KalturaPlayerEvents.CONNECTION_ACQUIRED,
-                    gson.toJson(event.uriConnectionAcquiredInfo)
+                        KalturaPlayerEvents.CONNECTION_ACQUIRED,
+                        gson.toJson(event.uriConnectionAcquiredInfo)
                 )
             }
         }
 
         player?.addListener(context, PlayerEvent.videoFramesDropped) { event: PlayerEvent.VideoFramesDropped ->
             sendPlayerEvent(
-                KalturaPlayerEvents.VIDEO_FRAMES_DROPPED,
-                ("{ \"droppedVideoFrames\": " + event.droppedVideoFrames +
-                        ", \"droppedVideoFramesPeriod\": " + event.droppedVideoFramesPeriod +
-                        ", \"totalDroppedVideoFrames\": " + event.totalDroppedVideoFrames +
-                        " }")
+                    KalturaPlayerEvents.VIDEO_FRAMES_DROPPED,
+                    ("{ \"droppedVideoFrames\": " + event.droppedVideoFrames +
+                            ", \"droppedVideoFramesPeriod\": " + event.droppedVideoFramesPeriod +
+                            ", \"totalDroppedVideoFrames\": " + event.totalDroppedVideoFrames +
+                            " }")
             )
         }
 
         player?.addListener(context,
-            PlayerEvent.outputBufferCountUpdate) { event: PlayerEvent.OutputBufferCountUpdate ->
+                PlayerEvent.outputBufferCountUpdate) { event: PlayerEvent.OutputBufferCountUpdate ->
             sendPlayerEvent(
-                KalturaPlayerEvents.OUTPUT_BUFFER_COUNT_UPDATE,
-                ("{ \"skippedOutputBufferCount\": " + event.skippedOutputBufferCount +
-                        ", \"renderedOutputBufferCount\": " + event.renderedOutputBufferCount +
-                        " }")
+                    KalturaPlayerEvents.OUTPUT_BUFFER_COUNT_UPDATE,
+                    ("{ \"skippedOutputBufferCount\": " + event.skippedOutputBufferCount +
+                            ", \"renderedOutputBufferCount\": " + event.renderedOutputBufferCount +
+                            " }")
             )
         }
 
         player?.addListener(context, PlayerEvent.bytesLoaded) { event: PlayerEvent.BytesLoaded ->
             sendPlayerEvent(
-                KalturaPlayerEvents.BYTES_LOADED, ("{ \"bytesLoaded\": " + event.bytesLoaded +
-                        ", \"dataType\": " + event.dataType +
-                        ", \"loadDuration\": " + event.loadDuration +
-                        ", \"totalBytesLoaded\": " + event.totalBytesLoaded +
-                        ", \"trackType\": " + event.trackType +
-                        " }")
+                    KalturaPlayerEvents.BYTES_LOADED, ("{ \"bytesLoaded\": " + event.bytesLoaded +
+                    ", \"dataType\": " + event.dataType +
+                    ", \"loadDuration\": " + event.loadDuration +
+                    ", \"totalBytesLoaded\": " + event.totalBytesLoaded +
+                    ", \"trackType\": " + event.trackType +
+                    " }")
             )
         }
 
         player?.addListener(context, AdEvent.adProgress) { event: AdEvent.AdProgress ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.AD_PROGRESS,
-                createJSONForEventPayload(
-                    "currentAdPosition",
-                    (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
-                )
+                    KalturaPlayerAdEvents.AD_PROGRESS,
+                    createJSONForEventPayload(
+                            "currentAdPosition",
+                            (event.currentAdPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                    )
             )
         }
 
         player?.addListener(context, AdEvent.loaded) { event: AdEvent.AdLoadedEvent ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.LOADED,
-                gson.toJson(event.adInfo)
+                    KalturaPlayerAdEvents.LOADED,
+                    gson.toJson(event.adInfo)
             )
         }
 
         player?.addListener(context, AdEvent.cuepointsChanged) { event: AdEvent.AdCuePointsUpdateEvent ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.CUEPOINTS_CHANGED,
-                gson.toJson(event.cuePoints)
+                    KalturaPlayerAdEvents.CUEPOINTS_CHANGED,
+                    gson.toJson(event.cuePoints)
             )
         }
 
         player?.addListener(context, AdEvent.started) { _: AdEvent.AdStartedEvent? ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.STARTED
+                    KalturaPlayerAdEvents.STARTED
             )
         }
 
@@ -1469,47 +1503,47 @@ class KalturaPlayerRN(
 
         player?.addListener(context, AdEvent.paused) { _: AdEvent.AdPausedEvent? ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.PAUSED
+                    KalturaPlayerAdEvents.PAUSED
             )
         }
 
         player?.addListener(context, AdEvent.resumed) { _: AdEvent.AdResumedEvent? ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.RESUMED
+                    KalturaPlayerAdEvents.RESUMED
             )
         }
 
         player?.addListener(context, AdEvent.adBufferStart) { event: AdEvent.AdBufferStart ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.AD_BUFFER_START,
-                createJSONForEventPayload("adPosition", event.adPosition)
+                    KalturaPlayerAdEvents.AD_BUFFER_START,
+                    createJSONForEventPayload("adPosition", event.adPosition)
             )
         }
 
         player?.addListener(context, AdEvent.adBufferEnd) { event: AdEvent.AdBufferEnd ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.AD_BUFFER_END,
-                createJSONForEventPayload("adPosition", event.adPosition)
+                    KalturaPlayerAdEvents.AD_BUFFER_END,
+                    createJSONForEventPayload("adPosition", event.adPosition)
             )
         }
 
         player?.addListener(context, AdEvent.adClickedEvent) { event: AdEvent.AdClickedEvent ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.CLICKED,
-                createJSONForEventPayload("clickThruUrl", event.clickThruUrl)
+                    KalturaPlayerAdEvents.CLICKED,
+                    createJSONForEventPayload("clickThruUrl", event.clickThruUrl)
             )
         }
 
         player?.addListener(context, AdEvent.skipped) { _: AdEvent.AdSkippedEvent? ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.SKIPPED
+                    KalturaPlayerAdEvents.SKIPPED
             )
         }
 
         player?.addListener(context, AdEvent.adRequested) { event: AdEvent.AdRequestedEvent ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.AD_REQUESTED,
-                createJSONForEventPayload("adTagUrl", event.adTagUrl)
+                    KalturaPlayerAdEvents.AD_REQUESTED,
+                    createJSONForEventPayload("adTagUrl", event.adTagUrl)
             )
         }
 
@@ -1557,52 +1591,52 @@ class KalturaPlayerRN(
         player?.addListener(context, AdEvent.playHeadChanged
         ) { event: AdEvent.AdPlayHeadEvent ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.PLAY_HEAD_CHANGED,
-                createJSONForEventPayload("adPlayHead", event.adPlayHead)
+                    KalturaPlayerAdEvents.PLAY_HEAD_CHANGED,
+                    createJSONForEventPayload("adPlayHead", event.adPlayHead)
             )
         }
         player?.addListener(context, AdEvent.adPlaybackInfoUpdated
         ) { event: AdEvent.AdPlaybackInfoUpdated ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.AD_PLAYBACK_INFO_UPDATED,
-                ("{ \"bitrate\": " + event.bitrate +
-                        ", \"height\": " + event.height +
-                        ", \"width\": " + event.width +
-                        " }")
+                    KalturaPlayerAdEvents.AD_PLAYBACK_INFO_UPDATED,
+                    ("{ \"bitrate\": " + event.bitrate +
+                            ", \"height\": " + event.height +
+                            ", \"width\": " + event.width +
+                            " }")
             )
         }
         player?.addListener(context, AdEvent.daiSourceSelected
         ) { event: AdEvent.DAISourceSelected ->
             sendPlayerEvent(
-                KalturaPlayerAdEvents.DAI_SOURCE_SELECTED,
-                createJSONForEventPayload("sourceURL", event.sourceURL)
+                    KalturaPlayerAdEvents.DAI_SOURCE_SELECTED,
+                    createJSONForEventPayload("sourceURL", event.sourceURL)
             )
         }
         player?.addListener(context, PhoenixAnalyticsEvent.bookmarkError) { event: PhoenixAnalyticsEvent.BookmarkErrorEvent ->
             sendPlayerEvent(
-                KalturaPlayerAnalyticsEvents.PHOENIX_BOOKMARK_ERROR,
-                ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-                        ", \"errorType\": \"" + event.type + "\" " +
-                        " }")
+                    KalturaPlayerAnalyticsEvents.PHOENIX_BOOKMARK_ERROR,
+                    ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+                            ", \"errorCode\": \"" + event.errorCode + "\" " +
+                            ", \"errorType\": \"" + event.type + "\" " +
+                            " }")
             )
         }
         player?.addListener(context, PhoenixAnalyticsEvent.concurrencyError) { event: PhoenixAnalyticsEvent.ConcurrencyErrorEvent ->
             sendPlayerEvent(
-                KalturaPlayerAnalyticsEvents.PHOENIX_CONCURRENCY_ERROR,
-                ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-                        ", \"errorType\": \"" + event.type + "\" " +
-                        " }")
+                    KalturaPlayerAnalyticsEvents.PHOENIX_CONCURRENCY_ERROR,
+                    ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+                            ", \"errorCode\": \"" + event.errorCode + "\" " +
+                            ", \"errorType\": \"" + event.type + "\" " +
+                            " }")
             )
         }
         player?.addListener(context, PhoenixAnalyticsEvent.error) { event: PhoenixAnalyticsEvent.ErrorEvent ->
             sendPlayerEvent(
-                KalturaPlayerAnalyticsEvents.PHOENIX_ERROR,
-                ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-                        ", \"errorType\": \"" + event.type + "\" " +
-                        " }")
+                    KalturaPlayerAnalyticsEvents.PHOENIX_ERROR,
+                    ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
+                            ", \"errorCode\": \"" + event.errorCode + "\" " +
+                            ", \"errorType\": \"" + event.type + "\" " +
+                            " }")
             )
         }
 //        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
@@ -1718,13 +1752,13 @@ class KalturaPlayerRN(
                     }
                 }
                 is Boolean -> {
-                    map.putBoolean(key, (value as Boolean?)!!)
+                    map.putBoolean(key, value)
                 }
                 is Int -> {
-                    map.putInt(key, (value as Int?)!!)
+                    map.putInt(key, value)
                 }
                 is Double -> {
-                    map.putDouble(key, (value as Double?)!!)
+                    map.putDouble(key, value)
                 }
                 is String -> {
                     map.putString(key, value as String?)
