@@ -157,8 +157,6 @@ By default Player view component is attached to the Player so no need to call `a
 ### Constants
 ---
 
-🔴Some Constants are left to add
-
 There are various constants available which are essential to be used while setting up the Player configs.
 
 - **PLAYER_TYPE**
@@ -308,4 +306,124 @@ export enum KALTURA_ASSET_REFERENCE_TYPE {
   NPVR = 'npvr'
 }
 
+```
+
+- **PLAYER_ RESIZE_ MODES** <br>
+  Resize modes for Player view component. FE can pass this config on [`PlayerInitOptions`](./player-apis.md)
+  This changes the aspect ratio of the native Player view.
+
+```js
+export enum PLAYER_RESIZE_MODES {
+  FIT = 'fit',
+  FIXED_WIDTH = 'fixedWidth',
+  FIXED_HEIGHT = 'fixedHeight',
+  FILL = 'fill',
+  ZOOM = 'zoom'
+}
+```
+
+- **WAKEMODE** <br>
+  Sets whether the player should not handle wakeLock or should handle a wake lock only or both wakeLock & wifiLock when the screen is off.
+  default - NONE - not handling wake lock
+  FE can pass this config on [`PlayerInitOptions`](./player-apis.md)
+
+```js
+export enum WAKEMODE {
+  NONE = 'NONE',
+  LOCAL = 'LOCAL',
+  NETWORK = 'NETWORK'
+}
+```
+
+- **SUBTITLE_STYLE** <br>
+  This is helpful to set/update the Subtitles' styling and positioning to the player. FE can pass this config on [`PlayerInitOptions`](./player-apis.md)
+
+```js
+export enum SUBTITLE_STYLE {
+  EDGE_TYPE_NONE = 'EDGE_TYPE_NONE',
+  EDGE_TYPE_OUTLINE = 'EDGE_TYPE_OUTLINE',
+  EDGE_TYPE_DROP_SHADOW = 'EDGE_TYPE_DROP_SHADOW',
+  EDGE_TYPE_RAISED = 'EDGE_TYPE_RAISED',
+  EDGE_TYPE_DEPRESSED = 'EDGE_TYPE_DEPRESSED',
+  FRACTION_50 = 'SUBTITLE_FRACTION_50',
+  FRACTION_75 = 'SUBTITLE_FRACTION_75',
+  FRACTION_100 = 'SUBTITLE_FRACTION_100',
+  FRACTION_125 = 'SUBTITLE_FRACTION_125',
+  FRACTION_150 = 'SUBTITLE_FRACTION_150',
+  FRACTION_200 = 'SUBTITLE_FRACTION_200',
+  TYPEFACE_DEFAULT = 'DEFAULT',
+  TYPEFACE_DEFAULT_BOLD = 'DEFAULT_BOLD',
+  TYPEFACE_MONOSPACE = 'MONOSPACE',
+  TYPEFACE_SERIF = 'SERIF',
+  TYPEFACE_SANS_SERIF = 'SANS_SERIF',
+  TYPEFACE_STYLE_NORMAL = 'NORMAL',
+  TYPEFACE_STYLE_BOLD = 'BOLD',
+  TYPEFACE_STYLE_ITALIC = 'ITALIC',
+  TYPEFACE_STYLE_BOLD_ITALIC = 'BOLD_ITALIC',
+  HORIZONTAL_ALIGNMENT_NORMAL = 'ALIGN_NORMAL',
+  HORIZONTAL_ALIGNMENT_CENTER = 'ALIGN_CENTER',
+  HORIZONTAL_ALIGNMENT_OPPOSITE = 'ALIGN_OPPOSITE'
+}
+```
+
+- **SUBTITLE_PREFERENCE** <br>
+  If the manifest contains the text track (subtitles) and FE is passing the subtitles from outside then FE can use this preference to tell Player in [`PlayerInitOptions`](./player-apis.md), which one to use.
+
+```js 
+export enum SUBTITLE_PREFERENCE {
+  OFF = 'OFF',
+  INTERNAL = 'INTERNAL',
+  EXTERNAL = 'EXTERNAL'
+}
+
+```
+
+- **VIDEO_CODEC** <br>
+  It can be used on `videoCodecSettings` in [`PlayerInitOptions`](./player-apis.md).
+
+```js 
+export enum VIDEO_CODEC {
+  HEVC = 'HEVC',
+  AV1 = 'AV1',
+  VP9 = 'VP9',
+  VP8 = 'VP8',
+  AVC = 'AVC'
+}
+```
+
+- **AUDIO_CODEC** <br>
+  It can be used on `audioCodecSettings` in [`PlayerInitOptions`](./player-apis.md).
+
+```js 
+export enum AUDIO_CODEC {
+  AAC = 'AAC',
+  AC3 = 'AC3',
+  E_AC3 = 'E_AC3',
+  OPUS = 'OPUS'
+}
+
+```
+
+- **VR_INTERACTION_MODE** <br>
+  In case for the VR/360 media, this can be used as a part of `vrSettings` in [`PlayerInitOptions`](./player-apis.md).
+
+```js 
+export enum VR_INTERACTION_MODE {
+  MOTION = 'Motion',
+  TOUCH = 'Touch',
+  MOTION_WITH_TOUCH = 'MotionWithTouch',
+  CARD_BOARD_MOTION = 'CardboardMotion',
+  CARD_BOARD_MOTION_WITH_TOUCH = 'CardboardMotionWithTouch'
+}
+```
+
+- **TRACK_SELECTION_MODE** <br>
+  This can be used for `trackSelection` in [`PlayerInitOptions`](./player-apis.md). It's part of `PKTrackConfig.Mode` inside `trackSelection`.
+
+```js 
+export enum TRACK_SELECTION_MODE {
+  OFF = 'OFF',
+  AUTO = 'AUTO',
+  SELECTION = 'SELECTION'
+}
 ```
