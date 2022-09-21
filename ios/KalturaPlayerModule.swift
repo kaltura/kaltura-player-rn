@@ -185,6 +185,34 @@ extension KalturaPlayerModule {
 
 extension KalturaPlayerModule {
     
+    @objc func updatePluginConfig(_ pluginName: String, config: String?) {
+        // TODO: Need to talk with Gourav maybe to allow sending more than one config each time. I think it will be better that way.
+        guard let pluginConfig = config, !pluginConfig.isEmpty else { return }
+        
+        let data = Data(pluginConfig.utf8)
+        let plugins: Plugins
+        
+        // Currently the logic will only support updating one, it can change in the future.
+        switch pluginName.lowercased() {
+        case "ima":
+            let ima = try? JSONDecoder().decode(IMA.self, from: data)
+            plugins = Plugins(ima: ima, imadai: nil, youbora: nil)
+        case "imadai":
+            let imadai = try? JSONDecoder().decode(IMADAI.self, from: data)
+            plugins = Plugins(ima: nil, imadai: imadai, youbora: nil)
+        case "youbora":
+            let youbora = try? JSONDecoder().decode(Youbora.self, from: data)
+            plugins = Plugins(ima: nil, imadai: nil, youbora: youbora)
+        default:
+            return
+        }
+        
+        kalturaPlayerRN?.updatePlugins(plugins)
+    }
+}
+
+extension KalturaPlayerModule {
+    
     @objc func play() {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.play()

@@ -213,6 +213,14 @@ extension KalturaPlayerRN {
         
         kalturaPlayer.removeObserver(self, events: PlayKit.PlayerEvent.allEventTypes)
     }
+    
+    func updatePlugins(_ plugins: Plugins) {
+        guard let pluginConfig = RNKPKnownPlugins.configs(plugins) else { return }
+        
+        for (name, config) in pluginConfig.config {
+            kalturaPlayer?.updatePluginConfig(pluginName: name, config: config)
+        }
+    }
 }
 
 extension KalturaPlayerRN {

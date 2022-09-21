@@ -32,6 +32,9 @@ RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
 RCT_EXTERN_METHOD(onApplicationPaused)
 RCT_EXTERN_METHOD(onApplicationResumed)
 
+RCT_EXTERN_METHOD(updatePluginConfig:(nonnull NSString *)pluginName
+                  config:(nonnull NSString *)config)
+
 RCT_EXTERN_METHOD(play)
 RCT_EXTERN_METHOD(pause)
 RCT_EXTERN_METHOD(replay)
