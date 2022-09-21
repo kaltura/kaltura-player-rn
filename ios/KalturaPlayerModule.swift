@@ -285,6 +285,21 @@ extension KalturaPlayerModule {
         }
     }
     
+    @objc func updateAbrSettings(_ abrSettings: String?) {
+        guard let settings = abrSettings, !settings.isEmpty else { return }
+        
+        let data = Data(settings.utf8)
+        let abrSettings = try? JSONDecoder().decode(ABRSettings.self, from: data)
+        if let maxVideoBitrate = abrSettings?.maxVideoBitrate {
+            kalturaPlayerRN?.kalturaPlayer?.settings.network.preferredPeakBitRate = maxVideoBitrate
+        }
+    }
+    
+    @objc func resetAbrSettings() {
+        // The default value in PlayKit for preferredPeakBitRate is 0.
+        kalturaPlayerRN?.kalturaPlayer?.settings.network.preferredPeakBitRate = 0
+    }
+    
     @objc func updateLowLatencyConfig(_ lowLatencyConfig: String?) {
         guard let config = lowLatencyConfig, !config.isEmpty else { return }
         
