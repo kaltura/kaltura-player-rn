@@ -47,6 +47,8 @@ RCT_EXTERN_METHOD(changePlaybackRate:(nonnull float)playbackRate)
 RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
 
 RCT_EXTERN_METHOD(updateResizeMode:(nonnull NSString *)mode)
+RCT_EXTERN_METHOD(updateLowLatencyConfig:(nonnull NSString *)lowLatencyConfig)
+RCT_EXTERN_METHOD(resetLowLatencyConfig)
 
 RCT_EXTERN_METHOD(getCurrentPosition:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

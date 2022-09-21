@@ -284,6 +284,21 @@ extension KalturaPlayerModule {
             self?.kalturaPlayerRN?.updateViewContentMode(mode)
         }
     }
+    
+    @objc func updateLowLatencyConfig(_ lowLatencyConfig: String?) {
+        guard let config = lowLatencyConfig, !config.isEmpty else { return }
+        
+        let data = Data(config.utf8)
+        let pkLowLatencyConfig = try? JSONDecoder().decode(PKLowLatencyConfig.self, from: data)
+        if let targetOffsetMs = pkLowLatencyConfig?.targetOffsetMs {
+            kalturaPlayerRN?.kalturaPlayer?.settings.lowLatency.targetOffsetMs = targetOffsetMs
+        }
+    }
+    
+    @objc func resetLowLatencyConfig() {
+        // The default value in PlayKit for targetOffsetMs is 0.
+        kalturaPlayerRN?.kalturaPlayer?.settings.lowLatency.targetOffsetMs = 0
+    }
 }
 
 extension KalturaPlayerModule {
