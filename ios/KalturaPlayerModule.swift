@@ -107,6 +107,8 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             
             self.kalturaPlayerRN?.connectView(playerViewManager.kalturaPlayerRNView.kalturaPlayerView)
             
+            self.kalturaPlayerRN?.updateViewContentMode(initOptions.aspectRatioResizeMode)
+            
             resolve("Sucess")
         }
     }
@@ -271,6 +273,15 @@ extension KalturaPlayerModule {
     @objc func setVolume(_ volume: Float) {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.volume = volume
+        }
+    }
+}
+
+extension KalturaPlayerModule {
+    
+    @objc func updateResizeMode(_ mode: String?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.updateViewContentMode(mode)
         }
     }
 }

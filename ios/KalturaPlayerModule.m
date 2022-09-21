@@ -46,6 +46,8 @@ RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
 RCT_EXTERN_METHOD(changePlaybackRate:(nonnull float)playbackRate)
 RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
 
+RCT_EXTERN_METHOD(updateResizeMode:(nonnull NSString *)mode)
+
 RCT_EXTERN_METHOD(getCurrentPosition:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(isPlaying:(RCTPromiseResolveBlock)resolve
