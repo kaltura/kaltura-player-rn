@@ -226,6 +226,13 @@ export default class App extends React.Component<any, any> {
     this.player.setPlaybackRate(rate);
   };
 
+  changeAspectRatio = (resizeMode: PLAYER_RESIZE_MODES) => {
+    if (this.state.isAdPlaying) {
+      showToast('Aspect Ratio can not be changed when Ad is playing');
+    }
+    this.player.updateResizeMode(resizeMode);
+  };
+
   changeSubtitleStyling = () => {
     if (this.state.isAdPlaying) {
       showToast('Subtitle Styling can not be changed when Ad is playing');
@@ -317,9 +324,9 @@ export default class App extends React.Component<any, any> {
         (payload) => {
           console.log(
             'PlayerEvent DURATION_CHANGE : ' +
-              (payload.duration != null
-                ? payload.duration
-                : ' Empty duration change')
+            (payload.duration != null
+              ? payload.duration
+              : ' Empty duration change')
           );
 
           if (payload.duration != null) {
@@ -532,9 +539,9 @@ export default class App extends React.Component<any, any> {
       playerEventEmitter.addListener(AdEvents.LOADED, (payload) => {
         console.log(
           'AdEvents LOADED : ' +
-            (payload.adDuration != null
-              ? payload.adDuration
-              : ' Empty Ad duration')
+          (payload.adDuration != null
+            ? payload.adDuration
+            : ' Empty Ad duration')
         );
         if (this._isMounted && payload.adDuration != null) {
           this.setState(() => ({
@@ -689,14 +696,22 @@ export default class App extends React.Component<any, any> {
             }}
           />
 
-          {/* <TouchableOpacity
-            style={[styles.button]}
-            onPress={() => {
-              this.addRemovePlayerView();
+          <Dropdown
+            style={styles.dropdown}
+            selectedTextStyle={styles.selectedTextStyle}
+            iconStyle={styles.iconStyle}
+            maxHeight={200}
+            data={aspectRatios}
+            valueField="ratio"
+            labelField="name"
+            placeholder="Aspect Ratio"
+            onChange={(ratios) => {
+              console.log('Selected Aspect ratio is: ' + ratios.ratio);
+              {
+                this.changeAspectRatio(ratios.ratio);
+              }
             }}
-          >
-            <Text style={[styles.bigWhite]}>{this.state.btnTextPlayerView}</Text>
-          </TouchableOpacity> */}
+          />
         </ScrollView>
       </RootSiblingParent>
     );
@@ -744,6 +759,29 @@ const playrates = [
   {
     name: 'Rate 2.0',
     rate: 2.0,
+  },
+];
+
+const aspectRatios = [
+  {
+    name: 'Fit',
+    ratio: PLAYER_RESIZE_MODES.FIT,
+  },
+  {
+    name: 'Fixed Width',
+    ratio: PLAYER_RESIZE_MODES.FIXED_WIDTH,
+  },
+  {
+    name: 'Fixed Height',
+    ratio: PLAYER_RESIZE_MODES.FIXED_HEIGHT,
+  },
+  {
+    name: 'Fill',
+    ratio: PLAYER_RESIZE_MODES.FILL,
+  },
+  {
+    name: 'Zoom',
+    ratio: PLAYER_RESIZE_MODES.ZOOM,
   },
 ];
 
