@@ -70,12 +70,11 @@ export declare class KalturaPlayerAPI {
      */
     static onApplicationResumed: () => void;
     /**
-     * Update a Plugin Config
+     * Update Plugin Configs
      *
-     * @param pluginName Plugin Name (Youbora, IMA etc)
-     * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+     * @param configs Updated Plugin Configs (YouboraConfig JSON, IMAConfig JSON etc)
      */
-    static updatePluginConfig: (pluginName: PLAYER_PLUGIN, config: object) => void;
+    static updatePluginConfigs: (configs: object) => void;
     /**
      * Play the player if it is not playing
      */
