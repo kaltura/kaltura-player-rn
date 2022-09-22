@@ -185,25 +185,20 @@ export class KalturaPlayerAPI {
   };
 
   /**
-   * Update a Plugin Config
+   * Update Plugin Configs
    *
-   * @param pluginName Plugin Name (Youbora, IMA etc)
-   * @param config Updated Plugin Config (YouboraConfig JSON, IMAConfig JSON etc)
+   * @param configs Updated Plugin Configs (YouboraConfig JSON, IMAConfig JSON etc)
    */
-  static updatePluginConfig = (pluginName: PLAYER_PLUGIN, config: object) => {
-    if (pluginName == null || !config) {
+  static updatePluginConfigs = (configs: object) => {
+    if (!configs) {
       printConsoleLog(
-        `updatePluginConfig, either pluginName ${pluginName} OR config is invalid: ${config}`,
+        `updatePluginConfig, config is invalid: ${configs}`,
         LogType.ERROR
       );
       return;
     }
 
-    const pluginJson = {
-      pluginName: pluginName,
-      pluginConfig: config,
-    };
-    const stringifiedJson = JSON.stringify(pluginJson);
+    const stringifiedJson = JSON.stringify(configs);
     printConsoleLog(`Updated Plugin is: ${stringifiedJson}`);
 
     KalturaPlayerModule.updatePluginConfigs(stringifiedJson);

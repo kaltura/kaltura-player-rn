@@ -20,8 +20,6 @@ import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
 import com.kaltura.playkit.plugins.ads.AdCuePoints
 import com.kaltura.playkit.plugins.ads.AdEvent
-import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
-import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsEvent
 import com.kaltura.playkit.utils.Consts
 import com.kaltura.tvplayer.*
@@ -83,7 +81,7 @@ class KalturaPlayerRN(
             playerInitOptions.setPKRequestConfig(PKRequestConfig(true))
         } else {
             setCommonPlayerInitOptions(playerInitOptions, initOptionsModel)
-            val pkPluginConfigs = createPluginConfigs(initOptionsModel)
+            val pkPluginConfigs = createOrUpdatePluginConfigs(initOptionsModel.plugins, true)
             playerInitOptions.setPluginConfigs(pkPluginConfigs)
         }
 
@@ -200,7 +198,7 @@ class KalturaPlayerRN(
 
         setCommonPlayerInitOptions(playerInitOptions, initOptionsModel)
 
-        val pkPluginConfigs = createPluginConfigs(initOptionsModel)
+        val pkPluginConfigs = createOrUpdatePluginConfigs(initOptionsModel.plugins, true)
         playerInitOptions.setPluginConfigs(pkPluginConfigs)
 
         createUiHandler()
@@ -270,42 +268,9 @@ class KalturaPlayerRN(
             log.e("pluginConfigJson is empty hence returning from here.")
             return
         }
-        val pluginConfigs = getParsedJson(pluginConfigJson, UpdatePluginConfigJson::class.java)
 
-        if (pluginConfigs != null && !TextUtils.isEmpty(pluginConfigs.pluginName) && pluginConfigs.pluginConfig != null) {
-            val pluginName = pluginConfigs.pluginName
-            if (TextUtils.equals(pluginName, PlayerPluginClass.kava.name)) {
-                val kavaAnalyticsConfig = getParsedJson(
-                        pluginConfigs.pluginConfig.toString(),
-                        KavaAnalyticsConfig::class.java
-                )
-                if (kavaAnalyticsConfig != null) {
-                    updatePlugin(PlayerPluginClass.kava, kavaAnalyticsConfig)
-                }
-            } else if (TextUtils.equals(pluginName, PlayerPluginClass.ottAnalytics.name)) {
-                val phoenixAnalyticsConfig = getParsedJson(
-                        pluginConfigs.pluginConfig.toString(),
-                        PhoenixAnalyticsConfig::class.java
-                )
-                if (phoenixAnalyticsConfig != null) {
-                    updatePlugin(PlayerPluginClass.ottAnalytics, phoenixAnalyticsConfig)
-                }
-            } else if (pluginName?.let { PlayerPluginClass.valueOf(it) } != null) {
-                val configClass = getPluginConfig(PlayerPluginClass.valueOf(pluginName))
-                val parsedConfigObject = getParsedJson(pluginConfigs.pluginConfig.toString(), configClass)
-                if (parsedConfigObject != null) {
-                    updatePlugin(PlayerPluginClass.valueOf(pluginName), parsedConfigObject)
-                } else {
-                    log.e("Plugin config or Plugin Name is not valid. " +
-                            "ConfigClass $configClass and parsedConfigObject $parsedConfigObject" +
-                            "and pluginName is $pluginName")
-                }
-            } else {
-                log.w("No Plugin can be registered PluginName is: $pluginName")
-            }
-        } else {
-            log.e("Plugin config or Plugin Name is not valid.")
-        }
+        val pluginConfigs = getParsedJson(pluginConfigJson, RegisteredPlugins::class.java)
+        createOrUpdatePluginConfigs(pluginConfigs, false)
     }
 
     fun play() {
@@ -800,14 +765,14 @@ class KalturaPlayerRN(
      * @return `PKPluginConfig` object
      */
     @NonNull
-    private fun createPluginConfigs(initOptions: InitOptions): PKPluginConfigs {
+    private fun createOrUpdatePluginConfigs(plugins: RegisteredPlugins?, isPluginRegistration: Boolean): PKPluginConfigs {
         val pkPluginConfigs = PKPluginConfigs()
-        initOptions.plugins?.let { registeredPlugins ->
+        plugins?.let { registeredPlugins ->
             registeredPlugins.ima?.let {
-                createPlugin(PlayerPluginClass.ima, pkPluginConfigs, it)
+                createOrUpdatePlugin(PlayerPluginClass.ima, pkPluginConfigs, it, isPluginRegistration)
             }
             registeredPlugins.imadai?.let {
-                createPlugin(PlayerPluginClass.imadai, pkPluginConfigs, it)
+                createOrUpdatePlugin(PlayerPluginClass.imadai, pkPluginConfigs, it, isPluginRegistration)
             }
             registeredPlugins.youbora?.let {
                 // This key is only for Youbora Android, in iOS they have it inside `AnalyticsConfig` which is Youbora Config
@@ -815,29 +780,32 @@ class KalturaPlayerRN(
                 if (it.has(youboraSpecialKey) && it.get(youboraSpecialKey) != null) {
                     val youboraJson: JsonObject = it.getAsJsonObject(youboraSpecialKey)
                     if (youboraJson.has(youboraAccountCode) && youboraJson[youboraAccountCode] != null) {
-                        createPlugin(
+                        createOrUpdatePlugin(
                                 PlayerPluginClass.youbora,
                                 pkPluginConfigs,
-                                it
+                                it,
+                                isPluginRegistration
                         )
                     }
                 }
             }
             registeredPlugins.kava?.let {
-                createPlugin(PlayerPluginClass.kava, pkPluginConfigs, it)
+                createOrUpdatePlugin(PlayerPluginClass.kava, pkPluginConfigs, it, isPluginRegistration)
             }
             registeredPlugins.ottAnalytics?.let {
-                createPlugin(
+                createOrUpdatePlugin(
                         PlayerPluginClass.ottAnalytics,
                         pkPluginConfigs,
-                        it
+                        it,
+                        isPluginRegistration
                 )
             }
             registeredPlugins.broadpeak?.let {
-                createPlugin(
+                createOrUpdatePlugin(
                         PlayerPluginClass.broadpeak,
                         pkPluginConfigs,
-                        it
+                        it,
+                        isPluginRegistration
                 )
             }
         }
@@ -1033,10 +1001,11 @@ class KalturaPlayerRN(
      * @param pluginConfigs `PKPluginConfigs` object for the `PlayerInitOptions`
      * @param pluginConfigJson plugin configuration json
      */
-    private fun createPlugin(
+    private fun createOrUpdatePlugin(
             pluginName: PlayerPluginClass,
             pluginConfigs: PKPluginConfigs?,
-            pluginConfigJson: JsonObject?
+            pluginConfigJson: JsonObject?,
+            isPluginRegistration: Boolean
     ) {
 
         val pluginFactoryClass = getPluginFactory(pluginName)
@@ -1052,21 +1021,29 @@ class KalturaPlayerRN(
             return
         }
 
-        PlayKitManager.registerPlugins(context, pluginFactoryClass)
-
         val strPluginJson = pluginConfigJson.toString()
+
+        if (isPluginRegistration) {
+            PlayKitManager.registerPlugins(context, pluginFactoryClass)
+        }
 
         if (pluginConfigs != null && !TextUtils.isEmpty(strPluginJson)) {
             val parsedPluginConfig = getParsedJson(strPluginJson, pluginConfigClass)
             if (parsedPluginConfig != null) {
-                pluginConfigs.setPluginConfig(pluginFactoryClass.name, parsedPluginConfig)
+                if (isPluginRegistration) {
+                    pluginConfigs.setPluginConfig(pluginFactoryClass.name, parsedPluginConfig)
+                } else {
+                    player?.updatePluginConfig(pluginFactoryClass.name, parsedPluginConfig)
+                }
             } else {
                 log.e("Invalid configuration for " + pluginConfigClass.simpleName)
             }
         } else {
             log.e(
-                    ("Can not create the plugin " + pluginConfigClass.simpleName + " \n " +
-                            "pluginConfig is: " + pluginConfigs + " imaConfig json is: " + pluginConfigJson)
+                    ("Can not create or update the plugin ${pluginConfigClass.simpleName} \n " +
+                            "pluginConfig is: $pluginConfigs \n " +
+                            "imaConfig json is: $pluginConfigJson \n " +
+                            "isPluginRegistration $isPluginRegistration")
             )
         }
     }

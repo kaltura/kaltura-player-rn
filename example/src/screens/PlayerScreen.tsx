@@ -92,9 +92,11 @@ export default class App extends React.Component<any, any> {
       totalDuration: 0,
       isShowing: false,
       isPlayerViewVisible: true,
+      btnTextPlayerView: BTN_REMOVE_VIEW_TXT,
+
+      // Change Media helpers
       isChangeMediaAvailable: false,
       currentChangeMediaIndex: 0,
-      btnTextPlayerView: BTN_REMOVE_VIEW_TXT
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -111,7 +113,7 @@ export default class App extends React.Component<any, any> {
 
     this._isMounted = true;
 
-    console.log(`PlayerScreen incomingJSON: ${this.props.incomingJson}`);
+    console.log(`PlayerScreen incomingJson: ${this.props.incomingJson}`);
     console.log(`PlayerScreen playertype: ${this.props.playerType}`);
 
     if (this.props.playerType == 'basic') {
@@ -133,6 +135,12 @@ export default class App extends React.Component<any, any> {
       if (!mediaId || (playerType !== PLAYER_TYPE.BASIC && partnerId <= 0)) {
         console.error(`Invalid MediaId: ${mediaId} or partnerId ${partnerId}`);
         return;
+      }
+      if (mediaList.length > 1) {
+        this.setState(() => ({
+          isChangeMediaAvailable: true,
+          currentChangeMediaIndex: 0,
+        }));
       }
     } else {
       console.error(`Invalid MediaId: ${mediaId} or partnerId ${partnerId}`);
@@ -254,16 +262,6 @@ export default class App extends React.Component<any, any> {
       showToast('Subtitle Styling can not be changed when Ad is playing');
     }
     this.player.updateSubtitleStyle(JSON.stringify(updatedSubtitleStyling));
-  };
-
-  changeMedia = (assetId: string, mediaAsset: string) => {
-    this.player.updatePluginConfig(
-      PLAYER_PLUGIN.YOUBORA,
-      getUpdatedYouboraConfig
-    );
-    this.player.loadMedia(assetId, mediaAsset).catch((error: any) => {
-      console.log(`Media Load Error ${error}`);
-    });
   };
 
   onTrackChangeListener = (trackId: string) => {
@@ -728,10 +726,65 @@ export default class App extends React.Component<any, any> {
               }
             }}
           />
+
+          {this.state.isChangeMediaAvailable ? (
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                changeMedia(this.props.incomingJson, this.player, this.state.currentChangeMediaIndex);
+                this.setState(() => ({
+                  currentChangeMediaIndex: (this.state.currentChangeMediaIndex + 1),
+                }));
+              }}
+            >
+              <Text style={[styles.bigWhite]}>Play Next Media</Text>
+            </TouchableOpacity>
+          ) : (
+            <></> // Empty JSX
+          )}
         </ScrollView>
       </RootSiblingParent>
     );
   }
+}
+
+function updatePluginConfigsIfAvailable(pluginJson: typeof MediaListModel.plugins, player: KalturaPlayerAPI) {
+  player.updatePluginConfigs(pluginJson);
+}
+
+function changeMedia(playbackJson: object, player: KalturaPlayerAPI, mediaIndex: number) {
+  var asset = null;
+  var mediaId = null;
+
+  var currentChangeMediaIndex = mediaIndex + 1;
+  var mediaList: Array<typeof MediaListModel> = playbackJson.mediaList;
+
+  if (currentChangeMediaIndex >= mediaList.length) {
+    showToast(`We have played all the available medias.`);
+    return;
+  }
+
+  if (mediaList != null && mediaList.length > 0) {
+    asset = mediaList[currentChangeMediaIndex].mediaAsset;
+    mediaId = mediaList[currentChangeMediaIndex].mediaId;
+    console.log(`Change media asset is ${JSON.stringify(asset)} `);
+    console.log(`Change media mediaId is ${mediaId} `);
+    if (!mediaId || !asset) {
+      showToast(`Next item can not be played`);
+      return;
+    }
+  } else {
+    showToast(`Next item can not be played`);
+    return;
+  }
+
+  var pluginJson = mediaList[currentChangeMediaIndex].plugins;
+  console.log(`pluginJson is ${JSON.stringify(pluginJson)}`);
+  // Update the plugin configs
+  updatePluginConfigsIfAvailable(pluginJson, player);
+
+  // Load the media
+  loadMediaToKalturaPlayer(player, mediaId, JSON.stringify(asset));
 }
 
 function loadMediaToKalturaPlayer(player: KalturaPlayerAPI, mediaId: String, mediaAsset: String) {
