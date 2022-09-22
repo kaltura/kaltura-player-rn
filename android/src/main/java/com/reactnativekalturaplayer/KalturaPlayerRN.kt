@@ -760,8 +760,11 @@ class KalturaPlayerRN(
 
     /**
      * Create `PKPluginConfigs` object for `PlayerInitOptions`
+     * Update the plugin config
      *
      * @param initOptions class which contains all the configuration for PlayerInitOptions
+     * @param isPluginRegistration if `true` then register(set) plugin or update plugin config
+     *
      * @return `PKPluginConfig` object
      */
     @NonNull
@@ -994,12 +997,12 @@ class KalturaPlayerRN(
     }
 
     /**
-     * Method to register and set the plugin config for the first time.
-     * Method can not be used to update the plugin config
+     * Method to register(set) or update the plugin config for the first time.
      *
      * @param pluginName `PlayerPlugins` enum
      * @param pluginConfigs `PKPluginConfigs` object for the `PlayerInitOptions`
      * @param pluginConfigJson plugin configuration json
+     * @param isPluginRegistration `true` to register the plugin else update plugin config
      */
     private fun createOrUpdatePlugin(
             pluginName: PlayerPluginClass,
@@ -1045,23 +1048,6 @@ class KalturaPlayerRN(
                             "imaConfig json is: $pluginConfigJson \n " +
                             "isPluginRegistration $isPluginRegistration")
             )
-        }
-    }
-
-    /**
-     * Method to update the plugin config on Player
-     *
-     * @param pluginName `PlayerPlugins` enum
-     * @param updatePluginConfig updated plugin configuration json
-     */
-    private fun updatePlugin(pluginName: PlayerPluginClass, updatePluginConfig: Any?) {
-        val pluginFactory = getPluginFactory(pluginName)
-        if ((player != null) && (updatePluginConfig != null) && !TextUtils.isEmpty(pluginFactory?.name)) {
-            runOnUiThread {
-                pluginFactory?.let {
-                    player?.updatePluginConfig(it.name, updatePluginConfig)
-                }
-            }
         }
     }
 
