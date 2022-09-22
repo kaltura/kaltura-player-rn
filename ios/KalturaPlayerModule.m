@@ -32,6 +32,9 @@ RCT_EXTERN_METHOD(removeKalturaPlayerListeners)
 RCT_EXTERN_METHOD(onApplicationPaused)
 RCT_EXTERN_METHOD(onApplicationResumed)
 
+RCT_EXTERN_METHOD(updatePluginConfig:(nonnull NSString *)pluginName
+                  config:(nonnull NSString *)config)
+
 RCT_EXTERN_METHOD(play)
 RCT_EXTERN_METHOD(pause)
 RCT_EXTERN_METHOD(replay)
@@ -42,6 +45,12 @@ RCT_EXTERN_METHOD(destroy)
 RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
 RCT_EXTERN_METHOD(changePlaybackRate:(nonnull float)playbackRate)
 RCT_EXTERN_METHOD(setVolume:(nonnull float)volume)
+
+RCT_EXTERN_METHOD(updateResizeMode:(nonnull NSString *)mode)
+RCT_EXTERN_METHOD(updateAbrSettings:(nonnull NSString *)abrSettings)
+RCT_EXTERN_METHOD(resetAbrSettings)
+RCT_EXTERN_METHOD(updateLowLatencyConfig:(nonnull NSString *)lowLatencyConfig)
+RCT_EXTERN_METHOD(resetLowLatencyConfig)
 
 RCT_EXTERN_METHOD(getCurrentPosition:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

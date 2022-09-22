@@ -107,6 +107,8 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             
             self.kalturaPlayerRN?.connectView(playerViewManager.kalturaPlayerRNView.kalturaPlayerView)
             
+            self.kalturaPlayerRN?.updateViewContentMode(initOptions.aspectRatioResizeMode)
+            
             resolve("Sucess")
         }
     }
@@ -185,6 +187,34 @@ extension KalturaPlayerModule {
 
 extension KalturaPlayerModule {
     
+    @objc func updatePluginConfig(_ pluginName: String, config: String?) {
+        // TODO: Need to talk with Gourav maybe to allow sending more than one config each time. I think it will be better that way.
+        guard let pluginConfig = config, !pluginConfig.isEmpty else { return }
+        
+        let data = Data(pluginConfig.utf8)
+        let plugins: Plugins
+        
+        // Currently the logic will only support updating one, it can change in the future.
+        switch pluginName.lowercased() {
+        case "ima":
+            let ima = try? JSONDecoder().decode(IMA.self, from: data)
+            plugins = Plugins(ima: ima, imadai: nil, youbora: nil)
+        case "imadai":
+            let imadai = try? JSONDecoder().decode(IMADAI.self, from: data)
+            plugins = Plugins(ima: nil, imadai: imadai, youbora: nil)
+        case "youbora":
+            let youbora = try? JSONDecoder().decode(Youbora.self, from: data)
+            plugins = Plugins(ima: nil, imadai: nil, youbora: youbora)
+        default:
+            return
+        }
+        
+        kalturaPlayerRN?.updatePlugins(plugins)
+    }
+}
+
+extension KalturaPlayerModule {
+    
     @objc func play() {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.play()
@@ -244,6 +274,45 @@ extension KalturaPlayerModule {
         DispatchQueue.main.async { [weak self] in
             self?.kalturaPlayerRN?.kalturaPlayer?.volume = volume
         }
+    }
+}
+
+extension KalturaPlayerModule {
+    
+    @objc func updateResizeMode(_ mode: String?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.kalturaPlayerRN?.updateViewContentMode(mode)
+        }
+    }
+    
+    @objc func updateAbrSettings(_ abrSettings: String?) {
+        guard let settings = abrSettings, !settings.isEmpty else { return }
+        
+        let data = Data(settings.utf8)
+        let abrSettings = try? JSONDecoder().decode(ABRSettings.self, from: data)
+        if let maxVideoBitrate = abrSettings?.maxVideoBitrate {
+            kalturaPlayerRN?.kalturaPlayer?.settings.network.preferredPeakBitRate = maxVideoBitrate
+        }
+    }
+    
+    @objc func resetAbrSettings() {
+        // The default value in PlayKit for preferredPeakBitRate is 0.
+        kalturaPlayerRN?.kalturaPlayer?.settings.network.preferredPeakBitRate = 0
+    }
+    
+    @objc func updateLowLatencyConfig(_ lowLatencyConfig: String?) {
+        guard let config = lowLatencyConfig, !config.isEmpty else { return }
+        
+        let data = Data(config.utf8)
+        let pkLowLatencyConfig = try? JSONDecoder().decode(PKLowLatencyConfig.self, from: data)
+        if let targetOffsetMs = pkLowLatencyConfig?.targetOffsetMs {
+            kalturaPlayerRN?.kalturaPlayer?.settings.lowLatency.targetOffsetMs = targetOffsetMs
+        }
+    }
+    
+    @objc func resetLowLatencyConfig() {
+        // The default value in PlayKit for targetOffsetMs is 0.
+        kalturaPlayerRN?.kalturaPlayer?.settings.lowLatency.targetOffsetMs = 0
     }
 }
 

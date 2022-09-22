@@ -213,6 +213,32 @@ extension KalturaPlayerRN {
         
         kalturaPlayer.removeObserver(self, events: PlayKit.PlayerEvent.allEventTypes)
     }
+    
+    func updatePlugins(_ plugins: Plugins) {
+        guard let pluginConfig = RNKPKnownPlugins.configs(plugins) else { return }
+        
+        for (name, config) in pluginConfig.config {
+            kalturaPlayer?.updatePluginConfig(pluginName: name, config: config)
+        }
+    }
+    
+    func updateViewContentMode(_ aspectRatioResizeMode: String?) {
+        guard let resizeMode = aspectRatioResizeMode else { return }
+        
+        switch resizeMode.lowercased() {
+        case "fit":
+            kalturaPlayer?.view?.contentMode = .scaleAspectFit
+        case "fixedWidth", "fixedHeight":
+            // Not supported in iOS
+            break
+        case "fill":
+            kalturaPlayer?.view?.contentMode = .scaleToFill
+        case "zoom":
+            kalturaPlayer?.view?.contentMode = .scaleAspectFill
+        default:
+            break
+        }
+    }
 }
 
 extension KalturaPlayerRN {
