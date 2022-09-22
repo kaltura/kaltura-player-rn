@@ -40,6 +40,7 @@ import { PLAYER_SCREEN } from '../../index';
 import { ActivitySpinner } from '../components/ActivitySpinner';
 import { Dropdown } from 'react-native-element-dropdown';
 import type { EmitterSubscription } from 'react-native';
+import { object, string } from 'prop-types';
 
 const kalturaPlayerEvents = NativeModules.KalturaPlayerEvents;
 const playerEventEmitter = new NativeEventEmitter(kalturaPlayerEvents);
@@ -53,6 +54,12 @@ let networkUnsubscribe: NetInfoSubscription | null = null;
 let eventsSubscriptionList: Array<EmitterSubscription> = [];
 const BTN_REMOVE_VIEW_TXT = "Remove PlayerView";
 const BTN_ADD_VIEW_TXT = "Add PlayerView";
+
+const MediaListModel = {
+  mediaId: string,
+  mediaAsset: object,
+  plugins: object
+}
 
 export default class App extends React.Component<any, any> {
   player = KalturaPlayerAPI;
@@ -85,6 +92,8 @@ export default class App extends React.Component<any, any> {
       totalDuration: 0,
       isShowing: false,
       isPlayerViewVisible: true,
+      isChangeMediaAvailable: false,
+      currentChangeMediaIndex: 0,
       btnTextPlayerView: BTN_REMOVE_VIEW_TXT
     };
     // Subscribe
@@ -113,12 +122,19 @@ export default class App extends React.Component<any, any> {
       playerType = PLAYER_TYPE.OTT;
     }
 
+    var asset = null;
+    var mediaId = null;
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
     var options = this.props.incomingJson.initOptions;
-    var asset = this.props.incomingJson.mediaAsset;
-    var mediaId = this.props.incomingJson.mediaId;
-
-    if (!mediaId || (playerType !== PLAYER_TYPE.BASIC && partnerId <= 0)) {
+    var mediaList: Array<typeof MediaListModel> = this.props.incomingJson.mediaList;
+    if (mediaList != null && mediaList.length > 0) {
+      asset = mediaList[this.state.currentChangeMediaIndex].mediaAsset;
+      mediaId = mediaList[this.state.currentChangeMediaIndex].mediaId;
+      if (!mediaId || (playerType !== PLAYER_TYPE.BASIC && partnerId <= 0)) {
+        console.error(`Invalid MediaId: ${mediaId} or partnerId ${partnerId}`);
+        return;
+      }
+    } else {
       console.error(`Invalid MediaId: ${mediaId} or partnerId ${partnerId}`);
       return;
     }
@@ -718,6 +734,12 @@ export default class App extends React.Component<any, any> {
   }
 }
 
+function loadMediaToKalturaPlayer(player: KalturaPlayerAPI, mediaId: String, mediaAsset: String) {
+  player
+    .loadMedia(mediaId, mediaAsset)
+    .then((response: any) => console.log(`mediaLoaded => ${response}`));
+}
+
 async function setupKalturaPlayer(
   player: KalturaPlayerAPI,
   playerType: PLAYER_TYPE,
@@ -731,9 +753,7 @@ async function setupKalturaPlayer(
     console.log(`playerCreated ON APP SIDE => ${playerCreated}`);
     if (playerCreated != null) {
       player.addListeners();
-      player
-        .loadMedia(mediaId, mediaAsset)
-        .then((response: any) => console.log(`mediaLoaded => ${response}`));
+      loadMediaToKalturaPlayer(player, mediaId, mediaAsset);
     } else {
       console.error('Player is not created.');
     }
