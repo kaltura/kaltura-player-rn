@@ -200,19 +200,7 @@ extension KalturaPlayerRN {
     func observeAllEvents() {
         
         observePlayerEvents()
-        
-        
-        // iOS doesn't have connectionAcquired
-        
-        // iOS doesn't have videoFramesDropped
-        
-        // iOS doesn't have outputBufferCountUpdate
-        
-        // iOS doesn't have bytesLoaded
-        
-        // iOS has that Android doesn't have: "loadedTimeRanges",  "errorLog", "playbackStalled"
-        
-        // TODO: Add adEvents
+        observeAdEvents()
         
 //        kalturaPlayer.addObserver(self, event: OttEvent.bookmarkError) { event in
 //            KalturaPlayerEvents.emitter.sendEvent(withName: "bookmarkError", body: event.data)
@@ -226,6 +214,7 @@ extension KalturaPlayerRN {
         guard let kalturaPlayer = self.kalturaPlayer else { return }
         
         kalturaPlayer.removeObserver(self, events: PlayKit.PlayerEvent.allEventTypes)
+        kalturaPlayer.removeObserver(self, events: PlayKit.AdEvent.allEventTypes)
     }
     
     func updatePlugins(_ plugins: Plugins) {
@@ -277,7 +266,7 @@ extension KalturaPlayerRN {
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.ended) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.ended.rawValue, body: []) //event.data)
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.ended.rawValue, body: [])
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stopped) { event in
@@ -381,48 +370,50 @@ extension KalturaPlayerRN {
             KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.replay.rawValue, body: [])
         }
         
-        // iOS doesn't have volumeChanged
-        
-        // iOS doesn't have surfaceAspectRationSizeModeChanged
-        
-        // iOS doesn't have subtitlesStyleChanged
-        
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.videoTrackChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.videoTrackChanged.rawValue, body: ["bitrate": event.bitrate])
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.videoTrackChanged.rawValue, body: [
+                "ios": [
+                    "bitrate": event.bitrate
+                ]
+            ])
             // iOS doesn't send the track, we only have the bitrate.
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
             guard let audioTrack = event.selectedTrack else { return }
             KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.audioTrackChanged.rawValue, body: [
-                "id": audioTrack.id,
-                "label": audioTrack.title,
-                "language": audioTrack.language ?? "",
-                "isSelected": true
+                "ios": [
+                    "id": audioTrack.id,
+                    "label": audioTrack.title,
+                    "language": audioTrack.language ?? "",
+                    "isSelected": true
+                ]
             ])
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
             guard let textTrack = event.selectedTrack else { return }
             KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.textTrackChanged.rawValue, body: [
-                "id": textTrack.id,
-                "label": textTrack.title,
-                "language": textTrack.language ?? "",
-                "isSelected": true
+                "ios": [
+                    "id": textTrack.id,
+                    "label": textTrack.title,
+                    "language": textTrack.language ?? "",
+                    "isSelected": true
+                ]
             ])
         }
-        
-        // iOS doesn't have imageTrackChanged
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackInfo) { event in
             guard let playbackInfo = event.playbackInfo else { return }
             KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackInfoUpdated.rawValue, body: [
-                "bitrate": playbackInfo.bitrate,
-                "indicatedBitrate": playbackInfo.indicatedBitrate,
-                "observedBitrate": playbackInfo.observedBitrate,
-                "averageVideoBitrate": playbackInfo.averageVideoBitrate,
-                "averageAudioBitrate": playbackInfo.averageAudioBitrate,
-                "uri": playbackInfo.uri ?? ""
+                "ios": [
+                    "bitrate": playbackInfo.bitrate,
+                    "indicatedBitrate": playbackInfo.indicatedBitrate,
+                    "observedBitrate": playbackInfo.observedBitrate,
+                    "averageVideoBitrate": playbackInfo.averageVideoBitrate,
+                    "averageAudioBitrate": playbackInfo.averageAudioBitrate,
+                    "uri": playbackInfo.uri ?? ""
+                ]
             ])
             
             // TODO: Different from Android, need to verify.
@@ -477,17 +468,29 @@ extension KalturaPlayerRN {
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.timedMetadata) { event in
             guard let metadata = event.timedMetadata else { return }
             
-            // TODO: Need to define what to send.
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.metadataAvailable.rawValue, body: [metadata])
+            
+            // TODO: Need to verify.
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.sourceSelected.rawValue, body: event.mediaSource)
+            guard let mediaSource = event.mediaSource else { return }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.sourceSelected.rawValue, body: [
+                "id": mediaSource.id,
+                "url": mediaSource.contentUrl?.absoluteString,
+                "mediaFormat": mediaSource.mediaFormat.description
+            ])
         }
         
         kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackRate) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackRateChanged.rawValue, body: event.palybackRate)
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackRateChanged.rawValue, body: [
+                "rate": event.palybackRate
+            ])
         }
+    }
+    
+    func observeAdEvents() {
         
-        // iOS has in addition errorLog and playbackStalled
     }
 }
