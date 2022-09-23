@@ -22,7 +22,7 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         
         KalturaBasicPlayer.setup()
         self.kalturaBasicPlayer = KalturaBasicPlayer(options: self.playerOptions)
-        updateSettings()
+        updatePlayerSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
@@ -72,6 +72,8 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         if initOptions.autoplay == false && initOptions.preload == false {
             kalturaBasicPlayer.prepare()
         }
+        
+        updateMediaSettings()
         
         callback(nil)
     }

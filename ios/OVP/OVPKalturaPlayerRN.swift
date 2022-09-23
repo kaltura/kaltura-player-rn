@@ -21,7 +21,7 @@ class OVPKalturaPlayerRN: KalturaPlayerRN {
         
         KalturaOVPPlayer.setup(partnerId: Int64(partnerId), serverURL: initOptions.serverUrl, referrer: initOptions.referrer)
         kalturaOVPPlayer = KalturaOVPPlayer(options: playerOptions)
-        updateSettings()
+        updatePlayerSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
@@ -45,6 +45,9 @@ class OVPKalturaPlayerRN: KalturaPlayerRN {
                 if self?.initOptions.autoplay == false && self?.initOptions.preload == false {
                     self?.kalturaOVPPlayer.prepare()
                 }
+                
+                self?.updateMediaSettings()
+                
                 callback(nil)
             }
         }

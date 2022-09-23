@@ -161,10 +161,24 @@ class KalturaPlayerRN: NSObject {
         }
     }
     
-    func updateSettings() {
+    private func updateVRSettings() {
+        guard let vrSettings = initOptions.vrSettings else { return }
+        
+        if let vrController = kalturaPlayer?.getController(type: PKVRController.self) as? PKVRController {
+            if let vrModeEnabled = vrSettings.vrModeEnabled {
+                vrController.setVRModeEnabled(vrModeEnabled)
+            }
+        }
+    }
+    
+    func updatePlayerSettings() {
         updateNetworkSetting()
         updateLowLatencySettings()
         updateTrackSelectionSettings()
+    }
+    
+    func updateMediaSettings() {
+        updateVRSettings()
     }
 
 // MARK: - Subclass implementations

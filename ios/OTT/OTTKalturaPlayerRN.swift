@@ -28,7 +28,7 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
         
         KalturaOTTPlayer.setup(partnerId: Int64(partnerId), serverURL: serverURL, referrer: initOptions.referrer)
         kalturaOTTPlayer = KalturaOTTPlayer(options: playerOptions)
-        updateSettings()
+        updatePlayerSettings()
     }
     
     override func load(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
@@ -52,6 +52,9 @@ class OTTKalturaPlayerRN: KalturaPlayerRN {
                 if self?.initOptions.autoplay == false && self?.initOptions.preload == false {
                     self?.kalturaOTTPlayer.prepare()
                 }
+                
+                self?.updateMediaSettings()
+                
                 callback(nil)
             }
         }

@@ -374,9 +374,9 @@
         {
           "id": "abr_maxBit_1M",
           "partnerId": 2215841,
-          "mediaId": "1_w9zx2eti",
           "mediaList": [
             {
+              "mediaId": "1_w9zx2eti",
               "mediaAsset": {
                 "initialVolume": 1.0,
                 "format": [
@@ -438,6 +438,31 @@
     },
     "drm": {
       "dash": []
+    },
+    "vr": {
+      "hls": [
+        {
+          "id": "vr",
+          "partnerId": 2196781,
+          "mediaList": [
+            {
+              "mediaId": "1_afvj3z0u",
+              "mediaAsset": {
+                "initialVolume": 1.0,
+                "startPosition": 0
+              }
+            }
+          ],
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true,
+            "preload": true,
+            "vrSettings": {
+              "vrModeEnabled": false
+            }
+          }
+        }
+      ]
     }
   },
   "ott": {

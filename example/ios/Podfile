@@ -18,11 +18,12 @@ target 'KalturaPlayerExample' do
 
 
   # Add wanted plugins
-  pod 'PlayKit_IMA', :git => 'https://github.com/kaltura/playkit-ios-ima.git', :branch => 'develop'
-  # Needs FEC-12531 and FEC-12532 fixes, therefore set it to develop and added the above ^
+  pod 'PlayKit_IMA', '~> 1.12'
 
   pod 'PlayKit', :git => 'https://github.com/kaltura/playkit-ios.git', :branch => 'develop'
   pod 'PlayKitYoubora' # Needs Playkit fix, therefore added the above line ^
+
+  pod 'PlayKitVR'
   
   ###################
 
