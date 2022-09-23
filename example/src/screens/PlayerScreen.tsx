@@ -246,20 +246,19 @@ export default class App extends React.Component<any, any> {
   changePlaybackRate = (rate: number) => {
     if (this.state.isAdPlaying) {
       showToast('Playrate can not be changed when Ad is playing');
+      return;
     }
     this.player.setPlaybackRate(rate);
   };
 
   changeAspectRatio = (resizeMode: PLAYER_RESIZE_MODES) => {
-    if (this.state.isAdPlaying) {
-      showToast('Aspect Ratio can not be changed when Ad is playing');
-    }
     this.player.updateResizeMode(resizeMode);
   };
 
   changeSubtitleStyling = () => {
     if (this.state.isAdPlaying) {
       showToast('Subtitle Styling can not be changed when Ad is playing');
+      return;
     }
     this.player.updateSubtitleStyle(JSON.stringify(updatedSubtitleStyling));
   };
@@ -267,6 +266,7 @@ export default class App extends React.Component<any, any> {
   onTrackChangeListener = (trackId: string) => {
     if (this.state.isAdPlaying) {
       showToast('Track can not be changed when Ad is playing');
+      return;
     }
     console.log('Clicked Track from TrackList component is: ' + trackId);
     this.player.changeTrack(trackId);
