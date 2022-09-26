@@ -85,8 +85,6 @@ enum KalturaPlayerRNEvents: String, CaseIterable {
     
     case playbackRateChanged // playbackRate
     
-    /** Send when updating the Surface Vide Aspect Ratio size mode.
-     */
     case loadedTimeRanges
     
     // MARK: Missing events from the iOS side
@@ -124,6 +122,8 @@ enum KalturaPlayerUnsupportedRNEvents: String, CaseIterable {
      */
     case subtitlesStyleChanged
     
+    /** Send when updating the Surface Vide Aspect Ratio size mode.
+     */
     case surfaceAspectRationSizeModeChanged
 
     case drmInitialized
