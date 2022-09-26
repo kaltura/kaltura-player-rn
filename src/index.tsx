@@ -429,6 +429,19 @@ export class KalturaPlayerAPI {
   };
 
   /**
+   * Checks if the stream is Live or Not
+   * @returns boolean
+   */
+   static requestThumbnailInfo = async (positionMs: number) => {
+    printConsoleLog('requestThumbnailInfo');
+    if (positionMs < 0) {
+      printConsoleLog(`Invalid positionMs = ${positionMs}`, LogType.ERROR);
+      return;
+    }
+    return await getThumbnailInfo(positionMs);
+  };
+
+  /**
    * Enable the console logs for the JS bridge
    * By default it is disabled.
    * @param enabled enable the debug logs
@@ -508,6 +521,17 @@ async function isLive() {
   } catch (exception) {
     printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
     return false;
+  }
+}
+
+async function getThumbnailInfo(position: number) {
+  try {
+    const thumbnailInfo = await KalturaPlayerModule.requestThumbnailInfo(position);
+    printConsoleLog(`getThumbnailInfo ${JSON.stringify(thumbnailInfo)}`);
+    return thumbnailInfo;
+  } catch (exception) {
+    printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
+    return exception;
   }
 }
 

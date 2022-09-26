@@ -489,10 +489,14 @@ class KalturaPlayerRN(
         }
     }
 
-    //TODO: NOT ADDED YET AS PROPS
-    //NOOP
-    fun requestThumbnailInfo(positionMs: Float) {
-        log.d("requestThumbnailInfo:$positionMs")
+    /**
+     * Get the Information for a thumbnail image by position
+     * if positionMS is not passed current position will be used
+     *
+     * @param positionMs - relevant image for given player position. (optional)
+     */
+    fun requestThumbnailInfo(positionMs: Float, promise: Promise) {
+        log.d("requestThumbnailInfo position is: $positionMs")
         player?.let {
             runOnUiThread {
                 val thumbnailInfo: ThumbnailInfo? = player?.getThumbnailInfo(positionMs.toLong())
@@ -501,9 +505,10 @@ class KalturaPlayerRN(
                             "{ \"position\": $positionMs, \"thumbnailInfo\": " + gson.toJson(
                                     thumbnailInfo
                             ) + " }"
-                    sendPlayerEvent(KalturaPlayerEvents.THUMBNAIL_INFO_RESPONSE, thumbnailInfoJson)
+                    sendCallbackToJS(promise, thumbnailInfoJson)
                 } else {
-                    log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid")
+                    val message = "requestThumbnailInfo: thumbnailInfo is null or position = $positionMs is invalid"
+                    sendCallbackToJS(promise, message, true)
                 }
             }
         }
