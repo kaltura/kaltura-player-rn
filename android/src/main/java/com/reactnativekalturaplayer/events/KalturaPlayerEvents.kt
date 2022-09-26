@@ -34,7 +34,7 @@ class KalturaPlayerEvents {
         const val BYTES_LOADED = "bytesLoaded" // Bytes were downloaded from the network
         const val SUBTITLE_STYLE_CHANGED = "subtitlesStyleChanged" // Subtitle style is changed.
         const val ASPECT_RATIO_RESIZE_MODE_CHANGED = "surfaceAspectRationSizeModeChanged" //Send when updating the Surface Vide Aspect Ratio size mode.
-        const val LOAD_TIME_RANGES = "loadedTimeRanges"
+        const val LOAD_TIME_RANGES = "loadedTimeRanges" // This is used in iOS
         const val DRM_INITIALIZED = "drmInitialized"
         const val THUMBNAIL_INFO_RESPONSE = "thumbnailInfoResponse"
     }

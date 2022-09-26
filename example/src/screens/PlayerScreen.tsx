@@ -401,7 +401,7 @@ export default class App extends React.Component<any, any> {
       playerEventEmitter.addListener(
         PlayerEvents.LOAD_TIME_RANGES,
         (payload) => {
-          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + JSON.stringify(payload));
         }
       )
     );
