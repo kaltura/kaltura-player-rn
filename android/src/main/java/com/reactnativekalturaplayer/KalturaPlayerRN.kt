@@ -1309,29 +1309,29 @@ class KalturaPlayerRN(
 
         player?.addListener(context, PlayerEvent.videoTrackChanged) { event: PlayerEvent.VideoTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.audioTrackChanged) { event: PlayerEvent.AudioTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.textTrackChanged) { event: PlayerEvent.TextTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.TEXT_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.TEXT_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.imageTrackChanged) { event: PlayerEvent.ImageTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
         player?.addListener(context,

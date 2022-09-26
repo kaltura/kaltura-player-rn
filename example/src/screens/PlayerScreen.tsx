@@ -520,7 +520,34 @@ export default class App extends React.Component<any, any> {
       playerEventEmitter.addListener(
         PlayerEvents.LOAD_TIME_RANGES,
         (payload) => {
-          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.VIDEO_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent VIDEO_TRACK_CHANGED : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.AUDIO_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent AUDIO_TRACK_CHANGED : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.TEXT_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent TEXT_TRACK_CHANGED : ' + JSON.stringify(payload));
         }
       )
     );
