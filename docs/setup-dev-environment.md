@@ -25,7 +25,7 @@ Kaltura Player RN SDK gives the media playback, VR/360 media playback and Offlin
 
 ### Folder Structure
 
-#### `.ios` and ``./android` 
+#### `.ios` and `./android` 
 
 It contains the native source code for iOS and Android platforms. We are using our Native SDKs [Kaltura Player Android](https://github.com/kaltura/kaltura-player-android) and [Kaltura Player iOS](https://github.com/kaltura/kaltura-player-ios) for this react native SDK.
 
