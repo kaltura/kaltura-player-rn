@@ -249,349 +249,314 @@ extension KalturaPlayerRN {
     private func observePlayerEvents() {
         guard let kalturaPlayer = self.kalturaPlayer else { return }
         
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.canPlay) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.canPlay.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playing) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playing.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.play) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.play.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.pause) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.pause.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.ended) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.ended.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stopped) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stopped.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.durationChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.durationChanged.rawValue, body: ["duration": event.duration])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playheadUpdate) { event in
-            let currentTime = event.currentTime?.doubleValue ?? 0
-            var bufferedTime = kalturaPlayer.bufferedTime
+        kalturaPlayer.addObserver(self, events: PlayKit.PlayerEvent.allEventTypes) { event in
+            switch event {
+            case is PlayerEvent.CanPlay:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.canPlay.rawValue, body: [])
+                
+            case is PlayerEvent.Playing:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playing.rawValue, body: [])
+                
+            case is PlayerEvent.Play:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.play.rawValue, body: [])
+                
+            case is PlayerEvent.Pause:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.pause.rawValue, body: [])
+                
+            case is PlayerEvent.Ended:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.ended.rawValue, body: [])
+                
+            case is PlayerEvent.Stopped:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stopped.rawValue, body: [])
+                
+            case is PlayerEvent.DurationChanged:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.durationChanged.rawValue, body: ["duration": event.duration])
+                
+            case is PlayerEvent.PlayheadUpdate:
+                let currentTime = event.currentTime?.doubleValue ?? 0
+                var bufferedTime = kalturaPlayer.bufferedTime
 
-            if (bufferedTime < currentTime) {
-                bufferedTime = currentTime
-            }
+                if (bufferedTime < currentTime) {
+                    bufferedTime = currentTime
+                }
 
-            if (kalturaPlayer.isLive()) {
-                let currentProgramTime = kalturaPlayer.currentProgramTime
-                let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
-                let currentProgramTimeDouble = ((currentProgramTimeEpochSeconds ?? 0) as Double) * 1000
+                if (kalturaPlayer.isLive()) {
+                    let currentProgramTime = kalturaPlayer.currentProgramTime
+                    let currentProgramTimeEpochSeconds = currentProgramTime?.timeIntervalSince1970
+                    let currentProgramTimeDouble = ((currentProgramTimeEpochSeconds ?? 0) as Double) * 1000
 
-                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
-                    "position": currentTime,
-                    "bufferPosition": bufferedTime,
-                    "currentProgramTime": currentProgramTimeDouble
-                    // TODO: currentLiveOffset
+                    KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
+                        "position": currentTime,
+                        "bufferPosition": bufferedTime,
+                        "currentProgramTime": currentProgramTimeDouble
+                        // TODO: currentLiveOffset
+                    ])
+                } else {
+                    KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
+                        "position": currentTime,
+                        "bufferPosition": bufferedTime
+                    ])
+                }
+                
+            case is PlayerEvent.LoadedTimeRanges:
+                var timeRanges = [] as Array
+                let eventTimeRanges = event.timeRanges ?? []
+                for range in eventTimeRanges {
+                    timeRanges.append([
+                        "start": range.start,
+                        "end": range.end,
+                        "duration": range.duration
+                    ])
+                }
+                
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedTimeRanges.rawValue, body: [
+                    "timeRanges": timeRanges
                 ])
-            } else {
-                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playheadUpdated.rawValue, body: [
-                    "position": currentTime,
-                    "bufferPosition": bufferedTime
-                ])
-            }
-            // TODO: Different from Android, need to verify.
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.loadedTimeRanges) { event in
-            var timeRanges = [] as Array
-            let eventTimeRanges = event.timeRanges ?? []
-            for range in eventTimeRanges {
-                timeRanges.append([
-                    "start": range.start,
-                    "end": range.end,
-                    "duration": range.duration
-                ])
-            }
-            
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedTimeRanges.rawValue, body: [
-                "timeRanges": timeRanges
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.stateChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stateChanged.rawValue, body: ["newState": event.newState.description])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.tracksAvailable) { event in
-            var audioTracks = [] as Array
-            let selectedAudioTrackId = kalturaPlayer.currentAudioTrack
-            let eventAudioTracks = event.tracks?.audioTracks ?? []
-            for track in eventAudioTracks {
-                audioTracks.append([
-                    "id": track.id,
-                    "bitrate": -1,
-                    "language": track.language ?? "",
-                    "label": track.title,
-                    "channelCount": -1,
-                    "isSelected": selectedAudioTrackId == track.id
-                ])
-            }
+                
+            case is PlayerEvent.StateChanged:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.stateChanged.rawValue, body: ["newState": event.newState.description])
+                
+            case is PlayerEvent.TracksAvailable:
+                var audioTracks = [] as Array
+                let selectedAudioTrackId = kalturaPlayer.currentAudioTrack
+                let eventAudioTracks = event.tracks?.audioTracks ?? []
+                for track in eventAudioTracks {
+                    audioTracks.append([
+                        "id": track.id,
+                        "bitrate": -1,
+                        "language": track.language ?? "",
+                        "label": track.title,
+                        "channelCount": -1,
+                        "isSelected": selectedAudioTrackId == track.id
+                    ])
+                }
 
-            var textTracks = [] as Array
-            let selectedTextTrackId = kalturaPlayer.currentTextTrack;
-            let eventTextTracks = event.tracks?.textTracks ?? []
-            for track in eventTextTracks {
-                textTracks.append([
-                    "id": track.id,
-                    "language": track.language ?? "",
-                    "label": track.title,
-                    "isSelected": selectedTextTrackId == track.id
+                var textTracks = [] as Array
+                let selectedTextTrackId = kalturaPlayer.currentTextTrack;
+                let eventTextTracks = event.tracks?.textTracks ?? []
+                for track in eventTextTracks {
+                    textTracks.append([
+                        "id": track.id,
+                        "language": track.language ?? "",
+                        "label": track.title,
+                        "isSelected": selectedTextTrackId == track.id
+                    ])
+                }
+                
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.tracksAvailable.rawValue, body: [
+                    "audio": audioTracks,
+                    "text": textTracks,
+                    "video": [],
+                    "image": []
                 ])
-            }
+                
+            case is PlayerEvent.LoadedMetadata:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedMetadata.rawValue, body: [])
+                
+            case is PlayerEvent.Replay:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.replay.rawValue, body: [])
+                
+            case is PlayerEvent.VideoTrackChanged:
+                // iOS doesn't send the track, we only have the bitrate.
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.videoTrackChanged.rawValue, body: [
+                    "ios": [
+                        "bitrate": event.bitrate
+                    ]
+                ])
+                
+            case is PlayerEvent.AudioTrackChanged:
+                guard let audioTrack = event.selectedTrack else { return }
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.audioTrackChanged.rawValue, body: [
+                    "ios": [
+                        "id": audioTrack.id,
+                        "label": audioTrack.title,
+                        "language": audioTrack.language ?? "",
+                        "isSelected": true
+                    ]
+                ])
+                
+            case is PlayerEvent.TextTrackChanged:
+                guard let textTrack = event.selectedTrack else { return }
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.textTrackChanged.rawValue, body: [
+                    "ios": [
+                        "id": textTrack.id,
+                        "label": textTrack.title,
+                        "language": textTrack.language ?? "",
+                        "isSelected": true
+                    ]
+                ])
+                
+            case is PlayerEvent.PlaybackInfo:
+                guard let playbackInfo = event.playbackInfo else { return }
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackInfoUpdated.rawValue, body: [
+                    "ios": [
+                        "bitrate": playbackInfo.bitrate,
+                        "indicatedBitrate": playbackInfo.indicatedBitrate,
+                        "observedBitrate": playbackInfo.observedBitrate,
+                        "averageVideoBitrate": playbackInfo.averageVideoBitrate,
+                        "averageAudioBitrate": playbackInfo.averageAudioBitrate,
+                        "uri": playbackInfo.uri ?? ""
+                    ]
+                ])
+                
+            case is PlayerEvent.Seeking:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeking.rawValue, body: [
+                    "targetPosition": event.targetSeekPosition
+                ])
+                
+            case is PlayerEvent.Seeked:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeked.rawValue, body: [])
             
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.tracksAvailable.rawValue, body: [
-                "audio": audioTracks,
-                "text": textTracks,
-                "video": [],
-                "image": []
-            ])
-            
-            // TODO: Different from Android, need to verify.
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.loadedMetadata) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.loadedMetadata.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.replay) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.replay.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.videoTrackChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.videoTrackChanged.rawValue, body: [
-                "ios": [
-                    "bitrate": event.bitrate
-                ]
-            ])
-            // iOS doesn't send the track, we only have the bitrate.
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
-            guard let audioTrack = event.selectedTrack else { return }
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.audioTrackChanged.rawValue, body: [
-                "ios": [
-                    "id": audioTrack.id,
-                    "label": audioTrack.title,
-                    "language": audioTrack.language ?? "",
-                    "isSelected": true
-                ]
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
-            guard let textTrack = event.selectedTrack else { return }
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.textTrackChanged.rawValue, body: [
-                "ios": [
-                    "id": textTrack.id,
-                    "label": textTrack.title,
-                    "language": textTrack.language ?? "",
-                    "isSelected": true
-                ]
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackInfo) { event in
-            guard let playbackInfo = event.playbackInfo else { return }
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackInfoUpdated.rawValue, body: [
-                "ios": [
-                    "bitrate": playbackInfo.bitrate,
-                    "indicatedBitrate": playbackInfo.indicatedBitrate,
-                    "observedBitrate": playbackInfo.observedBitrate,
-                    "averageVideoBitrate": playbackInfo.averageVideoBitrate,
-                    "averageAudioBitrate": playbackInfo.averageAudioBitrate,
-                    "uri": playbackInfo.uri ?? ""
-                ]
-            ])
-            
-            // TODO: Different from Android, need to verify.
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.seeking) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeking.rawValue, body: [
-                "targetPosition": event.targetSeekPosition
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.seeked) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.seeked.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.error) { event in
-            let errorMessage = event.error?.localizedDescription
-            var errorCause: String? = (event.error?.localizedFailureReason)
+            case is PlayerEvent.Error:
+                let errorMessage = event.error?.localizedDescription
+                var errorCause: String? = (event.error?.localizedFailureReason)
 
-            var errorCode = ""
-            var errorType = ""
-            switch (event.error?.code) {
-                case 7001:
-                    errorCode = "7007"
-                    errorType = "LOAD_ERROR"
-                    break;
-                case 7003:
-                    errorCode = "7000"
-                    errorType = "SOURCE_ERROR"
-                   break;
-                default:
-                    errorCode = "7002"
-                    errorType = "UNEXPECTED"
-                   break;
-            }
+                var errorCode = ""
+                var errorType = ""
+                switch (event.error?.code) {
+                    case 7001:
+                        errorCode = "7007"
+                        errorType = "LOAD_ERROR"
+                        break;
+                    case 7003:
+                        errorCode = "7000"
+                        errorType = "SOURCE_ERROR"
+                       break;
+                    default:
+                        errorCode = "7002"
+                        errorType = "UNEXPECTED"
+                       break;
+                }
 
-            if (errorCause == nil || errorCause?.count == 0) {
-                errorCause = errorMessage
+                if (errorCause == nil || errorCause?.count == 0) {
+                    errorCause = errorMessage
+                }
+                // TODO: Need to verify
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.error.rawValue, body: [
+                    "errorType": errorType,
+                    "errorCode": errorCode,
+                    "errorSeverity": "Fatal",
+                    "errorMessage": errorMessage,
+                    "errorCause": errorCause
+                ])
+                
+            case is PlayerEvent.TimedMetadata:
+                guard let metadata = event.timedMetadata else { return }
+                // TODO: Need to verify.
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.metadataAvailable.rawValue, body: [metadata])
+                
+            case is PlayerEvent.SourceSelected:
+                guard let mediaSource = event.mediaSource else { return }
+                
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.sourceSelected.rawValue, body: [
+                    "id": mediaSource.id,
+                    "url": mediaSource.contentUrl?.absoluteString,
+                    "mediaFormat": mediaSource.mediaFormat.description
+                ])
+                
+            case is PlayerEvent.PlaybackRate:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackRateChanged.rawValue, body: [
+                    "rate": event.palybackRate
+                ])
+                
+            default:
+                // Event is not supported
+                break
             }
-
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.error.rawValue, body: [
-                "errorType": errorType,
-                "errorCode": errorCode,
-                "errorSeverity": "Fatal",
-                "errorMessage": errorMessage,
-                "errorCause": errorCause
-            ])
-            
-            // TODO: Need to verify
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.timedMetadata) { event in
-            guard let metadata = event.timedMetadata else { return }
-            
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.metadataAvailable.rawValue, body: [metadata])
-            
-            // TODO: Need to verify.
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
-            guard let mediaSource = event.mediaSource else { return }
-            
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.sourceSelected.rawValue, body: [
-                "id": mediaSource.id,
-                "url": mediaSource.contentUrl?.absoluteString,
-                "mediaFormat": mediaSource.mediaFormat.description
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.playbackRate) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNEvents.playbackRateChanged.rawValue, body: [
-                "rate": event.palybackRate
-            ])
         }
     }
     
     func observeAdEvents() {
         guard let kalturaPlayer = self.kalturaPlayer else { return }
         
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adsRequested) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adRequested.rawValue, body: [
-                "adTagUrl": event.adTagUrl
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adStarted) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.started.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adPaused) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.paused.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adResumed) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.resumed.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adComplete) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.completed.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adFirstQuartile) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.firstQuartile.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adMidpoint) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.midpoint.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adThirdQuartile) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.thirdQuartile.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adSkipped) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.skipped.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adClicked) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adClickedEvent.rawValue, body: [
-//                "clickThruUrl": event.clickThroughUrl // clickThroughUrl is missing in PKEvent extention inside AdEvent file.
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adTapped) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.tapped.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakReady) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakReady.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adDidProgressToTime) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adProgress.rawValue, body: [
-//                "currentAdPosition": event.mediaTime // mediaTime is missing in PKEvent extention inside AdEvent file.
-            ])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakStarted) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakStarted.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakEnded) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakEnded.rawValue, body: [])
-        }
-        
-        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adCuePointsUpdate) { event in
-            var ima: [String: Any] = [:]
-            if let imaCuePoint = event.adCuePoints {
-                ima = [
-                    "cuePoints": imaCuePoint.cuePoints,
-                    "count": imaCuePoint.count,
-                    "hasPreRoll": imaCuePoint.hasPreRoll,
-                    "hasMidRoll": imaCuePoint.hasMidRoll,
-                    "hasPostRoll": imaCuePoint.hasPostRoll
-                ]
-            }
-            
-            var imadai: [String: Any] = [:]
-            if let imadaiCuePoint = event.adDAICuePoints {
-                var cuePoints: [Any] = []
-                for cuePoint in imadaiCuePoint.cuePoints {
-                    cuePoints.append([
-                        "startTime": cuePoint.startTime,
-                        "endTime": cuePoint.endTime,
-                        "played": cuePoint.played
+        kalturaPlayer.addObserver(self, events: PlayKit.AdEvent.allEventTypes) { event in
+            switch event {
+            case is AdEvent.AdsRequested:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adRequested.rawValue, body: [
+                    "adTagUrl": event.adTagUrl
+                ])
+                
+            case is AdEvent.AdStarted:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.started.rawValue, body: [])
+                
+            case is AdEvent.AdPaused:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.paused.rawValue, body: [])
+                
+            case is AdEvent.AdResumed:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.resumed.rawValue, body: [])
+                
+            case is AdEvent.AdComplete:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.completed.rawValue, body: [])
+                
+            case is AdEvent.AdFirstQuartile:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.firstQuartile.rawValue, body: [])
+                
+            case is AdEvent.AdMidpoint:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.midpoint.rawValue, body: [])
+                
+            case is AdEvent.AdThirdQuartile:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.thirdQuartile.rawValue, body: [])
+                
+            case is AdEvent.AdSkipped:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.skipped.rawValue, body: [])
+                
+            case is AdEvent.AdClicked:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adClickedEvent.rawValue, body: [
+    //                "clickThroughUrl": event.clickThroughUrl // clickThroughUrl is missing in PKEvent extention inside AdEvent file.
+                ])
+                
+            case is AdEvent.AdTapped:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.tapped.rawValue, body: [])
+                
+            case is AdEvent.AdBreakReady:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakReady.rawValue, body: [])
+                
+            case is AdEvent.AdDidProgressToTime:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adProgress.rawValue, body: [
+    //                "currentAdPosition": event.mediaTime // mediaTime is missing in PKEvent extention inside AdEvent file.
+                ])
+                
+            case is AdEvent.AdBreakStarted:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakStarted.rawValue, body: [])
+                
+            case is AdEvent.AdBreakEnded:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakEnded.rawValue, body: [])
+                
+            case is AdEvent.AdCuePointsUpdate:
+                if let imaCuePoint = event.adCuePoints {
+                    KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.cuepointsChanged.rawValue, body: [
+                        "ima": [
+                            "cuePoints": imaCuePoint.cuePoints,
+                            "count": imaCuePoint.count,
+                            "hasPreRoll": imaCuePoint.hasPreRoll,
+                            "hasMidRoll": imaCuePoint.hasMidRoll,
+                            "hasPostRoll": imaCuePoint.hasPostRoll
+                        ]
                     ])
                 }
                 
-                imadai = [
-                    "cuePoints": cuePoints,
-                    "hasPreRoll": imadaiCuePoint.hasPreRoll
-                ]
+                if let imadaiCuePoint = event.adDAICuePoints {
+                    var cuePoints: [Any] = []
+                    for cuePoint in imadaiCuePoint.cuePoints {
+                        cuePoints.append([
+                            "startTime": cuePoint.startTime,
+                            "endTime": cuePoint.endTime,
+                            "played": cuePoint.played
+                        ])
+                    }
+                    
+                    KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.cuepointsChanged.rawValue, body: [
+                        "imadai": [
+                            "cuePoints": cuePoints,
+                            "hasPreRoll": imadaiCuePoint.hasPreRoll
+                        ]
+                    ])
+                }
+                
+            default:
+                // Event is not supported
+                break
             }
-            
-            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.cuepointsChanged.rawValue, body: [
-                "ima": ima,
-                "imadai": imadai
-            ])
         }
     }
 }
