@@ -44,15 +44,40 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 ### Building the environment (Example Test App)
 
-1. Navigate to `example` folder and call `yarn install`. It will fetch all the relevant dependencies in your local machine under `node_modules` example folder.
-2. Source code for the test app is in `./src` folder.
+  1. Navigate to `example` folder and call `yarn install`. It will fetch all the relevant dependencies in your local machine under `node_modules` example folder.
+  2. Source code for the test app is in `./src` folder.
 
 - #### Setup for Android
 
-1. Open Android Studio and click on **File** -> **Open** then choose `./example/android` folder.
-2. Let it build. After some time, on left side pane, you should see project files. If there are any build errors, please try to fix it. These build errors could be related to the Android Studio and Gradle version you are using. We suggest to use Android Studio (Dolphin or later version) and Gradle version 7+.
+  1. Open Android Studio and click on **File** -> **Open** then choose `./example/android` folder.
+  2. Let it build. After some time, on left side pane, you should see project files. If there are any build errors, please try to fix it. These build errors could be related to the Android Studio and Gradle version you are using. We suggest to use Android Studio (Dolphin or later version) and Gradle version 7+.
 
 
 - #### Setup for iOS
 
   🔴TODO
+
+
+### Build Kaltura-Player-RN SDK locally with Example app
+
+In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'Example' app. 
+
+  - #### Setup for Android
+
+    1. Open project level `settings.gradle` in Android Studio, add the following,
+
+        ```gradle
+        include ':react-native-kaltura-player'
+        project(':react-native-kaltura-player').projectDir = new File(rootProject.projectDir, '../../android')
+        ```
+    
+    2. Open `build.gradle` of 'app' and add the following. It will take the reference of local react native bridge of Kaltura Player.
+
+        ```gradle
+        implementation project(':react-native-kaltura-player')
+        ```
+
+  - #### Setup for iOS
+
+    🔴TODO
+
