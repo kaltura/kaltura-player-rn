@@ -39,7 +39,7 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 ### Building the environment (React Native RN)
 
-1. Open the project folder in your favourite IDE. We are giving example here with [Visual Studio Code]() IDE.
+1. Open the project folder in your favourite IDE. We are giving example here with [Visual Studio Code](https://code.visualstudio.com/download) IDE.
 2. Stand on the root directory and call `yarn install`. It will fetch all the relevant dependencies in your local machine in `node_modules` root folder.
 
 ### Building the environment (Example Test App)
