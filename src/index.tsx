@@ -429,8 +429,10 @@ export class KalturaPlayerAPI {
   };
 
   /**
-   * Checks if the stream is Live or Not
-   * @returns boolean
+   * Get the Information for a thumbnail image by position.
+   *
+   * @param positionMs - relevant image for given player position.
+   * @returns ThumbnailInfo JSON object
    */
    static requestThumbnailInfo = async (positionMs: number) => {
     printConsoleLog('requestThumbnailInfo');

@@ -15,7 +15,7 @@ like Youbora.
 - [Player Functions](./docs/player-functions.md)
 - [Player InitOptions or Settings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
-- [Player Events](./docs/player-events.md)
+- [Events](./docs/events.md)
 - [Example App](./docs/example-app.md)
 
 ## Contributing
