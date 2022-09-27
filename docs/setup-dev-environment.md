@@ -6,7 +6,7 @@
 4. We are using YARN package manager in the document. Feel free to use your favourite.
 5. Install **XCode** and **Android Studio (Version Dolphin)** for the development.
 
-### Player Knowledge
+### About Kaltura Player
 
 Kaltura Player is based on Google ExoPlayer in Android and AVPlayer in iOS. Along with the content playback, it supports Advertisements playback, VR/360 media playback, Chromecast(Not Supported Currently), Offline Media Playback(Not Supported Currently) and reknowned Analytics plugin (NPAW Youbora). If you are a Kaltura BE customer then you can use our Providers plugins which helps in getting the media details from Kaltura BE.
 
