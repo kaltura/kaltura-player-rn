@@ -491,6 +491,107 @@ extension KalturaPlayerRN {
     }
     
     func observeAdEvents() {
+        guard let kalturaPlayer = self.kalturaPlayer else { return }
         
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adsRequested) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adRequested.rawValue, body: [
+                "adTagUrl": event.adTagUrl
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adStarted) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.started.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adPaused) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.paused.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adResumed) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.resumed.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adComplete) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.completed.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adFirstQuartile) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.firstQuartile.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adMidpoint) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.midpoint.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adThirdQuartile) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.thirdQuartile.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adSkipped) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.skipped.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adClicked) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adClickedEvent.rawValue, body: [
+//                "clickThruUrl": event.clickThroughUrl // clickThroughUrl is missing in PKEvent extention inside AdEvent file.
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adTapped) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.tapped.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakReady) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakReady.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adDidProgressToTime) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adProgress.rawValue, body: [
+//                "currentAdPosition": event.mediaTime // mediaTime is missing in PKEvent extention inside AdEvent file.
+            ])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakStarted) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakStarted.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adBreakEnded) { event in
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBreakEnded.rawValue, body: [])
+        }
+        
+        kalturaPlayer.addObserver(self, event: PlayKit.AdEvent.adCuePointsUpdate) { event in
+            var ima: [String: Any] = [:]
+            if let imaCuePoint = event.adCuePoints {
+                ima = [
+                    "cuePoints": imaCuePoint.cuePoints,
+                    "count": imaCuePoint.count,
+                    "hasPreRoll": imaCuePoint.hasPreRoll,
+                    "hasMidRoll": imaCuePoint.hasMidRoll,
+                    "hasPostRoll": imaCuePoint.hasPostRoll
+                ]
+            }
+            
+            var imadai: [String: Any] = [:]
+            if let imadaiCuePoint = event.adDAICuePoints {
+                var cuePoints: [Any] = []
+                for cuePoint in imadaiCuePoint.cuePoints {
+                    cuePoints.append([
+                        "startTime": cuePoint.startTime,
+                        "endTime": cuePoint.endTime,
+                        "played": cuePoint.played
+                    ])
+                }
+                
+                imadai = [
+                    "cuePoints": cuePoints,
+                    "hasPreRoll": imadaiCuePoint.hasPreRoll
+                ]
+            }
+            
+            KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.cuepointsChanged.rawValue, body: [
+                "ima": ima,
+                "imadai": imadai
+            ])
+        }
     }
 }

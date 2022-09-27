@@ -31,9 +31,12 @@ class KalturaPlayerEvents: RCTEventEmitter {
 
     override func supportedEvents() -> [String] {
         let playerEvents: [String] = KalturaPlayerRNEvents.allCases.map { $0.rawValue }
-        // If We don't return all supported Events in the lib it crashes!
-        let currentlyUnsupportedEvents = ["volumeChanged", "metadataAvailable", "eventStreamChanged", "imageTrackChanged", "connectionAcquired", "videoFramesDropped", "outputBufferCountUpdate", "bytesLoaded", "surfaceAspectRationSizeModeChanged", "drmInitialized", "thumbnailInfoResponse", "contentPauseRequested", "contentResumeRequested", "loaded", "adProgress", "cuepointsChanged", "adBufferStart", "adBufferEnd", "playbackRateChanged"]
-        return playerEvents + currentlyUnsupportedEvents
+        let adEvents: [String] = KalturaPlayerRNAdEvents.allCases.map { $0.rawValue }
+        // If We don't return all supported Events in the lib, and the app listens to it, it will crash!
+        let unsupportedPlayerEvents: [String] = KalturaPlayerUnsupportedRNEvents.allCases.map { $0.rawValue }
+        let unsupportedAdEvents: [String] = KalturaPlayerUnsupportedRNAdEvents.allCases.map { $0.rawValue }
+        
+        return playerEvents + adEvents + unsupportedPlayerEvents + unsupportedAdEvents
     }
 }
 
