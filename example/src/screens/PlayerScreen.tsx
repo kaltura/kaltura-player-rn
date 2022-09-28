@@ -54,6 +54,7 @@ let networkUnsubscribe: NetInfoSubscription | null = null;
 let eventsSubscriptionList: Array<EmitterSubscription> = [];
 const BTN_REMOVE_VIEW_TXT = "Remove PlayerView";
 const BTN_ADD_VIEW_TXT = "Add PlayerView";
+const timerInterval = 500; // in ms
 
 const MediaListModel = {
   mediaId: string,
@@ -68,6 +69,7 @@ export default class App extends React.Component<any, any> {
   isSliderSeeking: boolean = false;
   _isMounted: boolean = false;
   contentDuration: number = 0;
+  progressInterval: Timer = null;
 
   constructor(props: any) {
     super(props);
@@ -124,6 +126,11 @@ export default class App extends React.Component<any, any> {
       playerType = PLAYER_TYPE.OTT;
     }
 
+    this.progressInterval = setInterval(() => {
+      console.log(`Inside progressInterval timer`);
+      this.getPlayerCurrentPosition();
+    }, timerInterval);
+
     var asset = null;
     var mediaId = null;
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
@@ -162,6 +169,7 @@ export default class App extends React.Component<any, any> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    clearInterval(this.progressInterval);
     this.removePlayerListeners();
     if (networkUnsubscribe != null) {
       networkUnsubscribe();
@@ -177,7 +185,12 @@ export default class App extends React.Component<any, any> {
 
   getPlayerCurrentPosition(): any {
     this.player.getCurrentPosition().then((value: any) => {
-      console.log(`getPlayerCurrentPosition getCurrentPosition ${value}`);
+      console.log(`getPlayerCurrentPosition ${value}`);
+      if (value >= 0) {
+        this.setState(() => ({
+          currentPosition: value,
+        }));
+      }
       return value;
     });
   }
@@ -361,7 +374,7 @@ export default class App extends React.Component<any, any> {
             !this.state.isAdPlaying
           ) {
             this.setState(() => ({
-              currentPosition: payload.position,
+              //currentPosition: payload.position,
               totalDuration: this.contentDuration,
             }));
           }
@@ -401,7 +414,7 @@ export default class App extends React.Component<any, any> {
       playerEventEmitter.addListener(
         PlayerEvents.LOAD_TIME_RANGES,
         (payload) => {
-          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + JSON.stringify(payload));
         }
       )
     );
@@ -428,9 +441,9 @@ export default class App extends React.Component<any, any> {
         PlayerEvents.PLAYBACK_INFO_UPDATED,
         (payload) => {
           if (Platform.OS === platform_android) {
-            console.log(
-              'PlayerEvent PLAYBACK_INFO_UPDATED : ' + JSON.stringify(payload)
-            );
+            // console.log(
+            //   'PlayerEvent PLAYBACK_INFO_UPDATED : ' + JSON.stringify(payload)
+            // );
           } else if (Platform.OS === platform_ios) {
             //TODO: for iOS
           }
@@ -520,7 +533,34 @@ export default class App extends React.Component<any, any> {
       playerEventEmitter.addListener(
         PlayerEvents.LOAD_TIME_RANGES,
         (payload) => {
-          console.log('PlayerEvent LOAD_TIME_RANGES : ' + payload);
+          console.log('PlayerEvent LOAD_TIME_RANGES : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.VIDEO_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent VIDEO_TRACK_CHANGED : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.AUDIO_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent AUDIO_TRACK_CHANGED : ' + JSON.stringify(payload));
+        }
+      )
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(
+        PlayerEvents.TEXT_TRACK_CHANGED,
+        (payload) => {
+          console.log('PlayerEvent TEXT_TRACK_CHANGED : ' + JSON.stringify(payload));
         }
       )
     );
@@ -567,24 +607,24 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
-        //console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
-        if (this._isMounted && payload.currentAdPosition != null) {
-          this.setState(() => ({
-            currentPosition: payload.currentAdPosition,
-          }));
-        }
+        console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
+        // if (this._isMounted && payload.currentAdPosition != null) {
+        //   this.setState(() => ({
+        //     currentPosition: payload.currentAdPosition,
+        //   }));
+        // }
       })
     );
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
-        //console.log('AdEvent CUEPOINTS_CHANGED : ' + payload.adCuePoints);
+        console.log('AdEvent CUEPOINTS_CHANGED : ' + JSON.stringify(payload));
       })
     );
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(PlayerEvents.STATE_CHANGED, (payload) => {
-        console.log('PlayerEvents STATE_CHANGED : ' + payload.newState);
+        console.log('PlayerEvents STATE_CHANGED : ' + JSON.stringify(payload.newState));
         if (this._isMounted) {
           if (
             !this.state.isAdPlaying &&
@@ -621,6 +661,12 @@ export default class App extends React.Component<any, any> {
             isShowing: false,
           }));
         }
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
+        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
       })
     );
   };

@@ -1,6 +1,16 @@
-## Player Events
+## Events
 
-|Event Name         |Data sent to RN |  iOS | Android |
+Events can be listened by the FE apps inorder to understand more details about the Player. We have PlayerEvents, AdEvents and AnalyticsEvents.
+<br>
+<br>
+As the name says, **Player events** talk about the various states of the player like when it is buffering, when there is a video bitrate change etc.<br>
+**Ad events** talk about the ad's info like cuepoint, no of ads present in VMAP ad URL etc.<br>
+**Analytics events** talk about more about the concurrency level errors on the stream. This event is only meant for Kaltura BE customers.
+<br>
+<br>
+
+
+|Player Event Name         |Data sent to RN |  iOS | Android |
 |------------|--------|----------|----------|
 |`stateChanged`|`{ "newState": <String> }`|✅ |✅ |
 |`canPlay`|*No data sent*|✅ |✅ |

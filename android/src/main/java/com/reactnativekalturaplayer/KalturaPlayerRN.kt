@@ -15,6 +15,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.kaltura.netkit.utils.ErrorElement
 import com.kaltura.playkit.*
+import com.kaltura.playkit.ads.AdController
 import com.kaltura.playkit.ads.PKAdErrorType
 import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
@@ -462,11 +463,22 @@ class KalturaPlayerRN(
         }
     }
 
+    /**
+     * Send the current position of the player
+     * for both Content or Ad playback
+     *
+     * If position is invalid then it send Unset position which is -1
+     */
     fun getCurrentPosition(promise: Promise) {
         log.d("getCurrentPosition")
         player?.let {
             runOnUiThread {
-                sendCallbackToJS(promise, it.currentPosition.toString())
+                val adController = it.getController(AdController::class.java)
+                if (adController != null && adController.isAdDisplayed) {
+                    sendCallbackToJS(promise, adController.adCurrentPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                } else {
+                    sendCallbackToJS(promise, it.currentPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                }
             }
         }
     }
@@ -489,10 +501,14 @@ class KalturaPlayerRN(
         }
     }
 
-    //TODO: NOT ADDED YET AS PROPS
-    //NOOP
-    fun requestThumbnailInfo(positionMs: Float) {
-        log.d("requestThumbnailInfo:$positionMs")
+    /**
+     * Get the Information for a thumbnail image by position
+     * if positionMS is not passed current position will be used
+     *
+     * @param positionMs - relevant image for given player position. (optional)
+     */
+    fun requestThumbnailInfo(positionMs: Float, promise: Promise) {
+        log.d("requestThumbnailInfo position is: $positionMs")
         player?.let {
             runOnUiThread {
                 val thumbnailInfo: ThumbnailInfo? = player?.getThumbnailInfo(positionMs.toLong())
@@ -501,9 +517,10 @@ class KalturaPlayerRN(
                             "{ \"position\": $positionMs, \"thumbnailInfo\": " + gson.toJson(
                                     thumbnailInfo
                             ) + " }"
-                    sendPlayerEvent(KalturaPlayerEvents.THUMBNAIL_INFO_RESPONSE, thumbnailInfoJson)
+                    sendCallbackToJS(promise, thumbnailInfoJson)
                 } else {
-                    log.e("requestThumbnailInfo: thumbnailInfo is null or position is invalid")
+                    val message = "requestThumbnailInfo: thumbnailInfo is null or position = $positionMs is invalid"
+                    sendCallbackToJS(promise, message, true)
                 }
             }
         }
@@ -967,9 +984,6 @@ class KalturaPlayerRN(
         return gson.toJson(errorJson)
     }
 
-    /**
-     * NOOP
-     */
     private fun getCuePointsJson(adCuePoints: AdCuePoints?): String? {
         if (adCuePoints == null) {
             return null
@@ -984,8 +998,8 @@ class KalturaPlayerRN(
         }
         cuePointsList.append(" ]")
         return ("{ " +
-                "\"adPluginName\": \"" + adCuePoints.adPluginName +
-                "\"," +
+                "\"count\": " + adCuePointsArray.size +
+                "," +
                 "\"cuePoints\": " + cuePointsList +
                 ", " +
                 "\"hasPreRoll\": " + adCuePoints.hasPreRoll() +
@@ -1309,29 +1323,29 @@ class KalturaPlayerRN(
 
         player?.addListener(context, PlayerEvent.videoTrackChanged) { event: PlayerEvent.VideoTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.VIDEO_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.audioTrackChanged) { event: PlayerEvent.AudioTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.AUDIO_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.textTrackChanged) { event: PlayerEvent.TextTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.TEXT_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.TEXT_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
 
         player?.addListener(context, PlayerEvent.imageTrackChanged) { event: PlayerEvent.ImageTrackChanged ->
             sendPlayerEvent(
-                    KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
-                    gson.toJson(event.newTrack)
+                KalturaPlayerEvents.IMAGE_TRACK_CHANGED,
+                createJSONForEventPayload(jsonKeyAndroid, gson.toJson(event.newTrack))
             )
         }
         player?.addListener(context,
@@ -1450,10 +1464,13 @@ class KalturaPlayerRN(
         }
 
         player?.addListener(context, AdEvent.cuepointsChanged) { event: AdEvent.AdCuePointsUpdateEvent ->
-            sendPlayerEvent(
+            val cuePointsJson: String? = getCuePointsJson(event.cuePoints)
+            cuePointsJson?.let {
+                sendPlayerEvent(
                     KalturaPlayerAdEvents.CUEPOINTS_CHANGED,
-                    gson.toJson(event.cuePoints)
-            )
+                    createJSONForEventPayload(event.cuePoints.adPluginName, it)
+                )
+            }
         }
 
         player?.addListener(context, AdEvent.started) { _: AdEvent.AdStartedEvent? ->
@@ -1493,7 +1510,7 @@ class KalturaPlayerRN(
         player?.addListener(context, AdEvent.adClickedEvent) { event: AdEvent.AdClickedEvent ->
             sendPlayerEvent(
                     KalturaPlayerAdEvents.CLICKED,
-                    createJSONForEventPayload("clickThruUrl", event.clickThruUrl)
+                    createJSONForEventPayload("clickThroughUrl", event.clickThruUrl)
             )
         }
 
@@ -1521,7 +1538,7 @@ class KalturaPlayerRN(
 
         player?.addListener(context, AdEvent.error) { event: AdEvent.Error ->
             if (event.error.isFatal) {
-                sendPlayerEvent(KalturaPlayerAdEvents.ERROR, gson.toJson(event.error))
+                sendPlayerEvent(KalturaPlayerAdEvents.ERROR, getErrorJson(event.error))
             }
         }
 

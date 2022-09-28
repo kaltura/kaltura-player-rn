@@ -183,6 +183,11 @@ export declare class KalturaPlayerAPI {
      */
     static isLive: () => Promise<any>;
     /**
+     * Checks if the stream is Live or Not
+     * @returns boolean
+     */
+    static requestThumbnailInfo: (positionMs: number) => Promise<any>;
+    /**
      * Enable the console logs for the JS bridge
      * By default it is disabled.
      * @param enabled enable the debug logs

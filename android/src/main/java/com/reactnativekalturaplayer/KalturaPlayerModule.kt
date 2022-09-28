@@ -242,6 +242,12 @@ class KalturaPlayerModule(
         kalturaPlayerRN.addKalturaPlayerListeners()
     }
 
+    @ReactMethod
+    fun requestThumbnailInfo(positionMs: Float/** position is milliseconds **/, promise: Promise) {
+        log.d("requestThumbnailInfo position is $positionMs")
+        kalturaPlayerRN.requestThumbnailInfo(positionMs, promise)
+    }
+
     @Throws(IllegalArgumentException::class)
     @NonNull
     private fun checkArguments(methodName: String, arg: String?) {

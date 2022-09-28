@@ -32,5 +32,4 @@ export declare const PlayerEvents: {
     ASPECT_RATIO_RESIZE_MODE_CHANGED: string;
     LOAD_TIME_RANGES: string;
     DRM_INITIALIZED: string;
-    THUMBNAIL_INFO_RESPONSE: string;
 };

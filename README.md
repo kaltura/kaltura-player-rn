@@ -12,11 +12,11 @@ like Youbora.
 ## Development Resources
 
 - [Installation](./docs/installation.md)
-- [Player Functions](./docs/player-setup.md)
-- [Player InitOptions or Settings](./docs/player-apis.md)
+- [Player Functions](./docs/player-functions.md)
+- [Player InitOptions or Settings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
-- [Player Events](./docs/player-events.md)
-- [Example App](./docs/example-app.md)
+- [Events](./docs/events.md)
+- [Setup Development Environment](./docs/setup-dev-environment.md)
 
 ## Contributing
 

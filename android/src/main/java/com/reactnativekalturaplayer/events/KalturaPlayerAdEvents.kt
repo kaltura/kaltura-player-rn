@@ -6,7 +6,6 @@ class KalturaPlayerAdEvents {
         const val AD_REQUESTED = "adRequested"
         const val AD_FIRST_PLAY = "adFirstPlay"
         const val STARTED = "started"
-        const val AD_DISPLAYED_AFTER_CONTENT_PAUSE = "adDisplayedAfterContentPause" // Not in USE in SDK
         const val PAUSED = "paused"
         const val RESUMED = "resumed"
         const val COMPLETED = "completed"
@@ -31,7 +30,6 @@ class KalturaPlayerAdEvents {
         const val CONTENT_PAUSE_REQUESTED = "contentPauseRequested"
         const val CONTENT_RESUME_REQUESTED = "contentResumeRequested"
         const val ALL_ADS_COMPLETED = "allAdsCompleted"
-        const val AD_LOAD_TIMEOUT_TIMER_STARTED = "adLoadTimeoutTimerStarted" // Not in USE in SDK
         const val AD_BUFFER_START = "adBufferStart"
         const val AD_BUFFER_END = "adBufferEnd"
         const val AD_PLAYBACK_INFO_UPDATED = "adPlaybackInfoUpdated"

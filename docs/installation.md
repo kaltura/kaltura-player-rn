@@ -23,9 +23,9 @@ import { KalturaPlayer } from "react-native-kaltura-player";
 });       
 ```
 
-### Adding KalturaPlayer component
+### Adding KalturaPlayer API reference
 
-App can get the KalturaPlayer component reference in the following way,
+App can get the KalturaPlayerAPI reference in the following way,
 
 ```js
 import { KalturaPlayerAPI } from 'react-native-kaltura-player';
@@ -48,6 +48,7 @@ import {
 ```
 
 App should use the library defined constants only while passing the configuration params in the JSON.
+[Check Constants](./player-functions.md#constants)
 
 ```js
 import {

@@ -402,8 +402,8 @@ export class KalturaPlayerAPI {
   };
 
   /**
-   * Getter for the current playback position.
-   * @returns string: Position of the player or {@link POSITION_UNSET}
+   * Get the current playback position for Content and Ad
+   * @returns number: Position of the player or {@link POSITION_UNSET}
    */
   static getCurrentPosition = async () => {
     printConsoleLog('Calling Native method getCurrentPosition()');
@@ -426,6 +426,21 @@ export class KalturaPlayerAPI {
   static isLive = async () => {
     printConsoleLog('Calling Native method isLive');
     return await isLive();
+  };
+
+  /**
+   * Get the Information for a thumbnail image by position.
+   *
+   * @param positionMs - relevant image for given player position.
+   * @returns ThumbnailInfo JSON object
+   */
+   static requestThumbnailInfo = async (positionMs: number) => {
+    printConsoleLog('requestThumbnailInfo');
+    if (positionMs < 0) {
+      printConsoleLog(`Invalid positionMs = ${positionMs}`, LogType.ERROR);
+      return;
+    }
+    return await getThumbnailInfo(positionMs);
   };
 
   /**
@@ -508,6 +523,17 @@ async function isLive() {
   } catch (exception) {
     printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
     return false;
+  }
+}
+
+async function getThumbnailInfo(position: number) {
+  try {
+    const thumbnailInfo = await KalturaPlayerModule.requestThumbnailInfo(position);
+    printConsoleLog(`getThumbnailInfo ${JSON.stringify(thumbnailInfo)}`);
+    return thumbnailInfo;
+  } catch (exception) {
+    printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
+    return exception;
   }
 }
 
