@@ -8,6 +8,7 @@ export default function SeekBar(props) {
       <Slider
         disabled={props.isAdPlaying ? true : false}
         animateTransitions={true}
+        animationType='spring'
         value={props.position}
         maximumValue={props.duration}
         minimumTrackTintColor={'#ed0037'}

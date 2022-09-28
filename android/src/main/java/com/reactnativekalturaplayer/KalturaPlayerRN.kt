@@ -15,6 +15,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.kaltura.netkit.utils.ErrorElement
 import com.kaltura.playkit.*
+import com.kaltura.playkit.ads.AdController
 import com.kaltura.playkit.ads.PKAdErrorType
 import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
@@ -462,11 +463,22 @@ class KalturaPlayerRN(
         }
     }
 
+    /**
+     * Send the current position of the player
+     * for both Content or Ad playback
+     *
+     * If position is invalid then it send Unset position which is -1
+     */
     fun getCurrentPosition(promise: Promise) {
         log.d("getCurrentPosition")
         player?.let {
             runOnUiThread {
-                sendCallbackToJS(promise, it.currentPosition.toString())
+                val adController = it.getController(AdController::class.java)
+                if (adController != null && adController.isAdDisplayed) {
+                    sendCallbackToJS(promise, adController.adCurrentPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                } else {
+                    sendCallbackToJS(promise, it.currentPosition / Consts.MILLISECONDS_MULTIPLIER_FLOAT)
+                }
             }
         }
     }
@@ -1498,7 +1510,7 @@ class KalturaPlayerRN(
         player?.addListener(context, AdEvent.adClickedEvent) { event: AdEvent.AdClickedEvent ->
             sendPlayerEvent(
                     KalturaPlayerAdEvents.CLICKED,
-                    createJSONForEventPayload("clickThruUrl", event.clickThruUrl)
+                    createJSONForEventPayload("clickThroughUrl", event.clickThruUrl)
             )
         }
 

@@ -402,8 +402,8 @@ export class KalturaPlayerAPI {
   };
 
   /**
-   * Getter for the current playback position.
-   * @returns string: Position of the player or {@link POSITION_UNSET}
+   * Get the current playback position for Content and Ad
+   * @returns number: Position of the player or {@link POSITION_UNSET}
    */
   static getCurrentPosition = async () => {
     printConsoleLog('Calling Native method getCurrentPosition()');
