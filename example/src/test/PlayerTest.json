@@ -36,6 +36,39 @@
         }
       ]
     },
+    "Ads": {
+      "Error-In-Ad": [
+        {
+          "id": "HLS + Ad",
+          "partnerId": 0,
+          "initOptions": {
+            "autoplay": true,
+            "preload": true,
+            "allowCrossProtocolRedirect": true,
+            "plugins": {
+              "ima": {
+                "adTagUrl": "https://kaltura.github.io/playkit-admanager-samples/vmap/url_errored.xml",
+                "alwaysStartWithPreroll": true,
+                "enableDebugMode": false
+              }
+            }
+          },
+          "mediaList": [
+            {
+              "mediaId": "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8",
+              "mediaAsset": {
+                "id": "basicId",
+                "name": "basicName",
+                "duration": 120,
+                "mediaEntryType": "Vod",
+                "mediaFormat": "hls",
+                "startPosition": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
     "vod": {
       "hls": [
         {

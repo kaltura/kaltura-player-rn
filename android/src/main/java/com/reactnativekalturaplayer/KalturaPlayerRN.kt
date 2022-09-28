@@ -984,9 +984,6 @@ class KalturaPlayerRN(
         return gson.toJson(errorJson)
     }
 
-    /**
-     * NOOP
-     */
     private fun getCuePointsJson(adCuePoints: AdCuePoints?): String? {
         if (adCuePoints == null) {
             return null
@@ -1001,8 +998,8 @@ class KalturaPlayerRN(
         }
         cuePointsList.append(" ]")
         return ("{ " +
-                "\"adPluginName\": \"" + adCuePoints.adPluginName +
-                "\"," +
+                "\"count\": " + adCuePointsArray.size +
+                "," +
                 "\"cuePoints\": " + cuePointsList +
                 ", " +
                 "\"hasPreRoll\": " + adCuePoints.hasPreRoll() +
@@ -1467,10 +1464,13 @@ class KalturaPlayerRN(
         }
 
         player?.addListener(context, AdEvent.cuepointsChanged) { event: AdEvent.AdCuePointsUpdateEvent ->
-            sendPlayerEvent(
+            val cuePointsJson: String? = getCuePointsJson(event.cuePoints)
+            cuePointsJson?.let {
+                sendPlayerEvent(
                     KalturaPlayerAdEvents.CUEPOINTS_CHANGED,
-                    gson.toJson(event.cuePoints)
-            )
+                    createJSONForEventPayload(event.cuePoints.adPluginName, it)
+                )
+            }
         }
 
         player?.addListener(context, AdEvent.started) { _: AdEvent.AdStartedEvent? ->
@@ -1538,7 +1538,7 @@ class KalturaPlayerRN(
 
         player?.addListener(context, AdEvent.error) { event: AdEvent.Error ->
             if (event.error.isFatal) {
-                sendPlayerEvent(KalturaPlayerAdEvents.ERROR, gson.toJson(event.error))
+                sendPlayerEvent(KalturaPlayerAdEvents.ERROR, getErrorJson(event.error))
             }
         }
 

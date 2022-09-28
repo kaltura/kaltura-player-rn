@@ -618,7 +618,7 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(AdEvents.CUEPOINTS_CHANGED, (payload) => {
-        //console.log('AdEvent CUEPOINTS_CHANGED : ' + JSON.stringify(payload.adCuePoints));
+        console.log('AdEvent CUEPOINTS_CHANGED : ' + JSON.stringify(payload));
       })
     );
 
@@ -661,6 +661,12 @@ export default class App extends React.Component<any, any> {
             isShowing: false,
           }));
         }
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
+        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
       })
     );
   };
