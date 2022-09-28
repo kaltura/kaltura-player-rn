@@ -513,7 +513,7 @@ extension KalturaPlayerRN {
                 
             case is AdEvent.AdDidProgressToTime:
                 KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adProgress.rawValue, body: [
-    //                "currentAdPosition": event.mediaTime // mediaTime is missing in PKEvent extention inside AdEvent file.
+                    "currentAdPosition": event.adMediaTime
                 ])
                 
             case is AdEvent.AdBreakStarted:
@@ -552,6 +552,61 @@ extension KalturaPlayerRN {
                         ]
                     ])
                 }
+                
+            case is AdEvent.AdLoaded:
+                guard let adInfo = event.adInfo else { return }
+                
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.loaded.rawValue, body: [
+                    "adDescription": adInfo.adDescription,
+                    "adDuration": adInfo.duration,
+                    "adPlayHead": adInfo.adPlayHead,
+                    "adTitle": adInfo.title,
+                    "streamId": "", // iOS doesn't have this value.
+                    "isAdSkippable": adInfo.isSkippable,
+                    "skipTimeOffset": adInfo.skipTimeOffset,
+                    "adContentType": adInfo.contentType,
+                    "adId": adInfo.adId,
+                    "adSystem": adInfo.adSystem,
+                    "creativeId": adInfo.creativeId,
+                    "creativeAdId": adInfo.creativeAdId ?? "",
+                    "advertiserName": adInfo.advertiserName,
+                    "dealId": adInfo.dealId ?? "",
+                    "surveyUrl": adInfo.surveyUrl ?? "",
+                    "traffickingParams": adInfo.traffickingParams ?? "",
+                    "adWrapperCreativeIds": [], // iOS doesn't have this value.
+                    "adWrapperIds": [], // iOS doesn't have this value.
+                    "adWrapperSystems": [], // iOS doesn't have this value.
+                    "adHeight": adInfo.height,
+                    "adWidth": adInfo.width,
+                    "mediaBitrate": adInfo.mediaBitrate,
+                    "totalAdsInPod": adInfo.totalAds,
+                    "adIndexInPod": adInfo.adIndexInPod, // adInfo.adPosition is the same as adInfo.adIndexInPod.
+                    "podIndex": adInfo.podIndex,
+                    "podCount": adInfo.podCount,
+                    "isBumper": adInfo.isBumper,
+                    "adPodTimeOffset": adInfo.adPodTimeOffset // adInfo.timeOffset is the same as adInfo.adPodTimeOffset
+                ])
+                
+            case is AdEvent.AdDidRequestContentPause:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.contentPauseRequested.rawValue, body: [])
+                
+            case is AdEvent.AdDidRequestContentResume:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.contentResumeRequested.rawValue, body: [])
+                
+            case is AdEvent.AllAdsCompleted:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.allAdsCompleted.rawValue, body: [])
+                
+            case is AdEvent.AdStartedBuffering:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBufferStart.rawValue, body: [])
+                
+            case is AdEvent.Error:
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.error.rawValue, body: [
+                    "errorType": event.error?.userInfo["errorType"],
+                    "errorCode": event.error?.code,
+                    "errorSeverity": "Fatal",
+                    "errorMessage": event.error?.localizedDescription,
+                    "errorCause": event.error?.localizedFailureReason
+                ])
                 
             default:
                 // Event is not supported
