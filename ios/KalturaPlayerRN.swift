@@ -600,10 +600,17 @@ extension KalturaPlayerRN {
                 KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adBufferStart.rawValue, body: [])
                 
             case is AdEvent.Error:
+                var errorSeverity = "Fatal"
+                let errorType = event.error?.userInfo["errorType"]
+                // COMPANION_AD_LOADING_FAILED = 603
+                if errorType == 603 {
+                   errorSeverity = "Recoverable"
+                }
+                
                 KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.error.rawValue, body: [
-                    "errorType": event.error?.userInfo["errorType"],
+                    "errorType": errorType,
                     "errorCode": event.error?.code,
-                    "errorSeverity": "Fatal",
+                    "errorSeverity": errorSeverity,
                     "errorMessage": event.error?.localizedDescription,
                     "errorCause": event.error?.localizedFailureReason
                 ])
