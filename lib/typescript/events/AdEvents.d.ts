@@ -2,7 +2,6 @@ export declare const AdEvents: {
     AD_REQUESTED: string;
     AD_FIRST_PLAY: string;
     STARTED: string;
-    AD_DISPLAYED_AFTER_CONTENT_PAUSE: string;
     PAUSED: string;
     RESUMED: string;
     COMPLETED: string;
@@ -27,7 +26,6 @@ export declare const AdEvents: {
     CONTENT_PAUSE_REQUESTED: string;
     CONTENT_RESUME_REQUESTED: string;
     ALL_ADS_COMPLETED: string;
-    AD_LOAD_TIMEOUT_TIMER_STARTED: string;
     AD_BUFFER_START: string;
     AD_BUFFER_END: string;
     AD_PLAYBACK_INFO_UPDATED: string;

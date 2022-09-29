@@ -11,8 +11,8 @@ target 'KalturaPlayerExample' do
 
   use_react_native!(:path => config[:reactNativePath])
 
-  # This was added in the package.json file, use it for development.
-  pod 'RNKalturaPlayer', :path => '../..'
+  # For development uncomment this line and comment the 'react-native-kaltura-player: ..' in the package.json file.
+  # pod 'RNKalturaPlayer', :path => '../..'
 
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 

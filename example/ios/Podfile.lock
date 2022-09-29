@@ -32,11 +32,11 @@ PODS:
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PlayKit (3.26.0.0000):
-    - PlayKit/Core (= 3.26.0.0000)
-  - PlayKit/AnalyticsCommon (3.26.0.0000):
+  - PlayKit (3.26.1.0000):
+    - PlayKit/Core (= 3.26.1.0000)
+  - PlayKit/AnalyticsCommon (3.26.1.0000):
     - PlayKit/Core
-  - PlayKit/Core (3.26.0.0000):
+  - PlayKit/Core (3.26.1.0000):
     - KalturaNetKit (~> 1.5.1)
     - PlayKitUtils (~> 0.5)
     - SwiftyJSON (= 5.0.0)
@@ -385,7 +385,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
-  - RNKalturaPlayer (from `../..`)
+  - RNKalturaPlayer (from `../node_modules/react-native-kaltura-player`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -474,13 +474,13 @@ EXTERNAL SOURCES:
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
   RNKalturaPlayer:
-    :path: "../.."
+    :path: "../node_modules/react-native-kaltura-player"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 CHECKOUT OPTIONS:
   PlayKit:
-    :commit: 2c17598e6d768465a6b71b942d0938e56f62cdcb
+    :commit: 5da5c2ac9e3c8ac545d7394d614204c2a9ebcb2a
     :git: https://github.com/kaltura/playkit-ios.git
 
 SPEC CHECKSUMS:
@@ -495,7 +495,7 @@ SPEC CHECKSUMS:
   KalturaNetKit: 8774fdc2e73d3d013c3df88aa49376dd922d3606
   KalturaPlayer: 435142f2caece2b29841dacd6478b3adc2cde79f
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PlayKit: 5498c2375ea5277da9618d1dca9dc5e8b8dab6ea
+  PlayKit: d315e27873e2700d367d1ebc5d2df82c88ef76ed
   PlayKit_IMA: bd2115a3941df075d1b55fffede55949cdbf3f68
   PlayKitKava: c5b863ecd9b741fcae8b104654249093bbfb3ea9
   PlayKitProviders: 895e93705749223ac58d7b07a5b5a0857cc02ffb
@@ -535,6 +535,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YouboraLib: fc65b030ac93499f8beb3f5daa10deb3879fb2d2
 
-PODFILE CHECKSUM: 56115ff4bdcd5b2cd7f546c157092c05a8744ca7
+PODFILE CHECKSUM: 218811f8ddbb8dbfeebb3a9b7a49d5aed2e2082b
 
 COCOAPODS: 1.11.3

@@ -168,8 +168,8 @@ export declare class KalturaPlayerAPI {
      */
     static resetLowLatencyConfig: () => void;
     /**
-     * Getter for the current playback position.
-     * @returns string: Position of the player or {@link POSITION_UNSET}
+     * Get the current playback position for Content and Ad
+     * @returns number: Position of the player or {@link POSITION_UNSET}
      */
     static getCurrentPosition: () => Promise<any>;
     /**
@@ -183,8 +183,10 @@ export declare class KalturaPlayerAPI {
      */
     static isLive: () => Promise<any>;
     /**
-     * Checks if the stream is Live or Not
-     * @returns boolean
+     * Get the Information for a thumbnail image by position.
+     *
+     * @param positionMs - relevant image for given player position.
+     * @returns ThumbnailInfo JSON object
      */
     static requestThumbnailInfo: (positionMs: number) => Promise<any>;
     /**
