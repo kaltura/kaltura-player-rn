@@ -26,7 +26,6 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods"
@@ -37,7 +36,7 @@
     "android"
   ],
   "repository": "https://www.kaltura.com",
-  "author": "David Jinely <david.jinely@gmail.com> (https://www.kaltura.com)",
+  "author": "Player Team (https://www.kaltura.com)",
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://www.kaltura.com/issues"
@@ -87,23 +86,6 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
   },
   "eslintConfig": {
     "root": true,
