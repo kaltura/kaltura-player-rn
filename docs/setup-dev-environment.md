@@ -76,6 +76,8 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
         ```gradle
         implementation project(':react-native-kaltura-player')
         ```
+    
+    3. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
 
   - #### Setup for iOS
 
