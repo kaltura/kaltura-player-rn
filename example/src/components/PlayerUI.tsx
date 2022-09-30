@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { KalturaPlayer, PLAYER_TYPE } from 'react-native-kaltura-player';
+import { KalturaPlayer, PLAYER_TYPE } from 'kaltura-player-rn';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import SeekBar from '../components/SeekBar';

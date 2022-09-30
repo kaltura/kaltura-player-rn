@@ -26,13 +26,13 @@ import {
   VIDEO_CODEC,
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
-} from 'react-native-kaltura-player';
+} from 'kaltura-player-rn';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import {
   PlayerEvents,
   AdEvents,
   AnalyticsEvents,
-} from 'react-native-kaltura-player';
+} from 'kaltura-player-rn';
 import { showToast, hideToast } from '../components/ScreenMessage';
 import { PlayerUI } from '../components/PlayerUI';
 import { Navigation } from 'react-native-navigation';
