@@ -385,7 +385,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
-  - RNKalturaPlayer (from `../node_modules/react-native-kaltura-player`)
+  - RNKalturaPlayer (from `../node_modules/kaltura-player-rn`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -474,7 +474,7 @@ EXTERNAL SOURCES:
   ReactNativeNavigation:
     :path: "../node_modules/react-native-navigation"
   RNKalturaPlayer:
-    :path: "../node_modules/react-native-kaltura-player"
+    :path: "../node_modules/kaltura-player-rn"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -528,7 +528,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   ReactNativeNavigation: 61f7647c8f1fae7bdc93ad98910c83eb18d24748
-  RNKalturaPlayer: 9bd0e1de20ab2116c44e0ab2e5270877c891d858
+  RNKalturaPlayer: ff153253bc77da86a5d14b4693bd59083d22855a
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   SwiftyXMLParser: 5ebb8793192f403fa8cc691045143906122a7a75
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab

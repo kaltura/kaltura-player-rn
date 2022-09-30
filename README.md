@@ -2,7 +2,7 @@
 ![Platform](https://img.shields.io/badge/Platform-React--Native%20Video%20Player-green)
 
 
-## React Native Kaltura Player
+## Kaltura Player React Native
 
 Video Player library for react-native. Library is developed on [Kaltura Player](https://developer.kaltura.com/player/).
 It has a video component to render the player and supports various Player APIs.
