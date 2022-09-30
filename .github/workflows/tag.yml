@@ -7,7 +7,7 @@ on:
         type: choice
         description: 'Release Type'
         options:
-          - release
+          - stg
           - patch
       release_tag_version:
         type: string
