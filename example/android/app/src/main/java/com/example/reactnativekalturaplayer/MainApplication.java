@@ -11,7 +11,6 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import com.reactnativekalturaplayer.KalturaPlayerPackage;
 
 public class MainApplication extends NavigationApplication {
 

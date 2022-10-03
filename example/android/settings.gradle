@@ -2,8 +2,8 @@ rootProject.name = 'KalturaPlayerExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 
-//include ':react-native-kaltura-player'
-//project(':react-native-kaltura-player').projectDir = new File(rootProject.projectDir, '../../android')
+include ':kaltura-player-rn'
+project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
 
 //include ':tvplayer'
 //project(':tvplayer').projectDir = new File('../../../kaltura-player-android/tvplayer')

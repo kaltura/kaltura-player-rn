@@ -99,6 +99,8 @@ export default class App extends React.Component<any, any> {
       // Change Media helpers
       isChangeMediaAvailable: false,
       currentChangeMediaIndex: 0,
+
+      isDAIPluginAvailable: false,
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -126,11 +128,6 @@ export default class App extends React.Component<any, any> {
       playerType = PLAYER_TYPE.OTT;
     }
 
-    this.progressInterval = setInterval(() => {
-      console.log(`Inside progressInterval timer`);
-      this.getPlayerCurrentPosition();
-    }, timerInterval);
-
     var asset = null;
     var mediaId = null;
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
@@ -154,6 +151,15 @@ export default class App extends React.Component<any, any> {
       return;
     }
 
+    var isDaiPlugin = options.plugins.imadai;
+    console.log(`isDaiPlugin = ${JSON.stringify(isDaiPlugin)}`);
+    if (isDaiPlugin) {
+      console.log(`isDaiPlugin = true`);
+      this.setState(() => ({
+        isDAIPluginAvailable: true,
+      }));
+    }
+
     this.subscribeToAppLifecyle();
     this.player.enableDebugLogs(true);
 
@@ -164,12 +170,21 @@ export default class App extends React.Component<any, any> {
       JSON.stringify(asset),
       mediaId,
       partnerId
-    ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
+    ).then((_) => {
+      // Subscribe to Player Events
+      this.subscribeToPlayerListeners()
+
+      if (this.state.isDAIPluginAvailable) {
+        this.startDAIPositionTimer();
+      }
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    clearInterval(this.progressInterval);
+    if (this.progressInterval != null) {
+      clearInterval(this.progressInterval);
+    }
     this.removePlayerListeners();
     if (networkUnsubscribe != null) {
       networkUnsubscribe();
@@ -337,12 +352,18 @@ export default class App extends React.Component<any, any> {
     }));
   };
 
+  startDAIPositionTimer() {
+    this.progressInterval = setInterval(() => {
+      console.log(`Inside progressInterval timer`);
+      this.getPlayerCurrentPosition();
+    }, timerInterval);
+  }
+
   /**
    * Add the Kaltura Player listeners to
    * add the Player, Ad and other Analytics
    * events
    *
-   * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
     eventsSubscriptionList.push(
@@ -373,8 +394,13 @@ export default class App extends React.Component<any, any> {
             !this.isSliderSeeking &&
             !this.state.isAdPlaying
           ) {
+            if (!this.state.isDAIPluginAvailable) {
+              this.setState(() => ({
+                currentPosition: payload.position,
+              }));
+            }
+
             this.setState(() => ({
-              //currentPosition: payload.position,
               totalDuration: this.contentDuration,
             }));
           }
@@ -421,7 +447,7 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
-        console.error('PlayerEvent ERROR : ' + JSON.stringify(payload));
+        console.log('Gourav PlayerEvent ERROR : ' + JSON.stringify(payload));
       })
     );
 
@@ -608,11 +634,13 @@ export default class App extends React.Component<any, any> {
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
         console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
-        // if (this._isMounted && payload.currentAdPosition != null) {
-        //   this.setState(() => ({
-        //     currentPosition: payload.currentAdPosition,
-        //   }));
-        // }
+        if (this._isMounted && payload.currentAdPosition != null) {
+          if (!this.state.isDAIPluginAvailable) {
+            this.setState(() => ({
+              currentPosition: payload.currentAdPosition,
+            }));
+          }
+        }
       })
     );
 
