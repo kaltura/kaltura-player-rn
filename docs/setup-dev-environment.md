@@ -67,8 +67,8 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
     1. Open project level `settings.gradle` in Android Studio, add the following,
 
         ```gradle
-        include ':react-native-kaltura-player'
-        project(':react-native-kaltura-player').projectDir = new File(rootProject.projectDir, '../../android')
+        include ':kaltura-player-rn'
+        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
         ```
     
     2. Open `build.gradle` of 'app' and add the following. It will take the reference of local react native bridge of Kaltura Player.
