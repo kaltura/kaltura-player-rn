@@ -58,28 +58,46 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
   🔴TODO
 
 
-### Build Kaltura-Player-RN SDK locally with Example app
+### Build Kaltura-Player-RN SDK locally with 'example' app
 
-In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'Example' app. 
+In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'example' app. 
+
+  - #### Link example app with local `kaltura-player-rn`
+
+      ```js
+      cd root_folder OR path to `kaltura-player-rn` in you system 
+      yarn link
+
+      cd root_folder/example OR path to `example` app
+      yarn link "kaltura-player-rn"
+      ```
+
+    There is a chance that linking will not work the try adding `kaltura-player-rn` manually using.
+
+      ```js
+      cd root_folder/example OR path to `example` app
+      yarn add path to `kaltura-player-rn` in you system
+      ```
 
   - #### Setup for Android
 
-    1. Open project level `settings.gradle` in Android Studio, add the following,
+    1. If you want to change the Native Android code then inorder to show `kaltura-player-rn` in Android Studion. You need to open project level `settings.gradle` in Android Studio, add the following.
 
         ```gradle
         include ':kaltura-player-rn'
         project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
         ```
     
-    2. Open `build.gradle` of 'app' and add the following. It will take the reference of local react native bridge of Kaltura Player.
-
-        ```gradle
-        implementation project(':kaltura-player-rn')
-        ```
-    
-    3. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
+    2. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
 
   - #### Setup for iOS
 
     🔴TODO
 
+
+### How to test my media in the 'example' app.
+
+  1. Open [Test JSON](https://github.com/kaltura/kaltura-player-rn/blob/develop/example/src/test/PlayerTest.json).
+  2. You can add your test media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L75)
+  3. Use 'dash' instead of 'hls' if you want to test mpd of Dash media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L85)
+  

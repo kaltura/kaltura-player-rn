@@ -116,6 +116,8 @@ An important step for mobile apps where user can move to another app. So to hand
 
 `onApplicationResumed()`: Call when the app comes to foreground, ideally `onResume()` as per the Android lifecycle.
 
+> **Not available for iOS for the time.**
+
 ### Add or remove the Player View component (Native Level)
 ---
 
@@ -124,6 +126,9 @@ By default Player view component is attached to the Player so no need to call `a
 `addPlayerView()`: Adds the Native Player View to the Player if not attached.
 
 `removePlayerView`: Removes the Native Player View from the Player if it is attached.
+
+> **Not available for iOS for the time.**
+
 
 ### More Player Functions
 ---
@@ -139,10 +144,10 @@ By default Player view component is attached to the Player so no need to call `a
 |`changeTrack(trackId: string)`     | ✅     |  ✅    |   Change a specific track (Video, Audio or Text track) `trackId` Unique track ID which was sent in `tracksAvailable` event       |
 |`setPlaybackRate(rate: number)`     | ✅     |  ✅    |   Change the playback rate (ff or slow motion). Default is 1.0f. `rate` Desired playback rate (Ex: 0.5f, 1.5f 2.0f etc)       |
 |`setVolume(vol: number)`     | ✅     |  ✅    |   Change the volume of the current audio track. Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume. If the volume parameter is higher then 1.0, it will be converted to 1.0. If the volume parameter is lower then 0.0, it be converted to 0.0.       |
-|`setAutoPlay(isAutoPlay: boolean)`     | ✅     |  ✅    |   Set the media to play automatically at the start (load). If `false`, user will have to click on UI play button       |
-|`setKS(KS: string)`     | ✅     |  ✅    |    Set the KS for the media _(only for OVP/OTT users)_. Call this before calling `loadMedia`. `KS` Kaltura Secret key.      |
+|`setAutoPlay(isAutoPlay: boolean)`     | ❌    |  ✅    |   Set the media to play automatically at the start (load). If `false`, user will have to click on UI play button       |
+|`setKS(KS: string)`     | ❌     |  ✅    |    Set the KS for the media _(only for OVP/OTT users)_. Call this before calling `loadMedia`. `KS` Kaltura Secret key.      |
 |`seekToLiveDefaultPosition()`     | ✅     |  ✅    |    Seek player to Live Default Position. _Only for Live Media._      |
-|`updateSubtitleStyle(subtitleStyle: string)()`     | ✅     |  ✅    | Update the existing subtitle styling  |        
+|`updateSubtitleStyle(subtitleStyle: string)()`     | ❌     |  ✅    | Update the existing subtitle styling  |        
 |`updateResizeMode(mode: PLAYER_RESIZE_MODES)()`     | ✅     |  ✅    |  Update the Resize Mode  |      
 |`updateAbrSettings(abrSettings: string)()`     | ❌     |   ✅   |  Update the ABR Settings  |      
 |`resetAbrSettings()`     |  ❌   |   ✅    |    Reset the ABR Settings      |
@@ -151,7 +156,7 @@ By default Player view component is attached to the Player so no need to call `a
 |`getCurrentPosition()`     | ✅     |  ✅    |    **Async** function. Getter for the current playback position. Returns `string` Position of the player or -1.     |
 |`isPlaying()`     | ✅     |  ✅    |   **Async** function. Checks if Player is currently playing or not. Returns `boolean`.     |
 |`isLive()`     | ✅     |  ✅    |    **Async** function. Checks if the stream is Live or Not. Returns `boolean`.     |
-|`requestThumbnailInfo(positionMs: number)`     | ✅     |  ✅    |    **Async** function. Get the Information for a thumbnail image by position. Returns **ThumbnailInfo JSON** object.     |
+|`requestThumbnailInfo(positionMs: number)`     | ❌     |  ✅    |    **Async** function. Get the Information for a thumbnail image by position. Returns **ThumbnailInfo JSON** object.     |
 |`enableDebugLogs()`     | ✅     |  ✅    |   Enable the console logs for the JS bridge. By default it is disabled. Set `true` to enable the logs.       |
 
 

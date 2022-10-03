@@ -87,7 +87,7 @@ It talks about the various states of the player like when it is buffering, when 
 |`VOLUME_CHANGED`|`{ "volume": Number }`|❌ |✅ |
 |`STOPPED`|*No data sent*|✅ |✅ |
 |`METADATA_AVAILABLE`|<code>[<br>&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;"schemeIdUri": "urn:scte:scte35:2013:xml",<br>&nbsp;&nbsp;&nbsp;"value": "999",<br>&nbsp;&nbsp;&nbsp;"messageData": [<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;60,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;62<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>&nbsp;&nbsp;&nbsp;"id": 165882295,<br>&nbsp;&nbsp;&nbsp;"durationMs": 10000<br>&nbsp;&nbsp;}<br>&nbsp;]</code><br> <br>**For iOS** <br> [`AVMetadataItem`](https://developer.apple.com/documentation/avfoundation/avmetadataitem)|❌ |✅ |
-|`EVENT_STREAM_CHANGED`|**TODO**|✅ |✅ |
+|`EVENT_STREAM_CHANGED`|**TODO**|❌ |✅ |
 |`SOURCE_SELECTED`|**TODO**|✅ |✅ |
 |`PLAYHEAD_UPDATED`|**TODO**|✅ |✅ |
 |`VIDEO_TRACK_CHANGED`| **TODO** |✅ |✅ |
