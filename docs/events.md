@@ -9,7 +9,7 @@ Events can be listened by the FE apps inorder to understand more details about t
     PlayerEvents,
     AdEvents,
     AnalyticsEvents,
-    } from 'react-native-kaltura-player';
+    } from 'kaltura-player-rn';
     ```
 
 2. When you setup the player by calling `setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0)` then after successful player setup, App should listen to the events, App should call the following method on `KalturaPlayerAPI`,

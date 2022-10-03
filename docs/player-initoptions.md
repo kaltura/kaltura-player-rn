@@ -59,7 +59,7 @@ abrSettings: {
 ### Player Resize Modes
 
 ```js
-import { PLAYER_RESIZE_MODES } from "react-native-kaltura-player";
+import { PLAYER_RESIZE_MODES } from "kaltura-player-rn";
 ```
 
 ```js
@@ -73,7 +73,7 @@ There are other resize modes available like **FIXED_WIDTH**, **FIXED_HEIGHT**, *
 ### Set MediaFormat
 
 ```js
-import { MEDIA_FORMAT } from "react-native-kaltura-player";
+import { MEDIA_FORMAT } from "kaltura-player-rn";
 ```
 
 ```js
@@ -92,7 +92,7 @@ App can change the subtitltes' text color, background color etc along with the s
 Following subtitle Configuration can be used,
 
 ```js
-import { SUBTITLE_STYLE } from "react-native-kaltura-player";
+import { SUBTITLE_STYLE } from "kaltura-player-rn";
 ```
 
 ```js
@@ -119,7 +119,7 @@ var initOptions = {
 If the same language text track is available for internal and external subtitles then app can give preference to any one of them. Default is set to internal subtitle.
 
 ```js
-import { SUBTITLE_PREFERENCE } from "react-native-kaltura-player";
+import { SUBTITLE_PREFERENCE } from "kaltura-player-rn";
 ```
 
 ```js
@@ -133,7 +133,7 @@ var initOptions = {
 Set WakeLock Mode  - Sets whether the player should not handle wakeLock or should handle a wake lock only or both wakeLock & wifiLock when the screen is off
 
 ```js
-import { WAKEMODE } from "react-native-kaltura-player";
+import { WAKEMODE } from "kaltura-player-rn";
 ```
 
 ```js
