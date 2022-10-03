@@ -28,7 +28,7 @@ import { KalturaPlayer } from "kaltura-player-rn";
 App can get the KalturaPlayerAPI reference in the following way,
 
 ```js
-import { KalturaPlayerAPI } from 'react-native-kaltura-player';
+import { KalturaPlayerAPI } from 'kaltura-player-rn';
 
 ```
 
