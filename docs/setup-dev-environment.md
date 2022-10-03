@@ -81,7 +81,7 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'example' app. 
 
-  - #### Link example app with local `kaltura-player-rn`
+  - #### Link example app with local `kaltura-player-rn`.
 
       ```js
       cd root_folder OR path to `kaltura-player-rn` in you system 
@@ -118,6 +118,6 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 ### How to test my media in the 'example' app.
 
   1. Open [Test JSON](https://github.com/kaltura/kaltura-player-rn/blob/develop/example/src/test/PlayerTest.json).
-  2. You can add your test media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L75)
-  3. Use 'dash' instead of 'hls' if you want to test mpd of Dash media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L85)
+  2. You can add your test media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L75).
+  3. Use 'dash' instead of 'hls' if you want to test mpd of Dash media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L85).
 
