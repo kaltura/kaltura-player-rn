@@ -447,7 +447,7 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
-        console.log('Gourav PlayerEvent ERROR : ' + JSON.stringify(payload));
+        console.log('PlayerEvent ERROR : ' + JSON.stringify(payload));
       })
     );
 

@@ -1368,7 +1368,6 @@ class KalturaPlayerRN(
         player?.addListener(context, PlayerEvent.seeked) { _: PKEvent? -> sendPlayerEvent(KalturaPlayerEvents.SEEKED) }
 
         player?.addListener(context, PlayerEvent.error) { event: PlayerEvent.Error ->
-            log.d("Gourav Native Side PlayerEvent error = ${event.error}")
             sendPlayerEvent(KalturaPlayerEvents.ERROR, getErrorJson(event.error))
         }
 
@@ -1536,7 +1535,6 @@ class KalturaPlayerRN(
         player?.addListener(context, AdEvent.allAdsCompleted) { _: PKEvent? -> sendPlayerEvent(KalturaPlayerAdEvents.ALL_ADS_COMPLETED) }
 
         player?.addListener(context, AdEvent.error) { event: AdEvent.Error ->
-            log.d("Gourav Native Side AdEvent error = ${event.error}")
             if (event.error.isFatal) {
                 sendPlayerEvent(KalturaPlayerAdEvents.ERROR, getErrorJson(event.error))
             }
