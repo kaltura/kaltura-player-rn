@@ -1,13 +1,13 @@
 ## Installation
 
 ```sh
-npm install react-native-kaltura-player
+npm install kaltura-player-rn
 ```
 
 ## Usage
 
 ```js
-import { KalturaPlayer } from "react-native-kaltura-player";
+import { KalturaPlayer } from "kaltura-player-rn";
 
  <KalturaPlayer
  		style={styles.center}
@@ -43,7 +43,7 @@ import {
   PlayerEvents,
   AdEvents,
   AnalyticsEvents,
-} from 'react-native-kaltura-player';
+} from 'kaltura-player-rn';
 
 ```
 
@@ -53,6 +53,6 @@ App should use the library defined constants only while passing the configuratio
 ```js
 import {
   PLAYER_TYPE
-} from 'react-native-kaltura-player';
+} from 'kaltura-player-rn';
 
 ```
