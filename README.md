@@ -61,7 +61,7 @@ import {
 ```
 
 App should use the library defined constants only while passing the configuration params in the JSON.
-[Check Constants](./player-functions.md#constants)
+[Check Constants](./docs/player-functions.md#constants)
 
 ```js
 import {
