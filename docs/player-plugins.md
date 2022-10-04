@@ -53,11 +53,11 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 
 ```js
 {
-	plugins: {
-		pluginName: {
-			// Plugin Config
-		}
-	}
+   plugins: {
+     pluginName: {
+	// Plugin Config
+     }
+   }
 }
 ```
 
@@ -100,7 +100,7 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 
 	```js
 	{
-		"language": String,
+	"language": String,
      	"adTagUrl":String,
      	"adTagResponse":String,
     	"adTagType": [AdtagType](./player-functions.md#constants#IMA_AD_TAG_TYPE),
@@ -109,7 +109,7 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
     	"adAttribution": Boolean,
     	"adCountDown": Boolean,
     	"enableDebugMode": Boolean,
-   		"alwaysStartWithPreroll": Boolean,
+   	"alwaysStartWithPreroll": Boolean,
     	"enableFocusSkipButton": Boolean,
     	"enableCustomTabs": Boolean,
      	"adLoadTimeOut": Number,
@@ -129,26 +129,26 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 	```js
 	{
 		"assetTitle": String,
-     	"assetKey":String,
-     	"apiKey":String,
-    	"contentSourceId": String,
-     	"videoId" : String,
-    	"streamFormat": [Stream Format](./player-functions.md#constants#IMADAI_STREAM_FORMAT),
+		"assetKey":String,
+		"apiKey":String,
+		"contentSourceId": String,
+		"videoId" : String,
+		"streamFormat": [Stream Format](./player-functions.md#constants#IMADAI_STREAM_FORMAT),
 		"licenseUrl": String,
 		"adTagParams": {{"key": "value"}},
 		"streamActivityMonitorId" : String,
 		"authToken": String ,
 		"language": String,
-    	"adCountDown": Boolean,
-    	"enableDebugMode": Boolean,
-   		"alwaysStartWithPreroll": Boolean,
-    	"enableFocusSkipButton": Boolean,
-    	"enableCustomTabs": Boolean,
-     	"adLoadTimeOut": Number,
-     	"maxRedirects": Number,
-     	"playerType": String,
-     	"playerVersion": String,
-     	"sessionId": String
+		"adCountDown": Boolean,
+		"enableDebugMode": Boolean,
+		"alwaysStartWithPreroll": Boolean,
+		"enableFocusSkipButton": Boolean,
+		"enableCustomTabs": Boolean,
+		"adLoadTimeOut": Number,
+		"maxRedirects": Number,
+		"playerType": String,
+		"playerVersion": String,
+		"sessionId": String
 	}
 	```
 
@@ -158,11 +158,11 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 
 	```js
 	plugins: {
-		pluginName: {
-			params:{
-				// Plugin Config
-			}		
-		}
+	   pluginName: {
+	      params:{
+		 // Plugin Config
+	      }		
+	   }
 	}
 
 	```
@@ -171,7 +171,7 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 
 	```js
 
-			"plugins": {
+	"plugins": {
               "youbora": {
                 "params": {
                   "accountCode": "kalturatest",
@@ -194,44 +194,44 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
                   "enableAnalytics": true,
                   "enableSmartAds": true,
                   "content": {
-                    "contentBitrate": 640000,
-                    "contentCdn": "a",
-                    "contentCdnNode": "b",
-                    "contentCdnType": "c",
-                    "contentChannel": "d",
-                    "contentContractedResolution": "720p",
-                    "contentCost": "122",
-                    "contentDrm": "e",
-                    "contentDuration": 1200000,
-                    "contentEncodingAudioCodec": "ec-3",
-                    "contentEncodingCodecProfile": "f",
-                    "contentEncodingContainerFormat": "g",
-                    "contentEncodingVideoCodec": "h",
-                    "contentEpisodeTitle": "title2",
-                    "contentFps": 60,
-                    "contentGenre": "drama",
-                    "contentGracenoteId": "i",
-                    "contentId": "1st_media",
-                    "contentImdbId": "j",
-                    "contentIsLive": false,
-                    "contentIsLiveNoSeek": false,
-                    "contentLanguage": "en",
-                    "contentPackage": "aaa",
-                    "contentPlaybackType": "bbb",
-                    "contentPrice": 10000,
-                    "contentProgram": "program",
-                    "contentRendition": "22223",
-                    "contentSaga": "ccc",
-                    "contentSeason": "ddd",
-                    "contentStreamingProtocol": "applehttp",
-                    "contentSubtitles": "en",
-                    "contentThroughput": 1230000,
-                    "contentTitle": "title",
-                    "contentTransactionCode": "dssd",
-                    "contentTotalBytes": 123344,
-                    "contentSendTotalBytes": false,
-                    "contentTvShow": "sadsa",
-                    "contentType": "drama"
+                  "contentBitrate": 640000,
+                  "contentCdn": "a",
+                  "contentCdnNode": "b",
+                  "contentCdnType": "c",
+                  "contentChannel": "d",
+                  "contentContractedResolution": "720p",
+                  "contentCost": "122",
+                  "contentDrm": "e",
+                  "contentDuration": 1200000,
+                  "contentEncodingAudioCodec": "ec-3",
+                  "contentEncodingCodecProfile": "f",
+                  "contentEncodingContainerFormat": "g",
+                  "contentEncodingVideoCodec": "h",
+                  "contentEpisodeTitle": "title2",
+                  "contentFps": 60,
+                  "contentGenre": "drama",
+                  "contentGracenoteId": "i",
+                  "contentId": "1st_media",
+                  "contentImdbId": "j",
+                  "contentIsLive": false,
+                  "contentIsLiveNoSeek": false,
+                  "contentLanguage": "en",
+                  "contentPackage": "aaa",
+                  "contentPlaybackType": "bbb",
+                  "contentPrice": 10000,
+                  "contentProgram": "program",
+                  "contentRendition": "22223",
+                  "contentSaga": "ccc",
+                  "contentSeason": "ddd",
+                  "contentStreamingProtocol": "applehttp",
+                  "contentSubtitles": "en",
+                  "contentThroughput": 1230000,
+                  "contentTitle": "title",
+                  "contentTransactionCode": "dssd",
+                  "contentTotalBytes": 123344,
+                  "contentSendTotalBytes": false,
+                  "contentTvShow": "sadsa",
+                  "contentType": "drama"
                   }
                 }
               }
@@ -240,19 +240,18 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 
 ### Update Plugin Config
 
-	Updating the plugin config is handy while changing to another media. Suppose FE wants to play another 'Ad' for the next media then FE can pass another config with new Ad to the player.
+Updating the plugin config is handy while changing to another media. Suppose FE wants to play another 'Ad' for the next media then FE can pass another config with new Ad to the player.
 
-	App can call the following with the updated plugin's config,
+App can call the following with the updated plugin's config,
 
-	```js
+```js
 	const updatedIMAPlugin = {
-                "ima": {
-                  "adTagUrl": "https://kaltura.github.io/playkit-admanager-samples/vast/pod-inline-someskip.xml",
-                  "alwaysStartWithPreroll": true,
-                  "enableDebugMode": false
-                }
-              }
+		   "ima": {
+			"adTagUrl": "https://kaltura.github.io/playkit-admanager-samples/vast/pod-inline-someskip.xml",
+			"alwaysStartWithPreroll": true,
+			"enableDebugMode": false
+		   }
+		  };
 
 	KalturaPlayerAPI.updatePluginConfigs(JSON.stringify(updatedIMAPlugin));
-
-	```
+```
