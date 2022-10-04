@@ -77,6 +77,8 @@ import {
 - [Player Plugins](./docs/player-plugins.md)
 - [Events](./docs/events.md)
 - [Setup Development Environment](./docs/setup-dev-environment.md)
+- [FAQ](./docs/faq.md)
+
 
 ## Contributing
 
