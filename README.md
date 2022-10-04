@@ -11,7 +11,7 @@ like Youbora.
 
 ## Development Resources
 
-- [Installation](./docs/installation.md)
+- [Installation and Usage](./docs/installation.md)
 - [Player Functions](./docs/player-functions.md)
 - [Player InitOptions or Settings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
