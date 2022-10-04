@@ -77,4 +77,4 @@ There is no seperate method to do that calling again `loadMedia()` with new medi
 
 > How to handle background and foreground lifecycle of a mobile app ?
 
-Please check this [bg/fg lifecycle link](./player-functions.md#handle-background-and-foreground-application-behaviour) 
+Please check this [bg/fg lifecycle handling](./player-functions.md#handle-background-and-foreground-application-behaviour) 
