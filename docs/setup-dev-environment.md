@@ -100,11 +100,11 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
   - #### Setup for Android
 
-    1. If you want to change the Native Android code then inorder to show `kaltura-player-rn` in Android Studion. You need to open project level `settings.gradle` in Android Studio, add the following.
+    1. If you want to change the Native Android code then inorder to show `kaltura-player-rn` in Android Studio. You need to open project level `settings.gradle` in Android Studio, add the following.
 
         ```gradle
         include ':kaltura-player-rn'
-        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
+        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
         ```
     
     2. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
