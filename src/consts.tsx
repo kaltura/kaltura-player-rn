@@ -160,3 +160,13 @@ export enum MULTICAST_EXTRACTOR_MODE {
   MODE_SINGLE_PMT = 'MODE_SINGLE_PMT',
   MODE_HLS = 'MODE_HLS'
 }
+
+export enum IMA_AD_TAG_TYPE {
+  VMAP = "VMAP",
+  VAST = "VAST"
+}
+
+export enum IMADAI_STREAM_FORMAT {
+  DASH = "DASH",
+  HLS = "HLS"
+}
