@@ -15,7 +15,7 @@ Please check [here](../README.md) to know more.
 
 > I am new to react-native what knowledge do i need to test my media or develop an app ?
 
-Feel free to check out `example` folder. It is a test app. Under **src -> test -> PlayerTest.json**, you can add your media.
+Feel free to check out [`example`](https://github.com/kaltura/kaltura-player-rn/tree/develop/example). It is a test app. Under **src -> test -> PlayerTest.json**, you can add your media.
 To test you media, please add you media under 'Basic'. You can add your media like the way it is there.
 
 > What is Basic, OVP and OTT Player in `kaltura-player-rn` ?
@@ -54,3 +54,27 @@ It supports VAST and VMAP ad tags.
 > Does Player support live media playback ?
 
 Yes.
+
+> How to install `kaltura-player-rn` package ?
+
+Simply run `yarn add "kaltura-player-rn"`. It will add `kaltura-player-rn` in `package.json`.
+
+> How to setup `Kaltura Player` ?
+
+Please check our [set up page](./player-functions.md#setup)
+
+> How to load the media ?
+
+Please check our [load the media section](./player-functions.md#load-the-player)
+
+> What is `setup()` and `loadMedia()` ?
+
+`setup()` creates a player instance on the native side and `loadMedia()` actually loads the media to the player.
+
+> How to play the next media or do a change media ?
+
+There is no seperate method to do that calling again `loadMedia()` with new media is just fine.
+
+> How to handle background and foreground lifecycle of a mobile app ?
+
+Please check this [bg/fg lifecycle link](./player-functions.md#handle-background-and-foreground-application-behaviour) 

@@ -1,6 +1,6 @@
 ## Player Configurations
 
-`PlayerInitOptions` includes the important parameters required for the Player setup. 
+`playerInitOptions` includes the important parameters required for the Player setup. 
 
 ### Kaltura BE configs
 

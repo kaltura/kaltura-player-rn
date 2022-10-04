@@ -175,6 +175,20 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
               "youbora": {
                 "params": {
                   "accountCode": "kalturatest",
+                  "username": "test_rn"
+                  }
+                }
+              }
+            }
+	```
+
+Other helpful `Youbora` configs,
+
+	```js
+
+              "youbora": {
+                "params": {
+                  "accountCode": "kalturatest",
                   "username": "test_rn",
                   "userEmail": "test_rn@mobile.com",
                   "userAnonymousId": "user_anonymous_Id",
@@ -235,7 +249,8 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
                   }
                 }
               }
-            }
+	```
+
 	```
 
 ### Update Plugin Config
