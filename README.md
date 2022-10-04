@@ -71,7 +71,7 @@ import {
 ## Development Resources
 
 - [Player Functions](./docs/player-functions.md)
-- [Player InitOptions or Settings](./docs/player-initoptions.md)
+- [PlayerInitOptions or PlayerSettings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
 - [Events](./docs/events.md)
 - [Setup Development Environment](./docs/setup-dev-environment.md)
