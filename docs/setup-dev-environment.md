@@ -18,7 +18,11 @@ Kaltura Player is based on Google ExoPlayer in Android and AVPlayer in iOS. Alon
   - [Googlecast](https://github.com/kaltura/playkit-android-googlecast)
 
 - **Kaltura Player iOS contains following Native SDK**
-  - 🔴TODO
+  - [Kaltura Player](https://github.com/kaltura/kaltura-player-ios)
+  - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-ios-ima)
+  - [Youbora](https://github.com/kaltura/playkit-ios-youbora)
+  - [Providers (For Kaltura BE only)](https://github.com/kaltura/playkit-ios-providers)
+  - [Googlecast](https://github.com/kaltura/playkit-ios-googlecast)
 
 
 Kaltura Player RN SDK gives the media playback, VR/360 media playback and Offline media playback(Not Supported Currently). If you want to use other plugins like IMA, Youbora, Googlecast then you need to add it as dependency in your FE app's `build.gradle` or `pod` file for Android and iOS. Latest versions are there in Maven or Cocoapods and mentioned on the Github repos as well.
@@ -55,31 +59,65 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 - #### Setup for iOS
 
-  🔴TODO
+  1. Native to `example -> ios` folder and run the following,
 
+    ```js
+    cd example/ios
+    pod install
+    ```
 
-### Build Kaltura-Player-RN SDK locally with Example app
+    If you are using M1 mac then do the following,
 
-In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'Example' app. 
+    ```js
+    cd example
+    sudo arch -x86_64 gem install ffi
+    cd ios  
+    arch -x86_64 pod install 
+    ```
+
+  2. Now you can open the workspace in XCode and can build the project.
+
+### Build Kaltura-Player-RN SDK locally with 'example' app
+
+In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'example' app. 
+
+  - #### Link example app with local `kaltura-player-rn`.
+
+      ```js
+      cd root_folder OR path to `kaltura-player-rn` in you system 
+      yarn link
+
+      cd root_folder/example OR path to `example` app
+      yarn link "kaltura-player-rn"
+      ```
+
+    There is a chance that linking will not work the try adding `kaltura-player-rn` manually using.
+
+      ```js
+      cd root_folder/example OR path to `example` app
+      yarn add path to `kaltura-player-rn` in you system
+      ```
 
   - #### Setup for Android
 
-    1. Open project level `settings.gradle` in Android Studio, add the following,
+    1. If you want to change the Native Android code then inorder to show `kaltura-player-rn` in Android Studio. You need to open project level `settings.gradle` in Android Studio, add the following.
 
         ```gradle
         include ':kaltura-player-rn'
-        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
+        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
         ```
     
-    2. Open `build.gradle` of 'app' and add the following. It will take the reference of local react native bridge of Kaltura Player.
-
-        ```gradle
-        implementation project(':kaltura-player-rn')
-        ```
-    
-    3. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
+    2. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
 
   - #### Setup for iOS
 
-    🔴TODO
+    1. Open 'Podfile' in 'example -> ios'.
+    2. Uncomment `pod 'RNKalturaPlayer', :path => '../..'` from this file. 
+
+
+### How to test my media in the 'example' app.
+
+  1. Open [Test JSON](https://github.com/kaltura/kaltura-player-rn/blob/develop/example/src/test/PlayerTest.json).
+  2. You can add your test media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L75).
+  3. Use 'dash' instead of 'hls' if you want to test mpd of Dash media [here](https://github.com/kaltura/kaltura-player-rn/blob/50e7f3e88ca9212c7478969f3f900515339e7517/example/src/test/PlayerTest.json#L85).
 

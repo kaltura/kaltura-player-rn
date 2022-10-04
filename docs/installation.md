@@ -4,6 +4,8 @@
 npm install kaltura-player-rn
 ```
 
+> **npm** : https://www.npmjs.com/package/kaltura-player-rn 
+
 ## Usage
 
 ```js
