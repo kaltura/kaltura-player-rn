@@ -26,13 +26,11 @@ Kaltura Player is based on Google ExoPlayer in Android and AVPlayer in iOS. Alon
   - [Kaltura Player](https://github.com/kaltura/kaltura-player-android)
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-android-ima)
   - [Youbora](https://github.com/kaltura/playkit-android-youbora)
-  - [Providers (For Kaltura BE only)](https://github.com/kaltura/playkit-android-providers)
 
 - **Kaltura Player iOS contains following Native SDK**
   - [Kaltura Player](https://github.com/kaltura/kaltura-player-ios)
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-ios-ima)
   - [Youbora](https://github.com/kaltura/playkit-ios-youbora)
-  - [Providers (For Kaltura BE only)](https://github.com/kaltura/playkit-ios-providers)
 
 Kaltura Player RN SDK gives the media playback, VR/360 media playback and Offline media playback(Not Supported Currently). If you want to use other plugins like IMA, Youbora, Googlecast then you need to add it as dependency in your FE app's `build.gradle` or `pod` file for Android and iOS. Latest versions are there in Maven or Cocoapods and mentioned on the Github repos as well.
 
