@@ -8,7 +8,7 @@
 
 ```js
 var initOptions = {
-  serverUrl: 'server_url'
+  serverUrl: 'server_url',
   ks: 'kaltura_secret'
 }
 ```
