@@ -2,6 +2,22 @@
 
 `playerInitOptions` includes the important parameters required for the Player setup. 
 
+* [Kaltura BE configs](#kaltura-be-configs)
+* [Network Settings](#network-settings)
+* [ABR (Adaptive Bitrate) Settings](#abr-adaptive-bitrate-settings)
+* [TrackSelection](#trackselection)
+* [Low Latency Config for Live Media ](#low-latency-config-for-live-media)
+* [MulticastSettings](#multicastsettings)
+* [Subtitle Styling and Positioning](#subtitle-styling-and-positioning)
+* [Subtitle Preference](#subtitle-preference)
+* [VideoCodecSettings](#videocodecsettings)
+* [AudioCodecSettings](#audiocodecsettings)
+* [LoadControlBuffers](#loadcontrolbuffers)
+* [VRSettings](#vrsettings)
+* [Player Resize Modes](#player-resize-modes)
+* [WakeLock mode Preference](#wakelock-mode-preference)
+* [More `PlayerInitOptions`](#more-playerinitoptions)
+
 ### Kaltura BE configs
 
   > Required only for OTT/OVP Customers. Server url and ks will be provided by Kaltura BE.
