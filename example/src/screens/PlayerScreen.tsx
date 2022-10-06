@@ -452,6 +452,12 @@ export default class App extends React.Component<any, any> {
     );
 
     eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
+        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
+      })
+    );
+
+    eventsSubscriptionList.push(
       playerEventEmitter.addListener(
         PlayerEvents.SOURCE_SELECTED,
         (payload) => {
@@ -689,12 +695,6 @@ export default class App extends React.Component<any, any> {
             isShowing: false,
           }));
         }
-      })
-    );
-
-    eventsSubscriptionList.push(
-      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
-        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
       })
     );
   };

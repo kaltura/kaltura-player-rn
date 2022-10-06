@@ -49,7 +49,7 @@ enum KalturaPlayerRNAdEvents: String, CaseIterable {
     
     case adBufferStart // adStartedBuffering
     
-    case error
+    case adError
     
     // MARK: Missing events from the iOS side
 //    case streamLoaded // DAI

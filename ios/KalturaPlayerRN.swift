@@ -608,7 +608,7 @@ extension KalturaPlayerRN {
                    errorSeverity = "Recoverable"
                 }
                 
-                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.error.rawValue, body: [
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adError.rawValue, body: [
                     "errorType": errorType ?? -1,
                     "errorCode": error.code,
                     "errorSeverity": errorSeverity,
