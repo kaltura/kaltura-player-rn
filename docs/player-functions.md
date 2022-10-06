@@ -10,7 +10,7 @@ With this, it take the PlayerInitOptions which are having essential Player setti
 
 `playerType`: The Player Type, Basic/OVP/OTT. [Check Constants](#Constants)
 
-`options` : `PlayerInitOptions` JSON String [Check PlayInitOptions](./player-apis.md)
+`options` : `playerInitOptions` JSON String [Check playerInitOptions](./player-initoptions.md)
 
  `id` : PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value should be always greater than 0 and should be valid otherwise, we will not be able to featch the details for the mediaId or the entryId)
 

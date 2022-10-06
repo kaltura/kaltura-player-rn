@@ -22,9 +22,7 @@ npm install kaltura-player-rn
 ```js
 import { KalturaPlayer } from "kaltura-player-rn";
 
- <KalturaPlayer
- 		style={styles.center}
- ></KalturaPlayer>
+ <KalturaPlayer style={styles.center} ></KalturaPlayer>
 
  const styles = StyleSheet.create({
   center: {
@@ -73,10 +71,12 @@ import {
 ## Development Resources
 
 - [Player Functions](./docs/player-functions.md)
-- [Player InitOptions or Settings](./docs/player-initoptions.md)
+- [PlayerInitOptions or PlayerSettings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
 - [Events](./docs/events.md)
 - [Setup Development Environment](./docs/setup-dev-environment.md)
+- [FAQ](./docs/faq.md)
+
 
 ## Contributing
 
