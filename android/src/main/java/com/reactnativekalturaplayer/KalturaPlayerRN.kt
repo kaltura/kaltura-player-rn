@@ -773,6 +773,9 @@ class KalturaPlayerRN(
         initOptionsModel.licenseRequestAdapter?.let {
             playerInitOptions.setLicenseRequestAdapter(it)
         }
+        initOptionsModel.drmSettings?.let {
+            playerInitOptions.setDrmSettings(it)
+        }
     }
 
     /**

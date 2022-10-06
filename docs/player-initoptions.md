@@ -321,6 +321,28 @@ Set WakeLock Mode  - Sets whether the player should not handle wakeLock or shoul
   }
   ```
 
+### DRM Settings
+
+❌ iOS    ✅ Android
+
+Creates a DRM playback configuration. It creates configuration for DRM playback Widevine/Playready. Default is Widevine.
+
+  ```js
+  import { DRM_SCHEME } from "kaltura-player-rn";
+  ```
+
+  ```js
+  var initOptions = {
+    drmSettings: {
+      drmScheme: DRM_SCHEME.WIDEVINE_CENC,
+      isMultiSession : false, //  Default is `false`
+      isForceDefaultLicenseUri : false, //  Default is `false`
+      isAllowClearlead : true, //  Default is `true`
+      isForceWidevineL3Playback: false //  Default is `false`
+    }  
+  }
+  ```
+
 
 ### More `PlayerInitOptions`
 
