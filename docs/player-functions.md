@@ -1,5 +1,13 @@
 ## Player Functions
 
+* [Setup](#setup)
+  * [Adding and removing the Player Listerners](#adding-and-removing-the-player-listerners)
+  * [Load the Player](#load-the-player)
+* [Handle background and foreground application behaviour](#handle-background-and-foreground-application-behaviour)
+* [Add or remove the Player View component (Native Level)](#add-or-remove-the-player-view-component-native-level)
+* [More Player Functions](#more-player-functions)
+* [Constants](#constants)
+
 ### Setup
 ---
 

@@ -6,6 +6,18 @@
 4. We are using YARN package manager in the document. Feel free to use your favourite.
 5. Install **XCode** and **Android Studio (Version Dolphin)** for the development.
 
+* [About Kaltura Player](#about-kaltura-player)
+* [Source Code](#folder-structure)
+* [RN bridge build environment](#building-the-environment-react-native-rn)
+* [Example Test App build environment](#building-the-environment-example-test-app)
+  * [iOS Setup](#setup-for-ios)
+  * [Android Setup](#setup-for-android)
+* [Build RN bridge with Example app in your local machine](#build-kaltura-player-rn-sdk-locally-with-example-app)
+  * [Link example app with RN bridge](#link-example-app-with-local-kaltura-player-rn)
+  * [iOS Setup](#setup-for-ios-1)
+  * [Android Setup](#setup-for-android-1)
+* [Test your media](#how-to-test-my-media-in-the-example-app)
+
 ### About Kaltura Player
 
 Kaltura Player is based on Google ExoPlayer in Android and AVPlayer in iOS. Along with the content playback, it supports Advertisements playback, VR/360 media playback, Chromecast(Not Supported Currently), Offline Media Playback(Not Supported Currently) and reknowned Analytics plugin (NPAW Youbora). If you are a Kaltura BE customer then you can use our Providers plugins which helps in getting the media details from Kaltura BE.
