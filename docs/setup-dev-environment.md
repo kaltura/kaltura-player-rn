@@ -66,7 +66,7 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 - #### Setup for iOS
 
-  1. Native to `example -> ios` folder and run the following,
+  1. Navigate to `example -> ios` folder and run the following,
 
     ```js
     cd example/ios
@@ -91,7 +91,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
   - #### Link example app with local `kaltura-player-rn`.
 
       ```js
-      cd root_folder OR path to `kaltura-player-rn` in you system 
+      cd root_folder OR path to `kaltura-player-rn` in your system 
       yarn link
 
       cd root_folder/example OR path to `example` app
@@ -102,7 +102,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
       ```js
       cd root_folder/example OR path to `example` app
-      yarn add path to `kaltura-player-rn` in you system
+      yarn add path to `kaltura-player-rn` in your system
       ```
 
   - #### Setup for Android
@@ -120,6 +120,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
     1. Open 'Podfile' in 'example -> ios'.
     2. Uncomment `pod 'RNKalturaPlayer', :path => '../..'` from this file. 
+    3. Run `pod update`.
 
 
 ### How to test my media in the 'example' app.
