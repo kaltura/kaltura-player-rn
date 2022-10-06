@@ -26,13 +26,11 @@ Kaltura Player is based on Google ExoPlayer in Android and AVPlayer in iOS. Alon
   - [Kaltura Player](https://github.com/kaltura/kaltura-player-android)
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-android-ima)
   - [Youbora](https://github.com/kaltura/playkit-android-youbora)
-  - [Providers (For Kaltura BE only)](https://github.com/kaltura/playkit-android-providers)
 
 - **Kaltura Player iOS contains following Native SDK**
   - [Kaltura Player](https://github.com/kaltura/kaltura-player-ios)
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-ios-ima)
   - [Youbora](https://github.com/kaltura/playkit-ios-youbora)
-  - [Providers (For Kaltura BE only)](https://github.com/kaltura/playkit-ios-providers)
 
 Kaltura Player RN SDK gives the media playback, VR/360 media playback and Offline media playback(Not Supported Currently). If you want to use other plugins like IMA, Youbora, Googlecast then you need to add it as dependency in your FE app's `build.gradle` or `pod` file for Android and iOS. Latest versions are there in Maven or Cocoapods and mentioned on the Github repos as well.
 
@@ -68,7 +66,7 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 
 - #### Setup for iOS
 
-  1. Native to `example -> ios` folder and run the following,
+  1. Navigate to `example -> ios` folder and run the following,
 
     ```js
     cd example/ios
@@ -93,7 +91,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
   - #### Link example app with local `kaltura-player-rn`.
 
       ```js
-      cd root_folder OR path to `kaltura-player-rn` in you system 
+      cd root_folder OR path to `kaltura-player-rn` in your system 
       yarn link
 
       cd root_folder/example OR path to `example` app
@@ -104,7 +102,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
       ```js
       cd root_folder/example OR path to `example` app
-      yarn add path to `kaltura-player-rn` in you system
+      yarn add path to `kaltura-player-rn` in your system
       ```
 
   - #### Setup for Android
@@ -122,6 +120,7 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
     1. Open 'Podfile' in 'example -> ios'.
     2. Uncomment `pod 'RNKalturaPlayer', :path => '../..'` from this file. 
+    3. Run `pod update`.
 
 
 ### How to test any media in the 'example' app.
