@@ -138,15 +138,15 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             return
         }
         
-        guard let assetId = assetId, !assetId.isEmpty , let mediaAsset = mediaAsset, !mediaAsset.isEmpty else {
-            let message = "The assetId and/or mediaAsset is empty."
+        guard let assetId = assetId, !assetId.isEmpty else {
+            let message = "The assetId is empty."
             let error = KalturaPlayerRNError.loadMediaFailed(message: message).asNSError
             reject("ERROR_LOADMEDIA", message, error)
             return
         }
         
         DispatchQueue.main.async {
-            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset) { error in
+            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset ?? "{}") { error in
                 if let kpRNError = error {
                     let message = kpRNError.userInfo[KalturaPlayerRNError.errorMessageKey] as? String
                     let nsError = kpRNError.asNSError
