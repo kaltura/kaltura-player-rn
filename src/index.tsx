@@ -97,7 +97,7 @@ export class KalturaPlayerAPI {
       return;
     }
 
-    if (!options) {
+    if (!options && playerType != PLAYER_TYPE.BASIC) {
       printConsoleLog(`setup, invalid options = ${options}`, LogType.ERROR);
       return;
     }
@@ -118,9 +118,9 @@ export class KalturaPlayerAPI {
    * @param asset Media Asset JSON String
    */
   static loadMedia = async (id: string, asset: string) => {
-    if (!id || !asset) {
+    if (!id) {
       printConsoleLog(
-        `loadMedia, invalid id = ${id} or asset = ${asset}`,
+        `loadMedia, invalid id = ${id}`,
         LogType.ERROR
       );
       return;

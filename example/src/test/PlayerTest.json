@@ -72,6 +72,22 @@
     "vod": {
       "hls": [
         {
+          "id": "empty_initoptions_test",
+          "mediaList": [
+            {
+              "mediaId": "http://cdnapi.kaltura.com/p/243342/sp/24334200/playManifest/entryId/0_uka1msg4/flavorIds/1_vqhfu6uy,1_80sohj7p/format/applehttp/protocol/http/a.m3u8",
+              "mediaAsset": {
+                "id": "basicId",
+                "name": "basicName",
+                "duration": 120,
+                "mediaEntryType": "Vod",
+                "mediaFormat": "hls",
+                "startPosition": 0
+              }
+            }
+          ]
+        },
+        {
           "id": "hls_basic_playback",
           "partnerId": 0,
           "mediaList": [
@@ -405,6 +421,19 @@
     "vod": {
       "dash": [
         {
+          "id": "ovp_without media asset",
+          "partnerId": 2215841,
+          "mediaList": [
+            {
+              "mediaId": "1_w9zx2eti"
+            }
+          ],
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true
+          }
+        },
+        {
           "id": "abr_maxBit_1M",
           "partnerId": 2215841,
           "mediaList": [
@@ -501,6 +530,26 @@
   "ott": {
     "vod": {
       "hls": [
+        {
+          "id": "548576_withoutMediaAsset",
+          "partnerId": 3009,
+          "mediaList": [
+            {
+              "mediaId": "548576",
+              "mediaAsset": {
+                "format": [
+                  "Mobile_Main"
+                ],
+                "assetType": "media",
+                "networkProtocol": "http"
+              }
+            }
+          ],
+          "initOptions": {
+            "serverUrl": "https://rest-us.ott.kaltura.com/v4_5/api_v3/",
+            "autoplay": true
+          }
+        },
         {
           "id": "548576",
           "partnerId": 3009,

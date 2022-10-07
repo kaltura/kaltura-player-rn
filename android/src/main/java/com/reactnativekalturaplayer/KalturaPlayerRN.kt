@@ -592,8 +592,8 @@ class KalturaPlayerRN(
             return
         }
 
-        if (TextUtils.isEmpty(assetId) || TextUtils.isEmpty(mediaAssetJson)) {
-            val message = "assetId $assetId or mediaAssetJson $mediaAssetJson is invalid"
+        if (TextUtils.isEmpty(assetId)) {
+            val message = "assetId $assetId is invalid"
             log.e(message)
             sendCallbackToJS(promise, message, true)
             return
@@ -616,13 +616,11 @@ class KalturaPlayerRN(
                 sendCallbackToJS(promise, gson.toJson(mediaEntry))
             }
         } else if (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp) {
-            val mediaAsset = getParsedJson(mediaAssetJson, MediaAsset::class.java)
-            if (mediaAsset == null || player == null) {
-                val message = "Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $mediaAsset"
-                log.e(message)
-                sendCallbackToJS(promise, message, true)
-                return
+            var mediaAsset = getParsedJson(mediaAssetJson, MediaAsset::class.java)
+            if (mediaAsset == null) {
+                mediaAsset = MediaAsset()
             }
+
             if (getPlayerType() == KalturaPlayer.Type.ott) {
                 runOnUiThread {
                     val ottMediaOptions = mediaAsset.buildOttMediaOptions(assetId, player?.ks)
@@ -637,6 +635,7 @@ class KalturaPlayerRN(
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
+                            player?.startPosition = mediaAsset.startPosition
                         }
                     }
                 }
@@ -654,6 +653,7 @@ class KalturaPlayerRN(
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
+                            player?.startPosition = mediaAsset.startPosition
                         }
                     }
                 }

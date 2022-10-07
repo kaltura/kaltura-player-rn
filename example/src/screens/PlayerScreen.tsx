@@ -151,22 +151,24 @@ export default class App extends React.Component<any, any> {
       return;
     }
 
-    var isDaiPlugin = options.plugins.imadai;
-    console.log(`isDaiPlugin = ${JSON.stringify(isDaiPlugin)}`);
-    if (isDaiPlugin) {
-      console.log(`isDaiPlugin = true`);
-      this.setState(() => ({
-        isDAIPluginAvailable: true,
-      }));
+    if (options != null && options.plugins != null) {
+      var isDaiPlugin = options.plugins.imadai;
+      console.log(`isDaiPlugin = ${JSON.stringify(isDaiPlugin)}`);
+      if (isDaiPlugin) {
+        console.log(`isDaiPlugin = true`);
+        this.setState(() => ({
+          isDAIPluginAvailable: true,
+        }));
+      }
     }
-
+    
     this.subscribeToAppLifecyle();
-    this.player.enableDebugLogs(true);
+    //this.player.enableDebugLogs(true);
 
     setupKalturaPlayer(
       this.player,
       playerType,
-      JSON.stringify(options),
+      options != null ? JSON.stringify(options) : "",
       JSON.stringify(asset),
       mediaId,
       partnerId
@@ -200,7 +202,7 @@ export default class App extends React.Component<any, any> {
 
   getPlayerCurrentPosition(): any {
     this.player.getCurrentPosition().then((value: any) => {
-      console.log(`getPlayerCurrentPosition ${value}`);
+      //console.log(`getPlayerCurrentPosition ${value}`);
       if (value >= 0) {
         this.setState(() => ({
           currentPosition: value,
@@ -354,7 +356,7 @@ export default class App extends React.Component<any, any> {
 
   startDAIPositionTimer() {
     this.progressInterval = setInterval(() => {
-      console.log(`Inside progressInterval timer`);
+      //console.log(`Inside progressInterval timer`);
       this.getPlayerCurrentPosition();
     }, timerInterval);
   }

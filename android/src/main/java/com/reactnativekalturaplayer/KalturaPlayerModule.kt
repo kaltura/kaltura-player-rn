@@ -35,6 +35,7 @@ class KalturaPlayerModule(
     @ReactMethod
     fun setUpPlayer(playerType: String, partnerId: Int = 0, initOptions: String?, promise: Promise) {
         log.d("setPartnerId: $partnerId")
+        checkArguments(this::setUpPlayer.name, playerType)
         kalturaPlayerRN.createPlayerInstance(getKalturaPlayerType(playerType), partnerId, initOptions, promise)
     }
 
@@ -45,7 +46,6 @@ class KalturaPlayerModule(
                     "\n , mediaAssetJson:" + mediaAsset
         )
         checkArguments(this::load.name, assetId)
-        checkArguments(this::load.name, mediaAsset)
         kalturaPlayerRN.load(assetId, mediaAsset, promise)
     }
 
