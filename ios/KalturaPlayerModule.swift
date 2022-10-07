@@ -66,7 +66,20 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     @objc func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
                            resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         
-        guard let options = initOptions, !options.isEmpty else {
+        self.playerType = getPlayerType(from: type)
+        var defaultOptions = initOptions
+        
+        if playerType == .basic {
+            if initOptions == nil {
+                defaultOptions = "{}"
+            } else{
+                if let initOptions = initOptions, initOptions.isEmpty {
+                    defaultOptions = "{}"
+                }
+            }
+        }
+        
+        guard let options = defaultOptions, !options.isEmpty else {
             let message = "The initOptions can not be empty."
             let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
             reject("ERROR_SETUPPLAYER", message, error)
@@ -86,8 +99,6 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         
         //TODO: Remove print
         print(initOptions)
-        
-        self.playerType = getPlayerType(from: type)
         
         DispatchQueue.main.async {
             switch self.playerType {
