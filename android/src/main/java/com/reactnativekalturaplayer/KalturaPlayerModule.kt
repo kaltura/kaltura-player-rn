@@ -248,6 +248,12 @@ class KalturaPlayerModule(
         kalturaPlayerRN.requestThumbnailInfo(positionMs, promise)
     }
 
+    @ReactMethod
+    fun setLogLevel(logLevel: String) {
+        log.d("setLogLevel $logLevel")
+        kalturaPlayerRN.setLogLevel(logLevel)
+    }
+
     @Throws(IllegalArgumentException::class)
     @NonNull
     private fun checkArguments(methodName: String, arg: String?) {

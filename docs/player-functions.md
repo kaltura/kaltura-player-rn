@@ -197,7 +197,7 @@ By default Player view component is attached to the Player so no need to call `a
 |`isPlaying()`     | ✅     |  ✅    |   **Async** function. Checks if Player is currently playing or not. Returns `boolean`.     |
 |`isLive()`     | ✅     |  ✅    |    **Async** function. Checks if the stream is Live or Not. Returns `boolean`.     |
 |`requestThumbnailInfo(positionMs: number)`     | ❌     |  ✅    |    **Async** function. Get the Information for a thumbnail image by position. Returns **ThumbnailInfo JSON** object.     |
-|`enableDebugLogs()`     | ✅     |  ✅    |   Enable the console logs for the JS bridge. By default it is disabled. Set `true` to enable the logs.       |
+|`enableDebugLogs = (enabled: boolean, logLevel: LOG_LEVEL = LOG_LEVEL.DEBUG)`     | ✅     |  ✅    |   Enable the console logs for the JS bridge and Player. By default the logs are disabled. For logLevel options check [constants](#Constants#LOG_LEVEL). Just set `enabled` to `false` to disable all the logs. Default logLevel `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.      |
 
 
 ### Constants
@@ -499,5 +499,18 @@ export enum IMA_AD_TAG_TYPE {
 export enum IMADAI_STREAM_FORMAT {
   DASH = "DASH",
   HLS = "HLS"
+}
+```
+
+- **LOG_LEVEL**
+
+```js
+export enum LOG_LEVEL {
+  VERBOSE = "VERBOSE",
+  DEBUG = "DEBUG",
+  WARN = "WARN",
+  INFO = "INFO",
+  ERROR = "ERROR",
+  OFF = "OFF"
 }
 ```

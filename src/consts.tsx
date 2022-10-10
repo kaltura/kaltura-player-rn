@@ -170,3 +170,12 @@ export enum IMADAI_STREAM_FORMAT {
   DASH = "DASH",
   HLS = "HLS"
 }
+
+export enum LOG_LEVEL {
+  VERBOSE = "VERBOSE",
+  DEBUG = "DEBUG",
+  WARN = "WARN",
+  INFO = "INFO",
+  ERROR = "ERROR",
+  OFF = "OFF"
+}

@@ -15,6 +15,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.kaltura.netkit.utils.ErrorElement
+import com.kaltura.netkit.utils.NKLog
 import com.kaltura.playkit.*
 import com.kaltura.playkit.ads.AdController
 import com.kaltura.playkit.ads.PKAdErrorType
@@ -33,6 +34,7 @@ import com.reactnativekalturaplayer.model.tracks.TracksInfo
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 class KalturaPlayerRN(
     private val context: ReactApplicationContext,
@@ -527,52 +529,43 @@ class KalturaPlayerRN(
         }
     }
 
-    // TODO: NOT ADDED YET AS PROPS
-    //NOOP
     fun setLogLevel(logLevel: String) {
-//        var logLevel = logLevel
-//        log.d("setLogLevel: $logLevel")
-//        if (TextUtils.isEmpty(logLevel)) {
-//            return
-//        }
-//        logLevel = logLevel.uppercase(Locale.getDefault())
-//        when (logLevel) {
-//            "VERBOSE" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.verbose)
-//                NKLog.setGlobalLevel(NKLog.Level.verbose)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.VERBOSE)
-//            }
-//            "DEBUG" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.debug)
-//                NKLog.setGlobalLevel(NKLog.Level.debug)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.DEBUG)
-//            }
-//            "WARN" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.warn)
-//                NKLog.setGlobalLevel(NKLog.Level.warn)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.WARNING)
-//            }
-//            "INFO" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.info)
-//                NKLog.setGlobalLevel(NKLog.Level.info)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.NOTICE)
-//            }
-//            "ERROR" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.error)
-//                NKLog.setGlobalLevel(NKLog.Level.error)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.ERROR)
-//            }
-//            "OFF" -> {
-//                PKLog.setGlobalLevel(PKLog.Level.off)
-//                NKLog.setGlobalLevel(NKLog.Level.off)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
-//            }
-//            else -> {
-//                PKLog.setGlobalLevel(PKLog.Level.off)
-//                NKLog.setGlobalLevel(NKLog.Level.off)
-//                YouboraLog.setDebugLevel(YouboraLog.Level.SILENT)
-//            }
-//        }
+        var level = logLevel
+        log.d("setLogLevel: $level")
+        if (TextUtils.isEmpty(level)) {
+            return
+        }
+        level = level.uppercase(Locale.getDefault())
+        when (level) {
+            "VERBOSE" -> {
+                PKLog.setGlobalLevel(PKLog.Level.verbose)
+                NKLog.setGlobalLevel(NKLog.Level.verbose)
+            }
+            "DEBUG" -> {
+                PKLog.setGlobalLevel(PKLog.Level.debug)
+                NKLog.setGlobalLevel(NKLog.Level.debug)
+            }
+            "WARN" -> {
+                PKLog.setGlobalLevel(PKLog.Level.warn)
+                NKLog.setGlobalLevel(NKLog.Level.warn)
+            }
+            "INFO" -> {
+                PKLog.setGlobalLevel(PKLog.Level.info)
+                NKLog.setGlobalLevel(NKLog.Level.info)
+            }
+            "ERROR" -> {
+                PKLog.setGlobalLevel(PKLog.Level.error)
+                NKLog.setGlobalLevel(NKLog.Level.error)
+            }
+            "OFF" -> {
+                PKLog.setGlobalLevel(PKLog.Level.off)
+                NKLog.setGlobalLevel(NKLog.Level.off)
+            }
+            else -> {
+                PKLog.setGlobalLevel(PKLog.Level.off)
+                NKLog.setGlobalLevel(NKLog.Level.off)
+            }
+        }
     }
 
     /**
