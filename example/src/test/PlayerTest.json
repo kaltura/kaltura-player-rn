@@ -198,7 +198,16 @@
           }
         }
       ],
-      "dash": [],
+      "dash": [
+        {
+          "id": "empty_initoptions_mediaAsset_test",
+          "mediaList": [
+            {
+              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"
+            }
+          ]
+        }
+      ],
       "mp4": []
     },
     "drm": {
@@ -423,15 +432,15 @@
         {
           "id": "ovp_without media asset",
           "partnerId": 2215841,
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true
+          },
           "mediaList": [
             {
               "mediaId": "1_w9zx2eti"
             }
-          ],
-          "initOptions": {
-            "serverUrl": "https://cdnapisec.kaltura.com",
-            "autoplay": true
-          }
+          ]
         },
         {
           "id": "abr_maxBit_1M",
@@ -493,6 +502,22 @@
             },
             "handleAudioFocus": true
           }
+        },
+        {
+          "id": "ChangeMedia OVP -> Basic Media",
+          "partnerId": 2215841,
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true
+          },
+          "mediaList": [
+            {
+              "mediaId": "1_w9zx2eti"
+            },
+            {
+              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"
+            }
+          ]
         }
       ],
       "hls": [],

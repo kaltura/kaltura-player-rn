@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -599,17 +600,16 @@ class KalturaPlayerRN(
             return
         }
 
-        if (getPlayerType() == KalturaPlayer.Type.basic || isBasicPlaybackRequired(mediaAssetJson)) {
-            val basicMediaAsset = getParsedJson(
+        if (getPlayerType() == KalturaPlayer.Type.basic || isBasicPlaybackRequired(assetId)) {
+            var basicMediaAsset = getParsedJson(
                 mediaAssetJson,
                 BasicMediaAsset::class.java
             )
-            if (basicMediaAsset == null || basicMediaAsset.mediaFormat == null) {
-                val message = "Invalid Media Asset for player type ${getPlayerType()} \n and media asset is $basicMediaAsset"
-                log.e(message)
-                sendCallbackToJS(promise, message, true)
-                return
+
+            if (basicMediaAsset == null) {
+                basicMediaAsset = BasicMediaAsset()
             }
+
             val mediaEntry = createMediaEntry(assetId, basicMediaAsset)
             runOnUiThread {
                 player?.setMedia(mediaEntry, basicMediaAsset.startPosition)
@@ -852,16 +852,15 @@ class KalturaPlayerRN(
      * This method checks if the Player type is OVP/OTT
      * but still app wants to play a media using URL or DRM license URL
      * instead of using our backend.
+     * @param assetURL Playback URL for basic player
      *
      * @return `true` if basic playback required
      */
-    private fun isBasicPlaybackRequired(basicMediaAsset: String?): Boolean {
-        if ((basicMediaAsset != null) && (playerType != null) && (playerType != KalturaPlayer.Type.basic)) {
-            val mediaAsset = getParsedJson(
-                basicMediaAsset,
-                BasicMediaAsset::class.java
-            )
-            return mediaAsset != null && mediaAsset.mediaFormat != null
+    private fun isBasicPlaybackRequired(assetURL: String?): Boolean {
+        if (!TextUtils.isEmpty(assetURL) && playerType != null && playerType != KalturaPlayer.Type.basic) {
+            val isBasicPlayback = URLUtil.isValidUrl(assetURL) && PKMediaFormat.valueOfUrl(assetURL) != null
+            log.d("isBasicPlaybackRequired = $isBasicPlayback")
+            return isBasicPlayback
         }
         return false
     }

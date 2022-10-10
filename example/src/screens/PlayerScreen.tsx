@@ -845,7 +845,7 @@ function changeMedia(playbackJson: object, player: KalturaPlayerAPI, mediaIndex:
     mediaId = mediaList[currentChangeMediaIndex].mediaId;
     console.log(`Change media asset is ${JSON.stringify(asset)} `);
     console.log(`Change media mediaId is ${mediaId} `);
-    if (!mediaId || !asset) {
+    if (!mediaId) {
       showToast(`Next item can not be played`);
       return;
     }

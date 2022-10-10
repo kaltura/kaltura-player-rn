@@ -44,12 +44,12 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 
 `id` : **Mandatory playback URL** for Kaltura Basic Player OR **MediaId** for Kaltura OTT Player OR **EntryId** for Kaltura OVP Player.
 
-`asset` : **Mandatory for Basic Player**. Media Asset JSON String. _**Optional for OVP Player.**_
+`asset` : **Optional**. Media Asset JSON String.
 
-**For Basic Player**: _**Mandatory field**_. App can use the following config. Should only be used by non-Kaltura BE users. 
+[**`asset` for Basic Player**: _**Optional**_](). App can use the following config. Should only be used by non-Kaltura BE users. 
 
 ```json
-"mediaAsset": {
+          "mediaAsset": {
             "id": "basicId",
             "name": "basicName",
             "duration": 120,
@@ -79,10 +79,10 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 * `externalSubtitleList` *JSONArray* - _**Optional**_  🔴TODO
 * `externalVttThumbnailUrl` - _**Optional**_  Pass the VTT thumbnail URL. These images will be shown when the user scrubs on the seekbar. To show the images logic should be handled by the FE app. You will recieve the additional information the `ImageTracks` of `TracksAvailable` event. [Check PlayerEvents](./player-event.md)
 
-**For OVP/OTT Player**: _**Optional field**_. App can use the following config. Should only be used by the Kaltura BE users.
+[**`asset` for  OVP/OTT Player**: _**Optional**_]() App can use the following config. Should only be used by the Kaltura BE users.
 
 ```json
-"mediaAsset": {
+          "mediaAsset": {
             "initialVolume": 1.0,
             "format": ["Mobile_Main"],
             "assetType": "media",
@@ -115,6 +115,36 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 
 * `redirectFromEntryId` *Boolean* - _**Optional for OVP.**_ Default is `true`. **Only for OVP BE users**
 * `useApiCaptions` *Boolean* - _**Optional for OVP.**_ Default is `false`. **Only for OVP BE users**
+
+### Changing the media (Play the next/previous media)
+---
+
+App can simply call `loadMedia = async (id: string, asset: string)` with the next/previous media using the steps given [here](./player-functions.md#load-the-player).
+
+> Note: If app is setting up 'OVP' or 'OTT' Player they can still pass the playback URL like it can be does using 'Basic' Player. 
+
+_Example:_ Here OVP Player is created but for the next media (changeMedia) app is simply passing a playback URL.
+
+```js
+        {
+          "id": "ChangeMedia OVP -> Basic Media",
+          "partnerId": 2215841,
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true
+          },
+          "mediaList": [
+            {
+              "mediaId": "1_w9zx2eti"
+            },
+            {
+              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"
+            }
+          ]
+        }
+
+```
+
 
 ### Handle background and foreground application behaviour
 ---
