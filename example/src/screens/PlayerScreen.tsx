@@ -179,6 +179,8 @@ export default class App extends React.Component<any, any> {
       if (this.state.isDAIPluginAvailable) {
         this.startDAIPositionTimer();
       }
+    }).catch((error) => {
+      console.error(`${error}`);
     });
   }
 
@@ -866,7 +868,9 @@ function changeMedia(playbackJson: object, player: KalturaPlayerAPI, mediaIndex:
 function loadMediaToKalturaPlayer(player: KalturaPlayerAPI, mediaId: String, mediaAsset: String) {
   player
     .loadMedia(mediaId, mediaAsset)
-    .then((response: any) => console.log(`mediaLoaded => ${response}`));
+    .then((response: any) => console.log(`mediaLoaded => ${response}`)).catch((error: any) => {
+      console.error(`${error}`);
+    });
 }
 
 async function setupKalturaPlayer(
@@ -887,7 +891,7 @@ async function setupKalturaPlayer(
       console.error('Player is not created.');
     }
   } catch (err) {
-    console.log(err);
+    console.log(`setupKalturaPlayer ${err}`);
     throw err;
   }
 }

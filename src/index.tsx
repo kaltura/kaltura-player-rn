@@ -489,7 +489,7 @@ async function setupKalturaPlayer(
       `setupKalturaPlayer Exception: ${exception}`,
       LogType.ERROR
     );
-    return exception;
+    return Promise.reject(exception);
   }
 }
 
@@ -503,7 +503,7 @@ async function loadMediaKalturaPlayer(id: string, asset: string) {
       `loadMediaKalturaPlayer Exception: ${exception}`,
       LogType.ERROR
     );
-    return exception;
+    return Promise.reject(exception);
   }
 }
 
@@ -547,7 +547,7 @@ async function getThumbnailInfo(position: number) {
     return thumbnailInfo;
   } catch (exception) {
     printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
-    return exception;
+    return Promise.reject(exception);
   }
 }
 
