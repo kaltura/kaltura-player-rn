@@ -1612,14 +1612,21 @@ class KalturaPlayerRN(
                         " }")
             )
         }
-//        player?.addListener(context, BroadpeakEvent.error) { event: BroadpeakEvent.ErrorEvent ->
-//            sendPlayerEvent(
-//                "broadpeakError", ("{ \"errorMessage\": \"" + event.errorMessage + "\" " +
-//                        ", \"errorCode\": \"" + event.errorCode + "\" " +
-//                        ", \"errorType\": \"" + event.type + "\" " +
-//                        " }")
-//            )
-//        }
+        player?.addListener(context, InterceptorEvent.sourceUrlSwitched) { event ->
+            sendPlayerEvent(
+                KalturaPlayerAnalyticsEvents.SOURCE_URL_SWITCHED,
+                ("{ \"originalUrl\": \"" + event.originalUrl + "\" " +
+                        ", \"updatedUrl\": \"" + event.updatedUrl + "\" " +
+                        " }")
+            )
+        }
+        player?.addListener(context, InterceptorEvent.cdnSwitched) { event ->
+            sendPlayerEvent(
+                KalturaPlayerAnalyticsEvents.CDN_SWITCHED,
+                ("{ \"cdnCode\": \"" + event.cdnCode + "\" " +
+                        " }")
+            )
+        }
 
         log.d("Player listeners are added.")
     }

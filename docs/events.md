@@ -155,3 +155,5 @@ It talks about more about the concurrency level errors on the stream. These even
 |`PHOENIX_CONCURRENCY_ERROR`|**TODO**|✅ |✅ |
 |`PHOENIX_BOOKMARK_ERROR`|**TODO**|✅ |✅ |
 |`PHOENIX_ERROR`|**TODO**|✅ |✅ |
+|`SOURCE_URL_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "originalUrl": String,<br>&nbsp;&nbsp;&nbsp;&nbsp; "updatedUrl": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |✅ |
+|`CDN_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "cdnCode": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |✅ |
