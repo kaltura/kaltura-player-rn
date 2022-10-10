@@ -483,3 +483,21 @@ export enum MULTICAST_EXTRACTOR_MODE {
   MODE_HLS = 'MODE_HLS'
 }
 ```
+
+- **IMA_AD_TAG_TYPE** <br>
+
+```js
+export enum IMA_AD_TAG_TYPE {
+  VMAP = "VMAP",
+  VAST = "VAST"
+}
+```
+
+- **IMADAI_STREAM_FORMAT** <br>
+
+```js
+export enum IMADAI_STREAM_FORMAT {
+  DASH = "DASH",
+  HLS = "HLS"
+}
+```
