@@ -78,18 +78,3 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         callback(nil)
     }
 }
-
-extension BasicKalturaPlayerRN {
-    
-    private func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
-        let data = Data(mediaAsset.utf8)
-        let mediaAsset: BasicMediaAsset?
-        do {
-            mediaAsset = try JSONDecoder().decode(BasicMediaAsset.self, from: data)
-        } catch let error as NSError {
-            PKLog.debug("Couldn't parse Basic MediaAsset, error: \(error)")
-            return nil
-        }
-        return mediaAsset
-    }
-}

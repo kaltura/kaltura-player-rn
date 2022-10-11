@@ -145,6 +145,25 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             return
         }
         
+        let playbackURL = URL(string: assetId)
+        let isValidURL = UIApplication.shared.canOpenURL(playbackURL!)
+        
+        // If FE is passing an assetId which is playback URL actually then try to play it using basic player way
+        if isValidURL && playerType != .basic {
+            DispatchQueue.main.async {
+                kalturaPlayerRN.playerMediaUsingBasicPlayer(assetId: assetId, mediaAsset: mediaAsset ?? "{}") { error in
+                    if let kpRNError = error {
+                        let message = kpRNError.userInfo[KalturaPlayerRNError.errorMessageKey] as? String
+                        let nsError = kpRNError.asNSError
+                        reject("ERROR_LOADMEDIA", message, nsError)
+                    } else {
+                        resolve("Sucess")
+                    }
+                }
+            }
+            return
+        }
+        
         DispatchQueue.main.async {
             kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset ?? "{}") { error in
                 if let kpRNError = error {

@@ -242,7 +242,78 @@ extension KalturaPlayerRN {
             break
         }
     }
-}
+    
+    /**
+        If Player is setup either OTT or OVP but still FE wants to play media using playback URL not using mediaId or entryId
+        then directly use KalturaPlayer and set the media
+     */
+    func playerMediaUsingBasicPlayer(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
+        guard let contentUrl = URL(string: assetId) else {
+            let message = "The content URL is not valid."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
+        guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else {
+            let message = "Parsing the Media Asset failed."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
+        
+        let mediaOptions = basicMediaAsset.getMediaOptions()
+        
+        var drmData:[PlayKit.DRMParams]? = nil
+        if let assetDRMData = basicMediaAsset.drmData {
+            if let licenseUri = assetDRMData.licenseUri, !licenseUri.isEmpty,
+               let base64EncodedCertificate = assetDRMData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
+                switch Scheme(string: assetDRMData.scheme ?? "") {
+                case .fairplay:
+                    drmData = [FairPlayDRMParams(licenseUri: licenseUri,
+                                                 base64EncodedCertificate: base64EncodedCertificate)]
+                case .widevineCenc:
+                    break
+                case .playreadyCenc:
+                    break
+                case .widevineClassic:
+                    break
+                case .unknown:
+                    break
+                }
+            }
+        }
+        
+        var mediaSource = [PKMediaSource]()
+        let pkMediaSource = PKMediaSource("basicMediaSourceId", contentUrl: contentUrl, mimeType: nil, drmData: drmData, mediaFormat: PKMediaSource.MediaFormat.unknown)
+        mediaSource.append(pkMediaSource)
+        
+        let pkMediaEntry = PKMediaEntry("basicMediaEntryId", sources: mediaSource)
+        
+        
+        kalturaPlayer?.setMedia(pkMediaEntry)
+        
+        // If the autoPlay and preload was set to false, prepare will not be called automatically
+        if initOptions.autoplay == false && initOptions.preload == false {
+            kalturaPlayer?.prepare()
+        }
+        
+        updateMediaSettings()
+        
+        callback(nil)
+    }
+    
+    func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
+        let data = Data(mediaAsset.utf8)
+        let mediaAsset: BasicMediaAsset?
+        do {
+            mediaAsset = try JSONDecoder().decode(BasicMediaAsset.self, from: data)
+        } catch let error as NSError {
+            PKLog.debug("Couldn't parse Basic MediaAsset, error: \(error)")
+            return nil
+        }
+        return mediaAsset
+    }
+ }
 
 extension KalturaPlayerRN {
     
