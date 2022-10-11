@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PlayKit
 
 @objc(KalturaPlayerEvents)
 class KalturaPlayerEvents: RCTEventEmitter {
@@ -369,5 +370,17 @@ extension KalturaPlayerModule {
                 reject("ERROR_ISPLAYING", message, error)
             }
         }
+    }
+}
+
+extension KalturaPlayerModule {
+    @objc func setLogLevel(logLevel: String?) {
+        guard let logLevel = logLevel, !logLevel.isEmpty else {
+            return
+        }
+        
+        // TODO:
+        
+        
     }
 }

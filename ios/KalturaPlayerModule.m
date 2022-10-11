@@ -58,4 +58,6 @@ RCT_EXTERN_METHOD(isPlaying:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isLive:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(setLogLevel:(NSString *)logLevel)
+
 @end
