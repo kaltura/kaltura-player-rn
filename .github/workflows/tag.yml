@@ -16,7 +16,7 @@ on:
   
 jobs:
   create_tag:
-
+    environment: Release
     runs-on: ubuntu-latest
 
     steps:

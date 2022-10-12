@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   npm_publish:
+    environment: Release
     runs-on: ubuntu-latest
     steps:
     - name: checkout
