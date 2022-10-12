@@ -1,6 +1,8 @@
+[![npm](https://img.shields.io/npm/v/kaltura-player-rn)](https://www.npmjs.com/package/kaltura-player-rn)
 ![ReleaseType](https://img.shields.io/badge/Release%20Type-Alpha-blue)
 ![Platform](https://img.shields.io/badge/Platform-React--Native%20Video%20Player-green)
-
+[![build CI](https://github.com/kaltura/kaltura-player-rn/actions/workflows/build.yml/badge.svg)](https://github.com/kaltura/kaltura-player-rn/actions/workflows/build.yml)
+[![build_pull_request CI](https://github.com/kaltura/kaltura-player-rn/actions/workflows/build_pull_request.yml/badge.svg)](https://github.com/kaltura/kaltura-player-rn/actions/workflows/build_pull_request.yml)
 
 ## Kaltura Player React Native
 
