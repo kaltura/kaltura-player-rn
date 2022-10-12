@@ -2695,8 +2695,10 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-"kaltura-player-rn@file:..":
-  version "0.1.0"
+kaltura-player-rn@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/kaltura-player-rn/-/kaltura-player-rn-0.3.0.tgz#675ab2386226c72c0cecbadcc587d6f55c88aa13"
+  integrity sha512-UVE/Vk0WGfgMEUSOqE1Ef2eqCFNzjYY7LEkP+6Z9Lu+TxQ7csi5c7NWkf77qapE7r2tNUJe0einw96Ch7GaRQQ==
   dependencies:
     prop-types "^15.8.1"
     react "17.0.2"
