@@ -14,6 +14,11 @@ like Youbora.
 ```sh
 npm install kaltura-player-rn
 ```
+OR 
+
+```sh
+yarn add kaltura-player-rn
+```
 
 > **npm** : https://www.npmjs.com/package/kaltura-player-rn 
 
