@@ -3,6 +3,10 @@ name: publish CI
 on:
   workflow_dispatch:
     inputs:
+      target_branch:
+        description: "Give the correct branch name from where a new branch will be created."
+        required: true
+        type: string
       release_type:
         type: choice
         description: 'Release Type'
@@ -12,9 +16,10 @@ on:
       release_branch_name:
         type: string
         required: true
-        description: "Branch name (Without 'v' Ex: 1.0.0)"
+        description: "New Branch name (Without 'v' Ex: 1.0.0)"
 
 env: 
+  TARGET_BRANCH: ${{ inputs.target_branch}}
   RELEASE_TYPE: ${{ inputs.release_type}}
   BRANCH_NAME: ${{ inputs.release_branch_name}}
 
@@ -43,19 +48,14 @@ jobs:
         git config user.email "<>"
 
     - name: Create Branch 
-      env:
-        B_NAME: ${RELEASE_TYPE}/v${BRANCH_NAME}
       run: |
-        echo "Branch Name: ${B_NAME}"
-        git branch ${B_NAME} develop
-        git push origin ${B_NAME}
+        git branch ${RELEASE_TYPE}/v${BRANCH_NAME} ${TARGET_BRANCH}
+        git push origin ${RELEASE_TYPE}/v${BRANCH_NAME}
 
     - name: Create Tag 🏷️
-      env: 
-        T_NAME: v${BRANCH_NAME}
       run: |
-        git tag ${T_NAME} ${GITHUB_SHA}
-        git push origin ${T_NAME}
+        git tag v${BRANCH_NAME} ${GITHUB_SHA}
+        git push origin v${BRANCH_NAME}
 
     - name: Install package Manager 📥
       run: yarn install
