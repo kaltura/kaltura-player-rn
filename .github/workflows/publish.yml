@@ -57,6 +57,10 @@ jobs:
         git tag v${BRANCH_NAME} ${GITHUB_SHA}
         git push origin v${BRANCH_NAME}
 
+    - name: Create Release Notes
+      run: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} BRANCH_NAME=${BRANCH_NAME} bash .github/release_notes.sh
+
     - name: Install package Manager 📥
       run: yarn install
 
