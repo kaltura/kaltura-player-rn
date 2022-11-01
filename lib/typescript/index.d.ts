@@ -3,8 +3,8 @@ import React from 'react';
 import { PlayerEvents } from './events/PlayerEvents';
 import { AdEvents } from './events/AdEvents';
 import { AnalyticsEvents } from './events/AnalyticsEvents';
-import { PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, WAKEMODE, SUBTITLE_STYLE, SUBTITLE_PREFERENCE, VIDEO_CODEC, AUDIO_CODEC, VR_INTERACTION_MODE } from './consts';
-export { PlayerEvents, AdEvents, AnalyticsEvents, PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, WAKEMODE, SUBTITLE_STYLE, SUBTITLE_PREFERENCE, VIDEO_CODEC, AUDIO_CODEC, VR_INTERACTION_MODE, };
+import { PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, WAKEMODE, SUBTITLE_STYLE, SUBTITLE_PREFERENCE, VIDEO_CODEC, AUDIO_CODEC, VR_INTERACTION_MODE, LOG_LEVEL } from './consts';
+export { PlayerEvents, AdEvents, AnalyticsEvents, PLAYER_TYPE, MEDIA_FORMAT, MEDIA_ENTRY_TYPE, DRM_SCHEME, PLAYER_PLUGIN, PLAYER_RESIZE_MODES, WAKEMODE, SUBTITLE_STYLE, SUBTITLE_PREFERENCE, VIDEO_CODEC, AUDIO_CODEC, VR_INTERACTION_MODE, LOG_LEVEL, };
 interface KalturaPlayerProps {
     style: ViewStyle;
 }
@@ -190,10 +190,15 @@ export declare class KalturaPlayerAPI {
      */
     static requestThumbnailInfo: (positionMs: number) => Promise<any>;
     /**
-     * Enable the console logs for the JS bridge
+     * Enable the console logs for the JS bridge and Player.
      * By default it is disabled.
-     * @param enabled enable the debug logs
+     *
+     * For logLevel options {@link LOG_LEVEL}
+     *
+     * @param enabled enable the debug logs. Just set it to `false` to disable all the logs.
+     * @param logLevel Default is `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.
+     *
      * @returns if `enabled` is `null` then don't do anything
      */
-    static enableDebugLogs: (enabled: boolean) => void;
+    static enableDebugLogs: (enabled: boolean, logLevel?: LOG_LEVEL) => void;
 }
