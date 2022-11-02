@@ -13,6 +13,7 @@ concurrency:
 jobs:
 
   react-native_and_android:
+    environment: Build
     runs-on: ubuntu-latest
 
     strategy:
@@ -43,6 +44,7 @@ jobs:
       run: cd android && chmod +x ./gradlew && ./gradlew build --no-daemon
 
   iOS:
+    environment: Build
     runs-on: macos-latest
 
     steps:

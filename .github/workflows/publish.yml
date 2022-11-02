@@ -1,25 +1,69 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: publish CI
 
 on:
-  release:
-    types: [created]
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: "Give the correct branch name from where a new branch will be created."
+        required: true
+        type: string
+      release_type:
+        type: choice
+        description: 'Release Type'
+        options:
+          - stg
+          - patch
+      release_branch_name:
+        type: string
+        required: true
+        description: "New Branch name (Without 'v' Ex: 1.0.0)"
+
+env: 
+  TARGET_BRANCH: ${{ inputs.target_branch}}
+  RELEASE_TYPE: ${{ inputs.release_type}}
+  BRANCH_NAME: ${{ inputs.release_branch_name}}
+
 jobs:
-  npm_publish:
+  create_tag:
+    environment: Release
     runs-on: ubuntu-latest
+
     steps:
     - name: checkout
       uses: actions/checkout@v3
-    - name: Setup node
+
+    - name: Setup node 📥
       uses: actions/setup-node@v3
       with:
         node-version: 16.x
         registry-url: 'https://registry.npmjs.org'
-    - name: Install package Manager
+
+    - name: Print Branch Name
+      run: |
+        echo "Branch Name: ${BRANCH_NAME}"
+
+    - name: Setup Github Config
+      run: | 
+        git config user.name "Github Actions Bot KLTR"
+        git config user.email "<>"
+
+    - name: Create Branch 
+      run: |
+        git branch ${RELEASE_TYPE}/v${BRANCH_NAME} ${TARGET_BRANCH}
+        git push origin ${RELEASE_TYPE}/v${BRANCH_NAME}
+
+    - name: Create Tag 🏷️
+      run: |
+        git tag v${BRANCH_NAME} ${GITHUB_SHA}
+        git push origin v${BRANCH_NAME}
+
+    - name: Create Release Notes
+      run: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} BRANCH_NAME=${BRANCH_NAME} bash .github/release_notes.sh
+
+    - name: Install package Manager 📥
       run: yarn install
+
     - name: Publish to NPM 📦
       run: yarn publish
       env: 
