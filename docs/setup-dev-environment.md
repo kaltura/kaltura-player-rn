@@ -113,13 +113,13 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
         include ':kaltura-player-rn'
         project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
         ```
-    
-    If you don't use the local `kaltura-player-rn` and instead you use package from `node_modules` as given below then your changes will not appear in your source control. If you want to raise a pull request then it will be difficult because your local changes are limited to the `node_modules`. 
+        
+        If you don't use the local `kaltura-player-rn` and instead you use package from `node_modules` as given below then your changes will not appear in  your source control. If you want to raise a pull request then it will be difficult because your local changes are limited to the `node_modules`. 
 
-        ```gradle
-        include ':kaltura-player-rn'
-        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
-        ```
+         ```gradle
+         include ':kaltura-player-rn'
+         project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
+         ```
     
     2. Please make sure that Android Studio Java version is on Java-11. You can check in **Preference -> Build,Execution,Deployment -> Build Tools -> Gradle**. Then choose Gradle SDK. Choose Java-11 from the dropdown if not selected then **press Apply and OK.**. In case if Java-11 is not installed in your machine, please try installing it from [here](https://www.oracle.com/downloads/).
 
