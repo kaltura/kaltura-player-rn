@@ -617,7 +617,7 @@ extension KalturaPlayerRN {
                 
                 KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.loaded.rawValue, body: [
                     "adDescription": adInfo.adDescription,
-                    "adDuration": adInfo.duration,
+                    "adDuration": (adInfo.duration * 1000), // Convert to milliseconds to make it similar as Android
                     "adPlayHead": adInfo.adPlayHead,
                     "adTitle": adInfo.title,
                     "streamId": "", // iOS doesn't have this value.
