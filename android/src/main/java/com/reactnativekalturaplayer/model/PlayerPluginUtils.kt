@@ -2,6 +2,7 @@ package com.reactnativekalturaplayer.model
 
 import androidx.annotation.Nullable
 import com.google.gson.JsonObject
+import com.kaltura.playkit.PKEvent
 import com.kaltura.playkit.PKLog
 import com.kaltura.playkit.PKPlugin
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
@@ -38,6 +39,10 @@ enum class PlayerPluginConfigs(val className: String) {
     kava("com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig"),
     ottAnalytics("com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig"),
     broadpeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig")
+}
+
+enum class ReflectiveEvents(val eventClass: String) {
+    broadPeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent\$Type")
 }
 
 val pkLog: PKLog = PKLog.get("PlayerPluginUtils")
@@ -80,6 +85,50 @@ fun getPluginConfig(pluginName: PlayerPluginClass): Class<*>? {
             getPluginConfig(pluginConfig.className)
         }
     }
+}
+
+fun getEventUsingReflection(eventClassName: ReflectiveEvents?): List<Enum<*>>? {
+    if (eventClassName == null) {
+        return null
+    }
+
+    val events = mutableListOf<Enum<*>>()
+    try {
+        val pluginClass = Class.forName(eventClassName.eventClass)
+        for (obj: Any in pluginClass.enumConstants) {
+            events.add(obj as Enum<*>)
+        }
+    } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getEventUsingReflection classNotFoundException $eventClassName not found ")
+    } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getEventUsingReflection noSuchFieldException $eventClassName not found ")
+    } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getEventUsingReflection illegalAccessException $eventClassName not found ")
+    } catch (classCastException: ClassCastException) {
+        pkLog.v("getEventUsingReflection classCastException $eventClassName not found ")
+    } catch (runTimeException: RuntimeException) {
+        pkLog.v("getEventUsingReflection runTimeException $eventClassName not found ")
+    }
+    return events
+}
+
+fun getBroadPeakError(event: PKEvent): Pair<Int, String>? {
+    try {
+        val errorCode = (event.javaClass).getDeclaredField("errorCode").get(event)
+        val errorMessage = (event.javaClass).getDeclaredField("errorMessage").get(event)
+        return Pair(errorCode as Int, errorMessage as String)
+    } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getPluginFactory classNotFoundException $event not found ")
+    } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getPluginFactory noSuchFieldException $event not found ")
+    } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getPluginFactory illegalAccessException $event not found ")
+    } catch (classCastException: ClassCastException) {
+        pkLog.v("getPluginFactory classCastException $event not found ")
+    } catch (runTimeException: RuntimeException) {
+        pkLog.v("getPluginFactory runTimeException $event not found ")
+    }
+    return null
 }
 
 @Nullable

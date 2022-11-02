@@ -1628,6 +1628,27 @@ class KalturaPlayerRN(
             )
         }
 
+        val events = getEventUsingReflection(ReflectiveEvents.broadPeak)
+        events?.let {
+            if (it.isNotEmpty()) {
+                for (broadPeakEvent in it) {
+                    player?.addListener(context, broadPeakEvent) { event ->
+                        if (event.eventType().name == KalturaPlayerAnalyticsEvents.BROADPEAK_ERROR) {
+                            val error: Pair<Int, String>? = getBroadPeakError(event)
+                            error?.let {
+                                sendPlayerEvent(
+                                    event.eventType().name,
+                                    ("{ \"errorCode\": \"" + error.first + "\" " +
+                                            ", \"errorMessage\": \"" + error.second + "\" " +
+                                            " }")
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         log.d("Player listeners are added.")
     }
 

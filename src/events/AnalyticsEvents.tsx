@@ -3,5 +3,6 @@ export const AnalyticsEvents = {
   PHOENIX_BOOKMARK_ERROR: 'bookmarkError',
   PHOENIX_ERROR: 'error',
   SOURCE_URL_SWITCHED: "sourceUrlSwitched",
-  CDN_SWITCHED: "cdnSwitched"
+  CDN_SWITCHED: "cdnSwitched",
+  BROADPEAK_ERROR: "BROADPEAK_ERROR"
 };

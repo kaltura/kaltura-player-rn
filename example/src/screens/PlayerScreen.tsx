@@ -701,6 +701,14 @@ export default class App extends React.Component<any, any> {
         }
       })
     );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AnalyticsEvents.BROADPEAK_ERROR, (payload) => {
+        console.log('AnalyticsEvents BROADPEAK_ERROR is ' + JSON.stringify(payload));
+        console.log('AnalyticsEvents BROADPEAK_ERROR errorCode is ' + payload.errorCode);
+        console.log('AnalyticsEvents BROADPEAK_ERROR errorMessage is ' + payload.errorMessage);
+      })
+    );
   };
 
   render() {

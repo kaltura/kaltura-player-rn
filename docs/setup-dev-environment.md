@@ -111,6 +111,13 @@ In case if you are want to develop Kaltura Player RN SDK then you can setup loca
 
         ```gradle
         include ':kaltura-player-rn'
+        project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../../android')
+        ```
+    
+    If you don't use the local `kaltura-player-rn` and instead you use package from `node_modules` as given below then your changes will not appear in your source control. If you want to raise a pull request then it will be difficult because your local changes are limited to the `node_modules`. 
+
+        ```gradle
+        include ':kaltura-player-rn'
         project(':kaltura-player-rn').projectDir = new File(rootProject.projectDir, '../node_modules/kaltura-player-rn/android')
         ```
     

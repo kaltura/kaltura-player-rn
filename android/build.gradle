@@ -31,7 +31,7 @@ dependencies {
 
   implementation fileTree(dir: "libs", include: ["*.jar"])
 
-  def kalturaPlayerVersion = '4.24.0'
+  def kalturaPlayerVersion = '4.24.1'
 
   implementation "com.kaltura.player:tvplayer:$kalturaPlayerVersion"
   implementation "com.kaltura.playkit:vrplugin:$kalturaPlayerVersion"

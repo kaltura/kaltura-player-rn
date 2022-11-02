@@ -8,6 +8,7 @@ class KalturaPlayerAnalyticsEvents {
         const val PHOENIX_ERROR = "error"
         const val SOURCE_URL_SWITCHED = "sourceUrlSwitched"
         const val CDN_SWITCHED = "cdnSwitched"
+        const val BROADPEAK_ERROR = "BROADPEAK_ERROR"
     }
 
 }
