@@ -33,11 +33,12 @@ class KalturaPlayerEvents: RCTEventEmitter {
     override func supportedEvents() -> [String] {
         let playerEvents: [String] = KalturaPlayerRNEvents.allCases.map { $0.rawValue }
         let adEvents: [String] = KalturaPlayerRNAdEvents.allCases.map { $0.rawValue }
+        let analyticsEvents: [String] = KalturaPlayerRNAnalyticsEvents.allCases.map { $0.rawValue }
         // If We don't return all supported Events in the lib, and the app listens to it, it will crash!
         let unsupportedPlayerEvents: [String] = KalturaPlayerUnsupportedRNEvents.allCases.map { $0.rawValue }
         let unsupportedAdEvents: [String] = KalturaPlayerUnsupportedRNAdEvents.allCases.map { $0.rawValue }
         
-        return playerEvents + adEvents + unsupportedPlayerEvents + unsupportedAdEvents
+        return playerEvents + adEvents + analyticsEvents + unsupportedPlayerEvents + unsupportedAdEvents
     }
 }
 
