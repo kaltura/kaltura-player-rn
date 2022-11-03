@@ -43,20 +43,22 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         
         var drmData:[PlayKit.DRMParams]? = nil
         if let assetDRMData = basicMediaAsset.drmData {
-            if let licenseUri = assetDRMData.licenseUri, !licenseUri.isEmpty,
-               let base64EncodedCertificate = assetDRMData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
-                switch Scheme(string: assetDRMData.scheme ?? "") {
-                case .fairplay:
-                    drmData = [FairPlayDRMParams(licenseUri: licenseUri,
-                                                 base64EncodedCertificate: base64EncodedCertificate)]
-                case .widevineCenc:
-                    break
-                case .playreadyCenc:
-                    break
-                case .widevineClassic:
-                    break
-                case .unknown:
-                    break
+            if (!assetDRMData.isEmpty) {
+                if let licenseUri = assetDRMData[0].licenseUri, !licenseUri.isEmpty,
+                   let base64EncodedCertificate = assetDRMData[0].base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
+                    switch Scheme(string: assetDRMData[0].scheme ?? "") {
+                    case .fairplay:
+                        drmData = [FairPlayDRMParams(licenseUri: licenseUri,
+                                                     base64EncodedCertificate: base64EncodedCertificate)]
+                    case .widevineCenc:
+                        break
+                    case .playreadyCenc:
+                        break
+                    case .widevineClassic:
+                        break
+                    case .unknown:
+                        break
+                    }
                 }
             }
         }

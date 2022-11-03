@@ -18,7 +18,7 @@ struct BasicMediaAsset: Codable {
     var duration: Double?
     var mediaEntryType: String?
     var mediaFormat: String?
-    var drmData: DRMParams?
+    var drmData: [DRMParams]?
     
     func getMediaOptions() -> MediaOptions {
         let mediaOptions = MediaOptions()
