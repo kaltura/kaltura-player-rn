@@ -158,3 +158,6 @@ It talks about more about the concurrency level errors on the stream. These even
 |`SOURCE_URL_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "originalUrl": String,<br>&nbsp;&nbsp;&nbsp;&nbsp; "updatedUrl": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`CDN_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "cdnCode": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`BROADPEAK_ERROR`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "errorMessage": String,<br>&nbsp;&nbsp;&nbsp;&nbsp; "errorCode": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
+|`PHOENIX_REPORT_SENT`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "eventName": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
+|`KAVA_REPORT_SENT`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "eventName": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
+|`YOUBORA_REPORT_SENT`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "eventName": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |

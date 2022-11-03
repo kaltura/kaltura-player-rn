@@ -15,9 +15,15 @@ enum KalturaPlayerRNAnalyticsEvents: String, CaseIterable {
     
     case phoenixError
     
+    case phoenixReportSent
+    
+    case kavaReportSent
+    
+    case youboraReportSent
+    
     case sourceUrlSwitched
     
     case cdnSwitched
     
-    case BROADPEAK_ERROR
+    case broadPeakError
 }

@@ -21,6 +21,13 @@ class RegisteredPlugins {
     var broadpeak: JsonObject? = null
 }
 
+class Constants {
+    companion object {
+        const val BROADPEAK_EVENT_ERROR = "BROADPEAK_ERROR"
+        const val YOUBORA_REPORT_SENT = "REPORT_SENT"
+    }
+}
+
 data class UpdatePluginConfigJson(val pluginName: String?, val pluginConfig: Any?)
 
 enum class PlayerPluginClass(val className: String) {
@@ -42,6 +49,7 @@ enum class PlayerPluginConfigs(val className: String) {
 }
 
 enum class ReflectiveEvents(val eventClass: String) {
+    youbora("com.kaltura.playkit.plugins.youbora.YouboraEvent\$Type"),
     broadPeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent\$Type")
 }
 
@@ -87,16 +95,16 @@ fun getPluginConfig(pluginName: PlayerPluginClass): Class<*>? {
     }
 }
 
-fun getEventUsingReflection(eventClassName: ReflectiveEvents?): List<Enum<*>>? {
-    if (eventClassName == null) {
-        return null
-    }
-
+fun getEventUsingReflection(): List<Enum<*>> {
     val events = mutableListOf<Enum<*>>()
+    var eventClassName: String? = null
     try {
-        val pluginClass = Class.forName(eventClassName.eventClass)
-        for (obj: Any in pluginClass.enumConstants) {
-            events.add(obj as Enum<*>)
+        for (className in ReflectiveEvents.values()) {
+            eventClassName = className.eventClass
+            val pluginClass = Class.forName(eventClassName)
+            for (obj: Any in pluginClass.enumConstants) {
+                events.add(obj as Enum<*>)
+            }
         }
     } catch (classNotFoundException: ClassNotFoundException) {
         pkLog.v("getEventUsingReflection classNotFoundException $eventClassName not found ")
@@ -112,23 +120,34 @@ fun getEventUsingReflection(eventClassName: ReflectiveEvents?): List<Enum<*>>? {
     return events
 }
 
-fun getBroadPeakError(event: PKEvent): Pair<Int, String>? {
+fun getEventPayloadMap(event: PKEvent): Map<String, String> {
+    val eventPayloadMap = mutableMapOf<String, String>()
     try {
-        val errorCode = (event.javaClass).getDeclaredField("errorCode").get(event)
-        val errorMessage = (event.javaClass).getDeclaredField("errorMessage").get(event)
-        return Pair(errorCode as Int, errorMessage as String)
+        val fieldsList: Array<Field>? = (event.javaClass).declaredFields
+        fieldsList?.let {
+            if (it.isNotEmpty()) {
+                for (field in it) {
+                    val fieldValue = (event.javaClass).getDeclaredField(field.name).get(event)
+                    fieldValue?.let { value ->
+                        eventPayloadMap[field.name] = value.toString()
+                    }
+                }
+            }
+        }
     } catch (classNotFoundException: ClassNotFoundException) {
         pkLog.v("getPluginFactory classNotFoundException $event not found ")
     } catch (noSuchFieldException: NoSuchFieldException) {
         pkLog.v("getPluginFactory noSuchFieldException $event not found ")
     } catch (illegalAccessException: IllegalAccessException) {
         pkLog.v("getPluginFactory illegalAccessException $event not found ")
+    } catch (illegalArgumentException: IllegalArgumentException) {
+        pkLog.v("getPluginFactory illegalArgumentException $event not found ")
     } catch (classCastException: ClassCastException) {
         pkLog.v("getPluginFactory classCastException $event not found ")
     } catch (runTimeException: RuntimeException) {
         pkLog.v("getPluginFactory runTimeException $event not found ")
     }
-    return null
+    return eventPayloadMap
 }
 
 @Nullable

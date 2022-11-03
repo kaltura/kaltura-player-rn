@@ -23,6 +23,7 @@ import com.kaltura.playkit.player.*
 import com.kaltura.playkit.player.thumbnail.ThumbnailInfo
 import com.kaltura.playkit.plugins.ads.AdCuePoints
 import com.kaltura.playkit.plugins.ads.AdEvent
+import com.kaltura.playkit.plugins.kava.KavaAnalyticsEvent
 import com.kaltura.playkit.plugins.ott.PhoenixAnalyticsEvent
 import com.kaltura.playkit.utils.Consts
 import com.kaltura.tvplayer.*
@@ -1612,6 +1613,20 @@ class KalturaPlayerRN(
                         " }")
             )
         }
+        player?.addListener(context, PhoenixAnalyticsEvent.reportSent) { event ->
+            sendPlayerEvent(
+                KalturaPlayerAnalyticsEvents.PHOENIX_REPORT_SENT,
+                ("{ \"reportedEventName\": \"" + event.reportedEventName + "\" " +
+                        " }")
+            )
+        }
+        player?.addListener(context, KavaAnalyticsEvent.reportSent) { event ->
+            sendPlayerEvent(
+                KalturaPlayerAnalyticsEvents.KAVA_REPORT_SENT,
+                ("{ \"reportedEventName\": \"" + event.reportedEventName + "\" " +
+                        " }")
+            )
+        }
         player?.addListener(context, InterceptorEvent.sourceUrlSwitched) { event ->
             sendPlayerEvent(
                 KalturaPlayerAnalyticsEvents.SOURCE_URL_SWITCHED,
@@ -1628,28 +1643,56 @@ class KalturaPlayerRN(
             )
         }
 
-        val events = getEventUsingReflection(ReflectiveEvents.broadPeak)
+        val events = getEventUsingReflection()
+        registerKnownPluginsEvents(events)
+
+        log.d("Player listeners are added.")
+    }
+
+    private fun registerKnownPluginsEvents(events: List<Enum<*>>?) {
         events?.let {
             if (it.isNotEmpty()) {
                 for (broadPeakEvent in it) {
                     player?.addListener(context, broadPeakEvent) { event ->
-                        if (event.eventType().name == KalturaPlayerAnalyticsEvents.BROADPEAK_ERROR) {
-                            val error: Pair<Int, String>? = getBroadPeakError(event)
-                            error?.let {
-                                sendPlayerEvent(
-                                    event.eventType().name,
-                                    ("{ \"errorCode\": \"" + error.first + "\" " +
-                                            ", \"errorMessage\": \"" + error.second + "\" " +
-                                            " }")
-                                )
+                        when(event.eventType().name) {
+                            Constants.BROADPEAK_EVENT_ERROR -> {
+                                val errorMap: Map<String, String>? = getEventPayloadMap(event)
+                                errorMap?.let {
+                                    if (errorMap.isNotEmpty()) {
+                                        val jsonResponse = createJSONForKnownPluginEvents(errorMap)
+                                        sendPlayerEvent(KalturaPlayerAnalyticsEvents.BROADPEAK_ERROR, jsonResponse)
+                                    }
+                                }
+                            }
+
+                            Constants.YOUBORA_REPORT_SENT -> {
+                                log.e("Gourav YOUBORA_REPORT_SENT")
+                                val reportMap: Map<String, String>? = getEventPayloadMap(event)
+                                reportMap?.let {
+                                    if (reportMap.isNotEmpty()) {
+                                        val jsonResponse = createJSONForKnownPluginEvents(reportMap)
+                                        sendPlayerEvent(KalturaPlayerAnalyticsEvents.YOUBORA_REPORT_SENT, jsonResponse)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        log.d("Player listeners are added.")
+    private fun createJSONForKnownPluginEvents(eventsPayload: Map<String, String>): String {
+        val payloadResponse = StringBuilder("{ ")
+
+        eventsPayload.onEachIndexed { index, event ->
+            payloadResponse.append("\"${event.key}\"").append(":").append("\"${event.value}\"")
+            if (index + 1 < eventsPayload.size) {
+                payloadResponse.append(",")
+            }
+        }
+
+        return payloadResponse.append("}").toString()
     }
 
     /*****************************************************

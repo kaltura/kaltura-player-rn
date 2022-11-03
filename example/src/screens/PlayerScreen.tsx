@@ -709,6 +709,12 @@ export default class App extends React.Component<any, any> {
         console.log('AnalyticsEvents BROADPEAK_ERROR errorMessage is ' + payload.errorMessage);
       })
     );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AnalyticsEvents.YOUBORA_REPORT_SENT, (payload) => {
+        console.log('AnalyticsEvents YOUBORA_REPORT_SENT is ' + JSON.stringify(payload));
+      })
+    );
   };
 
   render() {
