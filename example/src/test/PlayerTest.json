@@ -512,6 +512,18 @@
           }
         }
       ]
+    },
+    "multi-Audio": {
+      "hls": [
+        {
+          "id": "empty_initoptions_mediaAsset_test",
+          "mediaList": [
+            {
+              "mediaId": "https://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multi_language_subs.m3u8" 
+            }
+          ]
+        }
+      ]
     }
   },
   "ovp": {
