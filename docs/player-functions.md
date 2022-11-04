@@ -14,16 +14,16 @@
 
 `setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0)`
 
-This method creates a Player instance internally (Basic, OVP/OTT Player)
+This method creates a Player instance internally (Basic, OVP/OTT Player).
 With this, it take the PlayerInitOptions which are having essential Player settings values. 
 
 `playerType`: **Mandatory** The Player Type, Basic/OVP/OTT. [Check Constants](#Constants)
 
 `options` : For PlayerType 'Basic', this is _**Optional**_. For OVP/OTT, it is **Mandatory**. `playerInitOptions` JSON String [Check playerInitOptions](./player-initoptions.md)
 
- `id` : For PlayerType 'Basic', this is _**Not Required**_. For OVP/OTT, it is **Mandatory**. For OVP/OTT player this value should be always greater than 0 and should be valid; otherwise, we will not be able to featch the details for the mediaId or the entryId)
+ `id` : For PlayerType 'Basic', this is _**Not Required**_. For OVP/OTT, it is **Mandatory**. For OVP/OTT player this value should be always greater than 0 and should be valid; otherwise, we will not be able to featch the details for the `mediaId` or the `entryId`.
 
-### Adding and removing the Player Listerners
+### Adding and Removing the Player Listerners
 ---
 
 `addListeners()`
@@ -34,7 +34,7 @@ Add the listners for the Kaltura Player. This will enable the Apps to listen to 
 
 Remove the added Player listeners.
 
-[Check PlayerEvents for more info](./player-event.md)
+[Check Events for more info](./events.md)
 
 ### Load the Player 
 ---
@@ -68,7 +68,35 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 * `mediaFormat` *String* -  **Mandatory** [Check Constants](#Constants) for media format. It can be Dash, HLS etc.
 * `startPosition` *Number* - _**Optional**_ If you want the player to start from a certain position. Default is 0.
 * `isVRMediaType` *Boolean* - _**Optional**_ Only to be passed while using VR media.
-* `drmData` *JSON* - _**Optional**_ 🔴TODO
+* `drmData` *JSON* - _**Optional**_ If app wants to play a DRM protected content then it is a mandatory param to pass.
+  [Check Constants](#Constants) for `DRM_SCHEME`.
+   
+   - For **Widevine**
+
+   ```json
+                "drmData": [
+                  {
+                    "scheme": "WidevineCENC",
+                    "licenseUri": ""
+                  }
+                ] 
+
+   ```
+
+   - For **Fariplay**
+
+   ```json
+
+    "drmData": [
+                  {
+                    "scheme": "FairPlay",
+                    "licenseUri": "",
+                    "base64EncodedCertificate": ""
+                  }
+                ]
+
+   ```
+
 * `metadata` *JSON* - _**Optional**_ 
 
  ```json
@@ -197,7 +225,7 @@ By default Player view component is attached to the Player so no need to call `a
 |`isPlaying()`     | ✅     |  ✅    |   **Async** function. Checks if Player is currently playing or not. Returns `boolean`.     |
 |`isLive()`     | ✅     |  ✅    |    **Async** function. Checks if the stream is Live or Not. Returns `boolean`.     |
 |`requestThumbnailInfo(positionMs: number)`     | ❌     |  ✅    |    **Async** function. Get the Information for a thumbnail image by position. Returns **ThumbnailInfo JSON** object.     |
-|`enableDebugLogs = (enabled: boolean, logLevel: LOG_LEVEL = LOG_LEVEL.DEBUG)`     | ✅     |  ✅    |   Enable the console logs for the JS bridge and Player. By default the logs are disabled. For logLevel options check [constants](#Constants#LOG_LEVEL). Just set `enabled` to `false` to disable all the logs. Default logLevel `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.      |
+|`enableDebugLogs = (enabled: boolean, logLevel: LOG_LEVEL = LOG_LEVEL.DEBUG)`     | ✅     |  ❌   |   Enable the console logs for the JS bridge and Player. By default the logs are disabled. For logLevel options check [constants](#Constants#LOG_LEVEL). Just set `enabled` to `false` to disable all the logs. Default logLevel `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.      |
 
 
 ### Constants
