@@ -1654,6 +1654,8 @@ class KalturaPlayerRN(
             if (it.isNotEmpty()) {
                 for (broadPeakEvent in it) {
                     player?.addListener(context, broadPeakEvent) { event ->
+                        log.d("registerKnownPluginsEvents incoming event: ${event.eventType().name}")
+                        
                         when(event.eventType().name) {
                             Constants.BROADPEAK_EVENT_ERROR -> {
                                 val errorMap: Map<String, String>? = getEventPayloadMap(event)
@@ -1666,7 +1668,6 @@ class KalturaPlayerRN(
                             }
 
                             Constants.YOUBORA_REPORT_SENT -> {
-                                log.e("Gourav YOUBORA_REPORT_SENT")
                                 val reportMap: Map<String, String>? = getEventPayloadMap(event)
                                 reportMap?.let {
                                     if (reportMap.isNotEmpty()) {
