@@ -83,7 +83,7 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 
    ```
 
-   - For **Fariplay**
+   - For **Fairplay**
 
    ```json
 
