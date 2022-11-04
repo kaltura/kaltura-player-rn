@@ -13,7 +13,7 @@ export default function TrackList(props) {
     labelFieldName = 'bitrate';
   } else if (trackType === 'audio') {
     incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
-    labelFieldName = 'language';
+    labelFieldName = 'label';
   } else if (trackType === 'text') {
     labelFieldName = 'label';
   }
