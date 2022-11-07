@@ -253,6 +253,14 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 		      }
 	```
 
+	> **Note:** If FE app wants to show the logs of underlying Youbora plugin then for Android, it can add the following in the native Android app side. App can choose the log level from the Youbora plugin.
+
+	```java
+
+	YouboraLog.setDebugLevel(YouboraLog.Level.DEBUG); 
+
+	```
+
 - **Broadpeak Configuration**
 
 	```js

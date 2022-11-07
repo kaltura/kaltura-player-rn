@@ -204,7 +204,9 @@ public class MediaAsset {
             ottMediaAsset.setMediaFileIds(fileId);
         }
         OTTMediaOptions ottMediaOptions = new OTTMediaOptions(ottMediaAsset);
-        ottMediaOptions.startPosition = startPosition;
+        if (startPosition > 0) {
+            ottMediaOptions.startPosition = startPosition;
+        }
         return ottMediaOptions;
     }
 
@@ -233,7 +235,9 @@ public class MediaAsset {
             ovpMediaOptions.setUseApiCaptions(useApiCaptions);
         }
 
-        ovpMediaOptions.startPosition = startPosition;
+        if (startPosition > 0) {
+            ovpMediaOptions.startPosition = startPosition;
+        }
 
         return ovpMediaOptions;
     }

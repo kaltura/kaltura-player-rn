@@ -26,6 +26,7 @@ import {
   VIDEO_CODEC,
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
+  LOG_LEVEL,
 } from 'kaltura-player-rn';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import {

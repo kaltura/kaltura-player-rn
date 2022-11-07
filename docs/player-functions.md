@@ -65,8 +65,8 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
 * `name` *String* - _**Optional**_ Name given to this media.
 * `duration`*Number* - _**Optional**_ Duration of this media content.
 * `mediaEntryType`*String* - _**Optional**_ [Check Constants](#Constants) for media type. It can be VOD, Live etc.
-* `mediaFormat` *String* -  **Mandatory** [Check Constants](#Constants) for media format. It can be Dash, HLS etc.
-* `startPosition` *Number* - _**Optional**_ If you want the player to start from a certain position. Default is 0.
+* `mediaFormat` *String* -  **Mandatory** [Check Constants](#Constants) for media format. It can be Dash, HLS etc. In case if the FE is passing a playback URL without media extension then this value is important in `mediaAsset`. 
+* `startPosition` *Number* - _**Optional**_ If you want the player to start from a certain position. Default is 0. **Position is in seconds. If FE want to start the media from 2 mins then pass _120_** 
 * `isVRMediaType` *Boolean* - _**Optional**_ Only to be passed while using VR media.
 * `drmData` *JSON* - _**Optional**_ If app wants to play a DRM protected content then it is a mandatory param to pass.
   [Check Constants](#Constants) for `DRM_SCHEME`.
@@ -139,7 +139,7 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
    ```
  
 * `referrer` *String* - _**Optional for OTT/OVP.**_ Referer string.
-* `startPosition` *Number* - _**Optional for OTT/OVP.**_ If you want the player to start from a certain position. Default is 0.
+* `startPosition` *Number* - _**Optional for OTT/OVP.**_ If you want the player to start from a certain position. Default is 0. **Position is in seconds. If FE want to start the media from 2 mins then pass _120_** 
 * `initialVolume` *Number* - _**Optional for OTT/OVP.**_ Default is 1.0f. Change the volume of the current audio track. It's a decimal value. Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume. If the volume parameter is higher then 1.0, it will be converted to 1.0. If the volume parameter is lower then 0.0, it be converted to 0.0.
 
 * `redirectFromEntryId` *Boolean* - _**Optional for OVP.**_ Default is `true`. **Only for OVP BE users**

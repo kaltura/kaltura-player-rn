@@ -463,10 +463,11 @@ export class KalturaPlayerAPI {
 
     debugLogs = enabled;
 
-    if (debugLogs && logLevel != LOG_LEVEL.OFF) {
-      KalturaPlayerModule.setLogLevel(logLevel);
-    } else {
+    if (debugLogs === false || logLevel == LOG_LEVEL.OFF) {
+      debugLogs = false;
       KalturaPlayerModule.setLogLevel(LOG_LEVEL.OFF);
+    } else {
+      KalturaPlayerModule.setLogLevel(logLevel);
     }
   };
 }

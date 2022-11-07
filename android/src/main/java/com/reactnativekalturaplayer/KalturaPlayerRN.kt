@@ -606,7 +606,11 @@ class KalturaPlayerRN(
 
             val mediaEntry = createMediaEntry(assetId, basicMediaAsset)
             runOnUiThread {
-                player?.setMedia(mediaEntry, basicMediaAsset.startPosition)
+                if (basicMediaAsset.startPosition > 0) {
+                    player?.setMedia(mediaEntry, basicMediaAsset.startPosition)
+                } else {
+                    player?.setMedia(mediaEntry)
+                }
                 sendCallbackToJS(promise, gson.toJson(mediaEntry))
             }
         } else if (getPlayerType() == KalturaPlayer.Type.ott || getPlayerType() == KalturaPlayer.Type.ovp) {
@@ -629,7 +633,9 @@ class KalturaPlayerRN(
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
-                            player?.startPosition = mediaAsset.startPosition
+                            if (mediaAsset.startPosition > 0) {
+                                player?.startPosition = mediaAsset.startPosition
+                            }
                         }
                     }
                 }
@@ -647,7 +653,9 @@ class KalturaPlayerRN(
                             if (mediaAsset.initialVolume >= 0 && mediaAsset.initialVolume < 1.0) {
                                 player?.setVolume(mediaAsset.initialVolume)
                             }
-                            player?.startPosition = mediaAsset.startPosition
+                            if (mediaAsset.startPosition > 0) {
+                                player?.startPosition = mediaAsset.startPosition
+                            }
                         }
                     }
                 }

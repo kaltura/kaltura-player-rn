@@ -74,7 +74,7 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         if playerType == .basic {
             if initOptions == nil {
                 defaultOptions = "{}"
-            } else{
+            } else {
                 if let initOptions = initOptions, initOptions.isEmpty {
                     defaultOptions = "{}"
                 }
