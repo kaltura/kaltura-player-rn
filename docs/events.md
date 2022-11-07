@@ -152,9 +152,9 @@ It talks about more about the concurrency level errors on the stream. These even
 
 |AnalyticsEvents         |Data sent to RN |  iOS | Android |
 |------------|--------|----------|----------|
-|`PHOENIX_CONCURRENCY_ERROR`|**TODO**|✅ |❌ |
+|`PHOENIX_CONCURRENCY_ERROR`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "code": 4001(Number) ,<br>&nbsp;&nbsp;&nbsp;&nbsp; "extra": KalturaAPIException(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "message": Concurrent play limitation(String) <br> &nbsp;&nbsp;&nbsp;&nbsp;}</code> <br><br> <code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "code": ConcurrencyLimitation(String) ,<br>&nbsp;&nbsp;&nbsp;&nbsp; "extra": KalturaAccessControlMessage(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "message": Concurrency limitation(String)<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`PHOENIX_BOOKMARK_ERROR`|**TODO**|✅ |❌ |
-|`PHOENIX_ERROR`|**TODO**|✅ |❌ |
+|`PHOENIX_ERROR`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "code": 500015(Number) ,<br>&nbsp;&nbsp;&nbsp;&nbsp; "extra": KalturaAPIException(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "message": Invalid KS format(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "name": OTTError(String)<br> &nbsp;&nbsp;&nbsp;&nbsp; }</code> <br><br> <code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "code": 500016(Number) ,<br>&nbsp;&nbsp;&nbsp;&nbsp; "extra": KalturaAPIException(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "message": KS expired(String), <br>&nbsp;&nbsp;&nbsp;&nbsp; "name": OTTError(String)<br> &nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`SOURCE_URL_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "originalUrl": String,<br>&nbsp;&nbsp;&nbsp;&nbsp; "updatedUrl": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`CDN_SWITCHED`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "cdnCode": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
 |`BROADPEAK_ERROR`|<code>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp; "errorMessage": String,<br>&nbsp;&nbsp;&nbsp;&nbsp; "errorCode": String<br>&nbsp;&nbsp;&nbsp;&nbsp; }</code>|✅ |❌ |
