@@ -105,7 +105,24 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
     "key": "value"
   } 
  ```
-* `externalSubtitleList` *JSONArray* - _**Optional**_  🔴TODO
+* `externalSubtitleList` *JSONArray* - _**Optional**_  
+
+```json
+
+"mediaAsset": {
+                "externalSubtitleList": [
+                  {
+                    "url": "https://mkvtoolnix.download/samples/vsshort-en.srt",
+                    "mimeType": "application/x-subrip",
+                    "label": "External_English",
+                    "language": "en",
+                    "isDefault": true
+                  }
+                ]
+              }
+
+```
+
 * `externalVttThumbnailUrl` - _**Optional**_  Pass the VTT thumbnail URL. These images will be shown when the user scrubs on the seekbar. To show the images logic should be handled by the FE app. You will recieve the additional information the `ImageTracks` of `TracksAvailable` event. [Check PlayerEvents](./player-event.md)
 
 [**`asset` for  OVP/OTT Player**: _**Optional**_]() App can use the following config. Should only be used by the Kaltura BE users.

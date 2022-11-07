@@ -138,10 +138,21 @@
       ],
       "dash": [
         {
-          "id": "empty_initoptions_mediaAsset_test",
+          "id": "empty_initoptions_with_external_subtitles",
           "mediaList": [
             {
-              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"
+              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd",
+              "mediaAsset": {
+                "externalSubtitleList": [
+                  {
+                    "url": "https://mkvtoolnix.download/samples/vsshort-en.srt",
+                    "mimeType": "application/x-subrip",
+                    "label": "External_English",
+                    "language": "en",
+                    "isDefault": true
+                  }
+                ]
+              }
             }
           ]
         }
