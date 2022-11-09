@@ -264,11 +264,12 @@ extension KalturaPlayerRN {
         let mediaOptions = basicMediaAsset.getMediaOptions()
         
         var drmData:[PlayKit.DRMParams]? = nil
-        if let assetDRMData = basicMediaAsset.drmData {
-            if (!assetDRMData.isEmpty) {
-                if let licenseUri = assetDRMData[0].licenseUri, !licenseUri.isEmpty,
-                   let base64EncodedCertificate = assetDRMData[0].base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
-                    switch Scheme(string: assetDRMData[0].scheme ?? "") {
+        if let assetDRMData = basicMediaAsset.drmData, !assetDRMData.isEmpty {
+                let assetDrmData = assetDRMData[0]
+            
+                if let licenseUri = assetDrmData.licenseUri, !licenseUri.isEmpty,
+                   let base64EncodedCertificate = assetDrmData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
+                    switch Scheme(string: assetDrmData.scheme ?? "") {
                     case .fairplay:
                         drmData = [FairPlayDRMParams(licenseUri: licenseUri,
                                                      base64EncodedCertificate: base64EncodedCertificate)]
@@ -282,7 +283,6 @@ extension KalturaPlayerRN {
                         break
                     }
                 }
-            }
         }
         
         var mediaSource = [PKMediaSource]()
