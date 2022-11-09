@@ -1,6 +1,6 @@
 {
   "name": "kaltura-player-rn",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "React Native Library for KalturaPlayer",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -51,12 +51,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
-    "react-native": "^0.66.3"
+    "react-native": ">=0.66.5"
   },
   "dependencies": {
     "prop-types": "^15.8.1",
     "react": "17.0.2",
-    "react-native": "^0.66.3"
+    "react-native": ">=0.66.5"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

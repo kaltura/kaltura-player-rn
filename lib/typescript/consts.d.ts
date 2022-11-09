@@ -141,3 +141,19 @@ export declare enum MULTICAST_EXTRACTOR_MODE {
     MODE_SINGLE_PMT = "MODE_SINGLE_PMT",
     MODE_HLS = "MODE_HLS"
 }
+export declare enum IMA_AD_TAG_TYPE {
+    VMAP = "VMAP",
+    VAST = "VAST"
+}
+export declare enum IMADAI_STREAM_FORMAT {
+    DASH = "DASH",
+    HLS = "HLS"
+}
+export declare enum LOG_LEVEL {
+    VERBOSE = "VERBOSE",
+    DEBUG = "DEBUG",
+    WARN = "WARN",
+    INFO = "INFO",
+    ERROR = "ERROR",
+    OFF = "OFF"
+}

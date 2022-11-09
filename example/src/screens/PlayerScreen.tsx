@@ -26,6 +26,7 @@ import {
   VIDEO_CODEC,
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
+  LOG_LEVEL,
 } from 'kaltura-player-rn';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import {
@@ -99,6 +100,8 @@ export default class App extends React.Component<any, any> {
       // Change Media helpers
       isChangeMediaAvailable: false,
       currentChangeMediaIndex: 0,
+
+      isDAIPluginAvailable: false,
     };
     // Subscribe
     networkUnsubscribe = NetInfo.addEventListener((state) => {
@@ -126,11 +129,6 @@ export default class App extends React.Component<any, any> {
       playerType = PLAYER_TYPE.OTT;
     }
 
-    this.progressInterval = setInterval(() => {
-      console.log(`Inside progressInterval timer`);
-      this.getPlayerCurrentPosition();
-    }, timerInterval);
-
     var asset = null;
     var mediaId = null;
     var partnerId = this.props.incomingJson.partnerId; // Required only for OTT/OVP Player
@@ -154,22 +152,44 @@ export default class App extends React.Component<any, any> {
       return;
     }
 
+    if (options != null && options.plugins != null) {
+      var isDaiPlugin = options.plugins.imadai;
+      console.log(`isDaiPlugin = ${JSON.stringify(isDaiPlugin)}`);
+      if (isDaiPlugin) {
+        console.log(`isDaiPlugin = true`);
+        this.setState(() => ({
+          isDAIPluginAvailable: true,
+        }));
+      }
+    }
+    
     this.subscribeToAppLifecyle();
-    this.player.enableDebugLogs(true);
+    //this.player.enableDebugLogs(true);
 
     setupKalturaPlayer(
       this.player,
       playerType,
-      JSON.stringify(options),
+      options != null ? JSON.stringify(options) : "",
       JSON.stringify(asset),
       mediaId,
       partnerId
-    ).then((_) => this.subscribeToPlayerListeners()); // Subscribe to Player Events
+    ).then((_) => {
+      // Subscribe to Player Events
+      this.subscribeToPlayerListeners()
+
+      if (this.state.isDAIPluginAvailable) {
+        this.startDAIPositionTimer();
+      }
+    }).catch((error) => {
+      console.error(`${error}`);
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    clearInterval(this.progressInterval);
+    if (this.progressInterval != null) {
+      clearInterval(this.progressInterval);
+    }
     this.removePlayerListeners();
     if (networkUnsubscribe != null) {
       networkUnsubscribe();
@@ -185,7 +205,7 @@ export default class App extends React.Component<any, any> {
 
   getPlayerCurrentPosition(): any {
     this.player.getCurrentPosition().then((value: any) => {
-      console.log(`getPlayerCurrentPosition ${value}`);
+      //console.log(`getPlayerCurrentPosition ${value}`);
       if (value >= 0) {
         this.setState(() => ({
           currentPosition: value,
@@ -337,12 +357,18 @@ export default class App extends React.Component<any, any> {
     }));
   };
 
+  startDAIPositionTimer() {
+    this.progressInterval = setInterval(() => {
+      //console.log(`Inside progressInterval timer`);
+      this.getPlayerCurrentPosition();
+    }, timerInterval);
+  }
+
   /**
    * Add the Kaltura Player listeners to
    * add the Player, Ad and other Analytics
    * events
    *
-   * @param player Kaltura Player
    */
   subscribeToPlayerListeners = () => {
     eventsSubscriptionList.push(
@@ -373,8 +399,13 @@ export default class App extends React.Component<any, any> {
             !this.isSliderSeeking &&
             !this.state.isAdPlaying
           ) {
+            if (!this.state.isDAIPluginAvailable) {
+              this.setState(() => ({
+                currentPosition: payload.position,
+              }));
+            }
+
             this.setState(() => ({
-              //currentPosition: payload.position,
               totalDuration: this.contentDuration,
             }));
           }
@@ -421,7 +452,13 @@ export default class App extends React.Component<any, any> {
 
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(PlayerEvents.ERROR, (payload) => {
-        console.error('PlayerEvent ERROR : ' + JSON.stringify(payload));
+        console.log('PlayerEvent ERROR : ' + JSON.stringify(payload));
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
+        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
       })
     );
 
@@ -608,11 +645,13 @@ export default class App extends React.Component<any, any> {
     eventsSubscriptionList.push(
       playerEventEmitter.addListener(AdEvents.AD_PROGRESS, (payload) => {
         console.log('AdEvent AD_PROGRESS : ' + payload.currentAdPosition);
-        // if (this._isMounted && payload.currentAdPosition != null) {
-        //   this.setState(() => ({
-        //     currentPosition: payload.currentAdPosition,
-        //   }));
-        // }
+        if (this._isMounted && payload.currentAdPosition != null) {
+          if (!this.state.isDAIPluginAvailable) {
+            this.setState(() => ({
+              currentPosition: payload.currentAdPosition,
+            }));
+          }
+        }
       })
     );
 
@@ -665,8 +704,16 @@ export default class App extends React.Component<any, any> {
     );
 
     eventsSubscriptionList.push(
-      playerEventEmitter.addListener(AdEvents.ERROR, (payload) => {
-        console.log(`AdEvent ERROR = ${JSON.stringify(payload)}`);
+      playerEventEmitter.addListener(AnalyticsEvents.BROADPEAK_ERROR, (payload) => {
+        console.log('AnalyticsEvents BROADPEAK_ERROR is ' + JSON.stringify(payload));
+        console.log('AnalyticsEvents BROADPEAK_ERROR errorCode is ' + payload.errorCode);
+        console.log('AnalyticsEvents BROADPEAK_ERROR errorMessage is ' + payload.errorMessage);
+      })
+    );
+
+    eventsSubscriptionList.push(
+      playerEventEmitter.addListener(AnalyticsEvents.YOUBORA_REPORT_SENT, (payload) => {
+        console.log('AnalyticsEvents YOUBORA_REPORT_SENT is ' + JSON.stringify(payload));
       })
     );
   };
@@ -815,7 +862,7 @@ function changeMedia(playbackJson: object, player: KalturaPlayerAPI, mediaIndex:
     mediaId = mediaList[currentChangeMediaIndex].mediaId;
     console.log(`Change media asset is ${JSON.stringify(asset)} `);
     console.log(`Change media mediaId is ${mediaId} `);
-    if (!mediaId || !asset) {
+    if (!mediaId) {
       showToast(`Next item can not be played`);
       return;
     }
@@ -836,7 +883,9 @@ function changeMedia(playbackJson: object, player: KalturaPlayerAPI, mediaIndex:
 function loadMediaToKalturaPlayer(player: KalturaPlayerAPI, mediaId: String, mediaAsset: String) {
   player
     .loadMedia(mediaId, mediaAsset)
-    .then((response: any) => console.log(`mediaLoaded => ${response}`));
+    .then((response: any) => console.log(`mediaLoaded => ${response}`)).catch((error: any) => {
+      console.error(`${error}`);
+    });
 }
 
 async function setupKalturaPlayer(
@@ -857,7 +906,7 @@ async function setupKalturaPlayer(
       console.error('Player is not created.');
     }
   } catch (err) {
-    console.log(err);
+    console.log(`setupKalturaPlayer ${err}`);
     throw err;
   }
 }

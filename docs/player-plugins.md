@@ -13,6 +13,7 @@ Kaltura Player allows the following plugins for Android and iOS. You can get the
 - **Android**
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-android-ima)
   - [Youbora Plugin](https://github.com/kaltura/playkit-android-youbora)
+  - [Broadpeak Plugin](https://github.com/kaltura/playkit-android-broadpeak-smartlib/)
 
 - **Kaltura Player iOS contains following Native SDK**
   - [Ad Plugin (IMA)](https://github.com/kaltura/playkit-ios-ima)
@@ -29,9 +30,11 @@ Kaltura Player allows the following plugins for Android and iOS. You can get the
 		```gradle
 		implementation "com.kaltura.playkit:imaplugin:$latest_version"
     	implementation "com.kaltura.playkit:youboraplugin:$latest_version"
+		implementation "com.kaltura.playkit:broadpeakplugin:$latest_version"
 		```
 
 	> Note: For Android, VR plugin is not required to be added. It is part of the package itself.
+	> Current Android Player version is v4.24.1. It is always recommended to use the same version for plugins like player.
 
 2. For iOS
 
@@ -109,7 +112,7 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
     	"adAttribution": Boolean,
     	"adCountDown": Boolean,
     	"enableDebugMode": Boolean,
-   	"alwaysStartWithPreroll": Boolean,
+   		"alwaysStartWithPreroll": Boolean,
     	"enableFocusSkipButton": Boolean,
     	"enableCustomTabs": Boolean,
      	"adLoadTimeOut": Number,
@@ -249,6 +252,43 @@ This is it for the setup on the FE app side. To setup any plugin pass plugin con
 			}
 		      }
 	```
+
+	> **Note:** If FE app wants to show the logs of underlying Youbora plugin then for Android, it can add the following in the native Android app side. App can choose the log level from the Youbora plugin.
+
+	```java
+
+	YouboraLog.setDebugLevel(YouboraLog.Level.DEBUG); 
+
+	```
+
+- **Broadpeak Configuration**
+
+	```js
+
+	        "plugins": {
+              "broadpeak": {
+                "analyticsAddress": String,
+                "nanoCDNHost": String,
+                "broadpeakDomainNames": String, // "*" for everything
+                "uuid": String,
+				"deviceType": String,
+				"userAgent": String,
+				"nanoCDNResolvingRetryDelay": 10000, // In Milliseconds
+				"nanoCDNHttpsEnabled": Boolean,
+				"adCustomReference": String,
+				"adParameters": json with <String String> Key/Value pairs,
+				"customParameters": json with <String String> Key/Value pairs,
+				"options": json with <Number Object> Key/Value pairs,
+              }
+            }
+
+
+	```
+
+	More info about Broadpeak Plugin android integration in Android side can be found [here](https://github.com/kaltura/playkit-android-broadpeak-smartlib/#kaltura-plugin-for-broadpeak-smartlib-for-kaltura-player-on-android).
+
+	> 🔴 Currently not available in iOS
+
 
 ### Update Plugin Config
 

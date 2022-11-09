@@ -17,6 +17,7 @@ import {
   VIDEO_CODEC,
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
+  LOG_LEVEL,
 } from './consts';
 
 export {
@@ -35,6 +36,7 @@ export {
   VIDEO_CODEC,
   AUDIO_CODEC,
   VR_INTERACTION_MODE,
+  LOG_LEVEL,
 };
 
 const RNKalturaPlayer = requireNativeComponent('KalturaPlayerView');
@@ -97,7 +99,7 @@ export class KalturaPlayerAPI {
       return;
     }
 
-    if (!options) {
+    if (!options && playerType != PLAYER_TYPE.BASIC) {
       printConsoleLog(`setup, invalid options = ${options}`, LogType.ERROR);
       return;
     }
@@ -118,9 +120,9 @@ export class KalturaPlayerAPI {
    * @param asset Media Asset JSON String
    */
   static loadMedia = async (id: string, asset: string) => {
-    if (!id || !asset) {
+    if (!id) {
       printConsoleLog(
-        `loadMedia, invalid id = ${id} or asset = ${asset}`,
+        `loadMedia, invalid id = ${id}`,
         LogType.ERROR
       );
       return;
@@ -444,16 +446,29 @@ export class KalturaPlayerAPI {
   };
 
   /**
-   * Enable the console logs for the JS bridge
-   * By default it is disabled.
-   * @param enabled enable the debug logs
+   * Enable the console logs for the JS bridge and Player.
+   * By default it is disabled. 
+   * 
+   * For logLevel options {@link LOG_LEVEL}
+   * 
+   * @param enabled enable the debug logs. Just set it to `false` to disable all the logs.
+   * @param logLevel Default is `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.
+   * 
    * @returns if `enabled` is `null` then don't do anything
    */
-  static enableDebugLogs = (enabled: boolean) => {
-    if (enabled == null) {
+  static enableDebugLogs = (enabled: boolean, logLevel: LOG_LEVEL = LOG_LEVEL.DEBUG) => {
+    if (enabled == null || logLevel == null) {
       return;
     }
+
     debugLogs = enabled;
+
+    if (debugLogs === false || logLevel == LOG_LEVEL.OFF) {
+      debugLogs = false;
+      KalturaPlayerModule.setLogLevel(LOG_LEVEL.OFF);
+    } else {
+      KalturaPlayerModule.setLogLevel(logLevel);
+    }
   };
 }
 
@@ -475,7 +490,7 @@ async function setupKalturaPlayer(
       `setupKalturaPlayer Exception: ${exception}`,
       LogType.ERROR
     );
-    return exception;
+    return Promise.reject(exception);
   }
 }
 
@@ -489,7 +504,7 @@ async function loadMediaKalturaPlayer(id: string, asset: string) {
       `loadMediaKalturaPlayer Exception: ${exception}`,
       LogType.ERROR
     );
-    return exception;
+    return Promise.reject(exception);
   }
 }
 
@@ -533,7 +548,7 @@ async function getThumbnailInfo(position: number) {
     return thumbnailInfo;
   } catch (exception) {
     printConsoleLog(`Exception: ${exception}`, LogType.ERROR);
-    return exception;
+    return Promise.reject(exception);
   }
 }
 

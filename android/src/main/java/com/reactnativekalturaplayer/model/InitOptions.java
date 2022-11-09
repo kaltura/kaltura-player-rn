@@ -7,6 +7,7 @@ import com.kaltura.playkit.PKSubtitlePreference;
 import com.kaltura.playkit.PKWakeMode;
 import com.kaltura.playkit.player.ABRSettings;
 import com.kaltura.playkit.player.AudioCodecSettings;
+import com.kaltura.playkit.player.DRMSettings;
 import com.kaltura.playkit.player.LoadControlBuffers;
 import com.kaltura.playkit.player.MulticastSettings;
 import com.kaltura.playkit.player.PKAspectRatioResizeMode;
@@ -57,4 +58,5 @@ public class InitOptions {
     public VRSettings vrSettings;
     public PKRequestParams.Adapter contentRequestAdapter;
     public PKRequestParams.Adapter licenseRequestAdapter;
+    public DRMSettings drmSettings;
 }

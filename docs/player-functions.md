@@ -3,6 +3,7 @@
 * [Setup](#setup)
   * [Adding and removing the Player Listerners](#adding-and-removing-the-player-listerners)
   * [Load the Player](#load-the-player)
+* [Changing the media (Play the next/previous media)](#changing-the-media-play-the-nextprevious-media)
 * [Handle background and foreground application behaviour](#handle-background-and-foreground-application-behaviour)
 * [Add or remove the Player View component (Native Level)](#add-or-remove-the-player-view-component-native-level)
 * [More Player Functions](#more-player-functions)
@@ -13,16 +14,16 @@
 
 `setup = async (playerType: PLAYER_TYPE, options: string, id: number = 0)`
 
-This method creates a Player instance internally (Basic, OVP/OTT Player)
+This method creates a Player instance internally (Basic, OVP/OTT Player).
 With this, it take the PlayerInitOptions which are having essential Player settings values. 
 
-`playerType`: The Player Type, Basic/OVP/OTT. [Check Constants](#Constants)
+`playerType`: **Mandatory** The Player Type, Basic/OVP/OTT. [Check Constants](#Constants)
 
-`options` : `playerInitOptions` JSON String [Check playerInitOptions](./player-initoptions.md)
+`options` : For PlayerType 'Basic', this is _**Optional**_. For OVP/OTT, it is **Mandatory**. `playerInitOptions` JSON String [Check playerInitOptions](./player-initoptions.md)
 
- `id` : PartnerId (Don't pass this parameter for BasicPlayer. For OVP/OTT player this value should be always greater than 0 and should be valid otherwise, we will not be able to featch the details for the mediaId or the entryId)
+ `id` : For PlayerType 'Basic', this is _**Not Required**_. For OVP/OTT, it is **Mandatory**. For OVP/OTT player this value should be always greater than 0 and should be valid; otherwise, we will not be able to featch the details for the `mediaId` or the `entryId`.
 
-### Adding and removing the Player Listerners
+### Adding and Removing the Player Listerners
 ---
 
 `addListeners()`
@@ -33,7 +34,7 @@ Add the listners for the Kaltura Player. This will enable the Apps to listen to 
 
 Remove the added Player listeners.
 
-[Check PlayerEvents for more info](./player-event.md)
+[Check Events for more info](./events.md)
 
 ### Load the Player 
 ---
@@ -42,14 +43,14 @@ Remove the added Player listeners.
 
 Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/OTT Kaltura Player and **playbackURL** for Basic Kaltura Player.
 
-`id` : Playback URL for Kaltura Basic Player OR MediaId for Kaltura OTT Player OR EntryId for Kaltura OVP Player
+`id` : **Mandatory playback URL** for Kaltura Basic Player OR **MediaId** for Kaltura OTT Player OR **EntryId** for Kaltura OVP Player.
 
-`asset` : Media Asset JSON String
+`asset` : **Optional**. Media Asset JSON String.
 
-**For Basic Player**, app can use the following config. Should only be used by non-Kaltura BE users.
+[**`asset` for Basic Player**: _**Optional**_](). App can use the following config. Should only be used by non-Kaltura BE users. 
 
 ```json
-"mediaAsset": {
+          "mediaAsset": {
             "id": "basicId",
             "name": "basicName",
             "duration": 120,
@@ -60,29 +61,74 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
           }
 
 ```
-* `id` *String*  - Random id for this media.
-* `name` *String* - Name given to this media.
-* `duration`*Number* - Optional. Duration of this media content.
-* `mediaEntryType`*String* - [Check Constants](#Constants) for media type. It can be VOD, Live etc.
-* `mediaFormat` *String* -  [Check Constants](#Constants) for media format. It can be Dash, HLS etc.
-* `startPosition` *Number* - Optional. If you want the player to start from a certain position. Default is 0.
-* `isVRMediaType` *Boolean* - Only to be passed while using VR media.
-* `drmData` *JSON* - 🔴TODO
-* `metadata` *JSON* - 
+* `id` *String*  - _**Optional**_ Random id for this media.
+* `name` *String* - _**Optional**_ Name given to this media.
+* `duration`*Number* - _**Optional**_ Duration of this media content.
+* `mediaEntryType`*String* - _**Optional**_ [Check Constants](#Constants) for media type. It can be VOD, Live etc.
+* `mediaFormat` *String* -  **Mandatory** [Check Constants](#Constants) for media format. It can be Dash, HLS etc. In case if the FE is passing a playback URL without media extension then this value is important in `mediaAsset`. 
+* `startPosition` *Number* - _**Optional**_ If you want the player to start from a certain position. Default is 0. **Position is in seconds. If FE want to start the media from 2 mins then pass _120_** 
+* `isVRMediaType` *Boolean* - _**Optional**_ Only to be passed while using VR media.
+* `drmData` *JSON* - _**Optional**_ If app wants to play a DRM protected content then it is a mandatory param to pass.
+  [Check Constants](#Constants) for `DRM_SCHEME`.
+   
+   - For **Widevine**
+
+   ```json
+                "drmData": [
+                  {
+                    "scheme": "WidevineCENC",
+                    "licenseUri": ""
+                  }
+                ] 
+
+   ```
+
+   - For **Fairplay**
+
+   ```json
+
+    "drmData": [
+                  {
+                    "scheme": "FairPlay",
+                    "licenseUri": "",
+                    "base64EncodedCertificate": ""
+                  }
+                ]
+
+   ```
+
+* `metadata` *JSON* - _**Optional**_ 
 
  ```json
- "other":"other",
+ "startPosition": 120,
   "metaData": {
     "key": "value"
   } 
  ```
-* `externalSubtitleList` *JSONArray* - 🔴TODO
-* `externalVttThumbnailUrl` - Pass the VTT thumbnail URL. These images will be shown when the user scrubs on the seekbar. To show the images logic should be handled by the FE app. You will recieve the additional information the `ImageTracks` of `TracksAvailable` event. [Check PlayerEvents](./player-event.md)
-
-**For OVP/OTT Player**, app can use the following config. Should only be used by the Kaltura BE users.
+* `externalSubtitleList` *JSONArray* - _**Optional**_  
 
 ```json
+
 "mediaAsset": {
+                "externalSubtitleList": [
+                  {
+                    "url": "https://mkvtoolnix.download/samples/vsshort-en.srt",
+                    "mimeType": "application/x-subrip",
+                    "label": "External_English",
+                    "language": "en",
+                    "isDefault": true
+                  }
+                ]
+              }
+
+```
+
+* `externalVttThumbnailUrl` - _**Optional**_  Pass the VTT thumbnail URL. These images will be shown when the user scrubs on the seekbar. To show the images logic should be handled by the FE app. You will recieve the additional information the `ImageTracks` of `TracksAvailable` event. [Check PlayerEvents](./player-event.md)
+
+[**`asset` for  OVP/OTT Player**: _**Optional**_]() App can use the following config. Should only be used by the Kaltura BE users.
+
+```json
+          "mediaAsset": {
             "initialVolume": 1.0,
             "format": ["Mobile_Main"],
             "assetType": "media",
@@ -92,16 +138,16 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
           },
 
 ```
-* `ks` *String* - Kaltra Secret. It will be provided by our BE.
-* `format` *JSONArray String* - Formats provided for the playback. Defined in our BE.
-* `fileId` *JSONArray String* - FileIds for the playback. Defined in our BE.
-* `assetType` *String* - [Check Constants](#Constants) for AssetTypes.
-* `playbackContextType` *String* - [Check Constants](#Constants) for PlaybackContextType.
-* `assetReferenceType` *String* - [Check Constants](#Constants) for AssetReferenceType.
-* `protocol` *String* - `http` or `https`.
-* `urlType` *String* - [Check Constants](#Constants) for URLType.
-* `streamerType` *String* - [Check Constants](#Constants) for StreamerType.
-* `adapterData` *JSONObject* - Additional Adapter data suppied in config for our BE.
+* `ks` *String* - _**Optional for OTT/OVP.**_ Kaltra Secret. It will be provided by our BE.
+* `format` *JSONArray String* - _**Optional for OTT.**_ Formats provided for the playback. Defined in our BE.
+* `fileId` *JSONArray String* - _**Optional for OTT.**_ FileIds for the playback. Defined in our BE.
+* `assetType` *String* - _**Optional for OTT.**_ [Check Constants](#Constants) for AssetTypes.
+* `playbackContextType` *String* - _**Optional for OTT.**_ [Check Constants](#Constants) for PlaybackContextType.
+* `assetReferenceType` *String* - _**Optional for OTT.**_ [Check Constants](#Constants) for AssetReferenceType.
+* `protocol` *String* - _**Optional for OTT.**_ `http` or `https`.
+* `urlType` *String* - _**Optional for OTT.**_ [Check Constants](#Constants) for URLType.
+* `streamerType` *String* - _**Optional for OTT.**_ [Check Constants](#Constants) for StreamerType.
+* `adapterData` *JSONObject* - _**Optional for OTT.**_ Additional Adapter data supplied in config for our BE.
     ```json
     "other":"other",
     "metaData": {
@@ -109,11 +155,42 @@ Load the media with the given **assetId** OR **mediaId** OR **entryID** for OVP/
    } 
    ```
  
-* `referrer` *String* - Optional. Referer string.
-* `redirectFromEntryId` *Boolean* - Default is `true`. **Only for OVP BE users**
-* `useApiCaptions` *Boolean* - Default is `false`. **Only for OVP BE users**
-* `startPosition` *Number* - Optional. If you want the player to start from a certain position. Default is 0.
-* `initialVolume` *Number* - Default is 1.0f. Change the volume of the current audio track. It's a decimal value. Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume. If the volume parameter is higher then 1.0, it will be converted to 1.0. If the volume parameter is lower then 0.0, it be converted to 0.0.
+* `referrer` *String* - _**Optional for OTT/OVP.**_ Referer string.
+* `startPosition` *Number* - _**Optional for OTT/OVP.**_ If you want the player to start from a certain position. Default is 0. **Position is in seconds. If FE want to start the media from 2 mins then pass _120_** 
+* `initialVolume` *Number* - _**Optional for OTT/OVP.**_ Default is 1.0f. Change the volume of the current audio track. It's a decimal value. Accept values between 0.0 and 1.0. Where 0.0 is mute and 1.0 is maximum volume. If the volume parameter is higher then 1.0, it will be converted to 1.0. If the volume parameter is lower then 0.0, it be converted to 0.0.
+
+* `redirectFromEntryId` *Boolean* - _**Optional for OVP.**_ Default is `true`. **Only for OVP BE users**
+* `useApiCaptions` *Boolean* - _**Optional for OVP.**_ Default is `false`. **Only for OVP BE users**
+
+### Changing the media (Play the next/previous media)
+---
+
+App can simply call `loadMedia = async (id: string, asset: string)` with the next/previous media using the steps given [here](./player-functions.md#load-the-player).
+
+> Note: If app is setting up 'OVP' or 'OTT' Player they can still pass the playback URL like it can be does using 'Basic' Player. 
+
+_Example:_ Here OVP Player is created but for the next media (changeMedia) app is simply passing a playback URL.
+
+```js
+        {
+          "id": "ChangeMedia OVP -> Basic Media",
+          "partnerId": 2215841,
+          "initOptions": {
+            "serverUrl": "https://cdnapisec.kaltura.com",
+            "autoplay": true
+          },
+          "mediaList": [
+            {
+              "mediaId": "1_w9zx2eti"
+            },
+            {
+              "mediaId": "https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd"
+            }
+          ]
+        }
+
+```
+
 
 ### Handle background and foreground application behaviour
 ---
@@ -165,7 +242,7 @@ By default Player view component is attached to the Player so no need to call `a
 |`isPlaying()`     | ✅     |  ✅    |   **Async** function. Checks if Player is currently playing or not. Returns `boolean`.     |
 |`isLive()`     | ✅     |  ✅    |    **Async** function. Checks if the stream is Live or Not. Returns `boolean`.     |
 |`requestThumbnailInfo(positionMs: number)`     | ❌     |  ✅    |    **Async** function. Get the Information for a thumbnail image by position. Returns **ThumbnailInfo JSON** object.     |
-|`enableDebugLogs()`     | ✅     |  ✅    |   Enable the console logs for the JS bridge. By default it is disabled. Set `true` to enable the logs.       |
+|`enableDebugLogs = (enabled: boolean, logLevel: LOG_LEVEL = LOG_LEVEL.DEBUG)`     | ✅     |  ❌   |   Enable the console logs for the JS bridge and Player. By default the logs are disabled. For logLevel options check [constants](#Constants#LOG_LEVEL). Just set `enabled` to `false` to disable all the logs. Default logLevel `LOG_LEVEL.DEBUG` if set to `LOG_LEVEL.OFF` will turn off the logs.      |
 
 
 ### Constants
@@ -449,5 +526,36 @@ export enum MULTICAST_EXTRACTOR_MODE {
   MODE_MULTI_PMT = 'MODE_MULTI_PMT',
   MODE_SINGLE_PMT = 'MODE_SINGLE_PMT',
   MODE_HLS = 'MODE_HLS'
+}
+```
+
+- **IMA_AD_TAG_TYPE** <br>
+
+```js
+export enum IMA_AD_TAG_TYPE {
+  VMAP = "VMAP",
+  VAST = "VAST"
+}
+```
+
+- **IMADAI_STREAM_FORMAT** <br>
+
+```js
+export enum IMADAI_STREAM_FORMAT {
+  DASH = "DASH",
+  HLS = "HLS"
+}
+```
+
+- **LOG_LEVEL**
+
+```js
+export enum LOG_LEVEL {
+  VERBOSE = "VERBOSE",
+  DEBUG = "DEBUG",
+  WARN = "WARN",
+  INFO = "INFO",
+  ERROR = "ERROR",
+  OFF = "OFF"
 }
 ```

@@ -207,8 +207,8 @@ dependencies {
         implementation jscFlavor
     }
 
-    def kalturaPlayerVersion = '4.24.0'
-    //implementation project(':reactnativekalturaplayer')
+    def kalturaPlayerVersion = '4.24.1'
+    //implementation project(':kaltura-player-rn')
     implementation "com.kaltura.playkit:imaplugin:$kalturaPlayerVersion"
     implementation "com.kaltura.playkit:youboraplugin:$kalturaPlayerVersion"
 //    implementation "com.kaltura.playkit:broadpeakplugin:$kalturaPlayerVersion"

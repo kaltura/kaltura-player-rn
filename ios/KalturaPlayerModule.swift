@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PlayKit
 
 @objc(KalturaPlayerEvents)
 class KalturaPlayerEvents: RCTEventEmitter {
@@ -32,11 +33,12 @@ class KalturaPlayerEvents: RCTEventEmitter {
     override func supportedEvents() -> [String] {
         let playerEvents: [String] = KalturaPlayerRNEvents.allCases.map { $0.rawValue }
         let adEvents: [String] = KalturaPlayerRNAdEvents.allCases.map { $0.rawValue }
+        let analyticsEvents: [String] = KalturaPlayerRNAnalyticsEvents.allCases.map { $0.rawValue }
         // If We don't return all supported Events in the lib, and the app listens to it, it will crash!
         let unsupportedPlayerEvents: [String] = KalturaPlayerUnsupportedRNEvents.allCases.map { $0.rawValue }
         let unsupportedAdEvents: [String] = KalturaPlayerUnsupportedRNAdEvents.allCases.map { $0.rawValue }
         
-        return playerEvents + adEvents + unsupportedPlayerEvents + unsupportedAdEvents
+        return playerEvents + adEvents + analyticsEvents + unsupportedPlayerEvents + unsupportedAdEvents
     }
 }
 
@@ -66,7 +68,20 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
     @objc func setUpPlayer(_ type: String, partnerId: Int = 0, initOptions: String?,
                            resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         
-        guard let options = initOptions, !options.isEmpty else {
+        self.playerType = getPlayerType(from: type)
+        var defaultOptions = initOptions
+        
+        if playerType == .basic {
+            if initOptions == nil {
+                defaultOptions = "{}"
+            } else {
+                if let initOptions = initOptions, initOptions.isEmpty {
+                    defaultOptions = "{}"
+                }
+            }
+        }
+        
+        guard let options = defaultOptions, !options.isEmpty else {
             let message = "The initOptions can not be empty."
             let error = KalturaPlayerRNError.setupFailed(message: message).asNSError
             reject("ERROR_SETUPPLAYER", message, error)
@@ -86,8 +101,6 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
         
         //TODO: Remove print
         print(initOptions)
-        
-        self.playerType = getPlayerType(from: type)
         
         DispatchQueue.main.async {
             switch self.playerType {
@@ -127,15 +140,34 @@ class KalturaPlayerModule: NSObject, RCTBridgeModule {
             return
         }
         
-        guard let assetId = assetId, !assetId.isEmpty , let mediaAsset = mediaAsset, !mediaAsset.isEmpty else {
-            let message = "The assetId and/or mediaAsset is empty."
+        guard let assetId = assetId, !assetId.isEmpty else {
+            let message = "The assetId is empty."
             let error = KalturaPlayerRNError.loadMediaFailed(message: message).asNSError
             reject("ERROR_LOADMEDIA", message, error)
             return
         }
         
+        let playbackURL = URL(string: assetId)
+        let isValidURL = UIApplication.shared.canOpenURL(playbackURL!)
+        
+        // If FE is passing an assetId which is playback URL actually then try to play it using basic player way
+        if isValidURL && playerType != .basic {
+            DispatchQueue.main.async {
+                kalturaPlayerRN.playerMediaUsingBasicPlayer(assetId: assetId, mediaAsset: mediaAsset ?? "{}") { error in
+                    if let kpRNError = error {
+                        let message = kpRNError.userInfo[KalturaPlayerRNError.errorMessageKey] as? String
+                        let nsError = kpRNError.asNSError
+                        reject("ERROR_LOADMEDIA", message, nsError)
+                    } else {
+                        resolve("Sucess")
+                    }
+                }
+            }
+            return
+        }
+        
         DispatchQueue.main.async {
-            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset) { error in
+            kalturaPlayerRN.load(assetId: assetId, mediaAsset: mediaAsset ?? "{}") { error in
                 if let kpRNError = error {
                     let message = kpRNError.userInfo[KalturaPlayerRNError.errorMessageKey] as? String
                     let nsError = kpRNError.asNSError
@@ -339,5 +371,17 @@ extension KalturaPlayerModule {
                 reject("ERROR_ISPLAYING", message, error)
             }
         }
+    }
+}
+
+extension KalturaPlayerModule {
+    @objc func setLogLevel(logLevel: String?) {
+        guard let logLevel = logLevel, !logLevel.isEmpty else {
+            return
+        }
+        
+        // TODO:
+        
+        
     }
 }

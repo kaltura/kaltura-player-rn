@@ -12,10 +12,23 @@ export default function TrackList(props) {
     incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
     labelFieldName = 'bitrate';
   } else if (trackType === 'audio') {
-    incomingTrackList.map((val, idx) => val.isAdaptive === true ? val.bitrate = 'Adaptive' : val);
-    labelFieldName = 'language';
+    incomingTrackList.map((val, idx) => {
+      val.isAdaptive === true ? val.bitrate = 'Adaptive' : val
+      if (val.label == null) {
+        labelFieldName = 'language';
+      } else {
+        labelFieldName = 'label';
+      }
+    });
+    
   } else if (trackType === 'text') {
-    labelFieldName = 'label';
+    incomingTrackList.map((val, idx) => {
+      if (val.label == null) {
+        labelFieldName = 'language';
+      } else {
+        labelFieldName = 'label';
+      }
+    });
   }
 
   return (

@@ -2,6 +2,7 @@ package com.reactnativekalturaplayer.model
 
 import androidx.annotation.Nullable
 import com.google.gson.JsonObject
+import com.kaltura.playkit.PKEvent
 import com.kaltura.playkit.PKLog
 import com.kaltura.playkit.PKPlugin
 import com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig
@@ -18,6 +19,13 @@ class RegisteredPlugins {
     var kava: JsonObject? = null
     var ottAnalytics: JsonObject? = null
     var broadpeak: JsonObject? = null
+}
+
+class Constants {
+    companion object {
+        const val BROADPEAK_EVENT_ERROR = "BROADPEAK_ERROR"
+        const val YOUBORA_REPORT_SENT = "REPORT_SENT"
+    }
 }
 
 data class UpdatePluginConfigJson(val pluginName: String?, val pluginConfig: Any?)
@@ -38,6 +46,11 @@ enum class PlayerPluginConfigs(val className: String) {
     kava("com.kaltura.playkit.plugins.kava.KavaAnalyticsConfig"),
     ottAnalytics("com.kaltura.playkit.plugins.ott.PhoenixAnalyticsConfig"),
     broadpeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakConfig")
+}
+
+enum class ReflectiveEvents(val eventClass: String) {
+    youbora("com.kaltura.playkit.plugins.youbora.YouboraEvent\$Type"),
+    broadPeak("com.kaltura.playkit.plugins.broadpeak.BroadpeakEvent\$Type")
 }
 
 val pkLog: PKLog = PKLog.get("PlayerPluginUtils")
@@ -80,6 +93,61 @@ fun getPluginConfig(pluginName: PlayerPluginClass): Class<*>? {
             getPluginConfig(pluginConfig.className)
         }
     }
+}
+
+fun getEventUsingReflection(): List<Enum<*>> {
+    val events = mutableListOf<Enum<*>>()
+    var eventClassName: String? = null
+    try {
+        for (className in ReflectiveEvents.values()) {
+            eventClassName = className.eventClass
+            val pluginClass = Class.forName(eventClassName)
+            for (obj: Any in pluginClass.enumConstants) {
+                events.add(obj as Enum<*>)
+            }
+        }
+    } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getEventUsingReflection classNotFoundException $eventClassName not found ")
+    } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getEventUsingReflection noSuchFieldException $eventClassName not found ")
+    } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getEventUsingReflection illegalAccessException $eventClassName not found ")
+    } catch (classCastException: ClassCastException) {
+        pkLog.v("getEventUsingReflection classCastException $eventClassName not found ")
+    } catch (runTimeException: RuntimeException) {
+        pkLog.v("getEventUsingReflection runTimeException $eventClassName not found ")
+    }
+    return events
+}
+
+fun getEventPayloadMap(event: PKEvent): Map<String, String> {
+    val eventPayloadMap = mutableMapOf<String, String>()
+    try {
+        val fieldsList: Array<Field>? = (event.javaClass).declaredFields
+        fieldsList?.let {
+            if (it.isNotEmpty()) {
+                for (field in it) {
+                    val fieldValue = (event.javaClass).getDeclaredField(field.name).get(event)
+                    fieldValue?.let { value ->
+                        eventPayloadMap[field.name] = value.toString()
+                    }
+                }
+            }
+        }
+    } catch (classNotFoundException: ClassNotFoundException) {
+        pkLog.v("getPluginFactory classNotFoundException $event not found ")
+    } catch (noSuchFieldException: NoSuchFieldException) {
+        pkLog.v("getPluginFactory noSuchFieldException $event not found ")
+    } catch (illegalAccessException: IllegalAccessException) {
+        pkLog.v("getPluginFactory illegalAccessException $event not found ")
+    } catch (illegalArgumentException: IllegalArgumentException) {
+        pkLog.v("getPluginFactory illegalArgumentException $event not found ")
+    } catch (classCastException: ClassCastException) {
+        pkLog.v("getPluginFactory classCastException $event not found ")
+    } catch (runTimeException: RuntimeException) {
+        pkLog.v("getPluginFactory runTimeException $event not found ")
+    }
+    return eventPayloadMap
 }
 
 @Nullable

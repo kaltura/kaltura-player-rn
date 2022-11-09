@@ -33,7 +33,7 @@ class KalturaPlayerAdEvents {
         const val AD_BUFFER_START = "adBufferStart"
         const val AD_BUFFER_END = "adBufferEnd"
         const val AD_PLAYBACK_INFO_UPDATED = "adPlaybackInfoUpdated"
-        const val ERROR = "error"
+        const val ERROR = "adError"
         const val DAI_SOURCE_SELECTED = "daiSourceSelected"
         const val AD_WATERFALLING = "adWaterFalling" // Not required until we has AdLayout feature in RN
         const val AD_WATERFALLING_FAILED = "adWaterFallingFailed" // Not required until we has AdLayout feature in RN

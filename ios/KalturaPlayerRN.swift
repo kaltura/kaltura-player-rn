@@ -242,7 +242,68 @@ extension KalturaPlayerRN {
             break
         }
     }
-}
+    
+    /**
+        If Player is setup either OTT or OVP but still FE wants to play media using playback URL not using mediaId or entryId
+        then directly use KalturaPlayer and set the media
+     */
+    func playerMediaUsingBasicPlayer(assetId: String, mediaAsset: String, callback: @escaping (_ error: KalturaPlayerRNError?) -> Void) {
+        guard let contentUrl = URL(string: assetId) else {
+            let message = "The content URL is not valid."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
+        guard let basicMediaAsset = BasicKalturaPlayerRN.parseBasicMediaAsset(mediaAsset) else {
+            let message = "Parsing the Media Asset failed."
+            let error = KalturaPlayerRNError.loadMediaFailed(message: message)
+            callback(error)
+            return
+        }
+        
+        let mediaOptions = basicMediaAsset.getMediaOptions()
+        
+        var drmData:[PlayKit.DRMParams]? = nil
+        if let assetDRMData = basicMediaAsset.drmData, !assetDRMData.isEmpty {
+                let assetDrmData = assetDRMData[0]
+            
+                if let licenseUri = assetDrmData.licenseUri, !licenseUri.isEmpty,
+                   let base64EncodedCertificate = assetDrmData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
+                    switch Scheme(string: assetDrmData.scheme ?? "") {
+                    case .fairplay:
+                        drmData = [FairPlayDRMParams(licenseUri: licenseUri,
+                                                     base64EncodedCertificate: base64EncodedCertificate)]
+                    case .widevineCenc:
+                        break
+                    case .playreadyCenc:
+                        break
+                    case .widevineClassic:
+                        break
+                    case .unknown:
+                        break
+                    }
+                }
+        }
+        
+        var mediaSource = [PKMediaSource]()
+        let pkMediaSource = PKMediaSource("basicMediaSourceId", contentUrl: contentUrl, mimeType: nil, drmData: drmData, mediaFormat: PKMediaSource.MediaFormat.unknown)
+        mediaSource.append(pkMediaSource)
+        
+        let pkMediaEntry = PKMediaEntry("basicMediaEntryId", sources: mediaSource)
+        
+        
+        kalturaPlayer?.setMedia(pkMediaEntry)
+        
+        // If the autoPlay and preload was set to false, prepare will not be called automatically
+        if initOptions.autoplay == false && initOptions.preload == false {
+            kalturaPlayer?.prepare()
+        }
+        
+        updateMediaSettings()
+        
+        callback(nil)
+    }
+ }
 
 extension KalturaPlayerRN {
     
@@ -558,7 +619,7 @@ extension KalturaPlayerRN {
                 
                 KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.loaded.rawValue, body: [
                     "adDescription": adInfo.adDescription,
-                    "adDuration": adInfo.duration,
+                    "adDuration": (adInfo.duration * 1000), // Convert to milliseconds to make it similar as Android
                     "adPlayHead": adInfo.adPlayHead,
                     "adTitle": adInfo.title,
                     "streamId": "", // iOS doesn't have this value.
@@ -608,7 +669,7 @@ extension KalturaPlayerRN {
                    errorSeverity = "Recoverable"
                 }
                 
-                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.error.rawValue, body: [
+                KalturaPlayerEvents.emitter.sendEvent(withName: KalturaPlayerRNAdEvents.adError.rawValue, body: [
                     "errorType": errorType ?? -1,
                     "errorCode": error.code,
                     "errorSeverity": errorSeverity,

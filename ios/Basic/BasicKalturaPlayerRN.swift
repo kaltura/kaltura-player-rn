@@ -32,7 +32,7 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
             callback(error)
             return
         }
-        guard let basicMediaAsset = parseBasicMediaAsset(mediaAsset) else {
+        guard let basicMediaAsset = BasicKalturaPlayerRN.parseBasicMediaAsset(mediaAsset) else {
             let message = "Parsing the Media Asset failed."
             let error = KalturaPlayerRNError.loadMediaFailed(message: message)
             callback(error)
@@ -42,23 +42,26 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
         let mediaOptions = basicMediaAsset.getMediaOptions()
         
         var drmData:[PlayKit.DRMParams]? = nil
-        if let assetDRMData = basicMediaAsset.drmData {
-            if let licenseUri = assetDRMData.licenseUri, !licenseUri.isEmpty,
-               let base64EncodedCertificate = assetDRMData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
-                switch Scheme(string: assetDRMData.scheme ?? "") {
-                case .fairplay:
-                    drmData = [FairPlayDRMParams(licenseUri: licenseUri,
-                                                 base64EncodedCertificate: base64EncodedCertificate)]
-                case .widevineCenc:
-                    break
-                case .playreadyCenc:
-                    break
-                case .widevineClassic:
-                    break
-                case .unknown:
-                    break
+        if let assetDRMData = basicMediaAsset.drmData, !assetDRMData.isEmpty {
+                let assetDrmData = assetDRMData[0]
+            
+                if let licenseUri = assetDrmData.licenseUri, !licenseUri.isEmpty,
+                   let base64EncodedCertificate = assetDrmData.base64EncodedCertificate, !base64EncodedCertificate.isEmpty {
+                    switch Scheme(string: assetDrmData.scheme ?? "") {
+                    case .fairplay:
+                        drmData = [FairPlayDRMParams(licenseUri: licenseUri,
+                                                     base64EncodedCertificate: base64EncodedCertificate)]
+                    case .widevineCenc:
+                        break
+                    case .playreadyCenc:
+                        break
+                    case .widevineClassic:
+                        break
+                    case .unknown:
+                        break
+                    }
                 }
-            }
+            
         }
         
         kalturaBasicPlayer.setupMediaEntry(id: basicMediaAsset.id ?? basicMediaAsset.name ?? assetId,
@@ -80,8 +83,8 @@ class BasicKalturaPlayerRN: KalturaPlayerRN {
 }
 
 extension BasicKalturaPlayerRN {
-    
-    private func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
+
+    static func parseBasicMediaAsset(_ mediaAsset: String) -> BasicMediaAsset? {
         let data = Data(mediaAsset.utf8)
         let mediaAsset: BasicMediaAsset?
         do {
