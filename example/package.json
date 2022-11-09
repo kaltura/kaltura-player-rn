@@ -13,7 +13,7 @@
     "@react-native-community/cli-platform-android": "^9.2.1",
     "@react-native-community/cli-platform-ios": "^9.2.1",
     "@react-native-community/netinfo": "^9.0.0",
-    "kaltura-player-rn": "../../kaltura-player-rn",
+    "kaltura-player-rn": "^0.4.0",
     "react": "17.0.2",
     "react-native": "^0.68.5",
     "react-native-element-dropdown": "^1.8.10",
