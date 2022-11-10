@@ -1,6 +1,13 @@
-.github/
-example/
-docs/
+/.github
+/example
+/docs
 README.md
 CONTRIBUTING.md
 post.json
+yarn.lock
+/lib/typescript/example
+/android/build
+/ios/build
+**/__tests__
+**/__fixtures__
+**/__mocks__
