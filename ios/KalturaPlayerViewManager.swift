@@ -491,6 +491,15 @@ class KalturaPlayerRNView : UIView {
             let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
             pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
         }
+        if let phoenixAnalyticsParams = plugins["ottAnalytics"] as? Dictionary<String, Any> {
+            let phoenixAnalyticsConfig = PhoenixAnalyticsPluginConfig(
+                baseUrl: (phoenixAnalyticsParams["baseUrl"] as? String)!,
+                timerInterval: phoenixAnalyticsParams["timerInterval"] as? TimeInterval ?? 0,
+                ks: (phoenixAnalyticsParams["ks"] as? String)!,
+                partnerId: phoenixAnalyticsParams["partnerId"] as? Int ?? 0
+            )
+            pluginConfigs[PhoenixAnalyticsPlugin.pluginName] = phoenixAnalyticsConfig
+        }
         if (!pluginConfigs.isEmpty){
             return PluginConfig(config: pluginConfigs)
         }
