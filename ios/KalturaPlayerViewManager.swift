@@ -491,6 +491,15 @@ class KalturaPlayerRNView : UIView {
             let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
             pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
         }
+        if let phoenixAnalyticsParams = plugins["ottAnalytics"] as? Dictionary<String, Any> {
+            let phoenixAnalyticsConfig = PhoenixAnalyticsPluginConfig(
+                baseUrl: (phoenixAnalyticsParams["baseUrl"] as? String)!,
+                timerInterval: phoenixAnalyticsParams["timerInterval"] as? TimeInterval ?? 0,
+                ks: (phoenixAnalyticsParams["ks"] as? String)!,
+                partnerId: phoenixAnalyticsParams["partnerId"] as? Int ?? 0
+            )
+            pluginConfigs[PhoenixAnalyticsPlugin.pluginName] = phoenixAnalyticsConfig
+        }
         if (!pluginConfigs.isEmpty){
             return PluginConfig(config: pluginConfigs)
         }
@@ -516,12 +525,20 @@ class KalturaPlayerRNView : UIView {
     
     func updatePluginsConfig(plugins: Dictionary<String, Any>) {
         if (plugins["youbora"] != nil) {
-            updateYouboraConfig(youboraPlugin: plugins["youbora"] as! Dictionary<String, Any>)
+            updateYouboraConfig(config: plugins["youbora"] as! Dictionary<String, Any>)
+        }
+        if (plugins["ottAnalytics"] != nil) {
+            updateOttAnalyticsConfig(config: plugins["ottAnalytics"] as! Dictionary<String, Any>)
         }
     }
     
-    func updateYouboraConfig(youboraPlugin: Dictionary<String,Any>) {
-        let youboraConfig = AnalyticsConfig(params:youboraPlugin)
+    func updateYouboraConfig(config: Dictionary<String,Any>) {
+        let youboraConfig = AnalyticsConfig(params:config)
         kalturaPlayer.updatePluginConfig(pluginName: YouboraPlugin.pluginName, config: youboraConfig)
+    }
+    
+    func updateOttAnalyticsConfig(config: Dictionary<String, Any>) {
+        let ottAnalyticsConfig = AnalyticsConfig(params:config)
+        kalturaPlayer.updatePluginConfig(pluginName: PhoenixAnalyticsPlugin.pluginName, config: ottAnalyticsConfig)
     }
 }
