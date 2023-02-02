@@ -78,3 +78,17 @@ There is no seperate method to do that calling again `loadMedia()` with new medi
 > How to handle background and foreground lifecycle of a mobile app ?
 
 Please check this [bg/fg lifecycle handling](./player-functions.md#handle-background-and-foreground-application-behaviour) 
+  
+> In case, if FE app gets "`KalturaPlayerView` is not found in `UIViewManager`" error and you have linked the local `kaltura-player-rn` project correctly then how to solve it ?
+  
+Please add the following line in your FE app's `Application` class.
+
+```java
+@Override
+protected List<ReactPackage> getPackages() {
+   @SuppressWarnings("UnnecessaryLocalVariable")
+   List<ReactPackage> packages = new PackageList(this).getPackages();
+   packages.add(new KalturaPlayerPackage());
+   return packages;
+}
+```
