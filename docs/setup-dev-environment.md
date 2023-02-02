@@ -87,6 +87,7 @@ It contains a test app which contains a Test JSON. Currently this JSON has our i
 ### Build Kaltura-Player-RN SDK locally with 'example' app
 
 In case if you are want to develop Kaltura Player RN SDK then you can setup locally in 'example' app. 
+  - remove     `"kaltura-player-rn": "x.x.x",` from the package.json so you can modify the library code
 
   - #### Link example app with local `kaltura-player-rn`.
 
