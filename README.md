@@ -77,11 +77,11 @@ import {
 
 ## Development Resources
 
+- [Setup Development Environment](./docs/setup-dev-environment.md)
 - [Player Functions](./docs/player-functions.md)
 - [PlayerInitOptions or PlayerSettings](./docs/player-initoptions.md)
 - [Player Plugins](./docs/player-plugins.md)
 - [Events](./docs/events.md)
-- [Setup Development Environment](./docs/setup-dev-environment.md)
 - [FAQ](./docs/faq.md)
 
 
