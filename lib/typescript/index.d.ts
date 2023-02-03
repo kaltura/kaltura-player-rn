@@ -42,6 +42,7 @@ export declare class KalturaPlayerAPI {
     static replay: () => any;
     static pause: () => any;
     static stop: () => any;
+    static setMaxBitrate: (maxBitrate) => any;
     static setAutoplay: (value: boolean) => any;
 }
 export {};

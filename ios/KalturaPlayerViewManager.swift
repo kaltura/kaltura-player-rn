@@ -162,6 +162,14 @@ class KalturaPlayerViewManager: RCTViewManager {
             }
         }
     }
+    
+    @objc func setMaxBitrate(_ bitrate: Int) {
+        DispatchQueue.main.async {
+            if self.kalturaPlayer != nil {
+                self.player.preferredPeakBitRate = bitrate
+            }
+        }
+    }
 
     @objc func prepare() {
         DispatchQueue.main.async {
