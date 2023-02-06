@@ -44,6 +44,7 @@ export declare class KalturaPlayerAPI {
     static pause: () => any;
     static stop: () => any;
     static changeTrack: (trackId: string) => any;
+    static setMaxBitrate: (bitrate: number) => any;
     static prepare: () => any;
     static setAutoplay: (value: boolean) => any;
 }
