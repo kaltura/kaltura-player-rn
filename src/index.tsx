@@ -132,6 +132,9 @@ export class KalturaPlayerAPI {
   static changeTrack = (trackId: string) => {
     return KalturaPlayerModule.changeTrack(trackId);
   }
+  static setMaxBitrate = (bitrate: number) => {
+    return KalturaPlayerModule.setMaxBitrate(bitrate);
+  }
   static prepare = () => {
     return KalturaPlayerModule.prepare();
   }

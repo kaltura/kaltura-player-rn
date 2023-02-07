@@ -38,10 +38,14 @@ export declare class KalturaPlayerAPI {
     static setVolume: (volume: number) => any;
     static seekTo: (position: number) => any;
     static setPlayerVisibility: (isVisible: boolean) => any;
+    static setKeepAwake: (value: boolean) => any;
     static play: () => any;
     static replay: () => any;
     static pause: () => any;
     static stop: () => any;
+    static changeTrack: (trackId: string) => any;
+    static setMaxBitrate: (bitrate: number) => any;
+    static prepare: () => any;
     static setAutoplay: (value: boolean) => any;
 }
 export {};

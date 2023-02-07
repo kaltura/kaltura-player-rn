@@ -19,6 +19,7 @@ RCT_EXTERN_METHOD(setPlayerVisibility:(nonnull BOOL)isVisible)
 RCT_EXTERN_METHOD(setKeepAwake:(nonnull BOOL)value)
 RCT_EXTERN_METHOD(setAutoplay:(nonnull BOOL)value)
 RCT_EXTERN_METHOD(changeTrack:(nonnull NSString *)trackId)
+RCT_EXTERN_METHOD(setMaxBitrate:(nonnull int)bitrate)
 RCT_EXTERN_METHOD(prepare)
 RCT_EXTERN_METHOD(destroy)
 
