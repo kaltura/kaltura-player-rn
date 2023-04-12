@@ -54,7 +54,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       "loadMediaSuccess",
       "concurrencyError",
     ]
-    
+
     supportedEvents.forEach(type => {
       this.eventListeners.push(KalturaPlayerEmitter.addListener(type, (event: any) => {
         KalturaPlayerEmitter.emit('KPlayerEvent', { type, ...event })
@@ -135,6 +135,9 @@ export class KalturaPlayerAPI {
   static setMaxBitrate = (bitrate: number) => {
     return KalturaPlayerModule.setMaxBitrate(bitrate);
   }
+  // Should be added in future
+  static updateLoadControlBuffers = () => () => {};
+
   static prepare = () => {
     return KalturaPlayerModule.prepare();
   }
