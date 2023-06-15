@@ -400,7 +400,7 @@ class KalturaPlayerRNView : UIView {
         mediaOptions.ks = options["ks"] as? String
         mediaOptions.assetType = getAssetType(str: options["assetType"] as! String)
         mediaOptions.playbackContextType = getPlaybackContextType(str: options["playbackContextType"] as! String)
-        //mediaOptions.adapterData = options["adapterData"] as? [String : String]
+        mediaOptions.adapterData = options["adapterData"] as? [String : String]
 
         if (options["plugins"] != nil){
             updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
