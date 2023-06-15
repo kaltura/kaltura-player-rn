@@ -400,7 +400,7 @@ class KalturaPlayerRNView : UIView {
         mediaOptions.ks = options["ks"] as? String
         mediaOptions.assetType = getAssetType(str: options["assetType"] as! String)
         mediaOptions.playbackContextType = getPlaybackContextType(str: options["playbackContextType"] as! String)
-        //mediaOptions.adapterData = options["adapterData"] as? [String : String]
+        mediaOptions.adapterData = parseAdapterData(options["adapterData"] as? [String: Any])
 
         if (options["plugins"] != nil){
             updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
@@ -469,6 +469,14 @@ class KalturaPlayerRNView : UIView {
         if (str.caseInsensitiveCompare("epg") == ComparisonResult.orderedSame) { return AssetType.epg }
 
         return AssetType.unset
+    }
+    
+    func parseAdapterData(_ adapterData: [String: Any]?) -> [String: String]? {
+        var parsedAdapterData: [String: Any] = adapterData ?? [:]
+        if let adapterDrmData: Bool = parsedAdapterData["drm"] as? Bool {
+            parsedAdapterData["drm"] = String(adapterDrmData)
+        }
+        return parsedAdapterData as? [String: String]
     }
 
     func getAssetReferenceType(str: String) -> AssetReferenceType {
