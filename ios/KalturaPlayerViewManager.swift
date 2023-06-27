@@ -554,7 +554,18 @@ class KalturaPlayerRNView : UIView {
     }
     
     func updateOttAnalyticsConfig(config: Dictionary<String, Any>) {
-        let ottAnalyticsConfig = AnalyticsConfig(params:config)
+        let baseUrl: String = config["baseUrl"] as? String ?? ""
+        
+        let timerInterval: Double = config["timerInterval"] as? Double ?? 0.0
+        
+        let ks: String = config["ks"] as? String ?? ""
+        
+        let partnerId: Int = config["partnerId"] as? Int ?? 0
+        
+        let isExperimentalLiveMediaHit: Bool = config["experimentalLiveMediaHit"] as? Bool ?? false
+        
+        let ottAnalyticsConfig = PhoenixAnalyticsPluginConfig(baseUrl: baseUrl, timerInterval: timerInterval, ks: ks, partnerId: partnerId, isExperimentalLiveMediaHit: isExperimentalLiveMediaHit)
+        
         kalturaPlayer.updatePluginConfig(pluginName: PhoenixAnalyticsPlugin.pluginName, config: ottAnalyticsConfig)
     }
 }
