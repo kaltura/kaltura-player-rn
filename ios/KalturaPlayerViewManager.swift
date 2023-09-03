@@ -240,7 +240,14 @@ class KalturaPlayerViewManager: RCTViewManager {
         }
 
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.sourceSelected) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "sourceSelected", body: event.data)
+            guard let mediaSource = event.mediaSource else { return }
+
+            KalturaPlayerEvents.emitter.sendEvent(withName: "sourceSelected", body: [
+                "id": mediaSource.id,
+                "url": mediaSource.contentUrl?.absoluteString,
+                "mediaFormat": mediaSource.mediaFormat.description
+            ])
+
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.tracksAvailable) { event in
             var audioTracks = [] as Array
