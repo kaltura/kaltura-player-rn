@@ -162,7 +162,7 @@ class KalturaPlayerViewManager: RCTViewManager {
             }
         }
     }
-    
+
     @objc func setMaxBitrate(_ bitrate: Int) {
         DispatchQueue.main.async {
             if self.kalturaPlayer != nil {
@@ -286,12 +286,14 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "videoTrackChanged", body: ["bitrate": event.bitrate])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
-            KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: [
-                "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
-                "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
-                "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? "",
-                "isSelected": true
-            ])
+            if ((event.selectedTrack?.id) != nil) {
+                KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: [
+                    "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
+                    "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
+                    "language": self.safeJsonValue(value: event.selectedTrack?.language) ?? "",
+                    "isSelected": true
+                ])
+            }
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.textTrackChanged) { event in
             KalturaPlayerEvents.emitter.sendEvent(withName: "textTrackChanged", body: [
@@ -477,7 +479,7 @@ class KalturaPlayerRNView : UIView {
 
         return AssetType.unset
     }
-    
+
     func parseAdapterData(_ adapterData: [String: Any]?) -> [String: String]? {
         var parsedAdapterData: [String: Any] = adapterData ?? [:]
         if let adapterDrmData: Bool = parsedAdapterData["drm"] as? Bool {
@@ -542,10 +544,10 @@ class KalturaPlayerRNView : UIView {
         }
         if let uuid = broadpeakParams["uuid"] as? String {
             broadpeakConfig.uuid = uuid
-        }   
+        }
         return broadpeakConfig
     }
-    
+
     func updatePluginsConfig(plugins: Dictionary<String, Any>) {
         if (plugins["youbora"] != nil) {
             updateYouboraConfig(config: plugins["youbora"] as! Dictionary<String, Any>)
@@ -554,25 +556,25 @@ class KalturaPlayerRNView : UIView {
             updateOttAnalyticsConfig(config: plugins["ottAnalytics"] as! Dictionary<String, Any>)
         }
     }
-    
+
     func updateYouboraConfig(config: Dictionary<String,Any>) {
         let youboraConfig = AnalyticsConfig(params:config)
         kalturaPlayer.updatePluginConfig(pluginName: YouboraPlugin.pluginName, config: youboraConfig)
     }
-    
+
     func updateOttAnalyticsConfig(config: Dictionary<String, Any>) {
         let baseUrl: String = config["baseUrl"] as? String ?? ""
-        
+
         let timerInterval: Double = config["timerInterval"] as? Double ?? 30.0
-        
+
         let ks: String = config["ks"] as? String ?? ""
-        
+
         let partnerId: Int = config["partnerId"] as? Int ?? 0
-        
+
         let isExperimentalLiveMediaHit: Bool = config["experimentalLiveMediaHit"] as? Bool ?? true
-        
+
         let ottAnalyticsConfig = PhoenixAnalyticsPluginConfig(baseUrl: baseUrl, timerInterval: timerInterval, ks: ks, partnerId: partnerId, isExperimentalLiveMediaHit: isExperimentalLiveMediaHit)
-        
+
         kalturaPlayer.updatePluginConfig(pluginName: PhoenixAnalyticsPlugin.pluginName, config: ottAnalyticsConfig)
     }
 }
