@@ -286,7 +286,9 @@ class KalturaPlayerViewManager: RCTViewManager {
             KalturaPlayerEvents.emitter.sendEvent(withName: "videoTrackChanged", body: ["bitrate": event.bitrate])
         }
         self.kalturaPlayer.addObserver(self, event: PlayKit.PlayerEvent.audioTrackChanged) { event in
+            // we need this check to prevent event spamming from native to JS
             if ((event.selectedTrack?.id) != nil) {
+
                 KalturaPlayerEvents.emitter.sendEvent(withName: "audioTrackChanged", body: [
                     "id": self.safeJsonValue(value: event.selectedTrack?.id) ?? "",
                     "label": self.safeJsonValue(value: event.selectedTrack?.title) ?? "",
