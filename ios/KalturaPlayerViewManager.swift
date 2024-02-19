@@ -74,7 +74,7 @@ class KalturaPlayerViewManager: RCTViewManager {
         DispatchQueue.main.async {
             self.player = KalturaPlayerRNView()
             self.kalturaPlayer = self.player.setup(partnerId: partnerId, options: options)
-            KalturaPlayerEvents.emitter.sendEvent(withName: "playerInitialized", body: [])
+            KalturaPlayerEvents.emitter.sendEvent(withName: "KPlayerEvent", body: ["type":"playerInitialized"])
             self.observeAllEvents()
         }
     }
