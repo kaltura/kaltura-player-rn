@@ -55,6 +55,7 @@ class KalturaPlayerEvents: RCTEventEmitter {
             "loadMediaFailed",
             "loadMediaSuccess",
             "concurrencyError",
+            "playerInitialized",
         ]
     }
 }
@@ -73,6 +74,7 @@ class KalturaPlayerViewManager: RCTViewManager {
         DispatchQueue.main.async {
             self.player = KalturaPlayerRNView()
             self.kalturaPlayer = self.player.setup(partnerId: partnerId, options: options)
+            KalturaPlayerEvents.emitter.sendEvent(withName: "playerInitialized", body: [])
             self.observeAllEvents()
         }
     }
