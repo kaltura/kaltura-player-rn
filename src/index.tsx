@@ -53,6 +53,7 @@ export class KalturaPlayer extends React.Component<KalturaPlayerProps> {
       "loadMediaFailed",
       "loadMediaSuccess",
       "concurrencyError",
+      "playerInitialized",
     ]
 
     supportedEvents.forEach(type => {
