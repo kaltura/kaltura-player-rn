@@ -84,6 +84,18 @@ class KalturaPlayerViewManager: RCTViewManager {
             self.player.load(assetId: assetId, options: options)
         }
     }
+    
+    @objc func setMedia(_ mediaEntry: NSDictionary) {
+        DispatchQueue.main.async {
+            self.player.setMedia(mediaEntry: mediaEntry)
+        }
+    }
+    
+    @objc func playNewMedia(_ options: NSDictionary) {
+        DispatchQueue.main.async {
+            self.player.playNewMedia(options: options)
+        }
+    }
 
     @objc func play() {
         DispatchQueue.main.async {
@@ -405,6 +417,22 @@ class KalturaPlayerRNView : UIView {
         self.addSubview(playerView)
         kalturaPlayer.view = playerView
         return kalturaPlayer
+    }
+    
+    @objc func setMedia(mediaEntry: NSDictionary){
+        MediaEntryManager.setMediaEntry(mediaEntry: mediaEntry)
+    }
+    
+    @objc func playNewMedia(options: NSDictionary){
+        var startPosition = 0.0
+        if (options["plugins"] != nil){
+            updatePluginsConfig(plugins: options["plugins"] as! Dictionary<String, Any>)
+        }
+        
+        if ((options["startPosition"]) != nil) {
+            startPosition = ((options["startPosition"] as? TimeInterval)!)
+        }
+        MediaEntryManager.play(player: kalturaPlayer, startPosition: startPosition)
     }
 
     @objc func load(assetId: String, options: NSDictionary) {
