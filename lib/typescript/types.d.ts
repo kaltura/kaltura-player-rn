@@ -1,4 +1,4 @@
-import { ViewStyle } from 'react-native';
+import type { ViewStyle } from 'react-native';
 export interface KalturaPlayerProps {
     style: ViewStyle;
 }
@@ -37,22 +37,18 @@ export declare type MediaEntry = {
     mediaType: string;
 };
 export declare type LoadParams = {
-    assetId: string;
-    options: {
-        autoplay: boolean;
-        assetType: 'media' | 'recording' | 'epg';
-        protocol: 'http' | 'https';
-        playbackContextType?: 'playback' | 'catchup' | 'trailer' | 'startOver';
-        assetReferenceType?: 'media' | 'epgInternal' | 'epgExternal' | 'npvr';
-        urlType?: string;
-        format?: string[];
-        fileId?: string[];
-        streamerType?: string;
-        startPosition?: number;
-    };
+    autoplay: boolean;
+    assetType: 'media' | 'recording' | 'epg';
+    protocol: 'http' | 'https';
+    playbackContextType?: 'playback' | 'catchup' | 'trailer' | 'startOver';
+    assetReferenceType?: 'media' | 'epgInternal' | 'epgExternal' | 'npvr';
+    urlType?: string;
+    format?: string[];
+    fileId?: string[];
+    streamerType?: string;
+    startPosition?: number;
 };
 export declare type SetupParams = {
-    partnerId: number;
     options: {
         preload: boolean;
         autoplay: boolean;

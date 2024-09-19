@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
+import type {
   KalturaPlayerProps,
   LoadParams,
   MediaEntry,
@@ -89,10 +89,10 @@ KalturaPlayer.propTypes = {
 };
 
 export class KalturaPlayerAPI {
-  static setup = ({ options, partnerId }: SetupParams) => {
+  static setup = (partnerId: number, options: SetupParams) => {
     return KalturaPlayerModule.setup(partnerId, options);
   };
-  static load = ({ assetId, options }: LoadParams) => {
+  static load = (assetId: string, options: LoadParams) => {
     return KalturaPlayerModule.load(assetId, options);
   };
 

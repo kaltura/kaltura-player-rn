@@ -1,6 +1,6 @@
 import { NativeEventEmitter } from 'react-native';
 import React from 'react';
-import { KalturaPlayerProps, LoadParams, MediaEntry, SetupParams } from './types';
+import type { KalturaPlayerProps, LoadParams, MediaEntry, SetupParams } from './types';
 export declare const KalturaPlayerModule: any;
 export declare const KalturaPlayerEmitter: NativeEventEmitter;
 export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
@@ -14,8 +14,8 @@ export declare class KalturaPlayer extends React.Component<KalturaPlayerProps> {
     render(): JSX.Element;
 }
 export declare class KalturaPlayerAPI {
-    static setup: ({ options, partnerId }: SetupParams) => any;
-    static load: ({ assetId, options }: LoadParams) => any;
+    static setup: (partnerId: number, options: SetupParams) => any;
+    static load: (assetId: string, options: LoadParams) => any;
     static setMedia: (mediaEntry: MediaEntry) => any;
     static playNewMedia: (options: Record<string, any>) => any;
     static destroy: () => any;
