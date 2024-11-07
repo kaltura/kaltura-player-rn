@@ -2,7 +2,6 @@ import KalturaPlayer
 import PlayKit
 import PlayKitProviders
 import PlayKitYoubora
-import PlayKitBroadpeak
 
 @objc(KalturaPlayerEvents)
 class KalturaPlayerEvents: RCTEventEmitter {
@@ -544,10 +543,10 @@ class KalturaPlayerRNView : UIView {
             let youboraConfig = AnalyticsConfig(params: youboraParams)
             pluginConfigs[YouboraPlugin.pluginName] = youboraConfig
         }
-        if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
-            let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
-            pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
-        }
+        // if let broadpeakParams = plugins["broadpeak"] as? Dictionary<String, Any> {
+        //     let broadpeakConfig = getBroadpeakConfig(broadpeakParams: broadpeakParams)
+        //     pluginConfigs[BroadpeakMediaEntryInterceptor.pluginName] = broadpeakConfig
+        // }
         if let phoenixAnalyticsParams = plugins["ottAnalytics"] as? Dictionary<String, Any> {
             let phoenixAnalyticsConfig = PhoenixAnalyticsPluginConfig(
                 baseUrl: (phoenixAnalyticsParams["baseUrl"] as? String)!,
@@ -563,22 +562,22 @@ class KalturaPlayerRNView : UIView {
         return nil
     }
 
-    func getBroadpeakConfig(broadpeakParams: Dictionary<String, Any>)-> BroadpeakConfig{
-        let broadpeakConfig = BroadpeakConfig()
-        if let analyticsAddress = broadpeakParams["analyticsAddress"] as? String {
-            broadpeakConfig.analyticsAddress = analyticsAddress
-        }
-        if let broadpeakDomainNames = broadpeakParams["broadpeakDomainNames"] as? String {
-            broadpeakConfig.broadpeakDomainNames = broadpeakDomainNames
-        }
-        if let nanoCDNHost = broadpeakParams["nanoCDNHost"] as? String {
-            broadpeakConfig.nanoCDNHost = nanoCDNHost
-        }
-        if let uuid = broadpeakParams["uuid"] as? String {
-            broadpeakConfig.uuid = uuid
-        }
-        return broadpeakConfig
-    }
+    // func getBroadpeakConfig(broadpeakParams: Dictionary<String, Any>)-> BroadpeakConfig{
+    //     let broadpeakConfig = BroadpeakConfig()
+    //     if let analyticsAddress = broadpeakParams["analyticsAddress"] as? String {
+    //         broadpeakConfig.analyticsAddress = analyticsAddress
+    //     }
+    //     if let broadpeakDomainNames = broadpeakParams["broadpeakDomainNames"] as? String {
+    //         broadpeakConfig.broadpeakDomainNames = broadpeakDomainNames
+    //     }
+    //     if let nanoCDNHost = broadpeakParams["nanoCDNHost"] as? String {
+    //         broadpeakConfig.nanoCDNHost = nanoCDNHost
+    //     }
+    //     if let uuid = broadpeakParams["uuid"] as? String {
+    //         broadpeakConfig.uuid = uuid
+    //     }
+    //     return broadpeakConfig
+    // }
 
     func updatePluginsConfig(plugins: Dictionary<String, Any>) {
         if (plugins["youbora"] != nil) {
