@@ -32,4 +32,5 @@ export declare class KalturaPlayerAPI {
     static updateLoadControlBuffers: () => () => void;
     static prepare: () => any;
     static setAutoplay: (value: boolean) => any;
+    static setSubtitleStyle: (value: string) => any;
 }

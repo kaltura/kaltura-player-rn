@@ -146,4 +146,7 @@ export class KalturaPlayerAPI {
   static setAutoplay = (value: boolean) => {
     return KalturaPlayerModule.setAutoplay(value);
   };
+  static setSubtitleStyle = (value: string) => {
+    return KalturaPlayerModule.setSubtitleStyle(value);
+  };
 }

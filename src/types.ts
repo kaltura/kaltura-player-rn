@@ -63,3 +63,8 @@ export type SetupParams = {
     ks?: string;
   };
 };
+
+export type SubTitleStyleSettings =
+  | 'default'
+  | 'blackBackgroundWhiteText'
+  | 'yellowText';

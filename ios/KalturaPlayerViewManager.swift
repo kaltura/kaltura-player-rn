@@ -177,6 +177,15 @@ class KalturaPlayerViewManager: RCTViewManager {
         }
     }
 
+        @objc func setSubtitleStyle(_ value: String) {
+        DispatchQueue.main.async {
+            if self.kalturaPlayer != nil {
+                 NSLog("setSubtitleStyle", value)
+                // self.kalturaPlayer.setSubtitleStyle(value: value)
+            }
+        }
+    }
+
     @objc func setMaxBitrate(_ bitrate: Int) {
         DispatchQueue.main.async {
             if self.kalturaPlayer != nil {

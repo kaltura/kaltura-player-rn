@@ -56,4 +56,5 @@ export declare type SetupParams = {
         ks?: string;
     };
 };
+export declare type SubTitleStyleSettings = 'default' | 'blackBackgroundWhiteText' | 'yellowText';
 export {};
