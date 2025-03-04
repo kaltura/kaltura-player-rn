@@ -180,8 +180,7 @@ class KalturaPlayerViewManager: RCTViewManager {
         @objc func setSubtitleStyle(_ value: String) {
         DispatchQueue.main.async {
             if self.kalturaPlayer != nil {
-                 NSLog("setSubtitleStyle", value)
-                // self.kalturaPlayer.setSubtitleStyle(value: value)
+                SubtitleStylingManager.applySubtitleStyle(kalturaPlayer: self.kalturaPlayer, userSubtitleStyleSettings: value)
             }
         }
     }
@@ -412,6 +411,7 @@ class KalturaPlayerRNView : UIView {
         playerOptions.preload = options["preload"] as! Bool
         playerOptions.autoPlay = options["autoplay"] as! Bool
         playerOptions.ks = options["ks"] as? String
+        
 
         if let plugins = options["plugins"] as? Dictionary<String, Any> {
             if let pluginsConfig = getPluginsConfigs(plugins:plugins) {
@@ -425,6 +425,11 @@ class KalturaPlayerRNView : UIView {
         playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         self.addSubview(playerView)
         kalturaPlayer.view = playerView
+        
+        let initSubtitleOption = options["subTitleStyleSettings"] as! String;
+        SubtitleStylingManager.applySubtitleStyle(kalturaPlayer: kalturaPlayer, userSubtitleStyleSettings: initSubtitleOption)
+
+        
         return kalturaPlayer
     }
     
