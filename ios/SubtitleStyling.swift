@@ -12,10 +12,10 @@ struct SubtitleStyleSettings {
     var backgroundColor: UIColor
     var textColor: UIColor
 
-    init(name: String, textSizeFraction: SubtitleTextSizeFraction = .subtitleFraction100, backgroundColor: UIColor = .clear, textColor: UIColor = .white) {
+    init(name: String, textSizeFraction: SubtitleTextSizeFraction = .subtitleFraction100, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.5) , textColor: UIColor = .white) {
         self.name = name
         self.textSizeFraction = textSizeFraction
-        self.backgroundColor = backgroundColor
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         self.textColor = textColor
     }
 
@@ -24,15 +24,15 @@ struct SubtitleStyleSettings {
     }
 
     func withTextSizeFraction(_ fraction: SubtitleTextSizeFraction) -> SubtitleStyleSettings {
-        return SubtitleStyleSettings(name: name, textSizeFraction: fraction, backgroundColor: backgroundColor, textColor: textColor)
+        return SubtitleStyleSettings(name: name, textSizeFraction: fraction, backgroundColor: UIColor.black.withAlphaComponent(0.5), textColor: textColor)
     }
 
     func withBackgroundColor(_ color: UIColor) -> SubtitleStyleSettings {
-        return SubtitleStyleSettings(name: name, textSizeFraction: textSizeFraction, backgroundColor: color, textColor: textColor)
+        return SubtitleStyleSettings(name: name, textSizeFraction: textSizeFraction, backgroundColor: UIColor.black.withAlphaComponent(0.5), textColor: textColor)
     }
 
     func withTextColor(_ color: UIColor) -> SubtitleStyleSettings {
-        return SubtitleStyleSettings(name: name, textSizeFraction: textSizeFraction, backgroundColor: backgroundColor, textColor: color)
+        return SubtitleStyleSettings(name: name, textSizeFraction: textSizeFraction, backgroundColor: UIColor.black.withAlphaComponent(0.5), textColor: color)
     }
 }
 
@@ -66,20 +66,20 @@ class SubtitleStyling {
     private static func setDefaultSubtitleStyleSettings() -> SubtitleStyleSettings {
         return SubtitleStyleSettings(name: "Default")
             .withTextSizeFraction(.subtitleFraction100)
-            .withBackgroundColor(.clear)
+            .withBackgroundColor(UIColor.black.withAlphaComponent(0.5))
     }
 
     private static func setBlackBackgroundWhiteTextSubtitleStyleSettings() -> SubtitleStyleSettings {
         return SubtitleStyleSettings(name: "BlackBackgroundWhiteText")
             .withTextSizeFraction(.subtitleFraction150)
-            .withBackgroundColor(.black)
+            .withBackgroundColor(UIColor.black.withAlphaComponent(0.5))
             .withTextColor(.white)
     }
 
     private static func setYellowTextSubtitleStyleSettings() -> SubtitleStyleSettings {
         return SubtitleStyleSettings(name: "YellowText")
             .withTextSizeFraction(.subtitleFraction200)
-            .withBackgroundColor(.clear)
+            .withBackgroundColor(UIColor.black.withAlphaComponent(0.5))
             .withTextColor(.yellow)
     }
 
