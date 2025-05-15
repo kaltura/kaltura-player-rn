@@ -9,7 +9,7 @@
 
 RCT_EXTERN_METHOD(setup:(nonnull int)partnerId options:(nonnull NSDictionary *)option)
 RCT_EXTERN_METHOD(load:(nonnull NSString *)assetId options:(nonnull NSDictionary *)option)
-RCT_EXTERN_METHOD(setMedia:(nonnull NSDictionary *)mediaEntry)
+RCT_EXTERN_METHOD(setMedia:(nonnull NSString *)mediaEntry)
 RCT_EXTERN_METHOD(playNewMedia:(nonnull NSDictionary *)options)
 RCT_EXTERN_METHOD(play)
 RCT_EXTERN_METHOD(pause)

@@ -1,6 +1,7 @@
 import Foundation
 import PlayKit
 import KalturaPlayer
+import SwiftyJSON
 
 
 struct Source {
@@ -24,35 +25,18 @@ struct Source {
 class MediaEntryManager{
     private static var pkMediaEntry: PKMediaEntry? = nil;
     
-    public static func setMediaEntry(mediaEntry: NSDictionary){
-        var id: String = ""
-        var mediaType: MediaType = .vod
-        var metadata: [String: String]?
-        var sources: [PKMediaSource] = []
-        
-        if let entryId = mediaEntry["id"] {
-            id = String(describing: entryId)
+    public static func setMediaEntry(jsonMediaEntry: String){
+        print("ttt setMediaEntry 1 jsonMediaEntry:", jsonMediaEntry)
+
+        guard let data = jsonMediaEntry.data(using: .utf8) else { return }
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+            let json = JSON(jsonObject)
+            print("ttt setMediaEntry 2 json:", json)
+            pkMediaEntry = PKMediaEntry(json: json)
+        } catch {
+            print("ttt Failed to parse media entry JSON: \(error)")
         }
-        
-        if let entryMetadata = mediaEntry["metadata"] as? [String: String] {
-            metadata = entryMetadata
-        }
-        
-        if let sourcesArray = mediaEntry["sources"] as? [NSDictionary] {
-            for item in sourcesArray {
-                if let source = Source(dictionary: item) {
-                    let mediaSource = PKMediaSource(id: source.id)
-                    mediaSource.contentUrl = URL(string: source.url)
-                    mediaSource.mimeType = source.mimetype
-                    sources.append(mediaSource)
-                }
-            }
-        }
-        
-        pkMediaEntry = PKMediaEntry(id, sources: sources)
-        pkMediaEntry?.metadata = metadata
-        pkMediaEntry?.mediaType = mediaType
-                
     }
     
     public static func play(player: KalturaOTTPlayer, startPosition: Double){

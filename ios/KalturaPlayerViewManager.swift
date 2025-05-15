@@ -85,7 +85,8 @@ class KalturaPlayerViewManager: RCTViewManager {
         }
     }
     
-    @objc func setMedia(_ mediaEntry: NSDictionary) {
+    @objc func setMedia(_ mediaEntry: String) {
+        print("ttt setMedia 1")
         DispatchQueue.main.async {
             self.player.setMedia(mediaEntry: mediaEntry)
         }
@@ -433,8 +434,9 @@ class KalturaPlayerRNView : UIView {
         return kalturaPlayer
     }
     
-    @objc func setMedia(mediaEntry: NSDictionary){
-        MediaEntryManager.setMediaEntry(mediaEntry: mediaEntry)
+    @objc func setMedia(mediaEntry: String){
+        print("ttt set media 2")
+        MediaEntryManager.setMediaEntry(jsonMediaEntry: mediaEntry)
     }
     
     @objc func playNewMedia(options: NSDictionary){
